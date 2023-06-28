@@ -1,0 +1,19 @@
+<div class="flexlayout column center" style="gap: 10px;">
+  <div style="padding-top: 25px;padding-bottom: 25px;">
+    <form [formGroup]="teamForm">
+      <div class="formFieldWider">
+        <mat-form-field appearance="outline" class="extraWideField">
+          <mat-label>Team Name</mat-label>
+          <input matInput formControlName="name"
+            (blur)="onUpdate()">
+          <mat-error *ngIf="teamForm.controls['name'].hasError('required')"
+            class="error">Required</mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+  <div class="flexlayout row center" style="gap: 10px;">
+    <app-team-workcodes [team]="team"></app-team-workcodes>
+    <app-team-company [team]="team"></app-team-company>
+  </div>
+</div>

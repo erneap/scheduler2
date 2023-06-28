@@ -1,0 +1,15 @@
+<div class="flexlayout row topcenter" style="gap: 25px;">
+  <div class="flexlayout column topleft">
+    <h3>Current Leave Requests</h3>
+    <div class="list">
+      <div *ngFor="let item of currentLeaveRequests" 
+        [class]="getButtonClass(item.id)"
+        (click)="setSelected(item.id)">
+        {{getDateString(item.startdate)}} - {{getDateString(item.enddate)}}
+      </div>
+    </div>
+  </div>
+  <app-leave-request-editor [employee]="employee" 
+    [request]="currentLeaveRequest" (changed)="changedEmployee($event)">
+  </app-leave-request-editor>
+</div>

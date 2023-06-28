@@ -1,0 +1,7 @@
+<div class="cell" [style]="workdayStyle">
+  <div [class]="dateClass">{{workday.date?.getDate()}}</div>
+  <div class="code">{{workday.code}}</div>
+  <div class="workcenter">
+    {{getWorkcenter()}}
+  </div>
+</div>

@@ -182,23 +182,6 @@ export class LeaveRequestEditorComponent {
               }
               this.setCurrent();
               const site = this.siteService.getSite()
-              if (site && site.employees) {
-                const message = `New Leave Request for ${this.employee.name.getFullName()}`
-                  + " was created.";
-                console.log(message);
-                site.employees.forEach(sEmp => {
-                  const tEmp = new Employee(sEmp);
-                  if (tEmp.user) {
-                    if (tEmp.user.isInGroup("scheduler", "siteleader") 
-                      || tEmp.user.isInGroup("scheduler", "scheduler")) {
-                      this.msgService.createMessage(sEmp.id, this.employee.id, message)
-                      .subscribe(() => {
-                        console.log("Message Sent");
-                      });
-                    }
-                  }
-                });
-              }
             }
             this.authService.statusMessage = "Leave Request processing complete";
             this.changed.emit(new Employee(this.employee));
@@ -257,20 +240,6 @@ export class LeaveRequestEditorComponent {
                 }
               }
               this.setCurrent();
-              if (field.toLowerCase() === 'start' || field.toLowerCase() === 'end') {
-                const site = this.siteService.getSite()
-                if (site && site.employees) {
-                  const message = `Leave request dates for ${this.employee.name.getFullName()}`
-                    + " were changed and needs to be reapproved.";
-                  site.employees.forEach(sEmp => {
-                    if (sEmp.user 
-                      && (sEmp.user.isInGroup("scheduler", "siteleader") 
-                      || sEmp.user.isInGroup("scheduler", "scheduler"))) {
-                      this.msgService.createMessage(sEmp.id, this.employee.id, message)
-                    }
-                  });
-                }
-              }
             }
             this.authService.statusMessage = "Update complete";
             this.changed.emit(new Employee(this.employee));
@@ -392,9 +361,6 @@ export class LeaveRequestEditorComponent {
               });
             }
             this.setCurrent();
-            const oEmp = new Employee(iEmp);
-            const message = `Leave request was approved by ${oEmp.name.getFullName()}.`;
-            this.msgService.createMessage(this.employee.id, iEmp.id, message);
           }
           this.authService.statusMessage = "Approval Complete";
           this.changed.emit(new Employee(this.employee));

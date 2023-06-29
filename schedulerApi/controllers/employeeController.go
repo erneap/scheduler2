@@ -174,6 +174,10 @@ func UpdateEmployeeBasic(c *gin.Context) {
 		emp.Data.CompanyInfo.CostCenter = data.Value
 	case "division":
 		emp.Data.CompanyInfo.Division = data.Value
+	case "password":
+		if user != nil {
+			user.SetPassword(data.Value)
+		}
 	case "unlock":
 		if user != nil {
 			user.BadAttempts = 0
@@ -854,12 +858,28 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 		offset = site.UtcOffset
 	}
 
-	err = emp.UpdateLeaveRequest(data.OptionalID, data.Field,
+	msg, err := emp.UpdateLeaveRequest(data.OptionalID, data.Field,
 		data.Value, offset)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
+	}
+
+	if msg != "" {
+		if strings.Contains(strings.ToLower(msg), "approved") {
+			services.CreateMessage(emp.ID.Hex(), data.Value, msg)
+		} else {
+			// get site employees then find out which are site leadership or
+			// scheduler to provide message to them
+			siteEmps, _ := services.GetEmployees(emp.TeamID.Hex(), emp.SiteID)
+			for _, e := range siteEmps {
+				if e.User.IsInGroup("scheduler", "siteleader") ||
+					e.User.IsInGroup("scheduler", "scheduler") {
+					services.CreateMessage(e.ID.Hex(), emp.ID.Hex(), msg)
+				}
+			}
+		}
 	}
 
 	err = services.UpdateEmployee(emp)

@@ -79,7 +79,7 @@ func GetMessage(id string) (notifications.Notification, error) {
 
 // Create function which include receipent, sender and message.
 // the identifier and date are automatic.
-func CreateMessage(to, from, message string) (*notifications.Notification, error) {
+func CreateMessage(to, from, message string) error {
 	noteCol := config.GetCollection(config.DB, "scheduler", "notifications")
 
 	msg := &notifications.Notification{
@@ -92,12 +92,12 @@ func CreateMessage(to, from, message string) (*notifications.Notification, error
 
 	result, err := noteCol.InsertOne(context.TODO(), msg)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if result.InsertedID == primitive.NilObjectID {
-		return nil, errors.New("not created")
+		return errors.New("not created")
 	}
-	return msg, nil
+	return nil
 }
 
 // There is no update routine because messages can't be updated manually.

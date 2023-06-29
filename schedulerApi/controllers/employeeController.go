@@ -153,6 +153,10 @@ func UpdateEmployeeBasic(c *gin.Context) {
 	var data users.UpdateRequest
 
 	if err := c.ShouldBindJSON(&data); err != nil {
+		if config.LogLevel >= int(logs.Debug) {
+			svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+				"UpdateEmployeeBasic, Request Data Binding, Trouble with request")
+		}
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
@@ -162,9 +166,17 @@ func UpdateEmployeeBasic(c *gin.Context) {
 	emp, err := services.GetEmployee(data.UserID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			if config.LogLevel >= int(logs.Debug) {
+				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+					"UpdateEmployeeBasic, GetEmployee, Employee Not Found")
+			}
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
 				Exception: "Employee Not Found"})
 		} else {
+			if config.LogLevel >= int(logs.Debug) {
+				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+					fmt.Sprintf("UpdateEmployeeBasic, GetEmployee, %s", err.Error()))
+			}
 			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 				Exception: err.Error()})
 		}
@@ -172,6 +184,10 @@ func UpdateEmployeeBasic(c *gin.Context) {
 	}
 	user, err := svcs.GetUserByID(data.UserID)
 	if err != nil {
+		if config.LogLevel >= int(logs.Debug) {
+			svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+				fmt.Sprintf("UpdateEmployeeBasic, GetUserById, %s", err.Error()))
+		}
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
@@ -254,6 +270,10 @@ func UpdateEmployeeBasic(c *gin.Context) {
 	// send the employee back to the service for update.
 	err = services.UpdateEmployee(emp)
 	if err != nil {
+		if config.LogLevel >= int(logs.Debug) {
+			svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+				fmt.Sprintf("UpdateEmployeeBasic, UpdateEmployee, %s", err.Error()))
+		}
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
@@ -261,10 +281,18 @@ func UpdateEmployeeBasic(c *gin.Context) {
 
 	// send user back to services for update
 	if user != nil {
-		svcs.UpdateUser(*user)
+		err = svcs.UpdateUser(*user)
+		if config.LogLevel >= int(logs.Debug) {
+			svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+				fmt.Sprintf("UpdateEmployeeBasic, Update User, %s", err.Error()))
+		}
 	}
 	emp.User = user
 
+	if config.LogLevel >= int(logs.Debug) {
+		svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+			fmt.Sprintf("UpdateEmployeeBasic, Updated %s", data.Field))
+	}
 	// return the corrected employee back to the client.
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }

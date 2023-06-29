@@ -23,7 +23,7 @@ export class ReportMidShiftComponent {
   ) { }
 
   onSubmit() {
-    const url = '/scheduler/api/v1/reports';
+    const url = '/scheduler2/api/v1/reports';
     const iTeam = this.teamService.getTeam();
     const iSite = this.siteService.getSite();
     if (iTeam && iSite) {

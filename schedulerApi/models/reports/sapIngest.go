@@ -1,4 +1,4 @@
-package converters
+package reports
 
 import (
 	"log"
@@ -6,7 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/erneap/scheduler/schedulerApi/models/ingest"
+	"github.com/erneap/go-models/converters"
+	"github.com/erneap/scheduler2/schedulerApi/models/ingest"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -58,7 +59,7 @@ func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ingest.ExcelRow, 
 			explanation := row[columns["Explanation"]]
 			description := row[columns["Charge Number Desc"]]
 			if !strings.Contains(explanation, "Total") {
-				date := ParseDate(row[columns["Date"]])
+				date := converters.ParseDate(row[columns["Date"]])
 				if date.Before(startDate) {
 					startDate = time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0,
 						0, time.UTC)
@@ -71,7 +72,7 @@ func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ingest.ExcelRow, 
 				chargeNo := strings.TrimSpace(row[columns["Charge Number"]])
 				premimum := strings.TrimSpace(row[columns["Prem. no."]])
 				extension := strings.TrimSpace(row[columns["Ext."]])
-				hours := ParseFloat(row[columns["Hours"]])
+				hours := converters.ParseFloat(row[columns["Hours"]])
 				// check to see if ingest row is for a leave type record
 				if strings.Contains(strings.ToLower(description), "leave") ||
 					strings.EqualFold(description, "pto") ||

@@ -7,8 +7,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
-	"github.com/erneap/scheduler/schedulerApi/services"
+	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/sites"
+	"github.com/erneap/go-models/teams"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/xuri/excelize/v2"
 	"golang.org/x/exp/maps"
 )
@@ -18,11 +20,11 @@ type LaborReport struct {
 	Date              time.Time
 	TeamID            string
 	SiteID            string
-	ForecastReports   []dbdata.ForecastReport
-	Workcodes         map[string]dbdata.Workcode
+	ForecastReports   []sites.ForecastReport
+	Workcodes         map[string]teams.Workcode
 	Styles            map[string]int
 	ConditionalStyles map[string]int
-	Employees         []dbdata.Employee
+	Employees         []employees.Employee
 	StatsRow          int
 	CurrentAsOf       time.Time
 	EndWork           time.Time
@@ -34,7 +36,7 @@ func (lr *LaborReport) Create() error {
 	lr.StatsRow = 3
 	lr.Styles = make(map[string]int)
 	lr.ConditionalStyles = make(map[string]int)
-	lr.Workcodes = make(map[string]dbdata.Workcode)
+	lr.Workcodes = make(map[string]teams.Workcode)
 	lr.Report = excelize.NewFile()
 
 	// Get list of forecast reports for the team/site
@@ -116,7 +118,7 @@ func (lr *LaborReport) Create() error {
 
 	lr.CreateStatisticsReport()
 
-	sort.Sort(dbdata.ByForecastReport(lr.ForecastReports))
+	sort.Sort(sites.ByForecastReport(lr.ForecastReports))
 
 	for _, fr := range lr.ForecastReports {
 		// current report
@@ -876,7 +878,7 @@ func (lr *LaborReport) CreateStyles() error {
 }
 
 func (lr *LaborReport) CreateContractReport(
-	fr dbdata.ForecastReport, current bool) error {
+	fr sites.ForecastReport, current bool) error {
 	sheetName := fr.Name + "_"
 	if current {
 		sheetName += "Current"
@@ -989,7 +991,7 @@ func (lr *LaborReport) CreateContractReport(
 	lr.Report.SetCellValue(sheetName, cellID, "EAC")
 	lr.Report.SetColOutlineLevel(sheetName, GetColumn(column), 0)
 	lastWorkday := time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
-	sort.Sort(dbdata.ByEmployees(lr.Employees))
+	sort.Sort(employees.ByEmployees(lr.Employees))
 	for _, emp := range lr.Employees {
 		last := emp.GetLastWorkday()
 		if last.After(lastWorkday) {
@@ -998,6 +1000,14 @@ func (lr *LaborReport) CreateContractReport(
 	}
 
 	row := 4
+	var compareCodes []employees.EmployeeCompareCode
+	for _, wc := range maps.Values(lr.Workcodes) {
+		cc := &employees.EmployeeCompareCode{
+			Code:    wc.Id,
+			IsLeave: wc.IsLeave,
+		}
+		compareCodes = append(compareCodes, *cc)
+	}
 	for _, lCode := range fr.LaborCodes {
 		for _, emp := range lr.Employees {
 			actual := emp.GetWorkedHoursForLabor(
@@ -1006,7 +1016,7 @@ func (lr *LaborReport) CreateContractReport(
 			forecast := emp.GetForecastHours(lCode.ChargeNumber,
 				lCode.Extension, fr.StartDate,
 				fr.EndDate.AddDate(0, 0, 1),
-				maps.Values(lr.Workcodes))
+				compareCodes)
 			if actual > 0.0 || forecast > 0.0 {
 				// show employee for this labor code
 				row++
@@ -1078,7 +1088,7 @@ func (lr *LaborReport) CreateContractReport(
 								style = lr.Styles["forecast"]
 							}
 							hours += emp.GetForecastHours(lCode.ChargeNumber,
-								lCode.Extension, first, last, maps.Values(lr.Workcodes))
+								lCode.Extension, first, last, compareCodes)
 						}
 						lr.Report.SetCellStyle(sheetName, cellID, cellID, style)
 						format := lr.ConditionalStyles["cellpink"]

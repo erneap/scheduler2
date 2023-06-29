@@ -3,12 +3,12 @@ package services
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 
-	"github.com/erneap/scheduler/schedulerApi/models/config"
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
+	"github.com/erneap/go-models/config"
+	"github.com/erneap/go-models/teams"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -18,25 +18,25 @@ import (
 // teams.
 
 // CRUD Create function
-func CreateTeam(name string, useCodes bool) *dbdata.Team {
+func CreateTeam(name string, useCodes bool) *teams.Team {
 	teamCol := config.GetCollection(config.DB, "scheduler", "teams")
 
 	filter := bson.M{
 		"name": name,
 	}
 
-	var team *dbdata.Team
+	var team *teams.Team
 
 	teamCol.FindOne(context.TODO(), filter).Decode(team)
 	if team == nil {
-		team = &dbdata.Team{
+		team = &teams.Team{
 			ID:   primitive.NewObjectID(),
 			Name: name,
 		}
 
 		if useCodes {
 			// get initial work codes from json file
-			var initialTeam dbdata.Team
+			var initialTeam teams.Team
 			jsonFile, err := os.Open("initial.json")
 			if err != nil {
 				log.Println(err)
@@ -46,7 +46,7 @@ func CreateTeam(name string, useCodes bool) *dbdata.Team {
 			defer jsonFile.Close()
 
 			// read all the data of the jsonFile into a byteArray
-			byteArray, err := ioutil.ReadAll(jsonFile)
+			byteArray, err := io.ReadAll(jsonFile)
 			if err != nil {
 				log.Println(err)
 			}
@@ -59,7 +59,7 @@ func CreateTeam(name string, useCodes bool) *dbdata.Team {
 			}
 
 			for _, wc := range initialTeam.Workcodes {
-				nwc := dbdata.Workcode{
+				nwc := teams.Workcode{
 					Id:        wc.Id,
 					Title:     wc.Title,
 					StartTime: wc.StartTime,
@@ -77,7 +77,7 @@ func CreateTeam(name string, useCodes bool) *dbdata.Team {
 }
 
 // CRUD Retrieve function single and multiple(All)
-func GetTeam(id string) (*dbdata.Team, error) {
+func GetTeam(id string) (*teams.Team, error) {
 	teamid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -88,7 +88,7 @@ func GetTeam(id string) (*dbdata.Team, error) {
 		"_id": teamid,
 	}
 
-	var team dbdata.Team
+	var team teams.Team
 
 	err = teamCol.FindOne(context.TODO(), filter).Decode(&team)
 	if err != nil {
@@ -97,10 +97,10 @@ func GetTeam(id string) (*dbdata.Team, error) {
 	return &team, nil
 }
 
-func GetTeams() ([]dbdata.Team, error) {
+func GetTeams() ([]teams.Team, error) {
 	teamCol := config.GetCollection(config.DB, "scheduler", "teams")
 
-	var teams []dbdata.Team
+	var teams []teams.Team
 	cursor, err := teamCol.Find(context.TODO(), bson.M{})
 	if err != nil {
 		return teams, err
@@ -115,7 +115,7 @@ func GetTeams() ([]dbdata.Team, error) {
 }
 
 // CRUD Update Function
-func UpdateTeam(team *dbdata.Team) error {
+func UpdateTeam(team *teams.Team) error {
 	teamCol := config.GetCollection(config.DB, "scheduler", "teams")
 
 	filter := bson.M{

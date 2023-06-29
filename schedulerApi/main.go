@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/erneap/scheduler/schedulerApi/controllers"
-	"github.com/erneap/scheduler/schedulerApi/middleware"
-	"github.com/erneap/scheduler/schedulerApi/models/config"
+	"github.com/erneap/go-models/config"
+	"github.com/erneap/go-models/svcs"
+	"github.com/erneap/scheduler2/schedulerApi/controllers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,28 +18,17 @@ func main() {
 	// add routes
 	router := gin.Default()
 	roles := []string{"ADMIN", "SCHEDULER", "siteleader", "company", "teamleader"}
-	api := router.Group("/scheduler/api/v1")
+	api := router.Group("/scheduler2/api/v1")
 	{
-		users := api.Group("/user")
-		{
-			users.GET("/", middleware.CheckJWT(),
-				middleware.CheckRole("scheduler", "admin"),
-				controllers.GetAllUsers)
-			users.POST("/login", controllers.Login)
-			users.PUT("/password", middleware.CheckJWT(),
-				controllers.ChangePassword)
-			users.PUT("/changes", middleware.CheckJWT(),
-				controllers.ChangeUser)
-		}
+		api.GET("/", svcs.CheckJWT(), controllers.GetInitial)
 		emp := api.Group("/employee")
 		{
-			emp.GET("/:empid", middleware.CheckJWT(), controllers.GetEmployee)
-			emp.POST("/", middleware.CheckJWT(), middleware.CheckRoles("scheduler", roles),
+			emp.GET("/:empid", svcs.CheckJWT(), controllers.GetEmployee)
+			emp.POST("/", svcs.CheckJWT(), svcs.CheckRoles("scheduler", roles),
 				controllers.CreateEmployee)
-			emp.PUT("/", middleware.CheckJWT(), controllers.UpdateEmployeeBasic)
-			emp.DELETE("/:empid", middleware.CheckJWT(), controllers.DeleteEmployee)
-			emp.POST("/account", middleware.CheckJWT(), controllers.CreateUserAccount)
-			asgmt := emp.Group("/assignment").Use(middleware.CheckJWT())
+			emp.PUT("/", svcs.CheckJWT(), controllers.UpdateEmployeeBasic)
+			emp.DELETE("/:empid", svcs.CheckJWT(), controllers.DeleteEmployee)
+			asgmt := emp.Group("/assignment").Use(svcs.CheckJWT())
 			{
 				asgmt.POST("/", controllers.CreateEmployeeAssignment)
 				asgmt.PUT("/", controllers.UpdateEmployeeAssignment)
@@ -47,39 +36,39 @@ func main() {
 				asgmt.DELETE("/:empid/:asgmtid",
 					controllers.DeleteEmployeeAssignment)
 			}
-			vari := emp.Group("/variation").Use(middleware.CheckJWT())
+			vari := emp.Group("/variation").Use(svcs.CheckJWT())
 			{
 				vari.POST("/", controllers.CreateEmployeeVariation)
 				vari.PUT("/", controllers.UpdateEmployeeVariation)
 				vari.PUT("/workday", controllers.UpdateEmployeeVariationWorkday)
 				vari.DELETE("/:empid/:variid", controllers.DeleteEmployeeVariation)
 			}
-			balance := emp.Group("/balance").Use(middleware.CheckJWT())
+			balance := emp.Group("/balance").Use(svcs.CheckJWT())
 			{
 				balance.POST("/", controllers.CreateEmployeeLeaveBalance)
 				balance.PUT("/", controllers.UpdateEmployeeLeaveBalance)
 				balance.DELETE("/:empid/:year", controllers.DeleteEmployeeLeaveBalance)
 			}
-			leaves := emp.Group("/leaves").Use(middleware.CheckJWT())
+			leaves := emp.Group("/leaves").Use(svcs.CheckJWT())
 			{
 				leaves.POST("/", controllers.AddEmployeeLeaveDay)
 				leaves.PUT("/", controllers.UpdateEmployeeLeaveDay)
 				leaves.DELETE("/:empid/:lvid", controllers.DeleteEmployeeLeaveDay)
 			}
-			lvReq := emp.Group("/request").Use(middleware.CheckJWT())
+			lvReq := emp.Group("/request").Use(svcs.CheckJWT())
 			{
 				lvReq.POST("/", controllers.CreateEmployeeLeaveRequest)
 				lvReq.PUT("/", controllers.UpdateEmployeeLeaveRequest)
 				lvReq.DELETE("/:empid/:reqid", controllers.DeleteEmployeeLeaveRequest)
 			}
-			lCode := emp.Group("/laborcode").Use(middleware.CheckJWT())
+			lCode := emp.Group("/laborcode").Use(svcs.CheckJWT())
 			{
 				lCode.POST("/", controllers.AddEmployeeLaborCode)
 				lCode.DELETE("/:empid/:chgno/:ext", controllers.DeleteEmployeeLaborCode)
 			}
 		}
-		site := api.Group("/site", middleware.CheckJWT(),
-			middleware.CheckRoles("scheduler", roles))
+		site := api.Group("/site", svcs.CheckJWT(),
+			svcs.CheckRoles("scheduler", roles))
 		{
 			site.GET("/:teamid/:siteid", controllers.GetSite)
 			site.GET("/:teamid/:siteid/:employees", controllers.GetSite)
@@ -137,22 +126,22 @@ func main() {
 			}
 		}
 
-		team := api.Group("/team", middleware.CheckJWT())
+		team := api.Group("/team", svcs.CheckJWT())
 		{
 			team.GET("/:teamid", controllers.GetTeam)
-			team.POST("/", middleware.CheckRoles("scheduler", roles),
+			team.POST("/", svcs.CheckRoles("scheduler", roles),
 				controllers.CreateTeam)
-			team.PUT("/", middleware.CheckRoles("scheduler", roles),
+			team.PUT("/", svcs.CheckRoles("scheduler", roles),
 				controllers.UpdateTeam)
-			team.DELETE("/:teamid", middleware.CheckRoles("scheduler", roles),
+			team.DELETE("/:teamid", svcs.CheckRoles("scheduler", roles),
 				controllers.DeleteTeam)
-			wcode := team.Group("/workcode", middleware.CheckRoles("scheduler", roles))
+			wcode := team.Group("/workcode", svcs.CheckRoles("scheduler", roles))
 			{
 				wcode.POST("/", controllers.CreateWorkcode)
 				wcode.PUT("/", controllers.UpdateTeamWorkcode)
 				wcode.DELETE("/:teamid/:wcid", controllers.DeleteTeamWorkcode)
 			}
-			comp := team.Group("/company", middleware.CheckRoles("scheduler", roles))
+			comp := team.Group("/company", svcs.CheckRoles("scheduler", roles))
 			{
 				comp.POST("/", controllers.CreateTeamCompany)
 				comp.PUT("/", controllers.UpdateTeamCompany)
@@ -168,30 +157,30 @@ func main() {
 			}
 		}
 
-		ingest := api.Group("/ingest", middleware.CheckJWT())
+		ingest := api.Group("/ingest", svcs.CheckJWT())
 		{
 			ingest.GET("/:teamid/:siteid/:company",
-				middleware.CheckRoles("scheduler", roles),
+				svcs.CheckRoles("scheduler", roles),
 				controllers.GetIngestEmployees)
-			ingest.POST("/", middleware.CheckRoles("scheduler", roles),
+			ingest.POST("/", svcs.CheckRoles("scheduler", roles),
 				controllers.IngestFiles)
-			ingest.PUT("/", middleware.CheckRoles("scheduler", roles),
+			ingest.PUT("/", svcs.CheckRoles("scheduler", roles),
 				controllers.ManualIngestActions)
 		}
 
-		admin := api.Group("/admin", middleware.CheckJWT(),
-			middleware.CheckRole("scheduler", "admin"))
+		admin := api.Group("/admin", svcs.CheckJWT(),
+			svcs.CheckRole("scheduler", "admin"))
 		{
 			admin.GET("/teams", controllers.GetTeams)
 			admin.DELETE("/teams/:teamid", controllers.DeleteTeam)
 		}
 
-		reports := api.Group("/reports", middleware.CheckJWT())
+		reports := api.Group("/reports", svcs.CheckJWT())
 		{
 			reports.POST("/", controllers.CreateReport)
 		}
 
-		notes := api.Group("/messages", middleware.CheckJWT())
+		notes := api.Group("/messages", svcs.CheckJWT())
 		{
 			notes.GET("/", controllers.GetAllMessages)
 			notes.GET("/message/:id", controllers.GetMessage)
@@ -202,5 +191,5 @@ func main() {
 	}
 
 	// listen on port 3000
-	router.Run(":4000")
+	router.Run(":6002")
 }

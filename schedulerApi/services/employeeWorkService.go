@@ -3,8 +3,8 @@ package services
 import (
 	"context"
 
-	"github.com/erneap/scheduler/schedulerApi/models/config"
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
+	"github.com/erneap/go-models/config"
+	"github.com/erneap/go-models/employees"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,7 +15,7 @@ import (
 // Every service will have functions for completing the CRUD functions
 // the retrieve function will only be for individual employee's year
 
-func CreateEmployeeWork(work *dbdata.EmployeeWorkRecord) error {
+func CreateEmployeeWork(work *employees.EmployeeWorkRecord) error {
 	empWCol := config.GetCollection(config.DB, "scheduler", "employeework")
 
 	filter := bson.M{
@@ -23,7 +23,7 @@ func CreateEmployeeWork(work *dbdata.EmployeeWorkRecord) error {
 		"year":       work.Year,
 	}
 
-	var tEmpWork dbdata.EmployeeWorkRecord
+	var tEmpWork employees.EmployeeWorkRecord
 
 	err := empWCol.FindOne(context.TODO(), filter).Decode(&tEmpWork)
 	if err == mongo.ErrNoDocuments {
@@ -40,7 +40,7 @@ func CreateEmployeeWork(work *dbdata.EmployeeWorkRecord) error {
 	}
 }
 
-func GetEmployeeWork(id string, year uint) (*dbdata.EmployeeWorkRecord, error) {
+func GetEmployeeWork(id string, year uint) (*employees.EmployeeWorkRecord, error) {
 	empWCol := config.GetCollection(config.DB, "scheduler", "employeework")
 
 	empID, _ := primitive.ObjectIDFromHex(id)
@@ -50,7 +50,7 @@ func GetEmployeeWork(id string, year uint) (*dbdata.EmployeeWorkRecord, error) {
 		"year":       year,
 	}
 
-	var eWork dbdata.EmployeeWorkRecord
+	var eWork employees.EmployeeWorkRecord
 
 	err := empWCol.FindOne(context.TODO(), filter).Decode(&eWork)
 	if err != nil {
@@ -59,7 +59,7 @@ func GetEmployeeWork(id string, year uint) (*dbdata.EmployeeWorkRecord, error) {
 	return &eWork, nil
 }
 
-func UpdateEmployeeWork(eWork *dbdata.EmployeeWorkRecord) error {
+func UpdateEmployeeWork(eWork *employees.EmployeeWorkRecord) error {
 	empWCol := config.GetCollection(config.DB, "scheduler", "employeework")
 
 	filter := bson.M{

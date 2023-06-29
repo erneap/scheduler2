@@ -7,11 +7,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/erneap/scheduler/schedulerApi/converters"
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
-	"github.com/erneap/scheduler/schedulerApi/models/ingest"
-	"github.com/erneap/scheduler/schedulerApi/models/web"
-	"github.com/erneap/scheduler/schedulerApi/services"
+	"github.com/erneap/go-models/converters"
+	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/notifications"
+	"github.com/erneap/scheduler2/schedulerApi/models/ingest"
+	"github.com/erneap/scheduler2/schedulerApi/models/reports"
+	"github.com/erneap/scheduler2/schedulerApi/models/web"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -46,8 +48,8 @@ func GetIngestEmployees(c *gin.Context) {
 	})
 }
 
-func getEmployeesAfterIngest(team, site, company string) ([]dbdata.Employee, error) {
-	var companyEmployees []dbdata.Employee
+func getEmployeesAfterIngest(team, site, company string) ([]employees.Employee, error) {
+	var companyEmployees []employees.Employee
 	now := time.Now()
 
 	empls, err := services.GetEmployees(team, site)
@@ -66,11 +68,11 @@ func getEmployeesAfterIngest(team, site, company string) ([]dbdata.Employee, err
 			if err == nil && len(work.Work) > 0 {
 				emp.Work = append(emp.Work, work.Work...)
 			}
-			sort.Sort(dbdata.ByEmployeeWork(emp.Work))
+			sort.Sort(employees.ByEmployeeWork(emp.Work))
 			companyEmployees = append(companyEmployees, emp)
 		}
 	}
-	sort.Sort(dbdata.ByEmployees(companyEmployees))
+	sort.Sort(employees.ByEmployees(companyEmployees))
 
 	return companyEmployees, nil
 }
@@ -103,7 +105,7 @@ func IngestFiles(c *gin.Context) {
 	files := form.File["file"]
 	switch strings.ToLower(ingestType) {
 	case "sap":
-		sapIngest := converters.SAPIngest{
+		sapIngest := reports.SAPIngest{
 			Files: files,
 		}
 		records, start, end = sapIngest.Process()
@@ -137,7 +139,7 @@ func IngestFiles(c *gin.Context) {
 
 	empls, err := services.GetEmployees(teamid, siteid)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, web.Message{Message: err.Error()})
+		c.JSON(http.StatusBadRequest, notifications.Message{Message: err.Error()})
 		return
 	}
 	sort.Sort(ingest.ByExcelRow(records))
@@ -193,7 +195,7 @@ func IngestFiles(c *gin.Context) {
 							lvid = lv.ID
 						}
 					}
-					lv := dbdata.LeaveDay{
+					lv := employees.LeaveDay{
 						ID:        lvid + 1,
 						LeaveDate: rec.Date,
 						Code:      rec.Code,
@@ -210,7 +212,7 @@ func IngestFiles(c *gin.Context) {
 				} else {
 					// work object, so get work record object for employee and year, then
 					// add it to the work record, update it in the database.
-					wr := dbdata.Work{
+					wr := employees.Work{
 						DateWorked:   rec.Date,
 						ChargeNumber: rec.ChargeNumber,
 						Extension:    rec.Extension,
@@ -220,7 +222,7 @@ func IngestFiles(c *gin.Context) {
 					workrec, err := services.GetEmployeeWork(emp.ID.Hex(),
 						uint(rec.Date.Year()))
 					if err != nil {
-						workrec = &dbdata.EmployeeWorkRecord{
+						workrec = &employees.EmployeeWorkRecord{
 							ID:         primitive.NewObjectID(),
 							EmployeeID: emp.ID,
 							Year:       uint(rec.Date.Year()),
@@ -288,7 +290,7 @@ func ManualIngestActions(c *gin.Context) {
 				services.UpdateEmployeeWork(work)
 			} else {
 				empID, _ := primitive.ObjectIDFromHex(change.EmployeeID)
-				work = &dbdata.EmployeeWorkRecord{
+				work = &employees.EmployeeWorkRecord{
 					ID:         primitive.NewObjectID(),
 					EmployeeID: empID,
 					Year:       uint(change.Work.DateWorked.Year()),

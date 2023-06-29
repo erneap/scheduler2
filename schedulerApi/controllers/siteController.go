@@ -7,9 +7,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
-	"github.com/erneap/scheduler/schedulerApi/models/web"
-	"github.com/erneap/scheduler/schedulerApi/services"
+	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/sites"
+	"github.com/erneap/scheduler2/schedulerApi/models/web"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -54,7 +55,7 @@ func CreateSite(c *gin.Context) {
 	}
 	site.ShowMids = data.UseMids
 	site.UtcOffset = data.Offset
-	newWorkcenter := dbdata.Workcenter{
+	newWorkcenter := sites.Workcenter{
 		ID:     "leads",
 		Name:   "LEADS",
 		SortID: uint(1),
@@ -63,19 +64,19 @@ func CreateSite(c *gin.Context) {
 	services.UpdateSite(data.TeamID, *site)
 	teamID, _ := primitive.ObjectIDFromHex(data.TeamID)
 
-	emp := dbdata.Employee{
+	emp := employees.Employee{
 		ID:     primitive.NewObjectID(),
 		TeamID: teamID,
 		SiteID: site.ID,
 		Email:  data.Leader.EmailAddress,
-		Name: dbdata.EmployeeName{
+		Name: employees.EmployeeName{
 			FirstName:  data.Leader.FirstName,
 			MiddleName: data.Leader.MiddleName,
 			LastName:   data.Leader.LastName,
 		},
-		Data: dbdata.EmployeeData{},
+		Data: employees.EmployeeData{},
 	}
-	asgmt := dbdata.Assignment{
+	asgmt := employees.Assignment{
 		ID:           uint(1),
 		Site:         data.SiteID,
 		Workcenter:   "leads",
@@ -95,19 +96,19 @@ func CreateSite(c *gin.Context) {
 	site.Employees = append(site.Employees, *empl)
 
 	if data.Scheduler != nil {
-		emp = dbdata.Employee{
+		emp = employees.Employee{
 			ID:     primitive.NewObjectID(),
 			TeamID: teamID,
 			SiteID: site.ID,
 			Email:  data.Scheduler.EmailAddress,
-			Name: dbdata.EmployeeName{
+			Name: employees.EmployeeName{
 				FirstName:  data.Scheduler.FirstName,
 				MiddleName: data.Scheduler.MiddleName,
 				LastName:   data.Scheduler.LastName,
 			},
-			Data: dbdata.EmployeeData{},
+			Data: employees.EmployeeData{},
 		}
-		asgmt := dbdata.Assignment{
+		asgmt := employees.Assignment{
 			ID:           uint(1),
 			Site:         data.SiteID,
 			Workcenter:   "leads",
@@ -212,7 +213,7 @@ func AddSitesEmployeeLeaveBalances(c *gin.Context) {
 
 	emps, _ = services.GetEmployees(data.TeamID, data.SiteID)
 	site.Employees = append(site.Employees, emps...)
-	sort.Sort(dbdata.ByEmployees(site.Employees))
+	sort.Sort(employees.ByEmployees(site.Employees))
 
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
@@ -251,7 +252,7 @@ func CreateWorkcenter(c *gin.Context) {
 		}
 	}
 	if !found {
-		wkctr := dbdata.Workcenter{
+		wkctr := sites.Workcenter{
 			ID:     data.WkctrID,
 			Name:   data.Name,
 			SortID: uint(sort + 1),
@@ -288,7 +289,7 @@ func UpdateWorkcenter(c *gin.Context) {
 		return
 	}
 
-	sort.Sort(dbdata.ByWorkcenter(site.Workcenters))
+	sort.Sort(sites.ByWorkcenter(site.Workcenters))
 
 	for i, wkctr := range site.Workcenters {
 		if strings.EqualFold(wkctr.ID, data.WkctrID) {
@@ -350,7 +351,7 @@ func DeleteSiteWorkcenter(c *gin.Context) {
 	if pos >= 0 {
 		site.Workcenters = append(site.Workcenters[:pos], site.Workcenters[pos+1:]...)
 	}
-	sort.Sort(dbdata.ByWorkcenter(site.Workcenters))
+	sort.Sort(sites.ByWorkcenter(site.Workcenters))
 
 	for i, wkctr := range site.Workcenters {
 		wkctr.SortID = uint(i)
@@ -402,7 +403,7 @@ func CreateWorkcenterPosition(c *gin.Context) {
 				}
 			}
 			if !found {
-				position := dbdata.Position{
+				position := sites.Position{
 					ID:     data.PositionID,
 					Name:   data.Name,
 					SortID: uint(sort + 1),
@@ -445,7 +446,7 @@ func UpdateWorkcenterPosition(c *gin.Context) {
 
 	for w, wkctr := range site.Workcenters {
 		if strings.EqualFold(wkctr.ID, data.WkctrID) {
-			sort.Sort(dbdata.ByPosition(wkctr.Positions))
+			sort.Sort(sites.ByPosition(wkctr.Positions))
 			for p, position := range wkctr.Positions {
 				if strings.EqualFold(position.ID, data.PositionID) {
 					switch strings.ToLower(data.Field) {
@@ -582,7 +583,7 @@ func CreateWorkcenterShift(c *gin.Context) {
 				}
 			}
 			if !found {
-				position := dbdata.Shift{
+				position := sites.Shift{
 					ID:     data.PositionID,
 					Name:   data.Name,
 					SortID: uint(sort + 1),
@@ -625,7 +626,7 @@ func UpdateWorkcenterShift(c *gin.Context) {
 
 	for w, wkctr := range site.Workcenters {
 		if strings.EqualFold(wkctr.ID, data.WkctrID) {
-			sort.Sort(dbdata.ByShift(wkctr.Shifts))
+			sort.Sort(sites.ByShift(wkctr.Shifts))
 			for s, shift := range wkctr.Shifts {
 				if strings.EqualFold(shift.ID, data.PositionID) {
 					switch strings.ToLower(data.Field) {
@@ -797,7 +798,7 @@ func CreateSiteLaborCode(c *gin.Context) {
 				}
 			}
 			if !found {
-				lCode := dbdata.LaborCode{
+				lCode := sites.LaborCode{
 					ChargeNumber: data.ChargeNumber,
 					Extension:    data.Extension,
 				}
@@ -995,7 +996,7 @@ func CreateSiteForecastReport(c *gin.Context) {
 		}
 	}
 	if !found {
-		rpt := dbdata.ForecastReport{
+		rpt := sites.ForecastReport{
 			ID:        fID + 1,
 			Name:      data.Name,
 			StartDate: data.StartDate,
@@ -1056,7 +1057,7 @@ func UpdateSiteForecastReport(c *gin.Context) {
 					}
 				}
 				if !found {
-					lc := dbdata.LaborCode{
+					lc := sites.LaborCode{
 						ChargeNumber: parts[0],
 						Extension:    parts[1],
 					}
@@ -1173,7 +1174,7 @@ func CreateSiteCofSReport(c *gin.Context) {
 		}
 	}
 	if !found {
-		rpt := dbdata.CofSReport{
+		rpt := sites.CofSReport{
 			ID:        cID + 1,
 			Name:      data.Name,
 			ShortName: data.ShortName,
@@ -1274,7 +1275,7 @@ func UpdateSiteCofSReport(c *gin.Context) {
 					}
 				}
 				if !found {
-					co := dbdata.CofSCompany{
+					co := sites.CofSCompany{
 						ID:             data.Value,
 						SignatureBlock: "",
 						SortID:         sort + 1,
@@ -1316,7 +1317,7 @@ func UpdateSiteCofSReport(c *gin.Context) {
 							}
 						}
 						if !found {
-							lc := dbdata.EmployeeLaborCode{
+							lc := sites.LaborCode{
 								ChargeNumber: parts[0],
 								Extension:    parts[1],
 							}
@@ -1343,7 +1344,7 @@ func UpdateSiteCofSReport(c *gin.Context) {
 					}
 				}
 			case "sort":
-				sort.Sort(dbdata.ByCofSCompany(rpt.Companies))
+				sort.Sort(sites.ByCofSCompany(rpt.Companies))
 				for c, co := range rpt.Companies {
 					if strings.EqualFold(co.ID, data.CompanyID) {
 						if strings.EqualFold(data.Value, "up") &&

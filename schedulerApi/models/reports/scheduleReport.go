@@ -6,9 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
-
-	"github.com/erneap/scheduler/schedulerApi/services"
+	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/sites"
+	"github.com/erneap/go-models/teams"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -18,10 +19,10 @@ type ScheduleReport struct {
 	Year        int
 	TeamID      string
 	SiteID      string
-	Workcenters []dbdata.Workcenter
+	Workcenters []sites.Workcenter
 	Workcodes   map[string]bool
 	Styles      map[string]int
-	Employees   []dbdata.Employee
+	Employees   []employees.Employee
 }
 
 func (sr *ScheduleReport) Create() error {
@@ -51,7 +52,7 @@ func (sr *ScheduleReport) Create() error {
 		return err
 	}
 	sr.Workcenters = append(sr.Workcenters, site.Workcenters...)
-	sort.Sort(dbdata.ByWorkcenter(sr.Workcenters))
+	sort.Sort(sites.ByWorkcenter(sr.Workcenters))
 
 	// create styles for display on each monthly sheet
 	err = sr.CreateStyles()
@@ -373,17 +374,17 @@ func (sr *ScheduleReport) AddMonth(monthID int) error {
 		sr.Report.MergeCell(sheetLabel, GetCellID(0, row),
 			endColumn+strconv.Itoa(row))
 		sr.Report.SetCellValue(sheetLabel, GetCellID(0, row), wc.Name)
-		sort.Sort(dbdata.ByPosition(wc.Positions))
-		sort.Sort(dbdata.ByShift(wc.Shifts))
+		sort.Sort(sites.ByPosition(wc.Positions))
+		sort.Sort(sites.ByShift(wc.Shifts))
 		for _, pos := range wc.Positions {
-			sort.Sort(dbdata.ByEmployees(pos.Employees))
+			sort.Sort(employees.ByEmployees(pos.Employees))
 			for _, emp := range pos.Employees {
 				row++
 				sr.CreateEmployeeRow(sheetLabel, startDate, endDate, row, &emp)
 			}
 		}
 		for _, sft := range wc.Shifts {
-			sort.Sort(dbdata.ByEmployees(sft.Employees))
+			sort.Sort(employees.ByEmployees(sft.Employees))
 			for _, emp := range sft.Employees {
 				row++
 				sr.CreateEmployeeRow(sheetLabel, startDate, endDate, row, &emp)
@@ -402,7 +403,7 @@ func (sr *ScheduleReport) AddMonth(monthID int) error {
 }
 
 func (sr *ScheduleReport) CreateEmployeeRow(sheetLabel string,
-	start, end time.Time, row int, emp *dbdata.Employee) {
+	start, end time.Time, row int, emp *employees.Employee) {
 	styleID := "weekday"
 	if row%2 == 0 {
 		styleID = "evenday"
@@ -459,7 +460,7 @@ func (sr *ScheduleReport) CreateLegendSheet() error {
 		return err
 	}
 
-	sort.Sort(dbdata.ByWorkcode(team.Workcodes))
+	sort.Sort(teams.ByWorkcode(team.Workcodes))
 	row := 0
 	for _, wc := range team.Workcodes {
 		if !strings.EqualFold(wc.BackColor, "ffffff") {

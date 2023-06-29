@@ -8,9 +8,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
-	"github.com/erneap/scheduler/schedulerApi/models/web"
-	"github.com/erneap/scheduler/schedulerApi/services"
+	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/svcs"
+	"github.com/erneap/go-models/teams"
+	"github.com/erneap/scheduler2/schedulerApi/models/web"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -68,11 +70,11 @@ func CreateTeam(c *gin.Context) {
 	team := services.CreateTeam(data.Name, data.UseStdWorkcodes)
 
 	// add team leader from data provided
-	emp := dbdata.Employee{
+	emp := employees.Employee{
 		TeamID: team.ID,
 		SiteID: "leads",
 		Email:  data.Leader.EmailAddress,
-		Name: dbdata.EmployeeName{
+		Name: employees.EmployeeName{
 			FirstName:  data.Leader.FirstName,
 			MiddleName: data.Leader.MiddleName,
 			LastName:   data.Leader.LastName,
@@ -139,7 +141,7 @@ func DeleteTeam(c *gin.Context) {
 
 	for _, emp := range employees {
 		services.DeleteEmployee(emp.ID.Hex())
-		services.DeleteUser(emp.ID)
+		svcs.DeleteUser(emp.ID.Hex())
 	}
 
 	err = services.DeleteTeam(tID)
@@ -193,7 +195,7 @@ func CreateWorkcode(c *gin.Context) {
 		}
 	}
 	if !found {
-		wCode := dbdata.Workcode{
+		wCode := teams.Workcode{
 			Id:        data.Id,
 			Title:     data.Title,
 			StartTime: data.StartTime,
@@ -204,7 +206,7 @@ func CreateWorkcode(c *gin.Context) {
 			TextColor: data.TextColor,
 		}
 		team.Workcodes = append(team.Workcodes, wCode)
-		sort.Sort(dbdata.ByWorkcode(team.Workcodes))
+		sort.Sort(teams.ByWorkcode(team.Workcodes))
 	}
 
 	if err = services.UpdateTeam(team); err != nil {
@@ -261,7 +263,7 @@ func UpdateTeamWorkcode(c *gin.Context) {
 				wCode.BackColor = colors[1]
 			}
 			team.Workcodes[w] = wCode
-			sort.Sort(dbdata.ByWorkcode(team.Workcodes))
+			sort.Sort(teams.ByWorkcode(team.Workcodes))
 		}
 	}
 
@@ -341,13 +343,13 @@ func CreateTeamCompany(c *gin.Context) {
 		}
 	}
 	if !found {
-		company := dbdata.Company{
+		company := teams.Company{
 			ID:         data.ID,
 			Name:       data.Name,
 			IngestType: data.IngestType,
 		}
 		team.Companies = append(team.Companies, company)
-		sort.Sort(dbdata.ByCompany(team.Companies))
+		sort.Sort(teams.ByCompany(team.Companies))
 	}
 
 	if err = services.UpdateTeam(team); err != nil {
@@ -500,7 +502,7 @@ func CreateCompanyHoliday(c *gin.Context) {
 				}
 			}
 			if !found {
-				holiday := dbdata.CompanyHoliday{
+				holiday := teams.CompanyHoliday{
 					ID:     data.HolidayID,
 					Name:   data.Name,
 					SortID: uint(maxID + 1),
@@ -511,7 +513,7 @@ func CreateCompanyHoliday(c *gin.Context) {
 				}
 				company.Holidays = append(company.Holidays, holiday)
 			}
-			sort.Sort(dbdata.ByCompanyHoliday(company.Holidays))
+			sort.Sort(teams.ByCompanyHoliday(company.Holidays))
 			team.Companies[c] = company
 		}
 	}
@@ -555,7 +557,7 @@ func UpdateCompanyHoliday(c *gin.Context) {
 	}
 	for c, company := range team.Companies {
 		if strings.EqualFold(company.ID, data.AdditionalID) {
-			sort.Sort(dbdata.ByCompanyHoliday(company.Holidays))
+			sort.Sort(teams.ByCompanyHoliday(company.Holidays))
 			for h, holiday := range company.Holidays {
 				if holiday.ID == holID && holiday.SortID == uint(holSortID) {
 					switch strings.ToLower(data.Field) {
@@ -610,7 +612,7 @@ func UpdateCompanyHoliday(c *gin.Context) {
 					company.Holidays[h] = holiday
 				}
 			}
-			sort.Sort(dbdata.ByCompanyHoliday(company.Holidays))
+			sort.Sort(teams.ByCompanyHoliday(company.Holidays))
 			team.Companies[c] = company
 		}
 	}
@@ -662,7 +664,7 @@ func DeleteCompanyHoliday(c *gin.Context) {
 				company.Holidays = append(company.Holidays[:pos],
 					company.Holidays[pos+1:]...)
 			}
-			sort.Sort(dbdata.ByCompanyHoliday(company.Holidays))
+			sort.Sort(teams.ByCompanyHoliday(company.Holidays))
 			holID = ""
 			sortID := 0
 			for h, hol := range company.Holidays {

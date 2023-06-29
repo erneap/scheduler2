@@ -3,17 +3,82 @@ package web
 import (
 	"time"
 
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
+	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/users"
 )
 
+type MessageRequest struct {
+	To      string `json:"to"`
+	From    string `json:"from"`
+	Message string `json:"message"`
+}
+
+type NotificationAck struct {
+	Messages []string `json:"messages"`
+}
+
+type NewEmployeeRequest struct {
+	TeamID   string             `json:"team"`
+	SiteID   string             `json:"site"`
+	Employee employees.Employee `json:"employee"`
+	Password string             `json:"password"`
+}
+
+type NewEmployeeAssignment struct {
+	EmployeeID   string    `json:"employee"`
+	SiteID       string    `json:"site"`
+	Workcenter   string    `json:"workcenter"`
+	StartDate    time.Time `json:"start"`
+	ScheduleDays int       `json:"scheduledays"`
+}
+
+type ChangeAssignmentRequest struct {
+	EmployeeID   string `json:"employee"`
+	AssignmentID uint   `json:"asgmt"`
+	ScheduleID   uint   `json:"schedule,omitempty"`
+	WorkdayID    uint   `json:"workday,omitempty"`
+	Field        string `json:"field"`
+	Value        string `json:"value"`
+}
+
+type NewEmployeeVariation struct {
+	EmployeeID string              `json:"employee"`
+	Variation  employees.Variation `json:"variation"`
+}
+
+type LeaveBalanceRequest struct {
+	EmployeeID  string  `json:"employee"`
+	Year        int     `json:"year"`
+	AnnualLeave float64 `json:"annual,omitempty"`
+	CarryOver   float64 `json:"carryover,omitempty"`
+}
+
+type EmployeeLeaveRequest struct {
+	EmployeeID string    `json:"employee"`
+	Code       string    `json:"code"`
+	StartDate  time.Time `json:"startdate"`
+	EndDate    time.Time `json:"enddate"`
+}
+
+type EmployeeLaborCodeRequest struct {
+	EmployeeID   string `json:"employee"`
+	ChargeNumber string `json:"chargeNumber"`
+	Extension    string `json:"extension"`
+}
+
+type EmployeeLeaveDayRequest struct {
+	EmployeeID string             `json:"employee"`
+	Leave      employees.LeaveDay `json:"leave"`
+}
+
 type NewSiteRequest struct {
-	TeamID    string       `json:"team"`
-	SiteID    string       `json:"siteid"`
-	Name      string       `json:"name"`
-	UseMids   bool         `json:"mids"`
-	Offset    float64      `json:"offset"`
-	Leader    *dbdata.User `json:"lead"`
-	Scheduler *dbdata.User `json:"scheduler,omitempty"`
+	TeamID    string      `json:"team"`
+	SiteID    string      `json:"siteid"`
+	Name      string      `json:"name"`
+	UseMids   bool        `json:"mids"`
+	Offset    float64     `json:"offset"`
+	Leader    *users.User `json:"lead"`
+	Scheduler *users.User `json:"scheduler,omitempty"`
 }
 
 type CreateEmployeeLeaveBalances struct {
@@ -100,9 +165,9 @@ type UpdateSiteForecast struct {
 }
 
 type CreateTeamRequest struct {
-	Name            string      `json:"name"`
-	UseStdWorkcodes bool        `json:"useStdWorkcodes"`
-	Leader          dbdata.User `json:"leader"`
+	Name            string     `json:"name"`
+	UseStdWorkcodes bool       `json:"useStdWorkcodes"`
+	Leader          users.User `json:"leader"`
 }
 
 type UpdateTeamRequest struct {
@@ -141,10 +206,10 @@ type CreateCompanyHoliday struct {
 }
 
 type IngestChange struct {
-	EmployeeID string           `json:"employeeid"`
-	ChangeType string           `json:"changetype"`
-	Work       *dbdata.Work     `json:"work,omitempty"`
-	Leave      *dbdata.LeaveDay `json:"leave,omitempty"`
+	EmployeeID string              `json:"employeeid"`
+	ChangeType string              `json:"changetype"`
+	Work       *employees.Work     `json:"work,omitempty"`
+	Leave      *employees.LeaveDay `json:"leave,omitempty"`
 }
 
 type ManualIngestChanges struct {

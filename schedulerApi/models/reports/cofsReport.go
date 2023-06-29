@@ -9,18 +9,20 @@ import (
 	"strings"
 	"time"
 
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
-	"github.com/erneap/scheduler/schedulerApi/services"
+	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/sites"
+	"github.com/erneap/go-models/teams"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 )
 
 type ReportCofS struct {
 	Date          time.Time
 	TeamID        string
-	Companies     map[string]dbdata.Company
-	LeaveCodes    map[string]dbdata.Workcode
-	ExerciseCodes []dbdata.EmployeeLaborCode
+	Companies     map[string]teams.Company
+	LeaveCodes    map[string]teams.Workcode
+	ExerciseCodes []employees.EmployeeLaborCode
 	SiteID        string
-	Site          dbdata.Site
+	Site          sites.Site
 	Writer        *zip.Writer
 	Buffer        *bytes.Buffer
 	StartDate     time.Time
@@ -43,8 +45,8 @@ func (cr *ReportCofS) Create() error {
 
 	// next get the list of companies associated with this
 	// the team
-	cr.Companies = make(map[string]dbdata.Company)
-	cr.LeaveCodes = make(map[string]dbdata.Workcode)
+	cr.Companies = make(map[string]teams.Company)
+	cr.LeaveCodes = make(map[string]teams.Workcode)
 	team, err := services.GetTeam(cr.TeamID)
 	if err != nil {
 		return err
@@ -79,7 +81,7 @@ func (cr *ReportCofS) Create() error {
 		for _, flc := range frct.LaborCodes {
 			if flc.Exercise && cr.StartDate.Before(flc.EndDate) &&
 				cr.EndDate.After(flc.StartDate) {
-				elc := dbdata.EmployeeLaborCode{
+				elc := employees.EmployeeLaborCode{
 					ChargeNumber: flc.ChargeNumber,
 					Extension:    flc.Extension,
 				}
@@ -111,7 +113,7 @@ func (cr *ReportCofS) Create() error {
 	return err
 }
 
-func (cr *ReportCofS) CreateCofSXML(rpt *dbdata.CofSReport) error {
+func (cr *ReportCofS) CreateCofSXML(rpt *sites.CofSReport) error {
 	// this xml file will have the filename of the report's
 	// shortname + date create + .xml
 	filename := rpt.ShortName + "-" +
@@ -131,7 +133,7 @@ func (cr *ReportCofS) CreateCofSXML(rpt *dbdata.CofSReport) error {
 	sb.WriteString("<Unit>" + rpt.AssociatedUnit + "</Unit>")
 	sb.WriteString("<Unit1>" + rpt.AssociatedUnit + "</Unit1>")
 
-	sort.Sort(dbdata.ByCofSCompany(rpt.Companies))
+	sort.Sort(sites.ByCofSCompany(rpt.Companies))
 
 	for c, co := range rpt.Companies {
 		if company, ok := cr.Companies[co.ID]; ok {
@@ -156,9 +158,17 @@ func (cr *ReportCofS) CreateCofSXML(rpt *dbdata.CofSReport) error {
 					}
 
 					if hours > 0.0 || bPrimary {
+						var laborCodes []employees.EmployeeLaborCode
+						for _, lc := range co.LaborCodes {
+							elc := &employees.EmployeeLaborCode{
+								ChargeNumber: lc.ChargeNumber,
+								Extension:    lc.Extension,
+							}
+							laborCodes = append(laborCodes, *elc)
+						}
 						count++
 						empString := cr.CreateEmployeeData(count, c+1, emp,
-							co.LaborCodes, company.Name, false)
+							laborCodes, company.Name, false)
 						sb.WriteString(empString)
 					}
 				}
@@ -211,7 +221,7 @@ func (cr *ReportCofS) CreateCofSXML(rpt *dbdata.CofSReport) error {
 }
 
 func (cr *ReportCofS) CreateEmployeeData(count, coCount int,
-	emp dbdata.Employee, labor []dbdata.EmployeeLaborCode,
+	emp employees.Employee, labor []employees.EmployeeLaborCode,
 	company string, bExercise bool) string {
 	var esb strings.Builder
 	total := 0.0

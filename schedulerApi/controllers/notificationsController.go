@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
-	"github.com/erneap/scheduler/schedulerApi/models/web"
-	"github.com/erneap/scheduler/schedulerApi/services"
+	"github.com/erneap/go-models/notifications"
+	"github.com/erneap/scheduler2/schedulerApi/models/web"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -59,7 +59,7 @@ func GetMessage(c *gin.Context) {
 		return
 	}
 
-	var messages []dbdata.Notification
+	var messages []notifications.Notification
 	messages = append(messages, msgs)
 	resp := &web.NotificationResponse{
 		Messages:  messages,
@@ -112,7 +112,7 @@ func CreateMessage(c *gin.Context) {
 		return
 	}
 
-	var messages []dbdata.Notification
+	var messages []notifications.Notification
 	messages = append(messages, *msg)
 	resp := &web.NotificationResponse{
 		Messages:  messages,

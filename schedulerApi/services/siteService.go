@@ -4,20 +4,21 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
+	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/sites"
 )
 
 // Every service will have functions for completing the CRUD functions
 // the retrieve functions will be for individual site and the whole list of
 // tea's sotes.
 
-func CreateSite(teamid string, id, name string) (*dbdata.Site, error) {
+func CreateSite(teamid string, id, name string) (*sites.Site, error) {
 	team, err := GetTeam(teamid)
 	if err != nil {
 		return nil, err
 	}
 
-	var answer *dbdata.Site
+	var answer *sites.Site
 
 	for _, site := range team.Sites {
 		if strings.EqualFold(site.ID, id) || strings.EqualFold(site.Name, name) {
@@ -25,7 +26,7 @@ func CreateSite(teamid string, id, name string) (*dbdata.Site, error) {
 		}
 	}
 	if answer == nil {
-		answer = &dbdata.Site{
+		answer = &sites.Site{
 			ID:   id,
 			Name: name,
 		}
@@ -39,35 +40,35 @@ func CreateSite(teamid string, id, name string) (*dbdata.Site, error) {
 	return answer, nil
 }
 
-func GetSite(teamid, siteid string) (*dbdata.Site, error) {
+func GetSite(teamid, siteid string) (*sites.Site, error) {
 	team, err := GetTeam(teamid)
 	if err != nil {
 		return nil, err
 	}
 
-	var answer dbdata.Site
+	var answer sites.Site
 	for _, site := range team.Sites {
 		if strings.EqualFold(site.ID, siteid) {
 			answer = site
 			emps, _ := GetEmployees(teamid, siteid)
 			answer.Employees = append(site.Employees, emps...)
-			sort.Sort(dbdata.ByEmployees(answer.Employees))
+			sort.Sort(employees.ByEmployees(answer.Employees))
 		}
 	}
 	return &answer, nil
 }
 
-func GetSites(teamid string) ([]dbdata.Site, error) {
+func GetSites(teamid string) ([]sites.Site, error) {
 	team, err := GetTeam(teamid)
 	if err != nil {
 		return nil, err
 	}
 
-	sort.Sort(dbdata.BySites(team.Sites))
+	sort.Sort(sites.BySites(team.Sites))
 	return team.Sites, nil
 }
 
-func UpdateSite(teamid string, nsite dbdata.Site) error {
+func UpdateSite(teamid string, nsite sites.Site) error {
 	team, err := GetTeam(teamid)
 	if err != nil {
 		return err

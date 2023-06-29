@@ -5,14 +5,14 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
-	"github.com/erneap/scheduler/schedulerApi/services"
+	"github.com/erneap/go-models/employees"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/xuri/excelize/v2"
 )
 
 type MidShift struct {
-	Name dbdata.EmployeeName
-	Mid  dbdata.Variation
+	Name employees.EmployeeName
+	Mid  employees.Variation
 }
 
 type ByMidShifts []MidShift
@@ -64,7 +64,7 @@ type MidShiftReport struct {
 	TeamID      string
 	SiteID      string
 	Styles      map[string]int
-	Employees   []dbdata.Employee
+	Employees   []employees.Employee
 	MidShifts   []MidShift
 	CurrentAsOf time.Time
 }

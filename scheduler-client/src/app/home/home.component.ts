@@ -85,7 +85,7 @@ export class HomeComponent {
     
     this.authService.statusMessage = "User Login in Progress";
     this.httpClient.post<AuthenticationResponse>(
-      '/scheduler/api/v1/user/login', data
+      '/scheduler2/api/v1/user/login', data
     ).subscribe({
       next: (data) => {
         let team = "";

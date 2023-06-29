@@ -46,7 +46,7 @@ export class AuthService extends CacheService {
   private apiAuthProvider(email: string, password: string)
     : Observable<AuthenticationResponse> {
     return this.httpClient.post<AuthenticationResponse>(
-      '/scheduler/api/v1/user/logon', 
+      '/scheduler2/api/v1/user/logon', 
       { email: email, password: password });
   }
 
@@ -158,7 +158,7 @@ export class AuthService extends CacheService {
 
   changeUser(id: string, field: string, value: string): 
     Observable<HttpResponse<AuthenticationResponse>> {
-    const url = '/scheduler/api/v1/user/changes';
+    const url = '/scheduler2/api/v1/user/changes';
     const data: UpdateRequest = {
       id: id,
       field: field,
@@ -170,7 +170,7 @@ export class AuthService extends CacheService {
 
   changePassword(id: string, passwd: string): 
     Observable<HttpResponse<EmployeeResponse>> {
-    const url = '/scheduler/api/v1/user/password';
+    const url = '/scheduler2/api/v1/user/password';
     const data: ChangePasswordRequest = {
       id: id,
       password: passwd,
@@ -180,12 +180,12 @@ export class AuthService extends CacheService {
   }
 
   getAllUsers(): Observable<HttpResponse<UsersResponse>> {
-    const url = '/scheduler/api/v1/user';
+    const url = '/scheduler2/api/v1/user';
     return this.httpClient.get<UsersResponse>(url, {observe: 'response'});
   }
 
   addUser(user: User): Observable<HttpResponse<UsersResponse>> {
-    const url = '/scheduler/api/v1/user/'
+    const url = '/scheduler2/api/v1/user/'
     return this.httpClient.post<UsersResponse>(url, user, {observe: 'response'});
   }
 }

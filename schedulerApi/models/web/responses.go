@@ -1,46 +1,48 @@
 package web
 
 import (
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
+	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/notifications"
+	"github.com/erneap/go-models/sites"
+	"github.com/erneap/go-models/teams"
+	"github.com/erneap/go-models/users"
 )
 
-type AuthenticationResponse struct {
-	User      *dbdata.User     `json:"user,omitempty"`
-	Token     string           `json:"token"`
-	Employee  *dbdata.Employee `json:"employee,omitempty"`
-	Site      *dbdata.Site     `json:"site,omitempty"`
-	Team      *dbdata.Team     `json:"team,omitempty"`
-	Exception string           `json:"exception"`
+type EmployeeResponse struct {
+	Employee  *employees.Employee `json:"employee,omitempty"`
+	Exception string              `json:"exception"`
 }
 
-type EmployeeResponse struct {
-	Employee  *dbdata.Employee `json:"employee,omitempty"`
-	Exception string           `json:"exception"`
+type InitialResponse struct {
+	Team      *teams.Team         `json:"team,omitempty"`
+	Site      *sites.Site         `json:"site,omitempty"`
+	Employee  *employees.Employee `json:"employee,omitempty"`
+	Exception string              `json:"exception"`
 }
 
 type SiteResponse struct {
-	Team      *dbdata.Team `json:"team,omitempty"`
-	Site      *dbdata.Site `json:"site,omitempty"`
-	Exception string       `json:"exception"`
+	Team      *teams.Team `json:"team,omitempty"`
+	Site      *sites.Site `json:"site,omitempty"`
+	Exception string      `json:"exception"`
 }
 
 type IngestResponse struct {
-	Employees  []dbdata.Employee `json:"employees"`
-	IngestType string            `json:"ingest"`
-	Exception  string            `json:"exception"`
+	Employees  []employees.Employee `json:"employees"`
+	IngestType string               `json:"ingest"`
+	Exception  string               `json:"exception"`
 }
 
 type UsersResponse struct {
-	Users     []dbdata.User `json:"users"`
-	Exception string        `json:"exception"`
+	Users     []users.User `json:"users"`
+	Exception string       `json:"exception"`
 }
 
 type TeamsResponse struct {
-	Teams     []dbdata.Team `json:"teams,omitempty"`
-	Exception string        `json:"exception"`
+	Teams     []teams.Team `json:"teams,omitempty"`
+	Exception string       `json:"exception"`
 }
 
 type NotificationResponse struct {
-	Messages  []dbdata.Notification `json:"messages,omitempty"`
-	Exception string                `json:"exception"`
+	Messages  []notifications.Notification `json:"messages,omitempty"`
+	Exception string                       `json:"exception"`
 }

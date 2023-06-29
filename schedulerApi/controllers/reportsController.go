@@ -8,9 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/erneap/scheduler/schedulerApi/models/reports"
-	"github.com/erneap/scheduler/schedulerApi/models/web"
-	"github.com/erneap/scheduler/schedulerApi/services"
+	"github.com/erneap/go-models/notifications"
+	"github.com/erneap/scheduler2/schedulerApi/models/reports"
+	"github.com/erneap/scheduler2/schedulerApi/models/web"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +19,7 @@ func CreateReport(c *gin.Context) {
 	var data web.ReportRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest,
-			web.Message{Message: "Trouble with request: " + err.Error()})
+			notifications.Message{Message: "Trouble with request: " + err.Error()})
 		return
 	}
 

@@ -8,13 +8,67 @@ import (
 	"strings"
 	"time"
 
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
-	"github.com/erneap/scheduler/schedulerApi/models/web"
-	"github.com/erneap/scheduler/schedulerApi/services"
+	"github.com/erneap/go-models/converters"
+	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/notifications"
+	"github.com/erneap/go-models/svcs"
+	"github.com/erneap/go-models/users"
+	"github.com/erneap/scheduler2/schedulerApi/models/web"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
+
+func GetInitial(c *gin.Context) {
+	id := c.Param("userid")
+
+	emp, err := services.GetEmployee(id)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, web.InitialResponse{
+				Exception: "Employee Not Found"})
+		} else {
+			c.JSON(http.StatusBadRequest, web.InitialResponse{
+				Exception: err.Error()})
+		}
+		return
+	}
+
+	teamid := emp.TeamID
+	siteid := emp.SiteID
+
+	team, err := services.GetTeam(teamid.Hex())
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, web.InitialResponse{
+				Exception: "Employee's Team Not Found"})
+		} else {
+			c.JSON(http.StatusBadRequest, web.InitialResponse{
+				Exception: err.Error()})
+		}
+		return
+	}
+
+	site, err := services.GetSite(teamid.Hex(), siteid)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, web.InitialResponse{
+				Exception: "Employee's Site Not Found"})
+		} else {
+			c.JSON(http.StatusBadRequest, web.InitialResponse{
+				Exception: err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, web.InitialResponse{
+		Team:      team,
+		Site:      site,
+		Employee:  emp,
+		Exception: "",
+	})
+}
 
 func GetEmployee(c *gin.Context) {
 	empID := c.Param("empid")
@@ -30,10 +84,6 @@ func GetEmployee(c *gin.Context) {
 		}
 		return
 	}
-
-	id, _ := primitive.ObjectIDFromHex(empID)
-	user := services.GetUser(id)
-	emp.User = user
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -60,7 +110,7 @@ func CreateEmployee(c *gin.Context) {
 // basic update includes name and company information which is unlike to change
 // much.
 func UpdateEmployeeBasic(c *gin.Context) {
-	var data web.UpdateRequest
+	var data users.UpdateRequest
 
 	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest,
@@ -69,7 +119,7 @@ func UpdateEmployeeBasic(c *gin.Context) {
 	}
 
 	// Get the Employee through the data service
-	emp, err := services.GetEmployee(data.ID)
+	emp, err := services.GetEmployee(data.UserID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
@@ -80,54 +130,57 @@ func UpdateEmployeeBasic(c *gin.Context) {
 		}
 		return
 	}
-	id, _ := primitive.ObjectIDFromHex(data.ID)
-	user := services.GetUser(id)
-
+	user, err := svcs.GetUserByID(data.UserID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
+			Exception: err.Error()})
+		return
+	}
 	// update the corresponding field
 	switch strings.ToLower(data.Field) {
 	case "first", "firstname":
-		emp.Name.FirstName = data.StringValue()
+		emp.Name.FirstName = data.Value
 		if user != nil {
-			user.FirstName = data.StringValue()
+			user.FirstName = data.Value
 		}
 	case "middle", "middlename":
-		emp.Name.MiddleName = data.StringValue()
+		emp.Name.MiddleName = data.Value
 		if user != nil {
-			user.MiddleName = data.StringValue()
+			user.MiddleName = data.Value
 		}
 	case "last", "lastname":
-		emp.Name.LastName = data.StringValue()
+		emp.Name.LastName = data.Value
 		if user != nil {
-			user.LastName = data.StringValue()
+			user.LastName = data.Value
 		}
 	case "email", "emailaddress":
-		emp.Email = data.StringValue()
+		emp.Email = data.Value
 		if user != nil {
-			user.EmailAddress = data.StringValue()
+			user.EmailAddress = data.Value
 		}
 	case "suffix":
-		emp.Name.Suffix = data.StringValue()
+		emp.Name.Suffix = data.Value
 	case "company":
-		emp.Data.CompanyInfo.Company = data.StringValue()
+		emp.Data.CompanyInfo.Company = data.Value
 	case "employeeid", "companyid":
-		emp.Data.CompanyInfo.EmployeeID = data.StringValue()
+		emp.Data.CompanyInfo.EmployeeID = data.Value
 	case "alternateid", "alternate":
-		emp.Data.CompanyInfo.AlternateID = data.StringValue()
+		emp.Data.CompanyInfo.AlternateID = data.Value
 	case "jobtitle", "title":
-		emp.Data.CompanyInfo.JobTitle = data.StringValue()
+		emp.Data.CompanyInfo.JobTitle = data.Value
 	case "rank", "grade":
-		emp.Data.CompanyInfo.Rank = data.StringValue()
+		emp.Data.CompanyInfo.Rank = data.Value
 	case "costcenter":
-		emp.Data.CompanyInfo.CostCenter = data.StringValue()
+		emp.Data.CompanyInfo.CostCenter = data.Value
 	case "division":
-		emp.Data.CompanyInfo.Division = data.StringValue()
+		emp.Data.CompanyInfo.Division = data.Value
 	case "unlock":
 		if user != nil {
 			user.BadAttempts = 0
 		}
 	case "addworkgroup", "addperm", "addpermission":
 		if user != nil {
-			wg := "scheduler-" + data.StringValue()
+			wg := "scheduler-" + data.Value
 			found := false
 			for _, wGroup := range user.Workgroups {
 				if strings.EqualFold(wGroup, wg) {
@@ -140,7 +193,7 @@ func UpdateEmployeeBasic(c *gin.Context) {
 		}
 	case "removeworkgroup", "remove", "removeperm", "removepermission":
 		if user != nil {
-			wg := "scheduler-" + data.StringValue()
+			wg := "scheduler-" + data.Value
 			pos := -1
 			for i, wGroup := range user.Workgroups {
 				if strings.EqualFold(wGroup, wg) {
@@ -164,57 +217,10 @@ func UpdateEmployeeBasic(c *gin.Context) {
 
 	// send user back to services for update
 	if user != nil {
-		services.UpdateUser(*user)
+		svcs.UpdateUser(*user)
 	}
 	emp.User = user
 
-	// return the corrected employee back to the client.
-	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
-}
-
-func CreateUserAccount(c *gin.Context) {
-	var data web.CreateUserAccount
-
-	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest,
-			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
-		return
-	}
-
-	// Get the Employee through the data service
-	emp, err := services.GetEmployee(data.ID)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
-				Exception: "Employee Not Found"})
-		} else {
-			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
-				Exception: err.Error()})
-		}
-		return
-	}
-	id, _ := primitive.ObjectIDFromHex(data.ID)
-	user := services.GetUser(id)
-
-	if user == nil {
-		user = &dbdata.User{
-			ID:           id,
-			EmailAddress: data.EmailAddress,
-			FirstName:    emp.Name.FirstName,
-			MiddleName:   emp.Name.MiddleName,
-			LastName:     emp.Name.LastName,
-		}
-		user.SetPassword(data.Password)
-		user.Workgroups = append(user.Workgroups, "scheduler-employee")
-
-		usr := services.AddUser(user)
-		if usr == nil {
-			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
-				Exception: "Problem creating User Account"})
-			return
-		}
-		emp.User = usr
-	}
 	// return the corrected employee back to the client.
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
@@ -278,21 +284,21 @@ func UpdateEmployeeAssignment(c *gin.Context) {
 		if asgmt.ID == data.AssignmentID {
 			switch strings.ToLower(data.Field) {
 			case "site":
-				asgmt.Site = data.StringValue()
+				asgmt.Site = data.Value
 			case "workcenter":
-				asgmt.Workcenter = data.StringValue()
+				asgmt.Workcenter = data.Value
 			case "start", "startdate":
-				asgmt.StartDate = data.DateValue()
+				asgmt.StartDate = converters.ParseDate(data.Value)
 			case "end", "enddate":
-				asgmt.EndDate = data.DateValue()
+				asgmt.EndDate = converters.ParseDate(data.Value)
 			case "rotationdate":
-				asgmt.RotationDate = data.DateValue()
+				asgmt.RotationDate = converters.ParseDate(data.Value)
 			case "rotationdays":
-				asgmt.RotationDays = data.IntValue()
+				asgmt.RotationDays = converters.ParseInt(data.Value)
 			case "addschedule":
-				asgmt.AddSchedule(data.IntValue())
+				asgmt.AddSchedule(converters.ParseInt(data.Value))
 			case "changeschedule":
-				asgmt.ChangeScheduleDays(data.ScheduleID, data.IntValue())
+				asgmt.ChangeScheduleDays(data.ScheduleID, converters.ParseInt(data.Value))
 			case "removeschedule":
 				asgmt.RemoveSchedule(data.ScheduleID)
 			}
@@ -340,11 +346,11 @@ func UpdateEmployeeAssignmentWorkday(c *gin.Context) {
 						if wd.ID == data.WorkdayID {
 							switch strings.ToLower(data.Field) {
 							case "workcenter":
-								wd.Workcenter = data.StringValue()
+								wd.Workcenter = data.Value
 							case "code":
-								wd.Code = data.StringValue()
+								wd.Code = data.Value
 							case "hours":
-								wd.Hours = data.FloatValue()
+								wd.Hours = converters.ParseFloat(data.Value)
 							}
 							sch.Workdays[k] = wd
 							asgmt.Schedules[j] = sch
@@ -405,9 +411,9 @@ func DeleteEmployee(c *gin.Context) {
 
 	err := services.DeleteEmployee(empID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, web.Message{Message: err.Error()})
+		c.JSON(http.StatusBadRequest, notifications.Message{Message: err.Error()})
 	}
-	c.JSON(http.StatusOK, web.Message{Message: "employee deleted"})
+	c.JSON(http.StatusOK, notifications.Message{Message: "employee deleted"})
 }
 
 func CreateEmployeeVariation(c *gin.Context) {
@@ -440,7 +446,7 @@ func CreateEmployeeVariation(c *gin.Context) {
 	data.Variation.ID = max + 1
 
 	emp.Data.Variations = append(emp.Data.Variations, data.Variation)
-	sort.Sort(dbdata.ByVariation(emp.Data.Variations))
+	sort.Sort(employees.ByVariation(emp.Data.Variations))
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
@@ -478,15 +484,15 @@ func UpdateEmployeeVariation(c *gin.Context) {
 		if vari.ID == data.AssignmentID {
 			switch strings.ToLower(data.Field) {
 			case "site":
-				vari.Site = data.StringValue()
+				vari.Site = data.Value
 			case "mids", "ismids":
-				vari.IsMids = data.BooleanValue()
+				vari.IsMids = converters.ParseBoolean(data.Value)
 			case "start", "startdate":
-				vari.StartDate = data.DateValue()
+				vari.StartDate = converters.ParseDate(data.Value)
 			case "end", "enddate":
-				vari.EndDate = data.DateValue()
+				vari.EndDate = converters.ParseDate(data.Value)
 			case "changeschedule":
-				vari.Schedule.SetScheduleDays(data.IntValue())
+				vari.Schedule.SetScheduleDays(converters.ParseInt(data.Value))
 			case "resetschedule":
 				workcenter := ""
 				code := ""
@@ -515,7 +521,7 @@ func UpdateEmployeeVariation(c *gin.Context) {
 					}
 				}
 				vari.SetScheduleDays()
-				sort.Sort(dbdata.ByWorkday(vari.Schedule.Workdays))
+				sort.Sort(employees.ByWorkday(vari.Schedule.Workdays))
 
 				count := uint(0)
 				for start.Before(vari.EndDate) || start.Equal(vari.EndDate) {
@@ -546,7 +552,7 @@ func UpdateEmployeeVariation(c *gin.Context) {
 		emp.Data.Variations[i] = vari
 	}
 
-	sort.Sort(dbdata.ByVariation(emp.Data.Variations))
+	sort.Sort(employees.ByVariation(emp.Data.Variations))
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
@@ -586,11 +592,11 @@ func UpdateEmployeeVariationWorkday(c *gin.Context) {
 				if wd.ID == data.WorkdayID {
 					switch strings.ToLower(data.Field) {
 					case "workcenter":
-						wd.Workcenter = data.StringValue()
+						wd.Workcenter = data.Value
 					case "code":
-						wd.Code = data.StringValue()
+						wd.Code = data.Value
 					case "hours":
-						wd.Hours = data.FloatValue()
+						wd.Hours = converters.ParseFloat(data.Value)
 					}
 					vari.Schedule.Workdays[k] = wd
 					emp.Data.Variations[i] = vari
@@ -687,15 +693,14 @@ func CreateEmployeeLeaveBalance(c *gin.Context) {
 }
 
 func UpdateEmployeeLeaveBalance(c *gin.Context) {
-	var data web.UpdateRequest
+	var data users.UpdateRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
 	}
 
-	fmt.Println(data.ID)
-	emp, err := services.GetEmployee(data.ID)
+	emp, err := services.GetEmployee(data.UserID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
@@ -714,7 +719,7 @@ func UpdateEmployeeLeaveBalance(c *gin.Context) {
 		return
 	}
 
-	fvalue, err := strconv.ParseFloat(data.StringValue(), 64)
+	fvalue, err := strconv.ParseFloat(data.Value, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
@@ -825,14 +830,14 @@ func CreateEmployeeLeaveRequest(c *gin.Context) {
 }
 
 func UpdateEmployeeLeaveRequest(c *gin.Context) {
-	var data web.UpdateRequest
+	var data users.UpdateRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
 	}
 
-	emp, err := services.GetEmployee(data.ID)
+	emp, err := services.GetEmployee(data.UserID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
@@ -850,7 +855,7 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 	}
 
 	err = emp.UpdateLeaveRequest(data.OptionalID, data.Field,
-		data.StringValue(), offset)
+		data.Value, offset)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
@@ -979,14 +984,14 @@ func DeleteEmployeeLeaveDay(c *gin.Context) {
 }
 
 func UpdateEmployeeLeaveDay(c *gin.Context) {
-	var data web.UpdateRequest
+	var data users.UpdateRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
 	}
 
-	emp, err := services.GetEmployee(data.ID)
+	emp, err := services.GetEmployee(data.UserID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
@@ -1004,7 +1009,7 @@ func UpdateEmployeeLeaveDay(c *gin.Context) {
 			Exception: err.Error()})
 		return
 	}
-	err = emp.UpdateLeave(lvID, data.Field, data.StringValue())
+	err = emp.UpdateLeave(lvID, data.Field, data.Value)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})

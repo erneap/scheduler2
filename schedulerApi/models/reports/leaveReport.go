@@ -7,15 +7,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/erneap/scheduler/schedulerApi/models/dbdata"
-	"github.com/erneap/scheduler/schedulerApi/services"
+	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/teams"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/xuri/excelize/v2"
 	"golang.org/x/exp/maps"
 )
 
 type LeaveMonth struct {
 	Month   *time.Time
-	Holiday *dbdata.CompanyHoliday
+	Holiday *teams.CompanyHoliday
 	Disable bool
 	Periods []LeavePeriod
 }
@@ -91,7 +92,7 @@ type LeavePeriod struct {
 	StartDate time.Time
 	EndDate   time.Time
 	Status    string
-	Leaves    []dbdata.LeaveDay
+	Leaves    []employees.LeaveDay
 }
 
 func (lp *LeavePeriod) GetHours() float64 {
@@ -118,14 +119,14 @@ type LeaveReport struct {
 	CompanyID string
 	BHolidays bool
 	Holidays  []LeaveMonth
-	Workcodes map[string]dbdata.Workcode
+	Workcodes map[string]teams.Workcode
 	Styles    map[string]int
-	Employees []dbdata.Employee
+	Employees []employees.Employee
 }
 
 func (lr *LeaveReport) Create() error {
 	lr.Styles = make(map[string]int)
-	lr.Workcodes = make(map[string]dbdata.Workcode)
+	lr.Workcodes = make(map[string]teams.Workcode)
 	lr.Report = excelize.NewFile()
 
 	// get employees with assignments for the site that are assigned
@@ -145,7 +146,7 @@ func (lr *LeaveReport) Create() error {
 		}
 	}
 
-	sort.Sort(dbdata.ByEmployees(lr.Employees))
+	sort.Sort(employees.ByEmployees(lr.Employees))
 
 	team, err := services.GetTeam(lr.TeamID)
 	if err != nil {
@@ -155,7 +156,7 @@ func (lr *LeaveReport) Create() error {
 		if strings.EqualFold(com.ID, lr.CompanyID) {
 			lr.BHolidays = len(com.Holidays) > 0
 			for _, hol := range com.Holidays {
-				holiday := &dbdata.CompanyHoliday{
+				holiday := &teams.CompanyHoliday{
 					ID:     hol.ID,
 					SortID: hol.SortID,
 					Name:   hol.Name,
@@ -1039,7 +1040,7 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 			lr.Holidays[h] = hol
 		}
 
-		sort.Sort(dbdata.ByLeaveDay(emp.Data.Leaves))
+		sort.Sort(employees.ByLeaveDay(emp.Data.Leaves))
 		std := emp.GetStandardWorkday(time.Date(lr.Year, 1, 1, 0, 0, 0, 0, time.UTC))
 
 		for _, lv := range emp.Data.Leaves {
@@ -1408,7 +1409,7 @@ func (lr *LeaveReport) CreateFullMonthlyReference() error {
 	row := 2
 	col := 2
 	workcodes := maps.Values(lr.Workcodes)
-	sort.Sort(dbdata.ByWorkcode(workcodes))
+	sort.Sort(teams.ByWorkcode(workcodes))
 	for _, v := range workcodes {
 		style = lr.Styles[v.Id]
 		lr.Report.SetCellStyle(sheetName, GetCellID(col, row),
@@ -1494,7 +1495,7 @@ func (lr *LeaveReport) CreateMinumimMonthlyReference() error {
 	row := 2
 	col := 2
 	workcodes := maps.Values(lr.Workcodes)
-	sort.Sort(dbdata.ByWorkcode(workcodes))
+	sort.Sort(teams.ByWorkcode(workcodes))
 	for _, v := range workcodes {
 		style = lr.Styles[v.Id]
 		lr.Report.SetCellStyle(sheetName, GetCellID(col, row),
@@ -1662,7 +1663,7 @@ func (lr *LeaveReport) CreateQuickReferenceMonth(
 }
 
 func (lr *LeaveReport) CreateEmployeeRow(sheetName string,
-	month time.Time, emp dbdata.Employee, row int,
+	month time.Time, emp employees.Employee, row int,
 	full bool) {
 	col := 1
 	current := time.Date(month.Year(), month.Month(), 1, 0, 0,

@@ -8,8 +8,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/erneap/go-models/config"
 	"github.com/erneap/go-models/converters"
 	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/logs"
 	"github.com/erneap/go-models/notifications"
 	"github.com/erneap/go-models/svcs"
 	"github.com/erneap/go-models/users"
@@ -26,9 +28,17 @@ func GetInitial(c *gin.Context) {
 	emp, err := services.GetEmployee(id)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			if config.LogLevel >= int(logs.Debug) {
+				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+					fmt.Sprintf("EmployeeController, Initial Data, GetEmployee, Employee Not Found: %s", id))
+			}
 			c.JSON(http.StatusNotFound, web.InitialResponse{
 				Exception: "Employee Not Found"})
 		} else {
+			if config.LogLevel >= int(logs.Debug) {
+				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+					fmt.Sprintf("EmployeeController, Initial Data, GetEmployee, %s: %s", err.Error(), id))
+			}
 			c.JSON(http.StatusBadRequest, web.InitialResponse{
 				Exception: err.Error()})
 		}
@@ -41,9 +51,19 @@ func GetInitial(c *gin.Context) {
 	team, err := services.GetTeam(teamid.Hex())
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			if config.LogLevel >= int(logs.Debug) {
+				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+					fmt.Sprintf("EmployeeController, Initial Data, GetTeam, Team Not Found: %s",
+						teamid.Hex()))
+			}
 			c.JSON(http.StatusNotFound, web.InitialResponse{
-				Exception: "Employee's Team Not Found"})
+				Exception: "Team Not Found"})
 		} else {
+			if config.LogLevel >= int(logs.Debug) {
+				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+					fmt.Sprintf("EmployeeController, Initial Data, GetTeam, %s: %s",
+						err.Error(), teamid.Hex()))
+			}
 			c.JSON(http.StatusBadRequest, web.InitialResponse{
 				Exception: err.Error()})
 		}
@@ -53,9 +73,17 @@ func GetInitial(c *gin.Context) {
 	site, err := services.GetSite(teamid.Hex(), siteid)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			if config.LogLevel >= int(logs.Debug) {
+				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+					fmt.Sprintf("EmployeeController, Initial Data, GetSite, Site Not Found: %s", siteid))
+			}
 			c.JSON(http.StatusNotFound, web.InitialResponse{
-				Exception: "Employee's Site Not Found"})
+				Exception: "Site Not Found"})
 		} else {
+			if config.LogLevel >= int(logs.Debug) {
+				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+					fmt.Sprintf("EmployeeController, Initial Data, GetSite, %s: %s", err.Error(), siteid))
+			}
 			c.JSON(http.StatusBadRequest, web.InitialResponse{
 				Exception: err.Error()})
 		}
@@ -76,10 +104,18 @@ func GetEmployee(c *gin.Context) {
 	emp, err := services.GetEmployee(empID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
+			if config.LogLevel >= int(logs.Debug) {
+				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+					fmt.Sprintf("EmployeeController, GetEmployee, Employee Not Found: %s", empID))
+			}
+			c.JSON(http.StatusNotFound, web.InitialResponse{
 				Exception: "Employee Not Found"})
 		} else {
-			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
+			if config.LogLevel >= int(logs.Debug) {
+				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+					fmt.Sprintf("EmployeeController, GetEmployee, %s: %s", err.Error(), empID))
+			}
+			c.JSON(http.StatusBadRequest, web.InitialResponse{
 				Exception: err.Error()})
 		}
 		return
@@ -91,6 +127,10 @@ func CreateEmployee(c *gin.Context) {
 	var data web.NewEmployeeRequest
 
 	if err := c.ShouldBindJSON(&data); err != nil {
+		if config.LogLevel >= int(logs.Debug) {
+			svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+				"CreateEmployee, Request Data Binding, Trouble with request")
+		}
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return

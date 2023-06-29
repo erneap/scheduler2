@@ -96,7 +96,7 @@ func CreateMessage(c *gin.Context) {
 		return
 	}
 
-	msg, err := services.CreateMessage(data.To, data.From, data.Message)
+	err := services.CreateMessage(data.To, data.From, data.Message)
 	if err != nil {
 		resp := &web.NotificationResponse{
 			Exception: err.Error(),
@@ -104,16 +104,8 @@ func CreateMessage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, resp)
 		return
 	}
-	if msg == nil {
-		resp := &web.NotificationResponse{
-			Exception: "No notification message created",
-		}
-		c.JSON(http.StatusBadRequest, resp)
-		return
-	}
 
-	var messages []notifications.Notification
-	messages = append(messages, *msg)
+	messages, _ := services.GetMessagesByEmployee(data.UserID)
 	resp := &web.NotificationResponse{
 		Messages:  messages,
 		Exception: "",

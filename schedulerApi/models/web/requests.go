@@ -8,6 +8,7 @@ import (
 )
 
 type MessageRequest struct {
+	UserID  string `json:"userid,omitempty"`
 	To      string `json:"to"`
 	From    string `json:"from"`
 	Message string `json:"message"`

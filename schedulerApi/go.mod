@@ -3,7 +3,7 @@ module github.com/erneap/scheduler2/schedulerApi
 go 1.20
 
 require (
-	github.com/erneap/go-models v0.1.8
+	github.com/erneap/go-models v0.1.9
 	github.com/gin-gonic/gin v1.9.1
 	github.com/xuri/excelize/v2 v2.7.1
 	go.mongodb.org/mongo-driver v1.12.0

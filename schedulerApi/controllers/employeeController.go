@@ -24,21 +24,18 @@ import (
 
 func GetInitial(c *gin.Context) {
 	id := c.Param("userid")
+	logmsg := "EmployeeController: GetInitial: "
 
 	emp, err := services.GetEmployee(id)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			if config.LogLevel >= int(logs.Debug) {
-				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
-					fmt.Sprintf("EmployeeController, Initial Data, GetEmployee, Employee Not Found: %s", id))
-			}
+			svcs.AddLogEntry("scheduler", logs.Debug,
+				fmt.Sprintf("%s GetEmployee, Employee Not Found: %s", logmsg, id))
 			c.JSON(http.StatusNotFound, web.InitialResponse{
 				Exception: "Employee Not Found"})
 		} else {
-			if config.LogLevel >= int(logs.Debug) {
-				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
-					fmt.Sprintf("EmployeeController, Initial Data, GetEmployee, %s: %s", err.Error(), id))
-			}
+			svcs.AddLogEntry("scheduler", logs.Debug,
+				fmt.Sprintf("%s GetEmployee, %s: %s", logmsg, err.Error(), id))
 			c.JSON(http.StatusBadRequest, web.InitialResponse{
 				Exception: err.Error()})
 		}
@@ -51,19 +48,13 @@ func GetInitial(c *gin.Context) {
 	team, err := services.GetTeam(teamid.Hex())
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			if config.LogLevel >= int(logs.Debug) {
-				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
-					fmt.Sprintf("EmployeeController, Initial Data, GetTeam, Team Not Found: %s",
-						teamid.Hex()))
-			}
+			svcs.AddLogEntry("scheduler", logs.Debug,
+				fmt.Sprintf("%s GetTeam, Team Not Found: %s", logmsg, teamid.Hex()))
 			c.JSON(http.StatusNotFound, web.InitialResponse{
 				Exception: "Team Not Found"})
 		} else {
-			if config.LogLevel >= int(logs.Debug) {
-				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
-					fmt.Sprintf("EmployeeController, Initial Data, GetTeam, %s: %s",
-						err.Error(), teamid.Hex()))
-			}
+			svcs.AddLogEntry("scheduler", logs.Debug,
+				fmt.Sprintf("%s GetTeam, %s: %s", logmsg, err.Error(), teamid.Hex()))
 			c.JSON(http.StatusBadRequest, web.InitialResponse{
 				Exception: err.Error()})
 		}
@@ -73,23 +64,21 @@ func GetInitial(c *gin.Context) {
 	site, err := services.GetSite(teamid.Hex(), siteid)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			if config.LogLevel >= int(logs.Debug) {
-				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
-					fmt.Sprintf("EmployeeController, Initial Data, GetSite, Site Not Found: %s", siteid))
-			}
+			svcs.AddLogEntry("scheduler", logs.Debug,
+				fmt.Sprintf("%s GetSite, Site Not Found: %s", logmsg, siteid))
 			c.JSON(http.StatusNotFound, web.InitialResponse{
 				Exception: "Site Not Found"})
 		} else {
-			if config.LogLevel >= int(logs.Debug) {
-				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
-					fmt.Sprintf("EmployeeController, Initial Data, GetSite, %s: %s", err.Error(), siteid))
-			}
+			svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
+				fmt.Sprintf("%s GetSite, %s: %s", logmsg, err.Error(), siteid))
 			c.JSON(http.StatusBadRequest, web.InitialResponse{
 				Exception: err.Error()})
 		}
 		return
 	}
 
+	svcs.AddLogEntry("scheduler", logs.Debug,
+		fmt.Sprintf("%s provided initial data to %s", logmsg, emp.Name.GetLastFirst()))
 	c.JSON(http.StatusOK, web.InitialResponse{
 		Team:      team,
 		Site:      site,
@@ -100,21 +89,18 @@ func GetInitial(c *gin.Context) {
 
 func GetEmployee(c *gin.Context) {
 	empID := c.Param("empid")
+	logmsg := "EmployeeController: GetEmployee: "
 
 	emp, err := services.GetEmployee(empID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			if config.LogLevel >= int(logs.Debug) {
-				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
-					fmt.Sprintf("EmployeeController, GetEmployee, Employee Not Found: %s", empID))
-			}
+			svcs.AddLogEntry("scheduler", logs.Debug,
+				fmt.Sprintf("%s Employee Not Found: %s", logmsg, empID))
 			c.JSON(http.StatusNotFound, web.InitialResponse{
 				Exception: "Employee Not Found"})
 		} else {
-			if config.LogLevel >= int(logs.Debug) {
-				svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
-					fmt.Sprintf("EmployeeController, GetEmployee, %s: %s", err.Error(), empID))
-			}
+			svcs.AddLogEntry("scheduler", logs.Debug,
+				fmt.Sprintf("%s %s: %s", logmsg, err.Error(), empID))
 			c.JSON(http.StatusBadRequest, web.InitialResponse{
 				Exception: err.Error()})
 		}
@@ -125,8 +111,11 @@ func GetEmployee(c *gin.Context) {
 
 func CreateEmployee(c *gin.Context) {
 	var data web.NewEmployeeRequest
+	logmsg := "EmployeeController: CreateEmployee:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug,
+			fmt.Sprintf("%s %s: %s", logmsg, "RequestDataBinding", err.Error()))
 		if config.LogLevel >= int(logs.Debug) {
 			svcs.CreateLogEntry(time.Now().UTC(), "scheduler", logs.Debug,
 				"CreateEmployee, Request Data Binding, Trouble with request")
@@ -141,9 +130,13 @@ func CreateEmployee(c *gin.Context) {
 	emp, err := services.CreateEmployee(data.Employee, data.Password, "",
 		data.TeamID, data.SiteID)
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug,
+			fmt.Sprintf("%s %s: %s", logmsg, "Creation Error", err.Error()))
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 	}
+	svcs.AddLogEntry("scheduler", logs.Debug,
+		fmt.Sprintf("%s %s: %s", logmsg, "Employee Created", emp.Name.GetLastFirst()))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 

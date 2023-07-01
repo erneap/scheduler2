@@ -18,9 +18,9 @@ func main() {
 	// add routes
 	router := gin.Default()
 	roles := []string{"ADMIN", "SCHEDULER", "siteleader", "company", "teamleader"}
-	api := router.Group("/scheduler2/api/v1")
+	api := router.Group("/scheduler/api/v2")
 	{
-		api.GET("/", svcs.CheckJWT(), controllers.GetInitial)
+		api.GET("/:userid", svcs.CheckJWT(), controllers.GetInitial)
 		emp := api.Group("/employee")
 		{
 			emp.GET("/:empid", svcs.CheckJWT(), controllers.GetEmployee)
@@ -190,6 +190,6 @@ func main() {
 		}
 	}
 
-	// listen on port 3000
+	// listen on port 6002
 	router.Run(":6002")
 }

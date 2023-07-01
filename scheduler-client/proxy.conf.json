@@ -1,6 +1,11 @@
 {
-    "/scheduler2/api/v1/*": {
-        "target": "http://localhost:4000/",
+    "/scheduler/api/v2/*": {
+        "target": "http://localhost:6002/",
+        "secure": false,
+        "logLevel": "debug"
+    },
+    "/authentication/api/v2/*": {
+        "target": "http://localhost:6000/",
         "secure": false,
         "logLevel": "debug"
     }

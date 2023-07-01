@@ -93,9 +93,13 @@ export interface EmployeeLeaveDayRequest {
 export interface AuthenticationResponse {
   user?: IUser;
   token: string;
-  employee?: IEmployee;
-  site?: ISite;
+  exception: string;
+}
+
+export interface InitialResponse {
   team?: ITeam;
+  site?: ISite;
+  employee?: IEmployee;
   exception: string;
 }
 

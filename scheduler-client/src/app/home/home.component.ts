@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../models/users/user';
-import { AuthenticationResponse } from '../models/web/employeeWeb';
+import { AuthenticationResponse, InitialResponse } from '../models/web/employeeWeb';
 import { AuthService } from '../services/auth.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PasswordExpireDialogComponent } from './password-expire-dialog/password-expire-dialog.component';
@@ -15,6 +15,8 @@ import { SiteService } from '../services/site.service';
 import { TeamService } from '../services/team.service';
 import { MessageService } from '../services/message.service';
 import { NotificationResponse } from '../models/web/internalWeb';
+import { Site } from '../models/sites/site';
+import { Team } from '../models/teams/team';
 
 @Component({
   selector: 'app-home',
@@ -84,16 +86,14 @@ export class HomeComponent {
     this.authService.loginError = "";
     
     this.authService.statusMessage = "User Login in Progress";
-    this.httpClient.post<AuthenticationResponse>(
-      '/scheduler2/api/v1/user/login', data
-    ).subscribe({
-      next: (data) => {
-        let team = "";
-        let site = "";
+    this.authService.login(data.emailAddress, data.password).subscribe({
+      next: (data: AuthenticationResponse) => {
         this.dialogService.closeSpinner();
         this.authService.isAuthenticated = true;
+        let id = '';
         if (data.user) {
           const user = new User(data.user);
+          id = user.id;
           this.authService.setUser(user);
           const expiresIn = Math.floor((user.passwordExpires.getTime() - (new Date).getTime())/(24 * 3600000));
           if (expiresIn <= 10) {
@@ -106,48 +106,52 @@ export class HomeComponent {
         if (data.token) {
           this.authService.setToken(data.token);
         }
-        if (data.employee) {
-          this.employeeService.setEmployee(data.employee);
-          this.msgService.getEmployeeMessages(data.employee.id).subscribe({
-            next: resp => {
-              const data: NotificationResponse | null = resp.body;
-              if (data && data !== null && data.messages) {
-                this.msgService.setMessages(data.messages)
-                this.msgService.showAlerts = data.messages.length > 0;
-                this.router.navigateByUrl('/notifications')
-              }
-            },
-            error: err => {
-              this.authService.statusMessage = "Error retrieving alerts: "
-                + err.exception;
-            }
-          });
-        }
-        if (data.site) {
-          this.siteService.setSite(data.site);
-          site = data.site.name;
-        }
-        if (data.team) {
-          this.teamService.setTeam(data.team);
-          team = data.team.name;
-        }
-        this.authService.setWebLabel(team, site);
-        this.msgService.startAlerts();
-        if (data.exception && data.exception !== '') {
+        if (data.exception && data.exception === '') {
+          this.authService.isAuthenticated = true;
+          this.msgService.startAlerts();
+          this.authService.statusMessage = "User Login Complete";
+          this.getInitialData(id);
+        } else {
           this.loginError = data.exception;
           this.authService.isAuthenticated = false;
         }
-        if (this.authService.isAuthenticated) {
-          this.router.navigate(['/employee/schedule']);
-        }
-        this.authService.statusMessage = "User Login Complete";
       },
-      error: (err) => {
+      error: (err: AuthenticationResponse) => {
         this.dialogService.closeSpinner();
-        this.loginError = err.error.exception
-        this.authService.statusMessage = err.message;
+        this.loginError = err.exception
+        this.authService.statusMessage = err.exception;
         this.authService.isAuthenticated = false;
       }
     });
+  }
+
+  getInitialData(id: string) {
+    this.authService.statusMessage = "Pulling Initial Data";
+    this.dialogService.showSpinner();
+    this.authService.initialData(id).subscribe({
+      next: (data: InitialResponse) => {
+        this.dialogService.closeSpinner();
+        let site = "";
+        let team = "Scheduler";
+        if (data.employee) {
+          this.employeeService.setEmployee(data.employee)
+        }
+        if (data.site) {
+          const oSite = new Site(data.site);
+          this.siteService.setSite(oSite);
+          site = oSite.name;
+        }
+        if (data.team) {
+          const oTeam = new Team(data.team);
+          team = oTeam.name;
+          this.teamService.setTeam(oTeam);
+        }
+        this.authService.setWebLabel(team, site);
+      },
+      error: (err: InitialResponse) => {
+        this.dialogService.closeSpinner();
+        this.authService.statusMessage = `Problem getting initial data: ${err.exception}`;
+      }
+    })
   }
 }

@@ -33,7 +33,7 @@ export class ReportCertOfServiceComponent {
   }
 
   onSubmit() {
-    const url = '/scheduler2/api/v1/reports';
+    const url = '/scheduler/api/v2/reports';
     const iTeam = this.teamService.getTeam();
     const iSite = this.siteService.getSite();
     if (iTeam && iSite) {

@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { CacheService } from './cache.service';
 import { IUser, User } from '../models/users/user';
-import { AuthenticationResponse, ChangePasswordRequest, 
-  EmployeeResponse, UpdateRequest }
+import { AuthenticationRequest, AuthenticationResponse, ChangePasswordRequest, 
+  EmployeeResponse, InitialResponse, UpdateRequest }
   from '../models/web/employeeWeb';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import jwt_decode from 'jwt-decode';
-import { UsersResponse } from '../models/web/userWeb';
+import { ExceptionResponse, UsersResponse } from '../models/web/userWeb';
 import { MessageService } from './message.service';
+import { DialogService } from './dialog-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,7 @@ export class AuthService extends CacheService {
 
   constructor(
     public httpClient: HttpClient,
+    protected dialogService: DialogService,
     private router: Router
   ) {
     super();
@@ -46,15 +48,43 @@ export class AuthService extends CacheService {
   private apiAuthProvider(email: string, password: string)
     : Observable<AuthenticationResponse> {
     return this.httpClient.post<AuthenticationResponse>(
-      '/scheduler2/api/v1/user/logon', 
+      '/scheduler/api/v2/user/logon', 
       { email: email, password: password });
   }
 
+  login(email: string, password: string): Observable<AuthenticationResponse> {
+    const url = "/authentication/api/v2/authenticate";
+    const data: AuthenticationRequest = {
+      emailAddress: email,
+      password: password,
+    };
+    return this.httpClient.post<AuthenticationResponse>(url, data);
+  }
+
   logout() {
-    this.clearToken();
-    this.isAuthenticated = false;
-    this.setWebLabel("", "");
-    this.router.navigate(["/home"]);
+    const user = this.getUser()
+    if (user) {
+      this.dialogService.showSpinner();
+      const url = `/authentication/api/v2/authenticate/${user.id}`;
+      this.httpClient.delete(url).subscribe({
+        next: () => {
+          this.dialogService.closeSpinner();
+          this.clearToken();
+          this.isAuthenticated = false;
+          this.setWebLabel("", "");
+          this.router.navigate(["/home"]);
+        },
+        error: (err: ExceptionResponse) => {
+          this.dialogService.closeSpinner();
+          this.statusMessage = err.exception;
+        }
+      })
+    } else {
+      this.clearToken();
+      this.isAuthenticated = false;
+      this.setWebLabel("", "");
+      this.router.navigate(["/home"]);
+    }
   }
 
   public hasRole(role: string): boolean {
@@ -158,7 +188,7 @@ export class AuthService extends CacheService {
 
   changeUser(id: string, field: string, value: string): 
     Observable<HttpResponse<AuthenticationResponse>> {
-    const url = '/scheduler2/api/v1/user/changes';
+    const url = '/scheduler/api/v2/user/changes';
     const data: UpdateRequest = {
       id: id,
       field: field,
@@ -170,7 +200,7 @@ export class AuthService extends CacheService {
 
   changePassword(id: string, passwd: string): 
     Observable<HttpResponse<EmployeeResponse>> {
-    const url = '/scheduler2/api/v1/user/password';
+    const url = '/scheduler/api/v2/user/password';
     const data: ChangePasswordRequest = {
       id: id,
       password: passwd,
@@ -180,13 +210,18 @@ export class AuthService extends CacheService {
   }
 
   getAllUsers(): Observable<HttpResponse<UsersResponse>> {
-    const url = '/scheduler2/api/v1/user';
+    const url = '/scheduler/api/v2/user';
     return this.httpClient.get<UsersResponse>(url, {observe: 'response'});
   }
 
   addUser(user: User): Observable<HttpResponse<UsersResponse>> {
-    const url = '/scheduler2/api/v1/user/'
+    const url = '/scheduler/api/v2/user/'
     return this.httpClient.post<UsersResponse>(url, user, {observe: 'response'});
+  }
+
+  initialData(id: string): Observable<InitialResponse> {
+    const url = `/scheduler/api/v2/${id}`;
+    return this.httpClient.get<InitialResponse>(url);
   }
 }
 

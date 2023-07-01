@@ -106,7 +106,7 @@ export class HomeComponent {
         if (data.token) {
           this.authService.setToken(data.token);
         }
-        if (data.exception && data.exception === '') {
+        if (!data.exception || data.exception === '') {
           this.authService.isAuthenticated = true;
           this.msgService.startAlerts();
           this.authService.statusMessage = "User Login Complete";
@@ -147,6 +147,7 @@ export class HomeComponent {
           this.teamService.setTeam(oTeam);
         }
         this.authService.setWebLabel(team, site);
+        this.router.navigateByUrl('/employee/schedule');
       },
       error: (err: InitialResponse) => {
         this.dialogService.closeSpinner();

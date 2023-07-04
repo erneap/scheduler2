@@ -88,10 +88,9 @@ export class NotificationsComponent {
       this.authService.statusMessage = "Acknowledging Messages";
       this.dialogService.showSpinner();
       this.msgService.acknowledgeMessages(msgs).subscribe({
-        next: resp => {
+        next: (data: NotificationResponse) => {
           this.dialogService.closeSpinner();
           this.messages = [];
-          const data: NotificationResponse | null = resp.body;
           if (data && data.messages && data.exception === '') {
             data.messages.forEach(msg => {
               this.messages.push(new Notification(msg));
@@ -125,10 +124,9 @@ export class NotificationsComponent {
       this.authService.statusMessage = "Acknowledging Messages";
       this.dialogService.showSpinner();
       this.msgService.acknowledgeMessages(msgs).subscribe({
-        next: resp => {
+        next: (data: NotificationResponse) => {
           this.dialogService.closeSpinner();
           this.messages = [];
-          const data: NotificationResponse | null = resp.body;
           if (data && data.messages && data.exception === '') {
             data.messages.forEach(msg => {
               this.messages.push(new Notification(msg));
@@ -160,10 +158,9 @@ export class NotificationsComponent {
       this.authService.statusMessage = "Acknowledging Messages";
       this.dialogService.showSpinner();
       this.msgService.acknowledgeMessages(msgs).subscribe({
-        next: resp => {
+        next: (data: NotificationResponse) => {
           this.dialogService.closeSpinner();
           this.messages = [];
-          const data: NotificationResponse | null = resp.body;
           if (data && data.messages && data.exception === '') {
             data.messages.forEach(msg => {
               this.messages.push(new Notification(msg));
@@ -174,7 +171,7 @@ export class NotificationsComponent {
           this.authService.statusMessage = "Acknowledgement Complete";
           this.router.navigateByUrl('/siteleaveapprover');
         },
-        error: err => {
+        error: (err: NotificationResponse) => {
           this.dialogService.closeSpinner();
           this.authService.statusMessage = `Error acknowledging messages: ${err.exception}`;
         }

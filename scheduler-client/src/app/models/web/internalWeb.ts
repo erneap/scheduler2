@@ -121,6 +121,6 @@ export interface NotificationAck {
 }
 
 export interface NotificationResponse {
-  messages: INotification[];
-  exception: string;
+  messages?: INotification[];
+  exception?: string;
 }

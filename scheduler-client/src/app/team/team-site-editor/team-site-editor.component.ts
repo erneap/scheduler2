@@ -61,21 +61,17 @@ export class TeamSiteEditorComponent {
       this.authService.statusMessage = "Retrieving requested site";
       this.dialogService.showSpinner();
       this.teamService.retrieveSelectedSite(this.team.id, this.selected).subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data != null && data.site) {
             this.site = new Site(data.site);
             this.teamService.setSelectedSite(data.site)
           }
           this.authService.statusMessage = "Retrieval complete"
         },
-        error: err => {
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       })
     }

@@ -196,12 +196,8 @@ export class SiteEmployeeAssignmentComponent {
         + `${field.toUpperCase()}`;
       this.empService.updateAssignment(this.employee.id, asgmtid, field, value)
         .subscribe({
-          next: resp => {
+          next: (data: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: EmployeeResponse | null = resp.body;
             let schID = this.schedule.id;
             if (data && data !== null) {
               if (data.employee) {
@@ -229,9 +225,9 @@ export class SiteEmployeeAssignmentComponent {
             this.changed.emit(new Employee(this.employee));
             this.authService.statusMessage = "Update complete";
           },
-          error: err => {
+          error: (err: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         })
     }
@@ -259,12 +255,8 @@ export class SiteEmployeeAssignmentComponent {
         this.dialogService.showSpinner();
         this.empService.updateAssignmentSchedule(change)
           .subscribe({
-            next: resp => {
+            next: (data: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              if (resp.headers.get('token') !== null) {
-                this.authService.setToken(resp.headers.get('token') as string);
-              }
-              const data: EmployeeResponse | null = resp.body;
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
@@ -290,9 +282,9 @@ export class SiteEmployeeAssignmentComponent {
               this.changed.emit(new Employee(this.employee));
               this.authService.statusMessage = "Update complete";
             },
-            error: err => {
+            error: (err: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              this.authService.statusMessage = err.message;
+              this.authService.statusMessage = err.exception;
             }
           });
       } else {
@@ -302,12 +294,8 @@ export class SiteEmployeeAssignmentComponent {
           + `Schedule Days`;
         this.empService.updateAssignmentWorkday(change)
           .subscribe({
-            next: resp => {
+            next: (data: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              if (resp.headers.get('token') !== null) {
-                this.authService.setToken(resp.headers.get('token') as string);
-              }
-              const data: EmployeeResponse | null = resp.body;
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
@@ -327,9 +315,9 @@ export class SiteEmployeeAssignmentComponent {
               this.changed.emit(new Employee(this.employee));
               this.authService.statusMessage = "Update complete";
             },
-            error: err => {
+            error: (err: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              this.authService.statusMessage = err.message;
+              this.authService.statusMessage = err.exception;
             }
           });
       }
@@ -348,12 +336,8 @@ export class SiteEmployeeAssignmentComponent {
     this.authService.statusMessage = 'Adding new assignment'
     this.empService.AddAssignment(empID, siteID, wkctr, start, 7)
       .subscribe({
-        next: resp => {
+        next: (data: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: EmployeeResponse | null = resp.body;
           if (data && data !== null) {
             if (data.employee) {
               this.employee = new Employee(data.employee);
@@ -366,9 +350,9 @@ export class SiteEmployeeAssignmentComponent {
           this.changed.emit(new Employee(this.employee));
           this.authService.statusMessage = "Update complete";
         },
-        error: err => {
+        error: (err: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       })
   }
@@ -394,12 +378,8 @@ export class SiteEmployeeAssignmentComponent {
         this.authService.statusMessage = "Deleting Employee Assignment";
         this.empService.deleteAssignment(this.employee.id, this.assignment.id)
           .subscribe({
-            next: resp => {
+            next: (data: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              if (resp.headers.get('token') !== null) {
-                this.authService.setToken(resp.headers.get('token') as string);
-              }
-              const data: EmployeeResponse | null = resp.body;
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
@@ -412,9 +392,9 @@ export class SiteEmployeeAssignmentComponent {
               this.changed.emit(new Employee(this.employee));
               this.authService.statusMessage = "Deletion complete";
             },
-            error: err => {
+            error: (err: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              this.authService.statusMessage = err.message;
+              this.authService.statusMessage = err.exception;
             }
           });
       }

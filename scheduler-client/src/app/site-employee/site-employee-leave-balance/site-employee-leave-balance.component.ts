@@ -63,12 +63,8 @@ export class SiteEmployeeLeaveBalanceComponent {
     this.authService.statusMessage = "Adding New Leave Balance"
     this.empService.createLeaveBalance(this.employee.id, now.getFullYear())
     .subscribe({
-      next: resp => {
+      next: (data: EmployeeResponse) => {
         this.dialogService.closeSpinner();
-        if (resp.headers.get('token') !== null) {
-          this.authService.setToken(resp.headers.get('token') as string);
-        }
-        const data: EmployeeResponse | null = resp.body;
         if (data && data !== null) {
           if (data.employee) {
             this.employee = new Employee(data.employee);
@@ -78,9 +74,9 @@ export class SiteEmployeeLeaveBalanceComponent {
         this.changed.emit(new Employee(this.employee));
         this.authService.statusMessage = "Update complete";
       },
-      error: err => {
+      error: (err: EmployeeResponse) => {
         this.dialogService.closeSpinner();
-        this.authService.statusMessage = err.message;
+        this.authService.statusMessage = err.exception;
       }
     })
   }
@@ -93,12 +89,8 @@ export class SiteEmployeeLeaveBalanceComponent {
       this.authService.statusMessage = "Adding New Leave Balance"
       this.empService.createAllLeaveBalances(team.id, this.site.id, 
         now.getFullYear()).subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data !== null) {
             if (data.site && data.site.employees) {
               data.site.employees.forEach(emp => {
@@ -108,9 +100,9 @@ export class SiteEmployeeLeaveBalanceComponent {
           }
           this.authService.statusMessage = "Update complete";
         },
-        error: err => {
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
     }

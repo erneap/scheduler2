@@ -89,12 +89,8 @@ export class SiteEmployeeProfileComponent {
           this.authService.statusMessage = "Adding User Account"
           this.empService.addUserAccount(this.employee.id, 
           result.data.emailAddress, result.data.password).subscribe({
-            next: resp => {
+            next: (data: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              if (resp.headers.get('token') !== null) {
-                this.authService.setToken(resp.headers.get('token') as string);
-              }
-              const data: EmployeeResponse | null = resp.body;
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
@@ -107,9 +103,9 @@ export class SiteEmployeeProfileComponent {
               this.changed.emit(new Employee(this.employee));
               this.authService.statusMessage = "Update complete";
             },
-            error: err => {
+            error: (err: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              this.authService.statusMessage = err.message;
+              this.authService.statusMessage = err.exception;
             }
           });
         }
@@ -128,12 +124,8 @@ export class SiteEmployeeProfileComponent {
     this.authService.statusMessage = "Adjusting Permissions";
     this.empService.updateEmployee(this.employee.id, field, element)
       .subscribe({
-        next: resp => {
+        next: (data: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: EmployeeResponse | null = resp.body;
           if (data && data !== null) {
             if (data.employee) {
               this.employee = new Employee(data.employee);
@@ -162,9 +154,9 @@ export class SiteEmployeeProfileComponent {
           this.changed.emit(new Employee(this.employee));
           this.authService.statusMessage = "Update complete";
         },
-        error: err => {
+        error: (err: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
   }
@@ -174,12 +166,8 @@ export class SiteEmployeeProfileComponent {
     this.authService.statusMessage = "Unlocking Account";
     this.empService.updateEmployee(this.employee.id, 'unlock', '0')
       .subscribe({
-        next: resp => {
+        next: (data: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: EmployeeResponse | null = resp.body;
           if (data && data !== null) {
             if (data.employee) {
               this.employee = new Employee(data.employee);
@@ -208,9 +196,9 @@ export class SiteEmployeeProfileComponent {
           this.changed.emit(new Employee(this.employee));
           this.authService.statusMessage = "Update complete";
         },
-        error: err => {
+        error: (err: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
   }
@@ -226,12 +214,8 @@ export class SiteEmployeeProfileComponent {
       if (result === 'yes') {
         this.empService.deleteEmployee(this.employee.id)
           .subscribe({
-            next: resp => {
+            next: (data: Message) => {
               this.dialogService.closeSpinner();
-              if (resp.headers.get('token') !== null) {
-                this.authService.setToken(resp.headers.get('token') as string);
-              }
-              const data: Message | null = resp.body;
               if (data?.message === 'employee deleted') {
                 this.siteService.setSelectedEmployee(new Employee());
                 const site = this.siteService.getSite();
@@ -248,7 +232,7 @@ export class SiteEmployeeProfileComponent {
               }
               this.changed.emit(new Employee());
             },
-            error: err => {
+            error: (err: Message) => {
               this.dialogService.closeSpinner();
               this.authService.statusMessage = err.message;
             }

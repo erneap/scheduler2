@@ -43,13 +43,9 @@ export class TeamListEditorComponent {
     this.authService.statusMessage = "Retrieve all teams";
     this.dialogService.showSpinner();
     this.teamService.getTeams().subscribe({
-      next: resp => {
+      next: (data: TeamsResponse) => {
         this.dialogService.closeSpinner();
         this.authService.statusMessage = "Retrieval Complete";
-        if (resp.headers.get('token') !== null) {
-          this.authService.setToken(resp.headers.get('token') as string);
-        }
-        const data: TeamsResponse | null = resp.body;
         this.teams = [];
         if (data && data != null && data.teams) {
           data.teams.forEach(tm => {
@@ -115,14 +111,10 @@ export class TeamListEditorComponent {
         this.authService.statusMessage = "Deleting Team";
         this.dialogService.showSpinner();
         this.teamService.deleteTeam(this.selected).subscribe({
-          next: resp => {
+          next: (data: TeamsResponse) => {
             this.dialogService.closeSpinner();
             this.authService.statusMessage = "Deletion Complete";
             this.selected = 'new';
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: TeamsResponse | null = resp.body;
             this.teams = [];
             if (data && data != null && data.teams) {
               data.teams.forEach(tm => {

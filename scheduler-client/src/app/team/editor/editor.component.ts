@@ -47,12 +47,8 @@ export class EditorComponent {
     this.authService.statusMessage = "Updating Team Name";
     this.dialogService.showSpinner();
     this.teamService.updateTeam(this.team.id, this.teamForm.value.name).subscribe({
-      next: resp => {
+      next: (data: SiteResponse) => {
         this.dialogService.closeSpinner();
-        if (resp.headers.get('token') !== null) {
-          this.authService.setToken(resp.headers.get('token') as string);
-        }
-        const data: SiteResponse | null = resp.body;
         if (data && data != null && data.team) {
           this.team = data.team;
           const iTeam = this.teamService.getTeam();
@@ -68,9 +64,9 @@ export class EditorComponent {
           this.changed.emit(new Team(data.team));
         }
       },
-      error: err => {
+      error: (err: SiteResponse) => {
         this.dialogService.closeSpinner();
-        this.authService.statusMessage = err.message;
+        this.authService.statusMessage = err.exception;
       }
     });
   }

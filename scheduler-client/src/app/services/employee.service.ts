@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Variation } from '../models/employees/assignments';
@@ -66,24 +66,24 @@ export class EmployeeService extends CacheService {
     return '';
   }
 
-  updateEmployee(empID: string, field: string, value: string): Observable<HttpResponse<EmployeeResponse>> {
+  updateEmployee(empID: string, field: string, value: string): 
+    Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee';
     const data: UpdateRequest = {
       id: empID,
       field: field,
       value: value,
     };
-    return this.httpClient.put<EmployeeResponse>(url, data, 
-      { observe: 'response'});
+    return this.httpClient.put<EmployeeResponse>(url, data);
   }
 
-  deleteEmployee(empID: string): Observable<HttpResponse<Message>> {
+  deleteEmployee(empID: string): Observable<Message> {
     const url = `/scheduler/api/v2/employee/${empID}`;
-    return this.httpClient.delete<Message>(url, {observe: 'response'});
+    return this.httpClient.delete<Message>(url);
   }
 
   addUserAccount(empID: string, email: string, password: string): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee/account';
     const data: CreateUserAccount = {
       id: empID,
@@ -93,11 +93,11 @@ export class EmployeeService extends CacheService {
       lastName: '',
       password: password,
     }
-    return this.httpClient.post<EmployeeResponse>(url, data, {observe: 'response'});
+    return this.httpClient.post<EmployeeResponse>(url, data);
   }
 
   addNewLeaveRequest(empid: string, start: Date, end: Date, 
-    code: string): Observable<HttpResponse<EmployeeResponse>> {
+    code: string): Observable<EmployeeResponse> {
     start = new Date(Date.UTC(start.getFullYear(), start.getMonth(),
       start.getDate()));
     end = new Date(Date.UTC(end.getFullYear(), end.getMonth(), 
@@ -109,12 +109,11 @@ export class EmployeeService extends CacheService {
       enddate: end,
     };
     const url = '/scheduler/api/v2/employee/request';
-    return this.httpClient.post<EmployeeResponse>(url, data, 
-      { observe: 'response'});
+    return this.httpClient.post<EmployeeResponse>(url, data);
   }
 
   updateLeaveRequest(empid: string, reqid: string, field: string, value: string): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee/request';
     const data: UpdateRequest = {
       id: empid,
@@ -122,18 +121,17 @@ export class EmployeeService extends CacheService {
       field: field,
       value: value,
     }
-    return this.httpClient.put<EmployeeResponse>(url, data, 
-      {observe: 'response'})
+    return this.httpClient.put<EmployeeResponse>(url, data)
   }
 
   deleteLeaveRequest(empid: string, reqid: string): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = `/scheduler/api/v2/employee/request/${empid}/${reqid}`;
-    return this.httpClient.delete<EmployeeResponse>(url, { observe: 'response'});
+    return this.httpClient.delete<EmployeeResponse>(url);
   }
 
   addEmployee(employee: Employee, passwd: string, teamid: string, siteid: string): 
-  Observable<HttpResponse<EmployeeResponse>> {
+  Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee';
     const empRequest: NewEmployeeRequest = {
       employee: employee,
@@ -141,12 +139,11 @@ export class EmployeeService extends CacheService {
       team: teamid,
       site: siteid,
     }
-    return this.httpClient.post<EmployeeResponse>(url, empRequest, 
-      { observe: 'response'});
+    return this.httpClient.post<EmployeeResponse>(url, empRequest);
   }
 
   AddAssignment(empID: string, siteID: string, wkctr: string, start: Date, 
-    days: number): Observable<HttpResponse<EmployeeResponse>> {
+    days: number): Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee/assignment';
     const data: NewEmployeeAssignment = {
       employee: empID,
@@ -155,12 +152,11 @@ export class EmployeeService extends CacheService {
       start: start,
       scheduledays: days,
     };
-    return this.httpClient.post<EmployeeResponse>(url, data, 
-      { observe: 'response'});
+    return this.httpClient.post<EmployeeResponse>(url, data);
   }
 
   updateAssignment(empID: string, asgmt: number, field: string, value: any,
-    schedID?: number): Observable<HttpResponse<EmployeeResponse>>  {
+    schedID?: number): Observable<EmployeeResponse>  {
       const url = '/scheduler/api/v2/employee/assignment';
       const data: ChangeAssignmentRequest = {
         employee: empID,
@@ -171,86 +167,81 @@ export class EmployeeService extends CacheService {
       if (schedID) {
         data.schedule = schedID;
       }
-      return this.httpClient.put<EmployeeResponse>(url, data, 
-        { observe: 'response'});
+      return this.httpClient.put<EmployeeResponse>(url, data);
   }
 
   updateAssignmentSchedule(data: ChangeAssignmentRequest): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee/assignment';
-    return this.httpClient.put<EmployeeResponse>(url, data, 
-      { observe: 'response'});
+    return this.httpClient.put<EmployeeResponse>(url, data);
   }
 
   updateAssignmentWorkday(data: ChangeAssignmentRequest): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee/assignment/workday';
-    return this.httpClient.put<EmployeeResponse>(url, data, 
-      { observe: 'response'});
+    return this.httpClient.put<EmployeeResponse>(url, data);
   }
 
   deleteAssignment(empID: string, asgmtID: number):
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = `/scheduler/api/v2/employee/assignment/${empID}/${asgmtID}`;
-    return this.httpClient.delete<EmployeeResponse>(url, { observe: 'response'});
+    return this.httpClient.delete<EmployeeResponse>(url);
   }
 
   addLaborCode(empID: string, chgNo: string, ext: string):
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee/laborcode';
     const data: EmployeeLaborCodeRequest = {
       employee: empID,
       chargeNumber: chgNo,
       extension: ext,
     };
-    return this.httpClient.post<EmployeeResponse>(url, data, 
-      {observe: 'response'});
+    return this.httpClient.post<EmployeeResponse>(url, data);
   }
 
   removeLaborCode(empID: string, chgNo: string, ext: string):
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = `/scheduler/api/v2/employee/laborcode/${empID}/${chgNo}/${ext}`;
-    return this.httpClient.delete<EmployeeResponse>(url, { observe: 'response'});
+    return this.httpClient.delete<EmployeeResponse>(url);
   }
 
   addVariation(empID: string, vari: Variation): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee/variation';
     const data: NewEmployeeVariation = {
       employee: empID,
       variation: vari,
     }
-    return this.httpClient.post<EmployeeResponse>(url, data, { observe: 'response'});
+    return this.httpClient.post<EmployeeResponse>(url, data);
   }
 
   updateVariation(data: ChangeAssignmentRequest, isWorkday: boolean):
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     let url = '/scheduler/api/v2/employee/variation';
     if (isWorkday) {
       url += '/workday';
     }
-    return this.httpClient.put<EmployeeResponse>(url, data, { observe: 'response'});
+    return this.httpClient.put<EmployeeResponse>(url, data);
   }
 
   deleteVariation(empID: string, variationID: number): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = `/scheduler/api/v2/employee/variation/${empID}/${variationID}`;
-    return this.httpClient.delete<EmployeeResponse>(url, {observe: 'response'});
+    return this.httpClient.delete<EmployeeResponse>(url);
   }
 
   addLeave(empID: string, leave: LeaveDay): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee/leaves';
     const data: EmployeeLeaveDayRequest = {
       employee: empID,
       leave: leave,
     };
-    return this.httpClient.post<EmployeeResponse>(url, data, 
-      { observe: 'response'});
+    return this.httpClient.post<EmployeeResponse>(url, data);
   }
 
   updateLeave(empID: string, id: number, field: string, value: string): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee/leaves';
     const data: UpdateRequest = {
       id: empID,
@@ -258,18 +249,17 @@ export class EmployeeService extends CacheService {
       field: field,
       value: value,
     };
-    return this.httpClient.put<EmployeeResponse>(url, data,
-      {observe: 'response'});
+    return this.httpClient.put<EmployeeResponse>(url, data);
   }
 
   deleteLeave(empID: string, id: number): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = `/scheduler/api/v2/employee/leaves/${empID}/${id}`;
-    return this.httpClient.delete<EmployeeResponse>(url, {observe: 'response'});
+    return this.httpClient.delete<EmployeeResponse>(url);
   }
 
   createLeaveBalance(empID: string, year: number): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee/balance';
     const data: LeaveBalanceRequest = {
       employee: empID,
@@ -277,12 +267,11 @@ export class EmployeeService extends CacheService {
       annual: 0.0,
       carryover: 0.0
     };
-    return this.httpClient.post<EmployeeResponse>(url, data, 
-      {observe: 'response'});
+    return this.httpClient.post<EmployeeResponse>(url, data);
   }
 
   updateLeaveBalance(empID: string, year: number, field: string, value: string): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee/balance';
     const data: UpdateRequest = {
       id: empID,
@@ -290,18 +279,17 @@ export class EmployeeService extends CacheService {
       field: field,
       value: value
     };
-    return this.httpClient.put<EmployeeResponse>(url, data, 
-      {observe: 'response'});
+    return this.httpClient.put<EmployeeResponse>(url, data);
   }
 
   createAllLeaveBalances(teamID: string, siteID: string, year: number): 
-  Observable<HttpResponse<SiteResponse>> {
+  Observable<SiteResponse> {
     const url = '/scheduler/api/v2/site/balances';
     const data: CreateSiteEmployeeLeaveBalances = {
       team: teamID,
       siteid: siteID,
       year: year
     };
-    return this.httpClient.post<SiteResponse>(url, data, { observe: 'response'});
+    return this.httpClient.post<SiteResponse>(url, data);
   }
 }

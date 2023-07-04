@@ -149,12 +149,8 @@ export class SiteEmployeeVariationComponent {
         }
         this.empService.updateVariation(change, bWorkdays)
           .subscribe({
-            next: resp => {
+            next: (data: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              if (resp.headers.get('token') !== null) {
-                this.authService.setToken(resp.headers.get('token') as string);
-              }
-              const data: EmployeeResponse | null = resp.body;
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
@@ -173,9 +169,9 @@ export class SiteEmployeeVariationComponent {
               this.changed.emit(new Employee(this.employee));
               this.authService.statusMessage = "Update complete";
             },
-            error: err => {
+            error: (err: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              this.authService.statusMessage = err.message;
+              this.authService.statusMessage = err.exception;
             }
           });
         
@@ -220,12 +216,8 @@ export class SiteEmployeeVariationComponent {
       this.dialogService.showSpinner();
       this.empService.addVariation(this.employee.id, this.variation)
         .subscribe({
-          next: resp => {
+          next: (data: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: EmployeeResponse | null = resp.body;
             if (data && data !== null) {
               if (data.employee) {
                 this.employee = new Employee(data.employee);
@@ -248,9 +240,9 @@ export class SiteEmployeeVariationComponent {
             this.changed.emit(new Employee(this.employee));
             this.authService.statusMessage = "Add complete";
           },
-          error: err => {
+          error: (err: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
     }
@@ -294,12 +286,8 @@ export class SiteEmployeeVariationComponent {
       this.dialogService.showSpinner();
       this.empService.updateVariation(data, false)
         .subscribe({
-          next: resp => {
+          next: (data: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: EmployeeResponse | null = resp.body;
             if (data && data !== null) {
               if (data.employee) {
                 this.employee = new Employee(data.employee);
@@ -320,9 +308,9 @@ export class SiteEmployeeVariationComponent {
             this.changed.emit(new Employee(this.employee));
             this.authService.statusMessage = "Update complete";
           },
-          error: err => {
+          error: (err: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
     } else if (field.toLowerCase() === 'mids') {
@@ -346,12 +334,8 @@ export class SiteEmployeeVariationComponent {
         this.authService.statusMessage = "Deleting Employee Variation";
         this.empService.deleteVariation(this.employee.id, this.variation.id)
           .subscribe({
-            next: resp => {
+            next: (data: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              if (resp.headers.get('token') !== null) {
-                this.authService.setToken(resp.headers.get('token') as string);
-              }
-              const data: EmployeeResponse | null = resp.body;
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
@@ -372,9 +356,9 @@ export class SiteEmployeeVariationComponent {
               this.changed.emit(new Employee(this.employee));
               this.authService.statusMessage = "Deletion complete";
             },
-            error: err => {
+            error: (err: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              this.authService.statusMessage = err.message;
+              this.authService.statusMessage = err.exception;
             }
           });
       }

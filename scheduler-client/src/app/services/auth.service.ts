@@ -9,7 +9,6 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import jwt_decode from 'jwt-decode';
 import { ExceptionResponse, UsersResponse } from '../models/web/userWeb';
-import { MessageService } from './message.service';
 import { DialogService } from './dialog-service.service';
 
 @Injectable({
@@ -27,6 +26,9 @@ export class AuthService extends CacheService {
   schedulerLabel = "Scheduler";
   section: string = 'employee';
   statusMessage: string = '';
+  teamID: string = '';
+  siteID: string = '';
+  interval: any;
 
   authStatus = new BehaviorSubject<IAuthStatus>( 
     this.getItem('authStatus') || defaultAuthStatus);
@@ -43,6 +45,43 @@ export class AuthService extends CacheService {
     this.authStatus.subscribe(authStatus => this.setItem('authStatus', 
       authStatus));
     this.authProvider = this.apiAuthProvider;
+  }
+
+  startTokenRenewal() {
+    const minutes = 358;
+    if (!this.isTokenExpired()) {
+      console.log("Starting Token Renewal Interval");
+      this.interval = setInterval(() => {
+        console.log('Awaiting Token Renewal');
+        this.processToken()
+      }, minutes * 60 * 1000);
+    }
+  }
+
+  processToken() {
+    const url = '/authentication/authenticate';
+    const data: AuthenticationRequest = {
+      emailAddress: '',
+      password: '',
+    } 
+    this.httpClient.put<AuthenticationResponse>(url, data).subscribe({
+      next: (data: AuthenticationResponse) => {
+        if (data && data.token) {
+          console.log("Setting New Token");
+          this.setToken(data.token);
+        }
+      },
+      error: (err: AuthenticationResponse) => {
+        this.statusMessage = `Error: Token Renewal Exception: ${err.exception}`;
+      }
+    });
+  }
+
+  stopTokenInterval() {
+    if (this.interval && this.interval !== null) {
+      console.log("Stop Token Renewal");
+      clearInterval(this.interval);
+    }
   }
 
   private apiAuthProvider(email: string, password: string)
@@ -65,11 +104,12 @@ export class AuthService extends CacheService {
     const user = this.getUser()
     if (user) {
       this.dialogService.showSpinner();
-      const url = `/authentication/api/v2/authenticate/${user.id}`;
+      const url = `/authentication/api/v2/authenticate/${user.id}/scheduler`;
       this.httpClient.delete(url).subscribe({
         next: () => {
           this.dialogService.closeSpinner();
           this.clearToken();
+          this.stopTokenInterval();
           this.isAuthenticated = false;
           this.setWebLabel("", "");
           this.router.navigate(["/home"]);
@@ -81,6 +121,7 @@ export class AuthService extends CacheService {
       })
     } else {
       this.clearToken();
+      this.stopTokenInterval();
       this.isAuthenticated = false;
       this.setWebLabel("", "");
       this.router.navigate(["/home"]);
@@ -174,6 +215,8 @@ export class AuthService extends CacheService {
     this.removeItem('current-employee');
     this.removeItem('current-site');
     this.removeItem('current-team');
+    this.teamID = '';
+    this.siteID = '';
   }
 
   setWebLabel(team: string, site: string) {
@@ -187,26 +230,24 @@ export class AuthService extends CacheService {
   }
 
   changeUser(id: string, field: string, value: string): 
-    Observable<HttpResponse<AuthenticationResponse>> {
+    Observable<AuthenticationResponse> {
     const url = '/scheduler/api/v2/user/changes';
     const data: UpdateRequest = {
       id: id,
       field: field,
       value: value,
     };
-    return this.httpClient.put<AuthenticationResponse>(url, data, 
-      { observe: 'response'});
+    return this.httpClient.put<AuthenticationResponse>(url, data);
   }
 
   changePassword(id: string, passwd: string): 
-    Observable<HttpResponse<EmployeeResponse>> {
+    Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/user/password';
     const data: ChangePasswordRequest = {
       id: id,
       password: passwd,
     }
-    return this.httpClient.put<EmployeeResponse>(url, data,
-      { observe: 'response'});
+    return this.httpClient.put<EmployeeResponse>(url, data);
   }
 
   getAllUsers(): Observable<HttpResponse<UsersResponse>> {

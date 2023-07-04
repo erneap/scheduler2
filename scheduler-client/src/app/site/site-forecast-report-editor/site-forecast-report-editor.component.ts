@@ -137,12 +137,8 @@ export class SiteForecastReportEditorComponent {
         this.dialogService.showSpinner();
         this.siteService.updateForecastReport(this.teamid, this.site.id, 
           Number(this.selected), field, outputValue).subscribe({
-          next: resp => {
+          next: (data: SiteResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: SiteResponse | null = resp.body;
             if (data && data != null && data.site) {
               this.site = new Site(data.site);
               this.siteChanged.emit(new Site(data.site));
@@ -158,9 +154,9 @@ export class SiteForecastReportEditorComponent {
             }
             this.authService.statusMessage = "Retrieval complete"
           },
-          error: err => {
+          error: (err: SiteResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
       }
@@ -202,12 +198,8 @@ export class SiteForecastReportEditorComponent {
       this.siteService.addForecastReport(this.teamid, this.site.id, 
         name, start, end, Number(this.reportForm.value.period))
         .subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data != null && data.site) {
             this.site = new Site(data.site);
             this.siteChanged.emit(new Site(data.site));
@@ -232,9 +224,9 @@ export class SiteForecastReportEditorComponent {
           }
           this.authService.statusMessage = "Retrieval complete"
         },
-        error: err => {
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
     }
@@ -254,12 +246,8 @@ export class SiteForecastReportEditorComponent {
           this.dialogService.showSpinner();
           this.siteService.deleteForecastReport(this.teamid, 
             this.site.id, rptID ).subscribe({
-            next: resp => {
+            next: (data: SiteResponse) => {
               this.dialogService.closeSpinner();
-              if (resp.headers.get('token') !== null) {
-                this.authService.setToken(resp.headers.get('token') as string);
-              }
-              const data: SiteResponse | null = resp.body;
               if (data && data != null && data.site) {
                 this.site = new Site(data.site);
                 this.siteChanged.emit(new Site(data.site));
@@ -274,9 +262,9 @@ export class SiteForecastReportEditorComponent {
               }
               this.authService.statusMessage = "Deletion complete"
             },
-            error: err => {
+            error: (err: SiteResponse) => {
               this.dialogService.closeSpinner();
-              this.authService.statusMessage = err.message;
+              this.authService.statusMessage = err.exception;
             }
           });
         }

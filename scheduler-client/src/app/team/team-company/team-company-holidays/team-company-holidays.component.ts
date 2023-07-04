@@ -158,12 +158,8 @@ export class TeamCompanyHolidaysComponent {
         this.dialogService.showSpinner();
         this.teamService.updateTeamCompanyHoliday(this.team.id, this.company.id,
         this.selected, 'move', direction).subscribe({
-          next: resp => {
+          next: (data: SiteResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: SiteResponse | null = resp.body;
             if (data && data != null && data.team) {
               this.team = data.team;
               this.teamService.setTeam(data.team);
@@ -188,9 +184,9 @@ export class TeamCompanyHolidaysComponent {
             }
             this.authService.statusMessage = "Addition complete";
           },
-          error: err => {
+          error: (err: SiteResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
       }
@@ -210,12 +206,8 @@ export class TeamCompanyHolidaysComponent {
       this.dialogService.showSpinner();
       this.teamService.updateTeamCompanyHoliday(this.team.id, this.company.id,
       this.selected, field, sValue).subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data != null && data.team) {
             this.team = data.team;
             this.teamService.setTeam(data.team);
@@ -233,9 +225,9 @@ export class TeamCompanyHolidaysComponent {
           }
           this.authService.statusMessage = "Addition complete";
         },
-        error: err => {
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
     }
@@ -267,12 +259,8 @@ export class TeamCompanyHolidaysComponent {
       this.teamService.addTeamCompanyHoliday(this.team.id, this.company.id, 
       holType, this.holidayForm.value.name, sActual)
       .subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data != null && data.team) {
             this.team = data.team;
             if (this.team.companies) {
@@ -298,9 +286,9 @@ export class TeamCompanyHolidaysComponent {
           }
           this.authService.statusMessage = "Addition complete";
         },
-        error: err => {
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       })
     }
@@ -318,12 +306,8 @@ export class TeamCompanyHolidaysComponent {
         this.dialogService.showSpinner();
         this.teamService.deleteTeamCompanyHoliday(this.team.id, this.company.id, 
           this.selected).subscribe({
-          next: resp => {
+          next: (data: SiteResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: SiteResponse | null = resp.body;
             if (data && data != null && data.team) {
               this.team = data.team;
               if (this.team.companies) {
@@ -341,9 +325,9 @@ export class TeamCompanyHolidaysComponent {
             }
             this.authService.statusMessage = "Addition complete";
           },
-          error: err => {
+          error: (err: SiteResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         })
       }

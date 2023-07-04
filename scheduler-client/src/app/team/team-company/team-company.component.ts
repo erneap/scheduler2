@@ -125,12 +125,8 @@ export class TeamCompanyComponent {
       const id = this.companyForm.value.id;
       this.teamService.addTeamCompany(this.team.id, id, 
         this.companyForm.value.name, this.companyForm.value.ingest).subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data != null && data.team) {
             this.selected = id;
             this.team = data.team;
@@ -140,9 +136,9 @@ export class TeamCompanyComponent {
           }
           this.authService.statusMessage = "Addition complete";
         },
-        error: err => {
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
     }
@@ -160,13 +156,9 @@ export class TeamCompanyComponent {
         this.dialogService.showSpinner();
         this.teamService.deleteTeamCompany(this.team.id, this.selected)
         .subscribe({
-          next: resp => {
+          next: (data: SiteResponse) => {
             this.dialogService.closeSpinner();
             this.selected = 'new';
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: SiteResponse | null = resp.body;
             if (data && data != null && data.team) {
               this.selected = 'new';
               this.company = undefined;
@@ -177,9 +169,9 @@ export class TeamCompanyComponent {
             }
             this.authService.statusMessage = "Deletion complete"
           },
-          error: err => {
+          error: (err: SiteResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
       }
@@ -198,12 +190,8 @@ export class TeamCompanyComponent {
         this.dialogService.showSpinner();
         this.teamService.updateTeamCompany(this.team.id, this.selected, field,
           value).subscribe({
-            next: resp => {
+            next: (data: SiteResponse) => {
               this.dialogService.closeSpinner();
-              if (resp.headers.get('token') !== null) {
-                this.authService.setToken(resp.headers.get('token') as string);
-              }
-              const data: SiteResponse | null = resp.body;
               if (data && data != null && data.team) {
                 this.team = data.team;
                 this.teamService.setTeam(data.team);
@@ -211,9 +199,9 @@ export class TeamCompanyComponent {
               }
               this.authService.statusMessage = "Update complete";
             },
-            error: err => {
+            error: (err: SiteResponse) => {
               this.dialogService.closeSpinner();
-              this.authService.statusMessage = err.message;
+              this.authService.statusMessage = err.exception;
             }
           });
       } else {

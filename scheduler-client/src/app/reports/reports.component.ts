@@ -19,7 +19,6 @@ export class ReportsComponent {
   }
 
   onSelect() {
-    console.log(this.reportForm.value.reportType);
     this.reportType = this.reportForm.value.reportType;
   }
 }

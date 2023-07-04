@@ -126,12 +126,8 @@ export class SiteWorkcenterPositionComponent {
     this.dialogService.showSpinner();
     this.siteService.updateWorkcenterPosition(this.teamid, this.site.id, 
       this.workcenter.id, this.selected, 'move', direction).subscribe({
-      next: resp => {
+      next: (data: SiteResponse) => {
         this.dialogService.closeSpinner();
-        if (resp.headers.get('token') !== null) {
-          this.authService.setToken(resp.headers.get('token') as string);
-        }
-        const data: SiteResponse | null = resp.body;
         if (data && data != null && data.site) {
           const site = this.siteService.getSite();
           if (site) {
@@ -152,9 +148,9 @@ export class SiteWorkcenterPositionComponent {
         }
         this.authService.statusMessage = "Retrieval complete"
       },
-      error: err => {
+      error: (err: SiteResponse) => {
         this.dialogService.closeSpinner();
-        this.authService.statusMessage = err.message;
+        this.authService.statusMessage = err.exception;
       }
     });
   }
@@ -213,12 +209,8 @@ export class SiteWorkcenterPositionComponent {
       this.dialogService.showSpinner();
       this.siteService.updateWorkcenterPosition(this.teamid, this.site.id, 
       this.workcenter.id, this.selected, field, outputValue).subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data != null && data.site) {
             const site = this.siteService.getSite();
             if (site) {
@@ -241,9 +233,9 @@ export class SiteWorkcenterPositionComponent {
           }
           this.authService.statusMessage = "Retrieval complete"
         },
-        error: err => {
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
     }
@@ -259,12 +251,8 @@ export class SiteWorkcenterPositionComponent {
       this.dialogService.showSpinner();
       this.siteService.addWorkcenterPosition(this.teamid, this.site.id, 
       this.workcenter.id, id, name).subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data != null && data.site) {
             const site = this.siteService.getSite();
             if (site) {
@@ -288,9 +276,9 @@ export class SiteWorkcenterPositionComponent {
           }
           this.authService.statusMessage = "Add completed"
         },
-        error: err => {
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
     }
@@ -308,12 +296,8 @@ export class SiteWorkcenterPositionComponent {
         this.dialogService.showSpinner();
         this.siteService.deleteWorkcenterPosition(this.teamid, this.site.id,
           this.workcenter.id, this.selected).subscribe({
-          next: resp => {
+          next: (data: SiteResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: SiteResponse | null = resp.body;
             if (data && data != null && data.site) {
               const site = this.siteService.getSite();
               if (site) {
@@ -337,9 +321,9 @@ export class SiteWorkcenterPositionComponent {
             }
             this.authService.statusMessage = "Deletion completed"
           },
-          error: err => {
+          error: (err: SiteResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
       }

@@ -272,13 +272,8 @@ export class NewEmployeeComponent {
     this.authService.statusMessage = "Creating New Employee";
     this.empService.addEmployee(this.employee, passwd, this.teamid, this.siteid)
       .subscribe({
-        next: resp => {
+        next: (data: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-
-          const data: EmployeeResponse | null = resp.body;
           if (data && data !== null) {
             if (data.employee) {
               this.employee = new Employee(data.employee);
@@ -306,9 +301,9 @@ export class NewEmployeeComponent {
           }
           this.authService.statusMessage = "Employee Created";
         },
-        error: err => {
+        error: (err: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.error;
+          this.authService.statusMessage = err.exception;
         }
       });
   }

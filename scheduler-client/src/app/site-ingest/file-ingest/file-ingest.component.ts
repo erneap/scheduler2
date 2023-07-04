@@ -84,48 +84,44 @@ export class FileIngestComponent {
         this.dialogService.showSpinner();
         this.ingestService.getIngestEmployees(emp.team, emp.site, 
           emp.data.companyinfo.company).subscribe({
-          next: resp => {
+          next: (data: IngestResponse) => {
             this.dialogService.closeSpinner();
-              if (resp.headers.get('token') !== null) {
-                this.authService.setToken(resp.headers.get('token') as string);
-              }
-              const data: IngestResponse | null = resp.body;
-              if (data && data !== null) {
-                this.authService.statusMessage = "Retrieval complete";
-                this.ingestType = data.ingest;
-                this.employees = [];
-                const iSite = this.siteService.getSite();
-                if (iSite) {
-                  const site = new Site(iSite);
-                  if (!site.employees) {
-                    site.employees = [];
-                  }
-                  data.employees.forEach(tEmp => {
-                    this.employees.push(new Employee(tEmp));
-                    if (site.employees) {
-                      let found = false;
-                      for (let e=0; e < site.employees.length && !found; e++) {
-                        if (site.employees[e].id === tEmp.id) {
-                          found = true;
-                          site.employees[e] = new Employee(tEmp);
-                        }
-                      }
-                      if (!found) {
-                        site.employees.push(new Employee(tEmp));
+            if (data && data !== null) {
+              this.authService.statusMessage = "Retrieval complete";
+              this.ingestType = data.ingest;
+              this.employees = [];
+              const iSite = this.siteService.getSite();
+              if (iSite) {
+                const site = new Site(iSite);
+                if (!site.employees) {
+                  site.employees = [];
+                }
+                data.employees.forEach(tEmp => {
+                  this.employees.push(new Employee(tEmp));
+                  if (site.employees) {
+                    let found = false;
+                    for (let e=0; e < site.employees.length && !found; e++) {
+                      if (site.employees[e].id === tEmp.id) {
+                        found = true;
+                        site.employees[e] = new Employee(tEmp);
                       }
                     }
-                  });
-                  this.siteService.setSite(site);
-                } else {
-                  data.employees.forEach(tEmp => {
-                    this.employees.push(new Employee(tEmp));
-                  });
-                }
+                    if (!found) {
+                      site.employees.push(new Employee(tEmp));
+                    }
+                  }
+                });
+                this.siteService.setSite(site);
+              } else {
+                data.employees.forEach(tEmp => {
+                  this.employees.push(new Employee(tEmp));
+                });
               }
-              this.ingestForm.controls["file"].setValue('');
-              this.myFiles = [];
+            }
+            this.ingestForm.controls["file"].setValue('');
+            this.myFiles = [];
           },
-          error: err => {
+          error: (err: IngestResponse) => {
             this.dialogService.closeSpinner();
             this.authService.statusMessage = err.exception;
           }
@@ -160,47 +156,43 @@ export class FileIngestComponent {
       this.authService.statusMessage = "Ingesting Timecard Information";
       this.dialogService.showSpinner();
       this.ingestService.fileIngest(formData).subscribe({
-        next: resp => {
+        next: (data: IngestResponse) => {
           this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: IngestResponse | null = resp.body;
-            if (data && data !== null) {
-              this.authService.statusMessage = "Ingest complete";
-              this.employees = [];
-              const iSite = this.siteService.getSite();
-              if (iSite) {
-                const site = new Site(iSite);
-                if (!site.employees) {
-                  site.employees = [];
-                }
-                data.employees.forEach(tEmp => {
-                  this.employees.push(new Employee(tEmp));
-                  if (site.employees) {
-                    let found = false;
-                    for (let e=0; e < site.employees.length && !found; e++) {
-                      if (site.employees[e].id === tEmp.id) {
-                        found = true;
-                        site.employees[e] = new Employee(tEmp);
-                      }
-                    }
-                    if (!found) {
-                      site.employees.push(new Employee(tEmp));
+          if (data && data !== null) {
+            this.authService.statusMessage = "Ingest complete";
+            this.employees = [];
+            const iSite = this.siteService.getSite();
+            if (iSite) {
+              const site = new Site(iSite);
+              if (!site.employees) {
+                site.employees = [];
+              }
+              data.employees.forEach(tEmp => {
+                this.employees.push(new Employee(tEmp));
+                if (site.employees) {
+                  let found = false;
+                  for (let e=0; e < site.employees.length && !found; e++) {
+                    if (site.employees[e].id === tEmp.id) {
+                      found = true;
+                      site.employees[e] = new Employee(tEmp);
                     }
                   }
-                });
-                this.siteService.setSite(site);
-              } else {
-                data.employees.forEach(tEmp => {
-                  this.employees.push(new Employee(tEmp));
-                });
-              }
+                  if (!found) {
+                    site.employees.push(new Employee(tEmp));
+                  }
+                }
+              });
+              this.siteService.setSite(site);
+            } else {
+              data.employees.forEach(tEmp => {
+                this.employees.push(new Employee(tEmp));
+              });
             }
-            this.ingestForm.controls["file"].setValue('');
-            this.myFiles = [];
+          }
+          this.ingestForm.controls["file"].setValue('');
+          this.myFiles = [];
         },
-        error: err => {
+        error: (err: IngestResponse) => {
           this.dialogService.closeSpinner();
           this.authService.statusMessage = err.exception;
         }
@@ -352,12 +344,8 @@ export class FileIngestComponent {
         this.dialogService.showSpinner();
         this.ingestService.manualIngest(emp.team, emp.site, 
           emp.data.companyinfo.company, this.manualUpdateList).subscribe({
-          next: resp => {
+          next: (data: IngestResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: IngestResponse | null = resp.body;
             if (data && data !== null) {
               this.authService.statusMessage = "Ingest complete";
               this.employees = [];
@@ -392,7 +380,7 @@ export class FileIngestComponent {
             this.ingestForm.controls["file"].setValue('');
             this.myFiles = [];
           },
-          error: err => {
+          error: (err: IngestResponse) => {
             this.dialogService.closeSpinner();
             this.authService.statusMessage = err.exception;
           }

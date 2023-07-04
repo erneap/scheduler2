@@ -164,12 +164,8 @@ export class NewSiteComponent {
         this.siteService.AddSite(iTeam.id, this.siteForm.value.id,
           this.siteForm.value.title, this.siteForm.value.mids, 
           Number(this.siteForm.value.offset), lead, scheduler).subscribe({
-          next: resp => {
+          next: (data: SiteResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: SiteResponse | null = resp.body;
             if (data && data != null && data.site) {
               this.site = new Site(data.site);
               const site = this.siteService.getSite();
@@ -197,9 +193,9 @@ export class NewSiteComponent {
             this.added.emit(this.site);
             this.authService.statusMessage = "Update complete"
           },
-          error: err => {
+          error: (err: SiteResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
       }

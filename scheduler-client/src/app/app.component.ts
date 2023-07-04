@@ -6,6 +6,14 @@ import { AuthService } from './services/auth.service';
 import { SiteService } from './services/site.service';
 import { TeamService } from './services/team.service';
 import { MessageService } from './services/message.service';
+import { DialogService } from './services/dialog-service.service';
+import { EmployeeService } from './services/employee.service';
+import { InitialResponse } from './models/web/employeeWeb';
+import { Site } from './models/sites/site';
+import { HttpResponse } from '@angular/common/http';
+import { NotificationResponse } from './models/web/internalWeb';
+import { Team } from './models/teams/team';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -15,46 +23,103 @@ import { MessageService } from './services/message.service';
 export class AppComponent {
   title = 'client';
   isMobile = false;
+  initialUrl: string = '';
 
   constructor(
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer,
-    public authService: AuthService,
+    protected authService: AuthService,
+    protected dialogService: DialogService,
+    protected empService: EmployeeService,
     protected siteService: SiteService,
     protected teamService: TeamService,
     protected msgService: MessageService,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {
+    if (this.location.path() && this.location.path() !== '') {
+      this.initialUrl = this.location.path();
+    } else {
+      this.initialUrl = "/home";
+    }
     iconRegistry.addSvgIcon('calendar',
       sanitizer.bypassSecurityTrustResourceUrl(
         'assets/images/icons/calendar.svg'));
-    this.authService.getUser();
-    if (this.authService.isTokenExpired()) {
+    const user = this.authService.getUser();
+    if (this.authService.isTokenExpired() || !user) {
       this.router.navigate(['/home']);
     } else {
-      this.msgService.startAlerts();
+      this.getInitialData(user.id);
     }
-    const site = this.siteService.getSite();
-    const team = this.teamService.getTeam();
-    let sitename = "";
-    let teamname = "";
-    if (site) {
-      sitename = site.name;
-    }
-    if (team) {
-      teamname = team.name;
-    }
-    this.authService.setWebLabel(teamname, sitename);
   }
 
   logout() {
+    this.siteService.clearSite();
+    this.teamService.clearTeam();
+    this.authService.setWebLabel('','');
     this.msgService.clearMessages();
+    this.siteService.stopAutoUpdate();
     this.authService.logout();
-    this.router.navigate(['/home']);
   }
 
   getHelp() {
     let url = '/scheduler2/help/index.html';
     window.open(url, "help_win");
+  }
+
+  getInitialData(id: string) {
+    this.authService.statusMessage = "Pulling Initial Data";
+    this.dialogService.showSpinner();
+    this.authService.initialData(id).subscribe({
+      next: (data: InitialResponse) => {
+        this.dialogService.closeSpinner();
+        let site = "";
+        let team = "Scheduler";
+        if (data.employee) {
+          this.empService.setEmployee(data.employee)
+        }
+        if (data.site) {
+          const oSite = new Site(data.site);
+          this.siteService.setSite(oSite);
+          site = oSite.name;
+        }
+        if (data.team) {
+          const oTeam = new Team(data.team);
+          team = oTeam.name;
+          this.teamService.setTeam(oTeam);
+        }
+        this.authService.setWebLabel(team, site);
+        this.siteService.startAutoUpdates();
+        this.getInitialNotifications(id);
+      },
+      error: (err: InitialResponse) => {
+        this.dialogService.closeSpinner();
+        this.authService.statusMessage = `Problem getting initial data: ${err.exception}`;
+      }
+    })
+  }
+
+  getInitialNotifications(id: string) {
+    this.authService.statusMessage = "Checking for notifications";
+    this.dialogService.showSpinner()
+    this.msgService.getEmployeeMessages(id).subscribe({
+      next: (resp: NotificationResponse) => {
+        this.dialogService.closeSpinner();
+        this.authService.statusMessage = "Initial Notifications reviewed";
+        this.msgService.startAlerts();
+        if (resp && resp !== null) {
+          if (this.msgService.showAlerts) {
+            this.router.navigateByUrl('/notifications');
+          } else {
+            this.router.navigateByUrl(this.initialUrl);
+          }
+        }
+      },
+      error: (err: NotificationResponse) => {
+        this.dialogService.closeSpinner();
+        this.authService.statusMessage = `Problem getting notification data: `
+          + `${err.exception}`;
+      }
+    })
   }
 }

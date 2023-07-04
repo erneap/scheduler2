@@ -86,21 +86,17 @@ export class NewTeamComponent {
       this.dialogService.showSpinner();
       this.teamService.addTeam(this.teamForm.value.name,
         this.teamForm.value.workcodes, lead).subscribe({
-          next: resp => {
+          next: (data: SiteResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: SiteResponse | null = resp.body;
             if (data && data != null && data.team) {
               const team = new Team(data.team);
               this.added.emit(team);
             }
             this.authService.statusMessage = "Team Addition complete"
           },
-          error: err => {
+          error: (err: SiteResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
       });
     }

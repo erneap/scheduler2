@@ -142,12 +142,8 @@ export class TeamWorkcodesComponent {
       this.dialogService.showSpinner();
       this.teamService.updateTeamWorkcode(this.team.id, this.selected, field, 
       value).subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data != null && data.team) {
             this.team = new Team(data.team);
             this.setWorkcode();
@@ -156,10 +152,9 @@ export class TeamWorkcodesComponent {
           }
           this.authService.statusMessage = "Update complete"
         },
-        error: (err: Error) => {
-          console.log(err.message);
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
     }
@@ -177,13 +172,9 @@ export class TeamWorkcodesComponent {
       this.codeForm.value.premimum,
       colors[0], colors[1], 
       this.codeForm.value.altcode).subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
           this.selected = this.codeForm.value.id;
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data != null && data.team) {
             this.team = new Team(data.team);
             this.setWorkcode();
@@ -192,9 +183,9 @@ export class TeamWorkcodesComponent {
           }
           this.authService.statusMessage = "Addition complete"
         },
-        error: (err: Error) => {
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
     });
   }
@@ -211,13 +202,9 @@ export class TeamWorkcodesComponent {
         this.dialogService.showSpinner();
         this.teamService.deleteTeamWorkcode(this.team.id, this.selected)
         .subscribe({
-          next: resp => {
+          next: (data: SiteResponse) => {
             this.dialogService.closeSpinner();
             this.selected = 'new';
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: SiteResponse | null = resp.body;
             if (data && data != null && data.team) {
               this.team = new Team(data.team);
               this.setWorkcode();
@@ -226,9 +213,9 @@ export class TeamWorkcodesComponent {
             }
             this.authService.statusMessage = "Addition complete"
           },
-          error: err => {
+          error: (err: SiteResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
       }

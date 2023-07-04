@@ -162,12 +162,8 @@ export class SiteForecastReportLaborCodesComponent {
       this.laborForm.value.hoursPerEmployee, this.laborForm.value.notAssignedName,
       this.laborForm.value.exercise, this.getDateString(startDate), 
       this.getDateString(endDate)).subscribe({
-      next: resp => {
+      next: (data: SiteResponse) => {
         this.dialogService.closeSpinner();
-        if (resp.headers.get('token') !== null) {
-          this.authService.setToken(resp.headers.get('token') as string);
-        }
-        const data: SiteResponse | null = resp.body;
         if (data && data != null && data.site) {
           this.site = new Site(data.site);
           this.siteChanged.emit(new Site(data.site));
@@ -188,9 +184,9 @@ export class SiteForecastReportLaborCodesComponent {
         }
         this.authService.statusMessage = "Retrieval complete"
       },
-      error: err => {
+      error: (err: SiteResponse) => {
         this.dialogService.closeSpinner();
-        this.authService.statusMessage = err.message;
+        this.authService.statusMessage = err.exception;
       }
     });
   }
@@ -233,12 +229,8 @@ export class SiteForecastReportLaborCodesComponent {
         this.dialogService.showSpinner();
         this.siteService.updateReportLaborCode(this.teamid, this.site.id, 
           this.report.id, chgNo, ext, field, value).subscribe({
-          next: resp => {
+          next: (data: SiteResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: SiteResponse | null = resp.body;
             if (data && data != null && data.site) {
               this.site = new Site(data.site);
               this.siteChanged.emit(new Site(data.site));
@@ -258,9 +250,9 @@ export class SiteForecastReportLaborCodesComponent {
             }
             this.authService.statusMessage = "Retrieval complete"
           },
-          error: err => {
+          error: (err: SiteResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
       }

@@ -154,12 +154,8 @@ export class LeaveRequestEditorComponent {
       this.authService.statusMessage = "Processing leave request";
       this.empService.addNewLeaveRequest(this.employee.id, start, end, code)
         .subscribe({
-          next: (resp) => {
+          next: (data: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: EmployeeResponse | null = resp.body;
             if (data && data !== null) {
               if (data.employee) {
                 this.employee = data.employee;
@@ -186,9 +182,9 @@ export class LeaveRequestEditorComponent {
             this.authService.statusMessage = "Leave Request processing complete";
             this.changed.emit(new Employee(this.employee));
           },
-          error: err => {
+          error: (err: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
     }
@@ -218,15 +214,11 @@ export class LeaveRequestEditorComponent {
       this.empService.updateLeaveRequest(this.employee.id, 
         this.request.id, field, value)
         .subscribe({
-          next: (resp) => {
+          next: (data: EmployeeResponse) => {
             this.authService.statusMessage = "Updating Leave Request "
               + "Primary Code change";
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: EmployeeResponse | null = resp.body;
-              if (data && data !== null) {
+            if (data && data !== null) {
               if (data.employee) {
                 this.employee = data.employee;
                 this.employee.data.requests.forEach(req => {
@@ -244,9 +236,9 @@ export class LeaveRequestEditorComponent {
             this.authService.statusMessage = "Update complete";
             this.changed.emit(new Employee(this.employee));
           },
-          error: err => {
+          error: (err: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
     }
@@ -258,13 +250,9 @@ export class LeaveRequestEditorComponent {
       this.empService.updateLeaveRequest(this.employee.id, 
         this.request.id, 'day', value)
         .subscribe({
-          next: (resp) => {
+          next: (data: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: EmployeeResponse | null = resp.body;
-              if (data && data !== null) {
+            if (data && data !== null) {
               if (data.employee) {
                 this.employee = data.employee;
                 this.employee.data.requests.forEach(req => {
@@ -279,9 +267,9 @@ export class LeaveRequestEditorComponent {
             this.authService.statusMessage = "Update complete";
             this.changed.emit(new Employee(this.employee));
           },
-          error: err => {
+          error: (err: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
     }
@@ -301,13 +289,9 @@ export class LeaveRequestEditorComponent {
           this.authService.statusMessage = "Deleting Leave Request";
           this.empService.deleteLeaveRequest(this.employee.id, reqid)
             .subscribe({
-              next: (resp) => {
+              next: (data: EmployeeResponse) => {
                 this.dialogService.closeSpinner();
-                if (resp.headers.get('token') !== null) {
-                  this.authService.setToken(resp.headers.get('token') as string);
-                }
-                const data: EmployeeResponse | null = resp.body;
-                  if (data && data !== null) {
+                if (data && data !== null) {
                   if (data.employee) {
                     this.employee = data.employee;
                     this.employee.data.requests.forEach(req => {
@@ -321,9 +305,9 @@ export class LeaveRequestEditorComponent {
                 this.authService.statusMessage = "Deletion Complete";
                 this.changed.emit(new Employee(this.employee));
               },
-              error: err => {
+              error: (err: EmployeeResponse) => {
                 this.dialogService.closeSpinner();
-                this.authService.statusMessage = err.message;
+                this.authService.statusMessage = err.exception;
               }
             });
         }
@@ -345,12 +329,8 @@ export class LeaveRequestEditorComponent {
     if (iEmp) {
       this.empService.updateLeaveRequest(this.employee.id, this.request.id, 
       "approve", iEmp.id).subscribe({
-        next: (resp) => {
+        next: (data: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: EmployeeResponse | null = resp.body;
           if (data && data !== null) {
             if (data.employee) {
               this.employee = data.employee;
@@ -365,9 +345,9 @@ export class LeaveRequestEditorComponent {
           this.authService.statusMessage = "Approval Complete";
           this.changed.emit(new Employee(this.employee));
         },
-        error: err => {
+        error: (err: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
     }

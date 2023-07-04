@@ -166,12 +166,8 @@ export class SiteEmployeeLeaveRowComponent {
     if (valid) {
       this.empService.updateLeave(this.employee.id, this.leaveday.id, field,
         value).subscribe({
-          next: resp => {
+          next: (data: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: EmployeeResponse | null = resp.body;
             if (data && data !== null) {
               if (data.employee) {
                 this.employee = new Employee(data.employee);
@@ -206,9 +202,9 @@ export class SiteEmployeeLeaveRowComponent {
             this.changed.emit(new Employee(this.employee));
             this.authService.statusMessage = "Update complete";
           },
-          error: err => {
+          error: (err: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         })
     }
@@ -226,12 +222,8 @@ export class SiteEmployeeLeaveRowComponent {
         this.authService.statusMessage = "Deleting Employee Leave";
         this.empService.deleteLeave(this.employee.id, this.leaveday.id)
           .subscribe({
-            next: resp => {
+            next: (data: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              if (resp.headers.get('token') !== null) {
-                this.authService.setToken(resp.headers.get('token') as string);
-              }
-              const data: EmployeeResponse | null = resp.body;
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
@@ -261,9 +253,9 @@ export class SiteEmployeeLeaveRowComponent {
               this.changed.emit(new Employee(this.employee));
               this.authService.statusMessage = "Deletion complete";
             },
-            error: err => {
+            error: (err: EmployeeResponse) => {
               this.dialogService.closeSpinner();
-              this.authService.statusMessage = err.message;
+              this.authService.statusMessage = err.exception;
             }
           });
         

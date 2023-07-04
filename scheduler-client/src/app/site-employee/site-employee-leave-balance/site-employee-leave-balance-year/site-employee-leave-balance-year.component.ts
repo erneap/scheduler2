@@ -73,12 +73,8 @@ export class SiteEmployeeLeaveBalanceYearComponent {
       this.authService.statusMessage = "Updating Leave Balance";
       this.empService.updateLeaveBalance(this.employee.id, this.annualLeave.year,
       field, value).subscribe({
-        next: resp => {
+        next: (data: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: EmployeeResponse | null = resp.body;
           if (data && data !== null) {
             if (data.employee) {
               this.employee = new Employee(data.employee);
@@ -107,9 +103,9 @@ export class SiteEmployeeLeaveBalanceYearComponent {
           this.changed.emit(new Employee(this.employee));
           this.authService.statusMessage = "Update complete";
         },
-        error: err => {
+        error: (err: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
 

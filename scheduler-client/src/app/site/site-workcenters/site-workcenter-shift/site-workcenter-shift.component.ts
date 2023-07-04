@@ -129,12 +129,8 @@ export class SiteWorkcenterShiftComponent {
     this.dialogService.showSpinner();
     this.siteService.updateWorkcenterShift(this.teamid, this.site.id, 
       this.workcenter.id, this.selected, 'move', direction).subscribe({
-      next: resp => {
+      next: (data: SiteResponse) => {
         this.dialogService.closeSpinner();
-        if (resp.headers.get('token') !== null) {
-          this.authService.setToken(resp.headers.get('token') as string);
-        }
-        const data: SiteResponse | null = resp.body;
         if (data && data != null && data.site) {
           const site = this.siteService.getSite();
           if (site) {
@@ -155,9 +151,9 @@ export class SiteWorkcenterShiftComponent {
         }
         this.authService.statusMessage = "Retrieval complete"
       },
-      error: err => {
+      error: (err: SiteResponse) => {
         this.dialogService.closeSpinner();
-        this.authService.statusMessage = err.message;
+        this.authService.statusMessage = err.exception;
       }
     });
   }
@@ -215,12 +211,8 @@ export class SiteWorkcenterShiftComponent {
       this.dialogService.showSpinner();
       this.siteService.updateWorkcenterShift(this.teamid, this.site.id, 
       this.workcenter.id, this.selected, field, outputValue).subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data != null && data.site) {
             const site = this.siteService.getSite();
             if (site) {
@@ -243,9 +235,9 @@ export class SiteWorkcenterShiftComponent {
           }
           this.authService.statusMessage = "Retrieval complete"
         },
-        error: err => {
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
     }
@@ -260,12 +252,8 @@ export class SiteWorkcenterShiftComponent {
       this.siteService.addWorkcenterShift(this.teamid, this.site.id, 
       this.workcenter.id, shiftID, this.shiftForm.value.name)
       .subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data != null && data.site) {
             const site = this.siteService.getSite();
             if (site) {
@@ -289,9 +277,9 @@ export class SiteWorkcenterShiftComponent {
           }
           this.authService.statusMessage = "Addition complete"
         },
-        error: err => {
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
     }
@@ -314,12 +302,8 @@ export class SiteWorkcenterShiftComponent {
         this.dialogService.showSpinner();
         this.siteService.deleteWorkcenterShift(this.teamid, this.site.id, 
         this.workcenter.id, this.selected).subscribe({
-          next: resp => {
+          next: (data: SiteResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: SiteResponse | null = resp.body;
             if (data && data != null && data.site) {
               const site = this.siteService.getSite();
               if (site) {
@@ -343,9 +327,9 @@ export class SiteWorkcenterShiftComponent {
             }
             this.authService.statusMessage = "Shift deletion complete"
           },
-          error: err => {
+          error: (err: SiteResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.message;
+            this.authService.statusMessage = err.exception;
           }
         });
       }

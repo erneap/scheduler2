@@ -116,12 +116,8 @@ export class EmployeeProfileFormComponent {
       this.authService.statusMessage = "Updating User Password";
       this.authService.changePassword(id, passwd)
         .subscribe({
-          next: (resp) => {
+          next: (data: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            if (resp.headers.get('token') !== null) {
-              this.authService.setToken(resp.headers.get('token') as string);
-            }
-            const data: EmployeeResponse | null = resp.body;
             if (data && data !== null) {
               this.formError = data.exception;
               if (data.exception === '') {
@@ -147,9 +143,9 @@ export class EmployeeProfileFormComponent {
             }
             this.authService.statusMessage = "Update complete";
           },
-          error: error => {
+          error: (error: EmployeeResponse) => {
             this.dialogService.closeSpinner();
-            this.authService.statusMessage = error.error.exception;
+            this.authService.statusMessage = error.exception;
           }
         });
     }
@@ -182,12 +178,8 @@ export class EmployeeProfileFormComponent {
     this.authService.statusMessage = `Updating User's ${field.toUpperCase()}`;
     this.empService.updateEmployee(id, field, value)
       .subscribe({
-        next: (resp) => {
+        next: (data: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: EmployeeResponse | null = resp.body;
           if (data && data !== null) {
             if (data.employee) {
               this.employee = data.employee;
@@ -209,9 +201,9 @@ export class EmployeeProfileFormComponent {
           this.changed.emit(new Employee(this.employee));
           this.authService.statusMessage = "Update complete"; 
         },
-        error: (err) => {
+        error: (err: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
   }

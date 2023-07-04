@@ -151,12 +151,8 @@ export class SiteCofsReportEditorComponent {
       this.siteService.updateCofSReport(this.team.id, 
         this.site.id, rptID, field, value, companyid)
         .subscribe({
-        next: resp => {
+        next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();
-          if (resp.headers.get('token') !== null) {
-            this.authService.setToken(resp.headers.get('token') as string);
-          }
-          const data: SiteResponse | null = resp.body;
           if (data && data != null && data.site) {
             this.site = new Site(data.site);
             this.siteChanged.emit(new Site(data.site));
@@ -173,9 +169,9 @@ export class SiteCofsReportEditorComponent {
           }
           this.authService.statusMessage = "Update complete"
         },
-        error: err => {
+        error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.message;
+          this.authService.statusMessage = err.exception;
         }
       });
     }
@@ -202,12 +198,8 @@ export class SiteCofsReportEditorComponent {
       this.reportForm.value.short, 
       this.reportForm.value.start, 
       this.reportForm.value.end).subscribe({
-      next: resp => {
+      next: (data: SiteResponse) => {
         this.dialogService.closeSpinner();
-        if (resp.headers.get('token') !== null) {
-          this.authService.setToken(resp.headers.get('token') as string);
-        }
-        const data: SiteResponse | null = resp.body;
         if (data && data != null && data.site) {
           this.site = new Site(data.site);
           this.siteChanged.emit(new Site(data.site));
@@ -220,9 +212,9 @@ export class SiteCofsReportEditorComponent {
         }
         this.authService.statusMessage = "Addition complete"
       },
-      error: err => {
+      error: (err: SiteResponse) => {
         this.dialogService.closeSpinner();
-        this.authService.statusMessage = err.message;
+        this.authService.statusMessage = err.exception;
       }
     });
   }
@@ -350,12 +342,8 @@ export class SiteCofsReportEditorComponent {
     this.siteService.updateCofSReport(this.team.id, 
       this.site.id, rptID, "sort", direction, 
       this.assignedCompany).subscribe({
-      next: resp => {
+      next: (data: SiteResponse) => {
         this.dialogService.closeSpinner();
-        if (resp.headers.get('token') !== null) {
-          this.authService.setToken(resp.headers.get('token') as string);
-        }
-        const data: SiteResponse | null = resp.body;
         if (data && data != null && data.site) {
           this.site = new Site(data.site);
           this.siteChanged.emit(new Site(data.site));
@@ -369,9 +357,9 @@ export class SiteCofsReportEditorComponent {
         }
         this.authService.statusMessage = "Addition complete"
       },
-      error: err => {
+      error: (err: SiteResponse) => {
         this.dialogService.closeSpinner();
-        this.authService.statusMessage = err.message;
+        this.authService.statusMessage = err.exception;
       }
     });
   }
@@ -418,12 +406,8 @@ export class SiteCofsReportEditorComponent {
     this.siteService.updateCofSReport(this.team.id, 
       this.site.id, rptID, field, value, companyid)
       .subscribe({
-      next: resp => {
+      next: (data: SiteResponse) => {
         this.dialogService.closeSpinner();
-        if (resp.headers.get('token') !== null) {
-          this.authService.setToken(resp.headers.get('token') as string);
-        }
-        const data: SiteResponse | null = resp.body;
         if (data && data != null && data.site) {
           this.site = new Site(data.site);
           this.siteChanged.emit(new Site(data.site));
@@ -440,9 +424,9 @@ export class SiteCofsReportEditorComponent {
         }
         this.authService.statusMessage = "Addition complete"
       },
-      error: err => {
+      error: (err: SiteResponse) => {
         this.dialogService.closeSpinner();
-        this.authService.statusMessage = err.message;
+        this.authService.statusMessage = err.exception;
       }
     });
   }
@@ -460,12 +444,8 @@ export class SiteCofsReportEditorComponent {
           this.authService.statusMessage = "Deleting CofS Report";
           this.dialogService.showSpinner();
           this.siteService.deleteCofSReport(this.team.id, this.site.id, rptID ).subscribe({
-            next: resp => {
+            next: (data: SiteResponse) => {
               this.dialogService.closeSpinner();
-              if (resp.headers.get('token') !== null) {
-                this.authService.setToken(resp.headers.get('token') as string);
-              }
-              const data: SiteResponse | null = resp.body;
               if (data && data != null && data.site) {
                 this.site = new Site(data.site);
                 this.siteChanged.emit(new Site(data.site));
@@ -480,9 +460,9 @@ export class SiteCofsReportEditorComponent {
               }
               this.authService.statusMessage = "Deletion complete"
             },
-            error: err => {
+            error: (err: SiteResponse) => {
               this.dialogService.closeSpinner();
-              this.authService.statusMessage = err.message;
+              this.authService.statusMessage = err.exception;
             }
           });
         }

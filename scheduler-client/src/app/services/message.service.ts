@@ -1,7 +1,7 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MessageRequest, NotificationAck, NotificationResponse } from '../models/web/internalWeb';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { CacheService } from './cache.service';
 import { INotification, Notification } from '../models/employees/notification';
 import { EmployeeService } from './employee.service';
@@ -66,8 +66,7 @@ export class MessageService  extends CacheService {
     const iEmp = this.empService.getEmployee();
     if (iEmp && this.authService.isAuthenticated) {
       this.getEmployeeMessages(iEmp.id).subscribe({
-        next: resp => {
-          const data: NotificationResponse | null = resp.body;
+        next: (data: NotificationResponse) => {
           if (data && data !== null && data.messages) {
             this.setMessages(data.messages)
             this.showAlerts = data.messages.length > 0;
@@ -82,31 +81,61 @@ export class MessageService  extends CacheService {
   }
 
   createMessage(to: string, from: string, message: string): 
-    Observable<HttpResponse<NotificationResponse>> {
+    Observable<NotificationResponse> {
     const url = '/scheduler/api/v2/messages';
     const data: MessageRequest = {
       to: to,
       from: from,
       message: message,
     };
-    return this.httpClient.post<NotificationResponse>(url, data, {observe: 'response'});
+    return this.httpClient.post<NotificationResponse>(url, data).pipe(
+      map((data: NotificationResponse) => {
+        if (data && data.exception === '' && data.messages) {
+          this.showAlerts = (data.messages.length > 0);
+          if (data.messages) {
+            this.setMessages(data.messages);
+          }
+        }
+        return data;
+      })
+    );
   }
 
-  getMessage(id: string): Observable<HttpResponse<NotificationResponse>> {
+  getMessage(id: string): Observable<NotificationResponse> {
     const url = `/scheduler/api/v2/messages/message/${id}`;
-    return this.httpClient.get<NotificationResponse>(url, {observe: 'response'});
+    return this.httpClient.get<NotificationResponse>(url);
   }
 
-  getEmployeeMessages(id: string): Observable<HttpResponse<NotificationResponse>> {
+  getEmployeeMessages(id: string): Observable<NotificationResponse> {
     const url = `/scheduler/api/v2/messages/employee/${id}`;
-    return this.httpClient.get<NotificationResponse>(url, {observe: 'response'});
+    return this.httpClient.get<NotificationResponse>(url).pipe(
+      map((data: NotificationResponse) => {
+        if (data && data.exception === '' && data.messages) {
+          this.showAlerts = (data.messages.length > 0);
+          if (data.messages) {
+            this.setMessages(data.messages);
+          }
+        }
+        return data;
+      })
+    );
   }
 
-  acknowledgeMessages(ids: string[]): Observable<HttpResponse<NotificationResponse>> {
+  acknowledgeMessages(ids: string[]): Observable<NotificationResponse> {
     const url = `/scheduler/api/v2/messages/acknowledge`;
     const data: NotificationAck = {
       messages: ids,
     }
-    return this.httpClient.put<NotificationResponse>(url, data, {observe: 'response'});
+    return this.httpClient.put<NotificationResponse>(url, data).pipe(
+      map((data: NotificationResponse) => {
+        if (data && data.exception === '' && data.messages) {
+          this.showAlerts = (data.messages.length > 0);
+          if (data.messages) {
+            this.setMessages(data.messages);
+          }
+        }
+        return data;
+      })
+    );
   }
 }

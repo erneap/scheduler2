@@ -1,4 +1,3 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -34,7 +33,6 @@ export class HomeComponent {
     protected employeeService: EmployeeService,
     protected siteService: SiteService,
     protected teamService: TeamService,
-    private httpClient: HttpClient,
     private formBuilder: FormBuilder,
     private router: Router,
     public dialog: MatDialog,
@@ -50,21 +48,16 @@ export class HomeComponent {
         Validators.maxLength(30),
       ]],
     });
-    if (this.authService.getUser()) {
+    const user = this.authService.getUser();
+    if (user) {
+      console.log(`Initial User: ${user.lastName}`);
       this.authService.isAuthenticated = true;
-      this.router.navigate(["/employee/schedule"])
+      this.getInitialData(user.id)
     }
   }
 
   ngOnInit() {
     this.buildLoginForm();
-    this.getIP();
-  }
-
-  getIP() {
-    this.ipService.getIPAddress().subscribe((res:any) => {
-      this.ipAddress=res.ip;
-    });
   }
 
   buildLoginForm() {
@@ -108,6 +101,7 @@ export class HomeComponent {
         }
         if (!data.exception || data.exception === '') {
           this.authService.isAuthenticated = true;
+          this.authService.startTokenRenewal();
           this.msgService.startAlerts();
           this.authService.statusMessage = "User Login Complete";
           this.getInitialData(id);
@@ -147,11 +141,36 @@ export class HomeComponent {
           this.teamService.setTeam(oTeam);
         }
         this.authService.setWebLabel(team, site);
-        this.router.navigateByUrl('/employee/schedule');
+        this.siteService.startAutoUpdates();
+        this.getInitialNotifications(id);
       },
       error: (err: InitialResponse) => {
         this.dialogService.closeSpinner();
         this.authService.statusMessage = `Problem getting initial data: ${err.exception}`;
+      }
+    })
+  }
+
+  getInitialNotifications(id: string) {
+    this.authService.statusMessage = "Checking for notifications";
+    this.dialogService.showSpinner()
+    this.msgService.getEmployeeMessages(id).subscribe({
+      next: (data: NotificationResponse) => {
+        this.dialogService.closeSpinner();
+        this.authService.statusMessage = "Initial Notifications reviewed";
+        this.msgService.startAlerts();
+        if (data && data !== null) {
+          if (this.msgService.showAlerts) {
+            this.router.navigateByUrl('/notifications');
+          } else {
+            this.router.navigateByUrl('/employee/schedule');
+          }
+        }
+      },
+      error: (err: NotificationResponse) => {
+        this.dialogService.closeSpinner();
+        this.authService.statusMessage = `Problem getting notification data: `
+          + `${err.exception}`;
       }
     })
   }

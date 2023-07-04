@@ -1,7 +1,6 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Message } from '../models/web/employeeWeb';
 import { IngestChange, IngestResponse, ManualIngestChanges } from '../models/web/siteWeb';
 
 @Injectable({
@@ -14,18 +13,18 @@ export class SiteIngestService {
   {}
 
   getIngestEmployees(team: string, site: string, company: string): 
-    Observable<HttpResponse<IngestResponse>> {
+    Observable<IngestResponse> {
     const url = `/scheduler/api/v2/ingest/${team}/${site}/${company}`;
-    return this.httpClient.get<IngestResponse>(url, { observe: 'response'});
+    return this.httpClient.get<IngestResponse>(url);
   }
 
-  fileIngest(formdata: FormData): Observable<HttpResponse<IngestResponse>> {
+  fileIngest(formdata: FormData): Observable<IngestResponse> {
     const url = '/scheduler/api/v2/ingest/';
-    return this.httpClient.post<IngestResponse>(url, formdata, {observe: 'response'});
+    return this.httpClient.post<IngestResponse>(url, formdata);
   }
 
   manualIngest(team: string, site: string, company: string, changes: IngestChange[]): 
-    Observable<HttpResponse<IngestResponse>> {
+    Observable<IngestResponse> {
     const url = '/scheduler/api/v2/ingest/';
     const data: ManualIngestChanges = {
       teamid: team,
@@ -33,6 +32,6 @@ export class SiteIngestService {
       companyid: company,
       changes: changes,
     }
-    return this.httpClient.put<IngestResponse>(url, data, {observe: 'response'});
+    return this.httpClient.put<IngestResponse>(url, data);
   }
 }

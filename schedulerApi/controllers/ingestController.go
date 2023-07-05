@@ -9,7 +9,9 @@ import (
 
 	"github.com/erneap/go-models/converters"
 	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/logs"
 	"github.com/erneap/go-models/notifications"
+	"github.com/erneap/go-models/svcs"
 	"github.com/erneap/scheduler2/schedulerApi/models/ingest"
 	"github.com/erneap/scheduler2/schedulerApi/models/reports"
 	"github.com/erneap/scheduler2/schedulerApi/models/web"
@@ -25,11 +27,15 @@ func GetIngestEmployees(c *gin.Context) {
 
 	companyEmployees, err := getEmployeesAfterIngest(teamid, siteid, companyid)
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"GetIngestEmployees: GetEmployees: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.IngestResponse{Exception: err.Error()})
 	}
 
 	team, err := services.GetTeam(teamid)
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"GetIngestEmployees: GetTeam: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.IngestResponse{Exception: err.Error()})
 		return
 	}
@@ -41,6 +47,8 @@ func GetIngestEmployees(c *gin.Context) {
 		}
 	}
 
+	svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+		"GetIngestEmployees: Provided employees: %d", len(companyEmployees)))
 	c.JSON(http.StatusOK, web.IngestResponse{
 		Employees:  companyEmployees,
 		IngestType: ingestType,
@@ -85,6 +93,8 @@ func IngestFiles(c *gin.Context) {
 
 	team, err := services.GetTeam(teamid)
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"IngestFiles: GetTeam: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.IngestResponse{Exception: "Team not found"})
 		return
 	}
@@ -109,20 +119,13 @@ func IngestFiles(c *gin.Context) {
 			Files: files,
 		}
 		records, start, end = sapIngest.Process()
-		fmt.Print(start)
-		fmt.Print(" - ")
-		fmt.Println(end)
 	}
 
-	fmt.Printf("%d - %d\n", start.Weekday(), startDay)
 	// ensure the start date is the start of the company's workweek as provided
 	// in the company record.
 	for int(start.Weekday()) != startDay {
 		start = start.AddDate(0, 0, -1)
 	}
-	fmt.Print(start)
-	fmt.Print(" - ")
-	fmt.Println(end)
 
 	/////////////////////////////////////////////////////////////////////////////
 	// Algorithm for updating the employee records for leave and work
@@ -139,6 +142,8 @@ func IngestFiles(c *gin.Context) {
 
 	empls, err := services.GetEmployees(teamid, siteid)
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"IngestFiles: GetEmployees: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, notifications.Message{Message: err.Error()})
 		return
 	}
@@ -168,12 +173,16 @@ func IngestFiles(c *gin.Context) {
 
 				work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(start.Year()))
 				if err == nil {
+					svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+						"IngestFiles: GetEmployeeWork: %s", err.Error()))
 					work.RemoveWork(start, end)
 					services.UpdateEmployeeWork(work)
 				}
 				if start.Year() != end.Year() {
 					work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(end.Year()))
 					if err == nil {
+						svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+							"IngestFiles: GetEmployeeWork (Year2): %s", err.Error()))
 						work.RemoveWork(start, end)
 						services.UpdateEmployeeWork(work)
 					}
@@ -240,9 +249,14 @@ func IngestFiles(c *gin.Context) {
 
 	companyEmployees, err := getEmployeesAfterIngest(teamid, siteid, companyid)
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"IngestFiles: GetEmployeesAfterIngest: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.IngestResponse{Exception: err.Error()})
+		return
 	}
 
+	svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+		"IngestFiles: Provided Employees for Company: %s", companyid))
 	c.JSON(http.StatusOK, web.IngestResponse{
 		Employees:  companyEmployees,
 		IngestType: ingestType,
@@ -254,6 +268,8 @@ func ManualIngestActions(c *gin.Context) {
 	var data web.ManualIngestChanges
 
 	if err := c.ShouldBindJSON(&data); err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"ManualIngestActions: BindRequest: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -331,9 +347,13 @@ func ManualIngestActions(c *gin.Context) {
 	companyEmployees, err := getEmployeesAfterIngest(data.TeamID, data.SiteID,
 		data.CompanyID)
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"ManualIngestActions: GetEmployeesAfterIngest: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.IngestResponse{Exception: err.Error()})
 	}
 
+	svcs.AddLogEntry("scheduler", logs.Debug, "ManualIngestActions: "+
+		"Provided company employees: "+data.CompanyID)
 	c.JSON(http.StatusOK, web.IngestResponse{
 		Employees:  companyEmployees,
 		IngestType: "",

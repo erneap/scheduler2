@@ -20,15 +20,15 @@ func main() {
 	roles := []string{"ADMIN", "SCHEDULER", "siteleader", "company", "teamleader"}
 	api := router.Group("/scheduler/api/v2")
 	{
-		api.GET("/:userid", svcs.CheckJWT(), controllers.GetInitial)
+		api.GET("/:userid", svcs.CheckJWT("scheduler"), controllers.GetInitial)
 		emp := api.Group("/employee")
 		{
-			emp.GET("/:empid", svcs.CheckJWT(), controllers.GetEmployee)
-			emp.POST("/", svcs.CheckJWT(), svcs.CheckRoles("scheduler", roles),
+			emp.GET("/:empid", svcs.CheckJWT("scheduler"), controllers.GetEmployee)
+			emp.POST("/", svcs.CheckJWT("scheduler"), svcs.CheckRoles("scheduler", roles),
 				controllers.CreateEmployee)
-			emp.PUT("/", svcs.CheckJWT(), controllers.UpdateEmployeeBasic)
-			emp.DELETE("/:empid", svcs.CheckJWT(), controllers.DeleteEmployee)
-			asgmt := emp.Group("/assignment").Use(svcs.CheckJWT())
+			emp.PUT("/", svcs.CheckJWT("scheduler"), controllers.UpdateEmployeeBasic)
+			emp.DELETE("/:empid", svcs.CheckJWT("scheduler"), controllers.DeleteEmployee)
+			asgmt := emp.Group("/assignment").Use(svcs.CheckJWT("scheduler"))
 			{
 				asgmt.POST("/", controllers.CreateEmployeeAssignment)
 				asgmt.PUT("/", controllers.UpdateEmployeeAssignment)
@@ -36,38 +36,38 @@ func main() {
 				asgmt.DELETE("/:empid/:asgmtid",
 					controllers.DeleteEmployeeAssignment)
 			}
-			vari := emp.Group("/variation").Use(svcs.CheckJWT())
+			vari := emp.Group("/variation").Use(svcs.CheckJWT("scheduler"))
 			{
 				vari.POST("/", controllers.CreateEmployeeVariation)
 				vari.PUT("/", controllers.UpdateEmployeeVariation)
 				vari.PUT("/workday", controllers.UpdateEmployeeVariationWorkday)
 				vari.DELETE("/:empid/:variid", controllers.DeleteEmployeeVariation)
 			}
-			balance := emp.Group("/balance").Use(svcs.CheckJWT())
+			balance := emp.Group("/balance").Use(svcs.CheckJWT("scheduler"))
 			{
 				balance.POST("/", controllers.CreateEmployeeLeaveBalance)
 				balance.PUT("/", controllers.UpdateEmployeeLeaveBalance)
 				balance.DELETE("/:empid/:year", controllers.DeleteEmployeeLeaveBalance)
 			}
-			leaves := emp.Group("/leaves").Use(svcs.CheckJWT())
+			leaves := emp.Group("/leaves").Use(svcs.CheckJWT("scheduler"))
 			{
 				leaves.POST("/", controllers.AddEmployeeLeaveDay)
 				leaves.PUT("/", controllers.UpdateEmployeeLeaveDay)
 				leaves.DELETE("/:empid/:lvid", controllers.DeleteEmployeeLeaveDay)
 			}
-			lvReq := emp.Group("/request").Use(svcs.CheckJWT())
+			lvReq := emp.Group("/request").Use(svcs.CheckJWT("scheduler"))
 			{
 				lvReq.POST("/", controllers.CreateEmployeeLeaveRequest)
 				lvReq.PUT("/", controllers.UpdateEmployeeLeaveRequest)
 				lvReq.DELETE("/:empid/:reqid", controllers.DeleteEmployeeLeaveRequest)
 			}
-			lCode := emp.Group("/laborcode").Use(svcs.CheckJWT())
+			lCode := emp.Group("/laborcode").Use(svcs.CheckJWT("scheduler"))
 			{
 				lCode.POST("/", controllers.AddEmployeeLaborCode)
 				lCode.DELETE("/:empid/:chgno/:ext", controllers.DeleteEmployeeLaborCode)
 			}
 		}
-		site := api.Group("/site", svcs.CheckJWT(),
+		site := api.Group("/site", svcs.CheckJWT("scheduler"),
 			svcs.CheckRoles("scheduler", roles))
 		{
 			site.GET("/:teamid/:siteid", controllers.GetSite)
@@ -126,7 +126,7 @@ func main() {
 			}
 		}
 
-		team := api.Group("/team", svcs.CheckJWT())
+		team := api.Group("/team", svcs.CheckJWT("scheduler"))
 		{
 			team.GET("/:teamid", controllers.GetTeam)
 			team.POST("/", svcs.CheckRoles("scheduler", roles),
@@ -157,7 +157,7 @@ func main() {
 			}
 		}
 
-		ingest := api.Group("/ingest", svcs.CheckJWT())
+		ingest := api.Group("/ingest", svcs.CheckJWT("scheduler"))
 		{
 			ingest.GET("/:teamid/:siteid/:company",
 				svcs.CheckRoles("scheduler", roles),
@@ -168,19 +168,19 @@ func main() {
 				controllers.ManualIngestActions)
 		}
 
-		admin := api.Group("/admin", svcs.CheckJWT(),
+		admin := api.Group("/admin", svcs.CheckJWT("scheduler"),
 			svcs.CheckRole("scheduler", "admin"))
 		{
 			admin.GET("/teams", controllers.GetTeams)
 			admin.DELETE("/teams/:teamid", controllers.DeleteTeam)
 		}
 
-		reports := api.Group("/reports", svcs.CheckJWT())
+		reports := api.Group("/reports", svcs.CheckJWT("scheduler"))
 		{
 			reports.POST("/", controllers.CreateReport)
 		}
 
-		notes := api.Group("/messages", svcs.CheckJWT())
+		notes := api.Group("/messages", svcs.CheckJWT("scheduler"))
 		{
 			notes.GET("/", controllers.GetAllMessages)
 			notes.GET("/message/:id", controllers.GetMessage)

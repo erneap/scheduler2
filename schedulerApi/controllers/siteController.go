@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"sort"
 	"strconv"
@@ -8,7 +9,9 @@ import (
 	"time"
 
 	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/logs"
 	"github.com/erneap/go-models/sites"
+	"github.com/erneap/go-models/svcs"
 	"github.com/erneap/scheduler2/schedulerApi/models/web"
 	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/gin-gonic/gin"
@@ -20,17 +23,23 @@ func GetSite(c *gin.Context) {
 	teamID := c.Param("teamid")
 	siteID := c.Param("siteid")
 
-	site, err := services.GetSite(teamID, siteID)
+	site, err := getSite(teamID, siteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"GetSite: GetSite: %s", "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"GetSite: GetSite: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
 		return
 	}
+
+	svcs.AddLogEntry("scheduler", logs.Debug, "GetSite: Provided site with employees")
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -38,10 +47,28 @@ func ShowEmployees(c *gin.Context) bool {
 	return strings.ToLower(c.Param("employees")) == "true"
 }
 
+func getSite(teamid, siteid string) (*sites.Site, error) {
+	site, err := services.GetSite(teamid, siteid)
+	if err != nil {
+		return nil, err
+	}
+
+	emps, err := services.GetEmployees(teamid, siteid)
+	if err != nil {
+		return nil, err
+	}
+	site.Employees = append(site.Employees, emps...)
+	sort.Sort(employees.ByEmployees(site.Employees))
+
+	return site, nil
+}
+
 func CreateSite(c *gin.Context) {
 	var data web.NewSiteRequest
 
 	if err := c.ShouldBindJSON(&data); err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"CreateSite: DataBinding: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -49,6 +76,8 @@ func CreateSite(c *gin.Context) {
 
 	site, err := services.CreateSite(data.TeamID, data.SiteID, data.Name)
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"CreateSite: CreateSite: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
@@ -61,7 +90,11 @@ func CreateSite(c *gin.Context) {
 		SortID: uint(1),
 	}
 	site.Workcenters = append(site.Workcenters, newWorkcenter)
-	services.UpdateSite(data.TeamID, *site)
+	err = services.UpdateSite(data.TeamID, *site)
+	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"CreateSite: UpdateSite: %s", err.Error()))
+	}
 	teamID, _ := primitive.ObjectIDFromHex(data.TeamID)
 
 	emp := employees.Employee{
@@ -91,8 +124,17 @@ func CreateSite(c *gin.Context) {
 	}
 	emp.Data.Assignments = append(emp.Data.Assignments, asgmt)
 
-	empl, _ := services.CreateEmployee(emp, data.Leader.Password,
+	empl, err := services.CreateEmployee(emp, data.Leader.Password,
 		"scheduler-siteleader", data.TeamID, data.SiteID)
+	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"CreateSite: CreateEmployee (Lead): %s", err.Error()))
+	}
+	empl, err = services.GetEmployee(empl.ID.Hex())
+	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"CreateSite: GetEmployee (siteleader): %s", err.Error()))
+	}
 	site.Employees = append(site.Employees, *empl)
 
 	if data.Scheduler != nil {
@@ -123,11 +165,22 @@ func CreateSite(c *gin.Context) {
 		}
 		emp.Data.Assignments = append(emp.Data.Assignments, asgmt)
 
-		empl, _ = services.CreateEmployee(emp, data.Scheduler.Password,
+		empl, err = services.CreateEmployee(emp, data.Scheduler.Password,
 			"scheduler-scheduler", data.TeamID, data.SiteID)
+		if err != nil {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"CreateSite: CreateEmployee (scheduler): %s", err.Error()))
+		}
+		empl, err = services.GetEmployee(empl.ID.Hex())
+		if err != nil {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"CreateSite: GetEmployee (scheduler): %s", err.Error()))
+		}
 		site.Employees = append(site.Employees, *empl)
 	}
+	sort.Sort(employees.ByEmployees(site.Employees))
 
+	svcs.AddLogEntry("scheduler", logs.Debug, "CreateSite: Site Created")
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -135,17 +188,23 @@ func UpdateSite(c *gin.Context) {
 	var data web.NewSiteRequest
 
 	if err := c.ShouldBindJSON(&data); err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"UpdateSite: DataBinding: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
 	}
 
-	site, err := services.GetSite(data.TeamID, data.SiteID)
+	site, err := getSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"UpdateSite: GetSite: %s", "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"UpdateSite: GetSite: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -158,11 +217,15 @@ func UpdateSite(c *gin.Context) {
 
 	err = services.UpdateSite(data.TeamID, *site)
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"UpdateSite: UpdateSite: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
+	svcs.AddLogEntry("scheduler", logs.Debug, "UpdateSite: Site Updated: "+
+		site.Name)
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -173,6 +236,8 @@ func DeleteSite(c *gin.Context) {
 	err := services.DeleteSite(teamid, siteid)
 
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"DeleteSite: DeleteSite: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
@@ -184,6 +249,8 @@ func DeleteSite(c *gin.Context) {
 func AddSitesEmployeeLeaveBalances(c *gin.Context) {
 	var data web.CreateEmployeeLeaveBalances
 	if err := c.ShouldBindJSON(&data); err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"AddSitesEmployeeLeaveBalances: DataBinding: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
@@ -199,22 +266,24 @@ func AddSitesEmployeeLeaveBalances(c *gin.Context) {
 		}
 	}
 
-	site, err := services.GetSite(data.TeamID, data.SiteID)
+	site, err := getSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"AddSitesEmployeeLeaveBalances: GetSite: %s", "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"UpdateSite: GetSite: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
 		return
 	}
 
-	emps, _ = services.GetEmployees(data.TeamID, data.SiteID)
-	site.Employees = append(site.Employees, emps...)
-	sort.Sort(employees.ByEmployees(site.Employees))
-
+	svcs.AddLogEntry("scheduler", logs.Debug, "AddSitesEmployeeLeaveBalances: "+
+		"Site With Employee Provided after update")
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -223,17 +292,23 @@ func CreateWorkcenter(c *gin.Context) {
 	var data web.NewSiteWorkcenter
 
 	if err := c.ShouldBindJSON(&data); err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"CreateWorkcenter: DataBinding: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
 	}
 
-	site, err := services.GetSite(data.TeamID, data.SiteID)
+	site, err := getSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"CreateWorkcenter: GetSite: %s", "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"CreateWorkcenter: GetSite: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -261,10 +336,15 @@ func CreateWorkcenter(c *gin.Context) {
 	}
 	err = services.UpdateSite(data.TeamID, *site)
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"CreateWorkcenter: UpdateSite: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
+
+	svcs.AddLogEntry("scheduler", logs.Debug,
+		"CreateWorkcenter: Site Workcenter created")
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -272,17 +352,23 @@ func UpdateWorkcenter(c *gin.Context) {
 	var data web.SiteWorkcenterUpdate
 
 	if err := c.ShouldBindJSON(&data); err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"UpdateWorkcenter: DataBinding: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
 	}
 
-	site, err := services.GetSite(data.TeamID, data.SiteID)
+	site, err := getSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"UpdateWorkcenter: GetSite: %s", "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"UpdateWorkcenter: GetSite: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -318,10 +404,13 @@ func UpdateWorkcenter(c *gin.Context) {
 	}
 	err = services.UpdateSite(data.TeamID, *site)
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"UpdateWorkcenter: UpdateSite: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
+	svcs.AddLogEntry("scheduler", logs.Debug, "UpdateWorkcenter: Update Complete")
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -330,12 +419,16 @@ func DeleteSiteWorkcenter(c *gin.Context) {
 	siteID := c.Param("siteid")
 	wkctrID := c.Param("wkctrid")
 
-	site, err := services.GetSite(teamID, siteID)
+	site, err := getSite(teamID, siteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"DeleteSiteWorkcenter: GetSite: %s", "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
+			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+				"DeleteSiteWorkcenter: GetSite: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -359,10 +452,14 @@ func DeleteSiteWorkcenter(c *gin.Context) {
 	}
 	err = services.UpdateSite(teamID, *site)
 	if err != nil {
+		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+			"DeleteSiteWorkcenter: UpdateSite: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
+	svcs.AddLogEntry("scheduler", logs.Debug, "DeleteSiteWorkcenter: "+
+		"Workcenter deleted")
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 

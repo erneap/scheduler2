@@ -8,7 +8,7 @@
         </div>
         <span class="flex-spacer"></span>
         <button mat-icon-button color="accent"
-            *ngIf="this.variation && this.variation.id > 1"
+            *ngIf="this.variation && this.variation.id > 0"
             matTooltip="Delete Current Variation"
             (click)="deleteVariation()">
             <mat-icon>delete</mat-icon>

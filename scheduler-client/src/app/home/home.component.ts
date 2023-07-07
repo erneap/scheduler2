@@ -111,6 +111,7 @@ export class HomeComponent {
         }
       },
       error: (err: AuthenticationResponse) => {
+        console.log(err);
         this.dialogService.closeSpinner();
         this.loginError = err.exception
         this.authService.statusMessage = err.exception;

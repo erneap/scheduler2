@@ -66,6 +66,21 @@
         <div class="label">Approval Date:</div>
         <div class="label">{{getApprovedDate()}}</div>
       </div>
+      <div class="fxLayout-row-center">
+        <div class="label">PTO Hours</div>
+        <div class="label">{{ptohours}}</div>
+      </div>
+      <div class="fxLayout-row-center">
+        <div class="label">Holiday Hours</div>
+        <div class="label">{{holidayhours}}</div>
+      </div>
+    </div>
+    <div class="flexlayout row center" *ngIf="draft" style="padding-left: 50px;">
+      <button mat-raised-button color="accent" 
+        matTooltip="Submit for Approval"
+        (click)="submitForApproval()">
+        Submit for Approval
+      </button>
     </div>
     <div class="flexlayout row center" *ngIf="approver" style="padding-left: 50px;">
       <button mat-raised-button color="accent" 

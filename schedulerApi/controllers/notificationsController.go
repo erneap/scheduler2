@@ -142,8 +142,15 @@ func AcknowledgeMessages(c *gin.Context) {
 	}
 
 	exceptions := ""
+	userid := ""
 	if len(data.Messages) > 0 {
 		for m, msg := range data.Messages {
+			if userid == "" {
+				message, err := svcs.GetMessage(msg)
+				if err == nil {
+					userid = message.To
+				}
+			}
 			err := svcs.DeleteMessage(msg)
 			if err != nil {
 				if exceptions != "" {
@@ -162,5 +169,11 @@ func AcknowledgeMessages(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, resp)
 		return
 	}
-	c.Status(http.StatusOK)
+
+	messages, _ := svcs.GetMessagesByEmployee(userid)
+	resp := &web.NotificationResponse{
+		Messages:  messages,
+		Exception: "",
+	}
+	c.JSON(http.StatusOK, resp)
 }

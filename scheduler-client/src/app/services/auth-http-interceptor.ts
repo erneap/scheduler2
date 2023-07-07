@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { Observable, throwError as observableThrowError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { AuthService } from "./auth.service";
+import { AuthenticationResponse } from "../models/web/employeeWeb";
 
 @Injectable()
 export class AuthHttpInterceptor implements HttpInterceptor {
@@ -25,6 +26,15 @@ export class AuthHttpInterceptor implements HttpInterceptor {
                         queryParams: { 
                             redirectUrl: this.router.routerState.snapshot.url },
                     })
+                }
+                if (err.error.token || (err.error.token === '' 
+                    && err.error.exception !== '')) {
+                    const error: AuthenticationResponse = {
+                        token: err.error.token,
+                        exception: err.error.exception,
+                        user: err.error.user,
+                    }
+                    return observableThrowError(() => error);
                 }
                 let message = "";
                 // need to transform HTML error messages to JSON type by extracting only the

@@ -101,7 +101,6 @@ export class SiteEmployeeVariationComponent {
   }
 
   selectVariation() {
-    
     const variID = Number(this.variationForm.value.variation);
     if (variID > 0) {
       this.employee.data.variations.forEach(vari => {

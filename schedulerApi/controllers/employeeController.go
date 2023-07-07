@@ -154,7 +154,7 @@ func UpdateEmployeeBasic(c *gin.Context) {
 	}
 
 	// Get the Employee through the data service
-	emp, err := services.GetEmployee(data.UserID)
+	emp, err := services.GetEmployee(data.ID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			svcs.AddLogEntry("scheduler", logs.Debug,
@@ -169,7 +169,7 @@ func UpdateEmployeeBasic(c *gin.Context) {
 		}
 		return
 	}
-	user, err := svcs.GetUserByID(data.UserID)
+	user, err := svcs.GetUserByID(data.ID)
 	if err != nil {
 		svcs.AddLogEntry("scheduler", logs.Debug,
 			fmt.Sprintf("UpdateEmployeeBasic, GetUserById, %s", err.Error()))
@@ -856,7 +856,7 @@ func UpdateEmployeeLeaveBalance(c *gin.Context) {
 		return
 	}
 
-	emp, err := services.GetEmployee(data.UserID)
+	emp, err := services.GetEmployee(data.ID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
@@ -1032,7 +1032,7 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 		return
 	}
 
-	emp, err := services.GetEmployee(data.UserID)
+	emp, err := services.GetEmployee(data.ID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
@@ -1068,24 +1068,36 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 		return
 	}
 
+	fmt.Println(msg)
+
 	if msg != "" {
 		if strings.Contains(strings.ToLower(msg), "approved") {
-			svcs.CreateMessage(emp.ID.Hex(), data.Value, msg)
+			err = svcs.CreateMessage(emp.ID.Hex(), data.Value, msg)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
 			to := []string{emp.User.EmailAddress}
 			subj := "Leave Request Approved"
-			svcs.SendMail(to, subj, msg)
+			err = svcs.SendMail(to, subj, msg)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
 		} else {
-			var to []string
 			siteEmps, _ := services.GetEmployees(emp.TeamID.Hex(), emp.SiteID)
 			for _, e := range siteEmps {
 				if e.User.IsInGroup("scheduler", "siteleader") ||
 					e.User.IsInGroup("scheduler", "scheduler") {
-					to = append(to, e.User.EmailAddress)
-					svcs.CreateMessage(e.ID.Hex(), emp.ID.Hex(), msg)
+					fmt.Println(e.Name.GetLastFirst())
+					to := []string{e.User.EmailAddress}
+					err = svcs.CreateMessage(e.ID.Hex(), emp.ID.Hex(), msg)
+					if err != nil {
+						fmt.Println(err.Error())
+					}
+					err = svcs.SendMail(to, "Leave Request Submitted", msg)
+					if err != nil {
+						fmt.Println(err.Error())
+					}
 				}
-			}
-			if len(to) > 0 {
-				svcs.SendMail(to, "Leave Request Created", msg)
 			}
 		}
 	}
@@ -1101,7 +1113,7 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 
 	// return the corrected employee back to the client.
 	svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
-		"UpdateEmployeeLeaveRequest: Updated Leave Request: %s: %s", data.UserID,
+		"UpdateEmployeeLeaveRequest: Updated Leave Request: %s: %s", data.ID,
 		data.OptionalID))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
@@ -1259,7 +1271,7 @@ func UpdateEmployeeLeaveDay(c *gin.Context) {
 		return
 	}
 
-	emp, err := services.GetEmployee(data.UserID)
+	emp, err := services.GetEmployee(data.ID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			svcs.AddLogEntry("scheduler", logs.Debug,
@@ -1303,7 +1315,7 @@ func UpdateEmployeeLeaveDay(c *gin.Context) {
 
 	// return the corrected employee back to the client.
 	svcs.AddLogEntry("scheduler", logs.Debug,
-		"UpdateEmployeeLeaveDay: Leave Day Updated: "+data.UserID+": "+
+		"UpdateEmployeeLeaveDay: Leave Day Updated: "+data.ID+": "+
 			data.OptionalID+":"+data.Field+"-"+data.Value)
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }

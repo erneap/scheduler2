@@ -40,6 +40,9 @@ export class LeaveRequestEditorComponent {
   editorForm: FormGroup;
   leaveList: Workcode[];
   approver: boolean = false;
+  draft: boolean = false;
+  ptohours: number = 0;
+  holidayhours: number = 0;
 
   constructor(
     protected authService: AuthService,
@@ -78,19 +81,30 @@ export class LeaveRequestEditorComponent {
   }
 
   setCurrent() {
+    this.ptohours = 0.0;
+    this.holidayhours = 0.0;
     this.approver = false;
     this.editorForm.controls['start'].setValue(this.request.startdate);
     this.editorForm.controls['end'].setValue(this.request.enddate);
     this.editorForm.controls['primarycode'].setValue(this.request.primarycode);
+    this.draft = (this.request.status.toLowerCase() === 'draft')
     const tEmp = this.authService.getUser();
     if (tEmp) {
       if (this.request.id !== '' && this.employee.id !== tEmp.id 
+        && this.request.status.toLowerCase() === "requested"
         && this.request.approvedby === ''
         && (this.authService.hasRole('scheduler')
         || this.authService.hasRole('siteleader'))) {
         this.approver = true;
       }
     }
+    this.request.requesteddays.forEach(day => {
+      if (day.code.toLowerCase() === 'v') {
+        this.ptohours += day.hours;
+      } else if (day.code.toLowerCase() === 'h') {
+        this.holidayhours += day.hours;
+      }
+    })
   }
 
   getDateString(date: Date): string {
@@ -351,5 +365,37 @@ export class LeaveRequestEditorComponent {
         }
       });
     }
+  }
+
+  submitForApproval() {
+    this.authService.statusMessage = "Submitting for approval";
+    this.dialogService.showSpinner();
+    const iEmp = this.empService.getEmployee();
+    if (iEmp) {
+      this.empService.updateLeaveRequest(this.employee.id, this.request.id, 
+      "requested", iEmp.id).subscribe({
+        next: (data: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          if (data && data !== null) {
+            if (data.employee) {
+              this.employee = data.employee;
+              this.employee.data.requests.forEach(req => {
+                if (this.request.id === req.id) {
+                  this.request = new LeaveRequest(req)
+                }
+              });
+            }
+            this.setCurrent();
+          }
+          this.authService.statusMessage = "Submit for Approval Complete";
+          this.changed.emit(new Employee(this.employee));
+        },
+        error: (err: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          this.authService.statusMessage = err.exception;
+        }
+      });
+    }
+
   }
 }

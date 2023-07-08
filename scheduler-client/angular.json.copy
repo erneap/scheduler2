@@ -38,7 +38,7 @@
           },
           "configurations": {
             "production": {
-              "baseHref": "/scheduler2/",
+              "baseHref": "/scheduler/",
               "budgets": [
                 {
                   "type": "initial",

@@ -14,10 +14,14 @@ import { TeamComponent } from './team/team.component';
 import { DataPurgeComponent } from './admin-actions/data-purge/data-purge.component';
 import { ReportsComponent } from './reports/reports.component';
 import { NotificationsComponent } from './employee/notifications/notifications.component';
+import { ForgotPasswordComponent } from './home/forgot-password/forgot-password.component';
+import { ForgotPasswordResetComponent } from './home/forgot-password-reset/forgot-password-reset.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
+  { path: 'reset/start', component: ForgotPasswordComponent },
+  { path: 'reset/finish', component: ForgotPasswordResetComponent },
   { path: 'employee', 
     loadChildren: () => import('./employee/employee.module')
       .then(m => m.EmployeeModule) 

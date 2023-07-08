@@ -16,6 +16,8 @@ import { MessageService } from '../services/message.service';
 import { NotificationResponse } from '../models/web/internalWeb';
 import { Site } from '../models/sites/site';
 import { Team } from '../models/teams/team';
+import { Employee } from '../models/employees/employee';
+import { PtoHolidayBelowDialogComponent } from './pto-holiday-below-dialog/pto-holiday-below-dialog.component';
 
 @Component({
   selector: 'app-home',
@@ -126,10 +128,34 @@ export class HomeComponent {
     this.authService.initialData(id).subscribe({
       next: (data: InitialResponse) => {
         this.dialogService.closeSpinner();
+        let leaveBalance: number = 0;
+        let holidayBalance: number = 0;
+        let ptoHours: number = 0;
+        let holidayHours: number = 0;
+        const now = new Date();
+        let emp: Employee | undefined = undefined;
         let site = "";
         let team = "Scheduler";
         if (data.employee) {
           this.employeeService.setEmployee(data.employee)
+          emp = new Employee(data.employee);
+          emp.data.leaves.forEach(lv => {
+            if (lv.leavedate.getFullYear() === now.getFullYear()) {
+              switch (lv.code.toLowerCase()) {
+                case "v":
+                  ptoHours += lv.hours;
+                  break;
+                case "h":
+                  holidayHours += lv.hours;
+                  break;
+              }
+            }
+          });
+          emp.data.balance.forEach(bal => {
+            if (bal.year === now.getFullYear()) {
+              leaveBalance = bal.annual + bal.carryover;
+            }
+          });
         }
         if (data.site) {
           const oSite = new Site(data.site);
@@ -140,6 +166,33 @@ export class HomeComponent {
           const oTeam = new Team(data.team);
           team = oTeam.name;
           this.teamService.setTeam(oTeam);
+          if (emp) {
+            oTeam.companies.forEach(co => {
+              if (emp?.data.companyinfo.company === co.id) {
+                holidayBalance = 8.0 * co.holidays.length;
+              }
+            });
+          }
+        }
+        let holPct = 0.0;
+        if (holidayBalance > 0.0) {
+          holPct = (holidayHours / holidayBalance ) * 100.0;
+        }
+        let ptoPct = 0.0;
+        if (leaveBalance > 0.0) {
+          ptoPct = (ptoHours / leaveBalance ) * 100.0;
+        }
+        if ((holPct > 0.0 && holPct < 80.0) 
+          || (ptoPct > 0.0 && ptoPct < 80.0)) {
+            const dialogRef = this.dialog.open(PtoHolidayBelowDialogComponent, {
+              width: '400px',
+              data: { 
+                ptoHours: ptoHours,
+                holidayHours: holidayHours,
+                totalPTO: leaveBalance,
+                totalHoliday: holidayBalance,
+              },
+            });
         }
         this.authService.setWebLabel(team, site);
         this.siteService.startAutoUpdates();

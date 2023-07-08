@@ -8,7 +8,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import jwt_decode from 'jwt-decode';
-import { ExceptionResponse, UsersResponse } from '../models/web/userWeb';
+import { ExceptionResponse, PasswordResetRequest, UsersResponse } from '../models/web/userWeb';
 import { DialogService } from './dialog-service.service';
 
 @Injectable({
@@ -231,7 +231,7 @@ export class AuthService extends CacheService {
 
   changeUser(id: string, field: string, value: string): 
     Observable<AuthenticationResponse> {
-    const url = '/scheduler/api/v2/user/changes';
+    const url = '/authentication/api/v2/user/changes';
     const data: UpdateRequest = {
       id: id,
       field: field,
@@ -242,7 +242,7 @@ export class AuthService extends CacheService {
 
   changePassword(id: string, passwd: string): 
     Observable<EmployeeResponse> {
-    const url = '/scheduler/api/v2/user/password';
+    const url = '/authentication/api/v2/user/password';
     const data: ChangePasswordRequest = {
       id: id,
       password: passwd,
@@ -250,13 +250,34 @@ export class AuthService extends CacheService {
     return this.httpClient.put<EmployeeResponse>(url, data);
   }
 
+  startPasswordReset(email: string): Observable<HttpResponse<void>> {
+    const url = '/authentication/api/v2/reset';
+    const data: AuthenticationRequest = {
+      emailAddress: email,
+      password: '',
+    }
+    return this.httpClient.post<HttpResponse<void>>(url, data)
+  }
+
+  sendPasswordReset(email: string, passwd: string, token: string)
+    : Observable<AuthenticationResponse> {
+    const url = '/authentication/api/v2/reset';
+    const data: PasswordResetRequest = {
+      emailAddress: email,
+      password: passwd,
+      token: token,
+      application: 'scheduler',
+    }
+    return this.httpClient.put<AuthenticationResponse>(url, data)
+  }
+
   getAllUsers(): Observable<HttpResponse<UsersResponse>> {
-    const url = '/scheduler/api/v2/user';
+    const url = '/authentication/api/v2/user';
     return this.httpClient.get<UsersResponse>(url, {observe: 'response'});
   }
 
   addUser(user: User): Observable<HttpResponse<UsersResponse>> {
-    const url = '/scheduler/api/v2/user/'
+    const url = '/authentication/api/v2/user/'
     return this.httpClient.post<UsersResponse>(url, user, {observe: 'response'});
   }
 

@@ -20,7 +20,7 @@ RUN go build -o /schedulerApi
 ADD . /data/reports
 
 # expose the network port for runtime access
-EXPOSE 4000
+EXPOSE 6002
 
 # command used to execute the api 
 CMD [ "/schedulerApi" ]

@@ -341,7 +341,7 @@ export class SiteService extends CacheService {
   }
 
   createCofSReport(teamid: string, siteid: string, 
-    name: string, shortname: string, startdate: Date, 
+    name: string, shortname: string, unit: string, startdate: Date, 
     enddate: Date): Observable<SiteResponse> {
     const url = '/scheduler/api/v2/site/cofs';
     const data: NewCofSReport = {
@@ -349,6 +349,7 @@ export class SiteService extends CacheService {
       siteid: siteid,
       rptname: name,
       shortname: shortname,
+      unit: unit,
       startdate: startdate,
       enddate: enddate,
     };

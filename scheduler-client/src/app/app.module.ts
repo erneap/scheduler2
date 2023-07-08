@@ -27,6 +27,9 @@ import { TeamModule } from './team/team.module';
 import { SiteIngestModule } from './site-ingest/site-ingest.module';
 import { AdminActionsModule } from './admin-actions/admin-actions.module';
 import { ReportsModule } from './reports/reports.module';
+import { ForgotPasswordComponent } from './home/forgot-password/forgot-password.component';
+import { ForgotPasswordResetComponent } from './home/forgot-password-reset/forgot-password-reset.component';
+import { PtoHolidayBelowDialogComponent } from './home/pto-holiday-below-dialog/pto-holiday-below-dialog.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +39,10 @@ import { ReportsModule } from './reports/reports.module';
     PasswordExpireDialogComponent,
     NavigationMenuComponent,
     NotFoundComponent,
-    DeletionConfirmationComponent
+    DeletionConfirmationComponent,
+    ForgotPasswordComponent,
+    ForgotPasswordResetComponent,
+    PtoHolidayBelowDialogComponent
   ],
   imports: [
     BrowserModule,

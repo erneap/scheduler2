@@ -8,3 +8,10 @@ export interface UsersResponse {
 export interface ExceptionResponse {
   exception: string;
 }
+
+export interface PasswordResetRequest {
+  emailAddress: string;
+  password: string;
+  token: string;
+  application?: string;
+}

@@ -1400,11 +1400,12 @@ func CreateSiteCofSReport(c *gin.Context) {
 	}
 	if !found {
 		rpt := sites.CofSReport{
-			ID:        cID + 1,
-			Name:      data.Name,
-			ShortName: data.ShortName,
-			StartDate: data.StartDate,
-			EndDate:   data.EndDate,
+			ID:             cID + 1,
+			Name:           data.Name,
+			AssociatedUnit: data.Unit,
+			ShortName:      data.ShortName,
+			StartDate:      data.StartDate,
+			EndDate:        data.EndDate,
 		}
 		site.CofSReports = append(site.CofSReports, rpt)
 	}
@@ -1458,6 +1459,8 @@ func UpdateSiteCofSReport(c *gin.Context) {
 			switch strings.ToLower(data.Field) {
 			case "name":
 				rpt.Name = data.Value
+			case "unit":
+				rpt.AssociatedUnit = data.Value
 			case "short", "shortname":
 				rpt.ShortName = data.Value
 			case "startdate":

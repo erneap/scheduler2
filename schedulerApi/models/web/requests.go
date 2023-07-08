@@ -234,6 +234,7 @@ type NewCofSReport struct {
 	TeamID    string    `json:"teamid"`
 	SiteID    string    `json:"siteid"`
 	Name      string    `json:"rptname"`
+	Unit      string    `json:"unit"`
 	ShortName string    `json:"shortname"`
 	StartDate time.Time `json:"startdate"`
 	EndDate   time.Time `json:"enddate"`

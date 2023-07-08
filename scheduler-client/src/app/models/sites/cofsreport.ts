@@ -40,6 +40,7 @@ export interface ICofSReport {
   shortname: string;
   startdate: Date;
   enddate: Date;
+  unit: string;
   companies?: ICofSCompany[];
 }
 
@@ -49,6 +50,7 @@ export class CofSReport implements ICofSReport {
   shortname: string;
   startdate: Date;
   enddate: Date;
+  unit: string;
   companies: CofSCompany[];
 
   constructor(rpt?: ICofSReport) {
@@ -57,6 +59,7 @@ export class CofSReport implements ICofSReport {
     this.shortname = (rpt) ? rpt.shortname : "";
     this.startdate = (rpt) ? new Date(rpt.startdate) : new Date();
     this.enddate = (rpt) ? new Date(rpt.enddate) : new Date();
+    this.unit = (rpt) ? rpt.unit : '';
     this.companies = [];
     if (rpt && rpt.companies) {
       rpt.companies.forEach(co => {

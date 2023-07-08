@@ -5,6 +5,7 @@ import { Observable, throwError as observableThrowError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { AuthService } from "./auth.service";
 import { AuthenticationResponse } from "../models/web/employeeWeb";
+import { ExceptionResponse } from "../models/web/userWeb";
 
 @Injectable()
 export class AuthHttpInterceptor implements HttpInterceptor {
@@ -27,12 +28,18 @@ export class AuthHttpInterceptor implements HttpInterceptor {
                             redirectUrl: this.router.routerState.snapshot.url },
                     })
                 }
+                console.log(err);
                 if (err.error.token || (err.error.token === '' 
                     && err.error.exception !== '')) {
                     const error: AuthenticationResponse = {
                         token: err.error.token,
                         exception: err.error.exception,
                         user: err.error.user,
+                    }
+                    return observableThrowError(() => error);
+                } else if (err.error.exception && err.error.exception !== '') {
+                    const error: ExceptionResponse = {
+                        exception: err.error.exception,
                     }
                     return observableThrowError(() => error);
                 }

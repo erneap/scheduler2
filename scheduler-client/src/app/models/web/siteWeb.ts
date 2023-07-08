@@ -140,6 +140,7 @@ export interface NewCofSReport {
   siteid: string;
   rptname: string;
   shortname: string;
+  unit: string;
   startdate: Date;
   enddate: Date;
 }

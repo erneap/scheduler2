@@ -171,8 +171,8 @@ export class SiteEmployeeLeaveRowComponent {
             if (data && data !== null) {
               if (data.employee) {
                 this.employee = new Employee(data.employee);
-                this.employee.data.leaves.sort((a,b) => a.compareTo(b));
-                this.employee.data.leaves.forEach(lv => {
+                this.employee.leaves.sort((a,b) => a.compareTo(b));
+                this.employee.leaves.forEach(lv => {
                   if (lv.id === this.leaveday.id) {
                     this.leaveday = lv;
                   }
@@ -227,7 +227,7 @@ export class SiteEmployeeLeaveRowComponent {
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
-                  this.employee.data.assignments.sort((a,b) => a.compareTo(b));
+                  this.employee.assignments.sort((a,b) => a.compareTo(b));
                 }
                 const emp = this.empService.getEmployee();
                 if (data.employee && emp && emp.id === data.employee.id) {

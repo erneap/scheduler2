@@ -75,8 +75,8 @@ export class LeaveRequestFormComponent {
     let now = new Date();
     now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
     this.currentLeaveRequests = [];
-    if (this.employee && this.employee.data.requests) {
-      this.employee.data.requests.forEach(lr => {
+    if (this.employee && this.employee.requests) {
+      this.employee.requests.forEach(lr => {
         const lvReq = new LeaveRequest(lr);
         if (lvReq.enddate.getTime() >= now.getTime()) {
           this.currentLeaveRequests.push(lvReq);

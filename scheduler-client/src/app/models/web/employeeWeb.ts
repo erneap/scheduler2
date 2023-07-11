@@ -81,6 +81,7 @@ export interface EmployeeLeaveRequest {
 
 export interface EmployeeLaborCodeRequest {
   employee: string;
+  assignment: number;
   chargeNumber: string;
   extension: string;
 }

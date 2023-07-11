@@ -63,6 +63,7 @@ type EmployeeLeaveRequest struct {
 
 type EmployeeLaborCodeRequest struct {
 	EmployeeID   string `json:"employee"`
+	AssginmentID int    `json:"assignment"`
 	ChargeNumber string `json:"chargeNumber"`
 	Extension    string `json:"extension"`
 }

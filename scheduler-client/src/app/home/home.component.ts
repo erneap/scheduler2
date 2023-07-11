@@ -139,7 +139,7 @@ export class HomeComponent {
         if (data.employee) {
           this.employeeService.setEmployee(data.employee)
           emp = new Employee(data.employee);
-          emp.data.leaves.forEach(lv => {
+          emp.leaves.forEach(lv => {
             if (lv.leavedate.getFullYear() === now.getFullYear()) {
               switch (lv.code.toLowerCase()) {
                 case "v":
@@ -151,7 +151,7 @@ export class HomeComponent {
               }
             }
           });
-          emp.data.balance.forEach(bal => {
+          emp.balance.forEach(bal => {
             if (bal.year === now.getFullYear()) {
               leaveBalance = bal.annual + bal.carryover;
             }
@@ -168,7 +168,7 @@ export class HomeComponent {
           this.teamService.setTeam(oTeam);
           if (emp) {
             oTeam.companies.forEach(co => {
-              if (emp?.data.companyinfo.company === co.id) {
+              if (emp?.companyinfo.company === co.id) {
                 holidayBalance = 8.0 * co.holidays.length;
               }
             });

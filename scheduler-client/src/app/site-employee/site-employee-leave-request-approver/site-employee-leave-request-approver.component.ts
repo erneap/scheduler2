@@ -58,8 +58,8 @@ export class SiteEmployeeLeaveRequestApproverComponent {
     if (iUser && this.site.employees) {
       this.site.employees.forEach(emp => {
         if (emp.id !== iUser.id) {
-          if (emp.data.requests && emp.data.requests.length > 0) {
-            let reqs = emp.data.requests.sort((a,b) => b.compareTo(a));
+          if (emp.requests && emp.requests.length > 0) {
+            let reqs = emp.requests.sort((a,b) => b.compareTo(a));
             reqs.forEach(req => {
               if (req.enddate.getTime() > now.getTime() 
               && req.approvedby === '') {
@@ -91,12 +91,12 @@ export class SiteEmployeeLeaveRequestApproverComponent {
     if (this.site.employees) {
       this.site.employees.forEach(emp => {
         if (emp.id === parts[0]) {
-          if (emp.data.requests) {
-            emp.data.requests.forEach(req => {
+          if (emp.requests) {
+            emp.requests.forEach(req => {
               if (req.id === parts[1]) {
                 this.requestEmployee = new Employee(emp);
                 this.request = new LeaveRequest(req);
-                const wd = this.requestEmployee.data.getWorkdayWOLeaves(
+                const wd = this.requestEmployee.getWorkdayWOLeaves(
                   this.site.id, this.request.startdate);
                 this.workcenter = wd.workcenter;
               }

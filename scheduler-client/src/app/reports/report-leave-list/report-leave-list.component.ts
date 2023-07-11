@@ -41,7 +41,7 @@ export class ReportLeaveListComponent {
         period: `${this.reportForm.value.year}`,
         teamid: iTeam.id,
         siteid: iSite.id,
-        companyid: iEmp.data.companyinfo.company,
+        companyid: iEmp.companyinfo.company,
       };
       this.dialogService.showSpinner();
       this.httpClient.post(url, request, { responseType: "blob", observe: 'response'})

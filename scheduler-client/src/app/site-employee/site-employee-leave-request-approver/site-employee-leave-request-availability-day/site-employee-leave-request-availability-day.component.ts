@@ -107,7 +107,7 @@ export class SiteEmployeeLeaveRequestAvailabilityDayComponent {
     if (this.site.employees) {
       this.site.employees.forEach(iEmp => {
         const emp = new Employee(iEmp);
-        const wd = emp.data.getWorkday(this.site.id, this.date);
+        const wd = emp.getWorkday(this.site.id, this.date);
         if (wd.workcenter.toLowerCase() === this.workcenter.toLowerCase()) {
           if (shift  && shift.associatedCodes) {
             shift.associatedCodes.forEach(ac => {

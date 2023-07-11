@@ -1,25 +1,4 @@
-<div class="fxLayout fxLayout-column-center">
-  <mat-card style="background-color: #3f51b5; color: white;">
-    <mat-card-header>
-      <div class="fxLayout-row-center">
-        <div class="fxLayout-column-topleft">
-          <div class="headline">Employee's Assignments</div>
-          <div class="subheadline">{{employee.name.getFullName()}}</div>
-        </div>
-        <span class="flex-spacer"></span>
-        <button mat-icon-button color="accent"
-          *ngIf="this.assignment.id > 1"
-          matTooltip="Delete Current Assignment"
-          (click)="deleteAssignment()"
-          >
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="flexlayout row topcenter">
-        <div class="flexlayout column topcenter" 
-          style="border: solid white 1px;margin: 5px;">
+<div class="flexlayout column center">
           <form [formGroup]="asgmtForm">
             <div class="fxLayout-column-center" style="width: 99%;">
               <mat-form-field class="fieldWidthWide">
@@ -124,8 +103,7 @@
             </div>
           </form>
         </div>
-        <div class="flexlayout column topcenter" 
-          style="background-color: white;margin: 5px;">
+        <div class="flexlayout column center" style="background-color: white;">
           <div style="background-color: red;color: white;">
             Assignment Labor Codes
           </div>
@@ -136,7 +114,3 @@
             </mat-checkbox>
           </div>
         </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</div>

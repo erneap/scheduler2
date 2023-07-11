@@ -173,8 +173,8 @@ export class LeaveRequestEditorComponent {
             if (data && data !== null) {
               if (data.employee) {
                 this.employee = data.employee;
-                if (this.employee.data.requests) {
-                  this.employee.data.requests.forEach(req => {
+                if (this.employee.requests) {
+                  this.employee.requests.forEach(req => {
                     if (req.startdate.getFullYear() === start.getFullYear()
                       && req.startdate.getMonth() === start.getMonth()
                       && req.startdate.getDate() === start.getDate()
@@ -235,7 +235,7 @@ export class LeaveRequestEditorComponent {
             if (data && data !== null) {
               if (data.employee) {
                 this.employee = data.employee;
-                this.employee.data.requests.forEach(req => {
+                this.employee.requests.forEach(req => {
                   if (this.request.id === req.id) {
                     this.request = new LeaveRequest(req)
                   }
@@ -269,7 +269,7 @@ export class LeaveRequestEditorComponent {
             if (data && data !== null) {
               if (data.employee) {
                 this.employee = data.employee;
-                this.employee.data.requests.forEach(req => {
+                this.employee.requests.forEach(req => {
                   if (this.request.id === req.id) {
                     this.request = new LeaveRequest(req)
                   }
@@ -308,7 +308,7 @@ export class LeaveRequestEditorComponent {
                 if (data && data !== null) {
                   if (data.employee) {
                     this.employee = data.employee;
-                    this.employee.data.requests.forEach(req => {
+                    this.employee.requests.forEach(req => {
                       if (this.request.id === req.id) {
                         this.request = new LeaveRequest(req)
                       }
@@ -348,7 +348,7 @@ export class LeaveRequestEditorComponent {
           if (data && data !== null) {
             if (data.employee) {
               this.employee = data.employee;
-              this.employee.data.requests.forEach(req => {
+              this.employee.requests.forEach(req => {
                 if (this.request.id === req.id) {
                   this.request = new LeaveRequest(req)
                 }
@@ -379,7 +379,7 @@ export class LeaveRequestEditorComponent {
           if (data && data !== null) {
             if (data.employee) {
               this.employee = data.employee;
-              this.employee.data.requests.forEach(req => {
+              this.employee.requests.forEach(req => {
                 if (this.request.id === req.id) {
                   this.request = new LeaveRequest(req)
                 }

@@ -62,7 +62,7 @@ export class EmployeeScheduleMonthComponent {
         this.workweeks.push(workweek);
       }
       if (emp) {
-        let wd = emp.data.getWorkday(emp.site, start);
+        let wd = emp.getWorkday(emp.site, start);
         if (!wd) {
           wd = new Workday();
           wd.date = new Date(start);

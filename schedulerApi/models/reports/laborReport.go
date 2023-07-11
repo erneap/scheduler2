@@ -1022,7 +1022,7 @@ func (lr *LaborReport) CreateContractReport(
 				row++
 				style = lr.Styles["peoplectr"]
 				lStyle := lr.Styles["peopleleft"]
-				if strings.Contains(emp.Data.CompanyInfo.JobTitle, "Liaison") {
+				if strings.Contains(emp.CompanyInfo.JobTitle, "Liaison") {
 					style = lr.Styles["liaisonctr"]
 					lStyle = lr.Styles["liaisonleft"]
 				}
@@ -1035,20 +1035,20 @@ func (lr *LaborReport) CreateContractReport(
 				lr.Report.SetCellValue(sheetName, GetCellID(0, row), lCode.CLIN)
 				lr.Report.SetCellValue(sheetName, GetCellID(1, row), lCode.SLIN)
 				lr.Report.SetCellValue(sheetName, GetCellID(2, row),
-					strings.ToUpper(emp.Data.CompanyInfo.Division))
+					strings.ToUpper(emp.CompanyInfo.Division))
 				lr.Report.SetCellValue(sheetName, GetCellID(3, row), lCode.Location)
 				lr.Report.SetCellValue(sheetName, GetCellID(4, row), lCode.WBS)
 				lr.Report.SetCellValue(sheetName, GetCellID(5, row),
 					lCode.ChargeNumber+" "+lCode.Extension)
 				lr.Report.SetCellValue(sheetName, GetCellID(6, row), emp.Name.LastName)
 				lr.Report.SetCellValue(sheetName, GetCellID(7, row),
-					emp.Data.CompanyInfo.Rank)
+					emp.CompanyInfo.Rank)
 				lr.Report.SetCellValue(sheetName, GetCellID(8, row),
-					emp.Data.CompanyInfo.EmployeeID)
+					emp.CompanyInfo.EmployeeID)
 				lr.Report.SetCellValue(sheetName, GetCellID(9, row),
-					emp.Data.CompanyInfo.AlternateID)
+					emp.CompanyInfo.AlternateID)
 				lr.Report.SetCellValue(sheetName, GetCellID(10, row),
-					emp.Data.CompanyInfo.CostCenter)
+					emp.CompanyInfo.CostCenter)
 				column = 11
 				var sumlist = []string{}
 				for _, period := range fr.Periods {
@@ -1251,6 +1251,10 @@ func (lr *LaborReport) CreateContractReport(
 		GetCellID(column, row) + ")"
 	lr.Report.SetCellStyle(sheetName, cellID, cellID, style)
 	lr.Report.SetCellFormula(sheetName, cellID, formula)
+
+	// hide columns A-E and H-L
+	lr.Report.SetColVisible(sheetName, "A:E", false)
+	lr.Report.SetColVisible(sheetName, "H:L", false)
 
 	// freeze pane at column G (Name)
 	lr.Report.SetPanes(sheetName, &excelize.Panes{

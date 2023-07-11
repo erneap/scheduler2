@@ -149,7 +149,7 @@ func (cr *ReportCofS) CreateCofSXML(rpt *sites.CofSReport) error {
 						hours += emp.GetWorkedHoursForLabor(
 							lc.ChargeNumber, lc.Extension, cr.StartDate,
 							cr.EndDate)
-						for _, elc := range emp.Data.LaborCodes {
+						for _, elc := range emp.LaborCodes {
 							if elc.ChargeNumber == lc.ChargeNumber &&
 								elc.Extension == lc.Extension {
 								bPrimary = true
@@ -236,7 +236,7 @@ func (cr *ReportCofS) CreateEmployeeData(count, coCount int,
 		label += fmt.Sprintf("_%d", coCount)
 	}
 	esb.WriteString(fmt.Sprintf(
-		"<%s>%s</%s>", label, emp.Data.CompanyInfo.JobTitle,
+		"<%s>%s</%s>", label, emp.CompanyInfo.JobTitle,
 		label))
 	current := time.Date(cr.StartDate.Year(),
 		cr.StartDate.Month(), cr.StartDate.Day(), 0, 0, 0, 0,

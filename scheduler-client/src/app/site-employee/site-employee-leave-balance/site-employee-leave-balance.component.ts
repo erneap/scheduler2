@@ -51,7 +51,7 @@ export class SiteEmployeeLeaveBalanceComponent {
 
   setAnnualLeaves() {
     this.balances = [];
-    this.employee.data.balance.forEach(bal => {
+    this.employee.balance.forEach(bal => {
       this.balances.push(new AnnualLeave(bal));
     });
     this.balances.sort((a,b) => b.compareTo(a));

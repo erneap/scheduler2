@@ -73,7 +73,7 @@ export class SiteEmployeeVariationComponent {
     }
     this.variations = [];
     let count = 0;
-    this.employee.data.variations.forEach(v => {
+    this.employee.variations.forEach(v => {
       const vari = new Variation(v);
       if (vari.enddate.getTime() >= now.getTime() 
         && vari.site.toLowerCase() === siteid.toLowerCase()) {
@@ -103,7 +103,7 @@ export class SiteEmployeeVariationComponent {
   selectVariation() {
     const variID = Number(this.variationForm.value.variation);
     if (variID > 0) {
-      this.employee.data.variations.forEach(vari => {
+      this.employee.variations.forEach(vari => {
         if (vari.id === variID) {
           this.variation = new Variation(vari);
           this.schedule = this.variation.schedule;
@@ -153,7 +153,7 @@ export class SiteEmployeeVariationComponent {
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
-                  this.employee.data.variations.forEach(agmt => {
+                  this.employee.variations.forEach(agmt => {
                     if (agmt.id === this.variation.id) {
                       this.variation = new Variation(agmt);
                       this.setVariation();
@@ -222,7 +222,7 @@ export class SiteEmployeeVariationComponent {
                 this.employee = new Employee(data.employee);
                 this.setVariationLists();
                 let max = 0;
-                this.employee.data.variations.forEach(v => {
+                this.employee.variations.forEach(v => {
                   if (v.id > max) {
                     this.variation = new Variation(v);
                     max = v.id;
@@ -291,7 +291,7 @@ export class SiteEmployeeVariationComponent {
               if (data.employee) {
                 this.employee = new Employee(data.employee);
                 let max = 0;
-                this.employee.data.variations.forEach(v => {
+                this.employee.variations.forEach(v => {
                   if (v.id > max) {
                     this.variation = new Variation(v);
                     max = v.id;
@@ -338,7 +338,7 @@ export class SiteEmployeeVariationComponent {
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
-                  this.employee.data.variations.sort((a,b) => a.compareTo(b));
+                  this.employee.variations.sort((a,b) => a.compareTo(b));
                   this.variationForm.controls["variation"].setValue('0');
                   this.variation = new Variation();
                   this.variation.startdate = new Date();

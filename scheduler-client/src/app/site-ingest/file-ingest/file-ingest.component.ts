@@ -65,7 +65,7 @@ export class FileIngestComponent {
         const site = new Site(iSite);
         if (site.employees) {
           site.employees.forEach(tEmp => {
-            if (tEmp.data.companyinfo.company === emp.data.companyinfo.company) {
+            if (tEmp.companyinfo.company === emp.companyinfo.company) {
               this.employees.push(new Employee(tEmp));
             }
           });
@@ -74,7 +74,7 @@ export class FileIngestComponent {
       if (iTeam) {
         this.ingestType = 'manual';
         iTeam.companies.forEach(co => {
-          if (co.id === emp.data.companyinfo.company) {
+          if (co.id === emp.companyinfo.company) {
             this.ingestType = co.ingest;
           }
         })
@@ -83,7 +83,7 @@ export class FileIngestComponent {
         this.authService.statusMessage = "Retrieving site's employees and ingest type";
         this.dialogService.showSpinner();
         this.ingestService.getIngestEmployees(emp.team, emp.site, 
-          emp.data.companyinfo.company).subscribe({
+          emp.companyinfo.company).subscribe({
           next: (data: IngestResponse) => {
             this.dialogService.closeSpinner();
             if (data && data !== null) {
@@ -148,7 +148,7 @@ export class FileIngestComponent {
       const emp = new Employee(iEmp);
       formData.append("team", emp.team);
       formData.append("site", emp.site);
-      formData.append("company", emp.data.companyinfo.company);
+      formData.append("company", emp.companyinfo.company);
       this.myFiles.forEach(file => {
         formData.append("file", file);
       });
@@ -226,15 +226,15 @@ export class FileIngestComponent {
               }
             }
             // check for leave on date.
-            if (emp.data.leaves && emp.data.leaves.length > 0) {
-              for (let i=emp.data.leaves.length - 1; i >= 0; i--) {
-                if (emp.data.leaves[i].leavedate.getFullYear() === change.changedate.getFullYear()
-                && emp.data.leaves[i].leavedate.getMonth() === change.changedate.getMonth()
-                && emp.data.leaves[i].leavedate.getDate() === change.changedate.getDate()) {
-                  const lv = new LeaveDay(emp.data.leaves[i]);
+            if (emp.leaves && emp.leaves.length > 0) {
+              for (let i=emp.leaves.length - 1; i >= 0; i--) {
+                if (emp.leaves[i].leavedate.getFullYear() === change.changedate.getFullYear()
+                && emp.leaves[i].leavedate.getMonth() === change.changedate.getMonth()
+                && emp.leaves[i].leavedate.getDate() === change.changedate.getDate()) {
+                  const lv = new LeaveDay(emp.leaves[i]);
                   this.manualUpdateList.push(new IngestChange(emp.id, "delete-leave", 
                     undefined, lv));
-                  emp.data.leaves.splice(i, 1);
+                  emp.leaves.splice(i, 1);
                 }
               }
             }
@@ -265,8 +265,8 @@ export class FileIngestComponent {
               let ext = '';
               if (iSite) {
                 const site = new Site(iSite);
-                if (emp.data.laborCodes && emp.data.laborCodes.length > 0) {
-                  emp.data.laborCodes.forEach(lc => {
+                emp.assignments.forEach(asgmt => {
+                  asgmt.laborcodes.forEach(lc => {
                     if (site.forecasts && site.forecasts.length > 0) {
                       site.forecasts.forEach(f => {
                         if (f.isActive(change.changedate) && chgNo === ''
@@ -284,10 +284,10 @@ export class FileIngestComponent {
                       });
                     }
                   });
-                }
+                });
               }
               if (chgNo === '' || ext === '') {
-                const wd = emp.data.getWorkdayWOLeaves(emp.site, change.changedate);
+                const wd = emp.getWorkdayWOLeaves(emp.site, change.changedate);
                 chgNo = wd.workcenter;
                 ext = `${change.changedate.getFullYear()}`;
               }
@@ -306,8 +306,8 @@ export class FileIngestComponent {
           } else {
             // check for leave on this date.  if so mark as actual
             let found = false;
-            if (emp.data.leaves && emp.data.leaves.length > 0) {
-              emp.data.leaves.forEach(lv => {
+            if (emp.leaves && emp.leaves.length > 0) {
+              emp.leaves.forEach(lv => {
                 if (lv.leavedate.getFullYear() === change.changedate.getFullYear()
                 && lv.leavedate.getMonth() === change.changedate.getMonth()
                 && lv.leavedate.getDate() === change.changedate.getDate()
@@ -322,13 +322,13 @@ export class FileIngestComponent {
             }
             // if not found, add leave to list and mark as actual
             if (!found) {
-              const std = emp.data.getStandardWorkday(emp.site, change.changedate);
+              const std = emp.getStandardWorkday(emp.site, change.changedate);
               const lv = new LeaveDay();
               lv.code = change.changevalue;
               lv.leavedate = new Date(change.changedate);
               lv.hours = std;
               lv.status = "ACTUAL";
-              emp.data.leaves.push(lv);
+              emp.leaves.push(lv);
               this.manualUpdateList.push(new IngestChange(emp.id, "add-leave",
                 undefined, lv));
             }
@@ -343,7 +343,7 @@ export class FileIngestComponent {
         this.authService.statusMessage = "Sending manual timecard updates";
         this.dialogService.showSpinner();
         this.ingestService.manualIngest(emp.team, emp.site, 
-          emp.data.companyinfo.company, this.manualUpdateList).subscribe({
+          emp.companyinfo.company, this.manualUpdateList).subscribe({
           next: (data: IngestResponse) => {
             this.dialogService.closeSpinner();
             if (data && data !== null) {

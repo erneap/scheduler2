@@ -66,7 +66,7 @@ func getEmployeesAfterIngest(team, site, company string) ([]employees.Employee, 
 	}
 
 	for _, emp := range empls {
-		if emp.Data.CompanyInfo.Company == company {
+		if emp.CompanyInfo.Company == company {
 			// get work for current and previous years
 			work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(now.Year()))
 			if err == nil && len(work.Work) > 0 {
@@ -165,8 +165,8 @@ func IngestFiles(c *gin.Context) {
 
 	for _, id := range employeeIDs {
 		for i, emp := range empls {
-			if emp.Data.CompanyInfo.Company == companyid &&
-				emp.Data.CompanyInfo.EmployeeID == id {
+			if emp.CompanyInfo.Company == companyid &&
+				emp.CompanyInfo.EmployeeID == id {
 				emp.RemoveLeaves(start, end)
 				services.UpdateEmployee(&emp)
 				empls[i] = emp
@@ -194,12 +194,12 @@ func IngestFiles(c *gin.Context) {
 	for _, rec := range records {
 		// find the employee in the employees list
 		for i, emp := range empls {
-			if emp.Data.CompanyInfo.Company == companyid &&
-				emp.Data.CompanyInfo.EmployeeID == rec.CompanyID {
+			if emp.CompanyInfo.Company == companyid &&
+				emp.CompanyInfo.EmployeeID == rec.CompanyID {
 				if rec.Code != "" {
 					// leave, so add to employee and update
 					lvid := -1
-					for _, lv := range emp.Data.Leaves {
+					for _, lv := range emp.Leaves {
 						if lvid < lv.ID {
 							lvid = lv.ID
 						}
@@ -212,7 +212,7 @@ func IngestFiles(c *gin.Context) {
 						Status:    "ACTUAL",
 						RequestID: "",
 					}
-					emp.Data.Leaves = append(emp.Data.Leaves, lv)
+					emp.Leaves = append(emp.Leaves, lv)
 					empls[i] = emp
 					err := services.UpdateEmployee(&emp)
 					if err != nil {
@@ -322,21 +322,21 @@ func ManualIngestActions(c *gin.Context) {
 			if err == nil {
 				switch parts[0] {
 				case "delete":
-					for i := len(emp.Data.Leaves) - 1; i >= 0; i-- {
-						lv := emp.Data.Leaves[i]
+					for i := len(emp.Leaves) - 1; i >= 0; i-- {
+						lv := emp.Leaves[i]
 						if lv.LeaveDate.Equal(change.Leave.LeaveDate) {
-							emp.Data.Leaves = append(emp.Data.Leaves[:i],
-								emp.Data.Leaves[i+1:]...)
+							emp.Leaves = append(emp.Leaves[:i],
+								emp.Leaves[i+1:]...)
 						}
 					}
 				case "add":
-					emp.Data.Leaves = append(emp.Data.Leaves, *change.Leave)
+					emp.Leaves = append(emp.Leaves, *change.Leave)
 				case "update":
-					for i, lv := range emp.Data.Leaves {
+					for i, lv := range emp.Leaves {
 						if lv.LeaveDate.Equal(change.Leave.LeaveDate) {
 							lv.Code = change.Leave.Code
 							lv.Status = change.Leave.Status
-							emp.Data.Leaves[i] = lv
+							emp.Leaves[i] = lv
 						}
 					}
 				}

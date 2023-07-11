@@ -84,11 +84,11 @@ export class SiteEmployeeProfileComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
       if (result.data) {
-        if (result.data.emailAddress !== '') {
+        if (result.emailAddress !== '') {
           this.dialogService.showSpinner();
           this.authService.statusMessage = "Adding User Account"
           this.empService.addUserAccount(this.employee.id, 
-          result.data.emailAddress, result.data.password).subscribe({
+          result.emailAddress, result.password).subscribe({
             next: (data: EmployeeResponse) => {
               this.dialogService.closeSpinner();
               if (data && data !== null) {

@@ -71,7 +71,7 @@ export class SiteEmployeeLeaveComponent {
     this.leaveDays = [];
     const start = new Date(Date.UTC(this.year, 0, 1));
     const end = new Date(Date.UTC(this.year + 1, 0, 1));
-    this.employee.data.leaves.forEach(lv => {
+    this.employee.leaves.forEach(lv => {
       if (lv.leavedate.getTime() >= start.getTime() 
         && lv.leavedate.getTime() < end.getTime()) {
         this.leaveDays.push(new LeaveDay(lv));
@@ -145,7 +145,7 @@ export class SiteEmployeeLeaveComponent {
           if (data && data !== null) {
             if (data.employee) {
               this.employee = new Employee(data.employee);
-              this.employee.data.leaves.sort((a,b) => a.compareTo(b));
+              this.employee.leaves.sort((a,b) => a.compareTo(b));
               this.setLeaves()
               this.clearLeaveForm();
             }

@@ -107,7 +107,6 @@ func CreateSite(c *gin.Context) {
 			MiddleName: data.Leader.MiddleName,
 			LastName:   data.Leader.LastName,
 		},
-		Data: employees.EmployeeData{},
 	}
 	asgmt := employees.Assignment{
 		ID:           uint(1),
@@ -122,7 +121,7 @@ func CreateSite(c *gin.Context) {
 	for i := 1; i < 6; i++ {
 		asgmt.Schedules[0].UpdateWorkday(uint(i), "leads", "D", 8)
 	}
-	emp.Data.Assignments = append(emp.Data.Assignments, asgmt)
+	emp.Assignments = append(emp.Assignments, asgmt)
 
 	empl, err := services.CreateEmployee(emp, data.Leader.Password,
 		"scheduler-siteleader", data.TeamID, data.SiteID)
@@ -148,7 +147,6 @@ func CreateSite(c *gin.Context) {
 				MiddleName: data.Scheduler.MiddleName,
 				LastName:   data.Scheduler.LastName,
 			},
-			Data: employees.EmployeeData{},
 		}
 		asgmt := employees.Assignment{
 			ID:           uint(1),
@@ -163,7 +161,7 @@ func CreateSite(c *gin.Context) {
 		for i := 1; i < 6; i++ {
 			asgmt.Schedules[0].UpdateWorkday(uint(i), "leads", "D", 8)
 		}
-		emp.Data.Assignments = append(emp.Data.Assignments, asgmt)
+		emp.Assignments = append(emp.Assignments, asgmt)
 
 		empl, err = services.CreateEmployee(emp, data.Scheduler.Password,
 			"scheduler-scheduler", data.TeamID, data.SiteID)

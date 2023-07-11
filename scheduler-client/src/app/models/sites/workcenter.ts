@@ -154,7 +154,7 @@ export class Workcenter implements IWorkcenter {
       const shiftMap = new Map<string, number>();
       let start = new Date(Date.UTC(month.getFullYear(), month.getMonth(), 1));
       while (start.getMonth() === month.getMonth()) {
-        const wd = emp.data.getWorkdayWOLeaves(emp.site, start);
+        const wd = emp.getWorkdayWOLeaves(emp.site, start);
         if (this.shifts && this.shifts.length > 0) {
           this.shifts.forEach(sft => {
             if (sft.associatedCodes) {

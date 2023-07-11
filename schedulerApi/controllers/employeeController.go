@@ -202,19 +202,19 @@ func UpdateEmployeeBasic(c *gin.Context) {
 	case "suffix":
 		emp.Name.Suffix = data.Value
 	case "company":
-		emp.Data.CompanyInfo.Company = data.Value
+		emp.CompanyInfo.Company = data.Value
 	case "employeeid", "companyid":
-		emp.Data.CompanyInfo.EmployeeID = data.Value
+		emp.CompanyInfo.EmployeeID = data.Value
 	case "alternateid", "alternate":
-		emp.Data.CompanyInfo.AlternateID = data.Value
+		emp.CompanyInfo.AlternateID = data.Value
 	case "jobtitle", "title":
-		emp.Data.CompanyInfo.JobTitle = data.Value
+		emp.CompanyInfo.JobTitle = data.Value
 	case "rank", "grade":
-		emp.Data.CompanyInfo.Rank = data.Value
+		emp.CompanyInfo.Rank = data.Value
 	case "costcenter":
-		emp.Data.CompanyInfo.CostCenter = data.Value
+		emp.CompanyInfo.CostCenter = data.Value
 	case "division":
-		emp.Data.CompanyInfo.Division = data.Value
+		emp.CompanyInfo.Division = data.Value
 	case "password":
 		if user != nil {
 			user.SetPassword(data.Value)
@@ -348,7 +348,7 @@ func UpdateEmployeeAssignment(c *gin.Context) {
 		return
 	}
 
-	for i, asgmt := range emp.Data.Assignments {
+	for i, asgmt := range emp.Assignments {
 		if asgmt.ID == data.AssignmentID {
 			switch strings.ToLower(data.Field) {
 			case "site":
@@ -370,7 +370,7 @@ func UpdateEmployeeAssignment(c *gin.Context) {
 			case "removeschedule":
 				asgmt.RemoveSchedule(data.ScheduleID)
 			}
-			emp.Data.Assignments[i] = asgmt
+			emp.Assignments[i] = asgmt
 		}
 	}
 
@@ -418,7 +418,7 @@ func UpdateEmployeeAssignmentWorkday(c *gin.Context) {
 		return
 	}
 
-	for i, asgmt := range emp.Data.Assignments {
+	for i, asgmt := range emp.Assignments {
 		if asgmt.ID == data.AssignmentID {
 			for j, sch := range asgmt.Schedules {
 				if sch.ID == data.ScheduleID {
@@ -434,7 +434,7 @@ func UpdateEmployeeAssignmentWorkday(c *gin.Context) {
 							}
 							sch.Workdays[k] = wd
 							asgmt.Schedules[j] = sch
-							emp.Data.Assignments[i] = asgmt
+							emp.Assignments[i] = asgmt
 						}
 					}
 				}
@@ -545,15 +545,15 @@ func CreateEmployeeVariation(c *gin.Context) {
 	}
 
 	max := uint(0)
-	for _, vari := range emp.Data.Variations {
+	for _, vari := range emp.Variations {
 		if vari.ID > max {
 			max = vari.ID
 		}
 	}
 	data.Variation.ID = max + 1
 
-	emp.Data.Variations = append(emp.Data.Variations, data.Variation)
-	sort.Sort(employees.ByVariation(emp.Data.Variations))
+	emp.Variations = append(emp.Variations, data.Variation)
+	sort.Sort(employees.ByVariation(emp.Variations))
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
@@ -597,7 +597,7 @@ func UpdateEmployeeVariation(c *gin.Context) {
 		return
 	}
 
-	for i, vari := range emp.Data.Variations {
+	for i, vari := range emp.Variations {
 		if vari.ID == data.AssignmentID {
 			switch strings.ToLower(data.Field) {
 			case "site":
@@ -666,10 +666,10 @@ func UpdateEmployeeVariation(c *gin.Context) {
 				}
 			}
 		}
-		emp.Data.Variations[i] = vari
+		emp.Variations[i] = vari
 	}
 
-	sort.Sort(employees.ByVariation(emp.Data.Variations))
+	sort.Sort(employees.ByVariation(emp.Variations))
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
@@ -714,7 +714,7 @@ func UpdateEmployeeVariationWorkday(c *gin.Context) {
 		return
 	}
 
-	for i, vari := range emp.Data.Variations {
+	for i, vari := range emp.Variations {
 		if vari.ID == data.AssignmentID {
 			for k, wd := range vari.Schedule.Workdays {
 				if wd.ID == data.WorkdayID {
@@ -727,7 +727,7 @@ func UpdateEmployeeVariationWorkday(c *gin.Context) {
 						wd.Hours = converters.ParseFloat(data.Value)
 					}
 					vari.Schedule.Workdays[k] = wd
-					emp.Data.Variations[i] = vari
+					emp.Variations[i] = vari
 				}
 			}
 		}
@@ -777,14 +777,14 @@ func DeleteEmployeeVariation(c *gin.Context) {
 	}
 
 	pos := -1
-	for i, vari := range emp.Data.Variations {
+	for i, vari := range emp.Variations {
 		if vari.ID == uint(variID) {
 			pos = i
 		}
 	}
 	if pos >= 0 {
-		emp.Data.Variations = append(emp.Data.Variations[:pos],
-			emp.Data.Variations[pos+1:]...)
+		emp.Variations = append(emp.Variations[:pos],
+			emp.Variations[pos+1:]...)
 	}
 
 	err = services.UpdateEmployee(emp)
@@ -890,14 +890,14 @@ func UpdateEmployeeLeaveBalance(c *gin.Context) {
 		return
 	}
 
-	for i, lb := range emp.Data.Balances {
+	for i, lb := range emp.Balances {
 		if lb.Year == year {
 			if strings.ToLower(data.Field) == "annual" {
 				lb.Annual = fvalue
 			} else {
 				lb.Carryover = fvalue
 			}
-			emp.Data.Balances[i] = lb
+			emp.Balances[i] = lb
 		}
 	}
 
@@ -944,14 +944,14 @@ func DeleteEmployeeLeaveBalance(c *gin.Context) {
 	}
 
 	pos := -1
-	for i, bal := range emp.Data.Balances {
+	for i, bal := range emp.Balances {
 		if bal.Year == int(year) {
 			pos = i
 		}
 	}
 	if pos >= 0 {
-		emp.Data.Balances = append(emp.Data.Balances[:pos],
-			emp.Data.Balances[pos+1:]...)
+		emp.Balances = append(emp.Balances[:pos],
+			emp.Balances[pos+1:]...)
 	}
 
 	err = services.UpdateEmployee(emp)
@@ -1346,7 +1346,12 @@ func AddEmployeeLaborCode(c *gin.Context) {
 		return
 	}
 
-	emp.AddLaborCode(data.ChargeNumber, data.Extension)
+	for a, asgmt := range emp.Assignments {
+		if asgmt.ID == uint(data.AssginmentID) {
+			asgmt.AddLaborCode(data.ChargeNumber, data.Extension)
+			emp.Assignments[a] = asgmt
+		}
+	}
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
@@ -1366,6 +1371,7 @@ func AddEmployeeLaborCode(c *gin.Context) {
 
 func DeleteEmployeeLaborCode(c *gin.Context) {
 	empID := c.Param("empid")
+	asgmtID := converters.ParseUint(c.Param("asgmt"))
 	chgNo := c.Param("chgno")
 	ext := c.Param("ext")
 
@@ -1385,7 +1391,12 @@ func DeleteEmployeeLaborCode(c *gin.Context) {
 		return
 	}
 
-	emp.DeleteLaborCode(chgNo, ext)
+	for a, asgmt := range emp.Assignments {
+		if asgmt.ID == asgmtID {
+			asgmt.RemoveLaborCode(chgNo, ext)
+			emp.Assignments[a] = asgmt
+		}
+	}
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {

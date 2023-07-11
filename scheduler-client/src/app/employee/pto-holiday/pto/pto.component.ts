@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { last } from 'rxjs';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { LeaveGroup, LeaveMonth } from 'src/app/models/employees/leave';
 import { EmployeeService } from 'src/app/services/employee.service';
@@ -83,9 +84,9 @@ export class PtoComponent {
     this.annual = 0.0;
     this.carryover = 0.0;
     this.balance = 0.0;
-    this.employee.data.assignments.sort((a,b) => a.compareTo(b));
-    const startAsgmt = this.employee.data.assignments[0];
-    const endAsgmt = this.employee.data.assignments[this.employee.data.assignments.length - 1];
+    this.employee.assignments.sort((a,b) => a.compareTo(b));
+    const startAsgmt = this.employee.assignments[0];
+    const endAsgmt = this.employee.assignments[this.employee.assignments.length - 1];
     this.balanceStyle = "balancepos";
     for (let i=0; i < 12; i++) {
       let month = new LeaveMonth();
@@ -98,10 +99,10 @@ export class PtoComponent {
       this.leaveMonths.push(month);
     }
     const emp = this.employee;
-    if (emp && emp.data) {
-      if (emp.data.leaves.length > 0) {
-        emp.data.leaves.sort((a,b) => a.compareTo(b));
-        emp.data.leaves.forEach(lv => {
+    if (emp) {
+      if (emp.leaves.length > 0) {
+        emp.leaves.sort((a,b) => a.compareTo(b));
+        emp.leaves.forEach(lv => {
           if (lv.code.toLowerCase() !== 'h' 
           && lv.leavedate.getFullYear() === this.year) {
             // first get the leave month for to display in:
@@ -142,7 +143,10 @@ export class PtoComponent {
         });
       }
 
-      emp.data.balance.forEach(bal => {
+      this.annual = 0.0;
+      this.carryover = 0.0;
+      emp.balance.sort((a,b) => a.compareTo(b));
+      emp.balance.forEach(bal => {
         if (bal.year === this._year) {
           this.annual = bal.annual;
           this.carryover = bal.carryover;
@@ -153,6 +157,28 @@ export class PtoComponent {
           }
         }
       });
+      if (this.annual === 0.0) {
+        if (emp.balance.length > 0) {
+          const lastYear = emp.balance[emp.balance.length - 1].year
+          const lastBalance = emp.balance[emp.balance.length - 1].annual;
+          let lastCarry = emp.balance[emp.balance.length - 1].carryover;
+          let total = lastBalance + lastCarry;
+          emp.leaves.forEach(lv => {
+            if (lv.code.toLowerCase() === 'v' 
+              && lv.leavedate.getFullYear() === lastYear) {
+              total -= lv.hours;
+            }
+          });
+          console.log(total);
+          if (total > 40.0) { 
+            total = 40.0;
+          }
+          this.annual = lastBalance;
+          this.carryover = total;
+          this.balance = (this.annual + this.carryover)
+            - (this.actual + this.requested);
+        }
+      }
     }
   }
 }

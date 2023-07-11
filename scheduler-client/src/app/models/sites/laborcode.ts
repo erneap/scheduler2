@@ -52,3 +52,9 @@ export class LaborCode implements ILaborCode {
     return -1;
   }
 }
+
+export interface LaborCharge {
+  chargenumber: string;
+  extension: string;
+  checked: boolean;
+}

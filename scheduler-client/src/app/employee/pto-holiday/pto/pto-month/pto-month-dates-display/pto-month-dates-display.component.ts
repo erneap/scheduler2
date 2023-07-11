@@ -56,7 +56,7 @@ export class PtoMonthDatesDisplayComponent {
     let hours = 8;
     const emp = this.empService.getEmployee();
     if (emp && this.leaves.length > 0) {
-      hours = emp.data.getStandardWorkday(emp.site, this.leaves[0].leavedate);
+      hours = emp.getStandardWorkday(emp.site, this.leaves[0].leavedate);
       answer = (this.leaves[0].hours < hours);
     }
     this.showHours = answer;

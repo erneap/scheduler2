@@ -81,7 +81,7 @@ export class HolidayComponent {
       const emp = new Employee(iEmp);
       const team = new Team(iTeam);
       team.companies.forEach(co => {
-        if (co.id.toLowerCase() === emp.data.companyinfo.company.toLowerCase()) {
+        if (co.id.toLowerCase() === emp.companyinfo.company.toLowerCase()) {
           if (co.holidays.length > 0) {
             co.holidays.forEach(hol => {
               this.holidays.push(new CompanyHoliday(hol));
@@ -89,7 +89,7 @@ export class HolidayComponent {
           }
         }
       });
-      emp.data.leaves.forEach(lv => {
+      emp.leaves.forEach(lv => {
         if (lv.leavedate.getFullYear() === this.year 
           && lv.code.toLowerCase() === 'h') {
           if (lv.hours === 8.0) {
@@ -163,11 +163,11 @@ export class HolidayComponent {
   }
 
   isActive(holiday: CompanyHoliday): boolean {
-    this.employee.data.assignments.sort((a,b) => a.compareTo(b));
+    this.employee.assignments.sort((a,b) => a.compareTo(b));
     const actual = holiday.getActual(this.year);
-    const startasgmt = this.employee.data.assignments[0];
-    const endasgmt = this.employee.data.assignments[
-      this.employee.data.assignments.length - 1];
+    const startasgmt = this.employee.assignments[0];
+    const endasgmt = this.employee.assignments[
+      this.employee.assignments.length - 1];
     if (actual) {
       return (actual.getTime() >= startasgmt.startDate.getTime() &&
         actual.getTime() <= endasgmt.endDate.getTime());

@@ -25,7 +25,7 @@ export class PtoHolidayComponent {
       const emp = new Employee(iEmp);
       const team = new Team(iTeam);
       team.companies.forEach(co => {
-        if (co.id.toLowerCase() === emp.data.companyinfo.company.toLowerCase()) {
+        if (co.id.toLowerCase() === emp.companyinfo.company.toLowerCase()) {
           this.showHolidays = co.holidays.length > 0;
         }
       });

@@ -66,7 +66,7 @@ export class NewEmployeeComponent {
     const site = this.siteService.getSite();
     this.setLaborCodes();
     this.setWorkcenters();
-    if (this.employee.data.assignments.length === 0) {
+    if (this.employee.assignments.length === 0) {
       const asgmt = new Assignment();
       asgmt.id = 1;
       asgmt.startDate = new Date();
@@ -78,9 +78,9 @@ export class NewEmployeeComponent {
         }
         asgmt.schedules.push(sched);
       }
-      this.employee.data.assignments.push(asgmt);
+      this.employee.assignments.push(asgmt);
     }
-    this.schedule = this.employee.data.assignments[0].schedules[0];
+    this.schedule = this.employee.assignments[0].schedules[0];
     this.siteService.setSelectedEmployee(new Employee());
     this.employeeForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -195,9 +195,9 @@ export class NewEmployeeComponent {
           const workday = Number(chgParts[2]);
           let found = false;
           for (let i=0; 
-            i < this.employee.data.assignments[0].schedules[0].workdays.length 
+            i < this.employee.assignments[0].schedules[0].workdays.length 
             && !found; i++) {
-            const wd = this.employee.data.assignments[0].schedules[0].workdays[i];
+            const wd = this.employee.assignments[0].schedules[0].workdays[i];
             if (wd.id === workday) {
               switch (field.toLowerCase()) {
                 case "code":
@@ -212,7 +212,7 @@ export class NewEmployeeComponent {
                   break;
               }
               found = true;
-              this.employee.data.assignments[0].schedules[0].workdays[i] = wd;
+              this.employee.assignments[0].schedules[0].workdays[i] = wd;
             }
           }
         }
@@ -234,39 +234,39 @@ export class NewEmployeeComponent {
     this.employee.name.last = this.employeeForm.value.last;
     this.employee.email = this.employeeForm.value.email;
     const passwd = this.employeeForm.value.password;
-    this.employee.data.companyinfo.company = this.employeeForm.value.company;
-    this.employee.data.companyinfo.employeeid 
+    this.employee.companyinfo.company = this.employeeForm.value.company;
+    this.employee.companyinfo.employeeid 
       = this.employeeForm.value.employeeid;
-    this.employee.data.companyinfo.alternateid 
+    this.employee.companyinfo.alternateid 
       = this.employeeForm.value.alternateid;
-    this.employee.data.companyinfo.jobtitle = this.employeeForm.value.jobtitle;
-    this.employee.data.companyinfo.rank = this.employeeForm.value.rank;
-    this.employee.data.companyinfo.costcenter = this.employeeForm.value.costcenter;
-    this.employee.data.companyinfo.division = this.employeeForm.value.division;
+    this.employee.companyinfo.jobtitle = this.employeeForm.value.jobtitle;
+    this.employee.companyinfo.rank = this.employeeForm.value.rank;
+    this.employee.companyinfo.costcenter = this.employeeForm.value.costcenter;
+    this.employee.companyinfo.division = this.employeeForm.value.division;
     const labor: string = this.employeeForm.value.laborcode;
     const laborParts = labor.split("|");
     const laborcode = new EmployeeLaborCode({
       chargeNumber: laborParts[0],
       extension: laborParts[1],
     });
-    if (this.employee.data.laborCodes.length === 0) {
-      this.employee.data.laborCodes.push(laborcode);
-    } else {
-      this.employee.data.laborCodes[0] = laborcode;
-    }  
-    this.employee.data.assignments[0].site = this.siteid;  
-    this.employee.data.assignments[0].workcenter = this.employeeForm.value.workcenter;
+    this.employee.assignments[0].site = this.siteid;  
+    this.employee.assignments[0].workcenter = this.employeeForm.value.workcenter;
     const start:Date = new Date(this.employeeForm.value.startdate);
-    this.employee.data.assignments[0].startDate = new Date(Date.UTC(start.getFullYear(),
+    this.employee.assignments[0].startDate = new Date(Date.UTC(start.getFullYear(),
       start.getMonth(), start.getDate()));
-    this.employee.data.assignments[0].endDate = new Date(Date.UTC(9999, 11, 30));
-    this.employee.data.assignments[0].schedules[0] = this.schedule;
+    this.employee.assignments[0].endDate = new Date(Date.UTC(9999, 11, 30));
+    this.employee.assignments[0].schedules[0] = this.schedule;
+    if (this.employee.assignments[0].laborcodes.length === 0) {
+      this.employee.assignments[0].laborcodes.push(laborcode);
+    } else {
+      this.employee.assignments[0].laborcodes[0] = laborcode;
+    }
     const balance = new AnnualLeave({
       year: (new Date()).getFullYear(),
       annual: 120.0,
       carryover: 0.0
     });
-    this.employee.data.balance.push(balance);
+    this.employee.balance.push(balance);
 
     this.dialogService.showSpinner();
     this.authService.statusMessage = "Creating New Employee";

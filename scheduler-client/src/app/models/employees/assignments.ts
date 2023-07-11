@@ -1,3 +1,5 @@
+import { EmployeeLaborCode, IEmployeeLaborCode } from "./employee";
+
 export interface IWorkday {
   id: number;
   workcenter: string;
@@ -84,6 +86,7 @@ export interface IAssignment {
   schedules: ISchedule[];
   rotationdate: Date;
   rotationdays: number;
+  laborcodes: IEmployeeLaborCode[]
 }
 
 export class Assignment implements IAssignment {
@@ -95,6 +98,7 @@ export class Assignment implements IAssignment {
   schedules: Schedule[];
   rotationdate: Date;
   rotationdays: number;
+  laborcodes: EmployeeLaborCode[]
 
   constructor(asgmt?: IAssignment) {
     this.id = (asgmt) ? asgmt.id : 0;
@@ -111,6 +115,12 @@ export class Assignment implements IAssignment {
     }
     this.rotationdate = (asgmt) ? new Date(asgmt.rotationdate) : new Date(0);
     this.rotationdays = (asgmt) ? asgmt.rotationdays : 0;
+    this.laborcodes = [];
+    if (asgmt && asgmt.laborcodes && asgmt.laborcodes.length > 0) {
+      asgmt.laborcodes.forEach(lc => {
+        this.laborcodes.push(new EmployeeLaborCode(lc));
+      })
+    }
   }
 
   compareTo(other?: IAssignment): number {
@@ -167,6 +177,19 @@ export class Assignment implements IAssignment {
       }
     }
     return undefined;
+  }
+
+  hasLaborCode(chgno: string, ext: string): boolean {
+    let answer = false;
+    if (this.laborcodes && this.laborcodes.length > 0) {
+      this.laborcodes.forEach(lc => {
+        if (lc.chargeNumber.toLowerCase() === chgno.toLowerCase() 
+          && lc.extension.toLowerCase() === ext.toLowerCase()) {
+          answer = true;
+        }
+      });
+    }
+    return answer;
   }
 }
 

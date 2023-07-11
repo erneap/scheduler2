@@ -64,7 +64,7 @@ func main() {
 			lCode := emp.Group("/laborcode").Use(svcs.CheckJWT("scheduler"))
 			{
 				lCode.POST("/", controllers.AddEmployeeLaborCode)
-				lCode.DELETE("/:empid/:chgno/:ext", controllers.DeleteEmployeeLaborCode)
+				lCode.DELETE("/:empid/:asgmt/:chgno/:ext", controllers.DeleteEmployeeLaborCode)
 			}
 		}
 		site := api.Group("/site", svcs.CheckJWT("scheduler"),

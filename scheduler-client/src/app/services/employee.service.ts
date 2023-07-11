@@ -34,7 +34,7 @@ export class EmployeeService extends CacheService {
       const team = this.teamService.getTeam();
       if (team) {
         team.companies.forEach(co => {
-          if (emp.data.companyinfo.company.toLowerCase() === co.id.toLowerCase()) {
+          if (emp.companyinfo.company.toLowerCase() === co.id.toLowerCase()) {
             this.showHolidays = (co.holidays.length > 0);
           }
         })
@@ -50,7 +50,7 @@ export class EmployeeService extends CacheService {
     const team = this.teamService.getTeam();
     if (team) {
       team.companies.forEach(co => {
-        if (emp.data.companyinfo.company.toLowerCase() === co.id.toLowerCase()) {
+        if (emp.companyinfo.company.toLowerCase() === co.id.toLowerCase()) {
           this.showHolidays = (co.holidays.length > 0);
         }
       })
@@ -188,20 +188,21 @@ export class EmployeeService extends CacheService {
     return this.httpClient.delete<EmployeeResponse>(url);
   }
 
-  addLaborCode(empID: string, chgNo: string, ext: string):
+  addLaborCode(empID: string, asgmt: number, chgNo: string, ext: string):
     Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee/laborcode';
     const data: EmployeeLaborCodeRequest = {
       employee: empID,
+      assignment: asgmt,
       chargeNumber: chgNo,
       extension: ext,
     };
     return this.httpClient.post<EmployeeResponse>(url, data);
   }
 
-  removeLaborCode(empID: string, chgNo: string, ext: string):
+  removeLaborCode(empID: string, asgmt: number, chgNo: string, ext: string):
     Observable<EmployeeResponse> {
-    const url = `/scheduler/api/v2/employee/laborcode/${empID}/${chgNo}/${ext}`;
+    const url = `/scheduler/api/v2/employee/laborcode/${empID}/${asgmt}/${chgNo}/${ext}`;
     return this.httpClient.delete<EmployeeResponse>(url);
   }
 

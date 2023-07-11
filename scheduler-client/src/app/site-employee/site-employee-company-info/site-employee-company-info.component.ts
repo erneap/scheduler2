@@ -58,19 +58,19 @@ export class SiteEmployeeCompanyInfoComponent {
 
   setEmployee() {
     this.compInfoForm.controls['company'].setValue(
-      this.employee.data.companyinfo.company);
+      this.employee.companyinfo.company);
     this.compInfoForm.controls['employeeid'].setValue(
-      this.employee.data.companyinfo.employeeid);
+      this.employee.companyinfo.employeeid);
     this.compInfoForm.controls['alternateid'].setValue(
-      this.employee.data.companyinfo.alternateid);
+      this.employee.companyinfo.alternateid);
     this.compInfoForm.controls['jobtitle'].setValue(
-      this.employee.data.companyinfo.jobtitle);
+      this.employee.companyinfo.jobtitle);
     this.compInfoForm.controls['rank'].setValue(
-      this.employee.data.companyinfo.rank);
+      this.employee.companyinfo.rank);
     this.compInfoForm.controls['costcenter'].setValue(
-      this.employee.data.companyinfo.costcenter);
+      this.employee.companyinfo.costcenter);
     this.compInfoForm.controls['division'].setValue(
-      this.employee.data.companyinfo.division);
+      this.employee.companyinfo.division);
   }
 
   updateCompanyInfo(field: string) {

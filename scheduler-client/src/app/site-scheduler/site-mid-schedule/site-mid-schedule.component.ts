@@ -28,7 +28,7 @@ export class SiteMidScheduleComponent {
     if (site && site.employees) {
       site.employees.forEach(iEmp => {
         const emp = new Employee(iEmp);
-        emp.data.variations.forEach(iVar => {
+        emp.variations.forEach(iVar => {
           const vari = new Variation(iVar);
           if (vari.mids && vari.site === site.id 
             && vari.enddate.getTime() >= start.getTime() 

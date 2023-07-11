@@ -26,7 +26,7 @@ import (
 func CreateEmployee(emp employees.Employee, passwd, workgroup, teamID,
 	siteid string) (*employees.Employee, error) {
 	userCol := config.GetCollection(config.DB, "authenticate", "users")
-	empCol := config.GetCollection(config.DB, "scheduler", "employees")
+	empCol := config.GetCollection(config.DB, "scheduler", "employees2")
 	teamid, err := primitive.ObjectIDFromHex(teamID)
 	if err != nil {
 		return nil, err
@@ -99,7 +99,7 @@ func CreateEmployee(emp employees.Employee, passwd, workgroup, teamID,
 }
 
 func GetEmployee(id string) (*employees.Employee, error) {
-	empCol := config.GetCollection(config.DB, "scheduler", "employees")
+	empCol := config.GetCollection(config.DB, "scheduler", "employees2")
 	userCol := config.GetCollection(config.DB, "authenticate", "users")
 
 	oEmpID, err := primitive.ObjectIDFromHex(id)
@@ -124,7 +124,7 @@ func GetEmployee(id string) (*employees.Employee, error) {
 }
 
 func GetEmployeeByName(first, middle, last string) (*employees.Employee, error) {
-	empCol := config.GetCollection(config.DB, "scheduler", "employees")
+	empCol := config.GetCollection(config.DB, "scheduler", "employees2")
 	userCol := config.GetCollection(config.DB, "authenticate", "users")
 
 	filter := bson.M{
@@ -161,7 +161,7 @@ func GetEmployeeByName(first, middle, last string) (*employees.Employee, error) 
 }
 
 func GetEmployees(teamid, siteid string) ([]employees.Employee, error) {
-	empCol := config.GetCollection(config.DB, "scheduler", "employees")
+	empCol := config.GetCollection(config.DB, "scheduler", "employees2")
 	userCol := config.GetCollection(config.DB, "authenticate", "users")
 
 	oTID, _ := primitive.ObjectIDFromHex(teamid)
@@ -195,7 +195,7 @@ func GetEmployees(teamid, siteid string) ([]employees.Employee, error) {
 }
 
 func GetEmployeesForTeam(teamid string) ([]employees.Employee, error) {
-	empCol := config.GetCollection(config.DB, "scheduler", "employees")
+	empCol := config.GetCollection(config.DB, "scheduler", "employees2")
 	userCol := config.GetCollection(config.DB, "authenticate", "users")
 
 	oTID, _ := primitive.ObjectIDFromHex(teamid)
@@ -228,7 +228,7 @@ func GetEmployeesForTeam(teamid string) ([]employees.Employee, error) {
 }
 
 func UpdateEmployee(emp *employees.Employee) error {
-	empCol := config.GetCollection(config.DB, "scheduler", "employees")
+	empCol := config.GetCollection(config.DB, "scheduler", "employees2")
 
 	filter := bson.M{
 		"_id": emp.ID,
@@ -239,7 +239,7 @@ func UpdateEmployee(emp *employees.Employee) error {
 }
 
 func DeleteEmployee(empID string) error {
-	empCol := config.GetCollection(config.DB, "scheduler", "employees")
+	empCol := config.GetCollection(config.DB, "scheduler", "employees2")
 	userCol := config.GetCollection(config.DB, "authenticate", "users")
 
 	oEmpID, _ := primitive.ObjectIDFromHex(empID)

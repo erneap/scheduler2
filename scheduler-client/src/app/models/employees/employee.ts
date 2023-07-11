@@ -63,69 +63,145 @@ export class EmployeeLaborCode implements IEmployeeLaborCode {
   }
 }
 
-export interface IEmployeeData {
+export interface IEmployee {
+  id: string;
+  team: string;
+  site: string;
+  email: string;
+  name: IEmployeeName;
   companyinfo: ICompanyInfo;
   assignments: IAssignment[];
   variations: IVariation[];
   balance: IAnnualLeave[];
   leaves: ILeaveDay[];
   requests: ILeaveRequest[];
-  laborCodes: IEmployeeLaborCode[];
+  user?: IUser;
+  work?: IWork[];
 }
 
-export class EmployeeData implements IEmployeeData {
+export class Employee implements IEmployee {
+  id: string;
+  team: string;
+  site: string;
+  email: string;
+  name: EmployeeName;
   companyinfo: CompanyInfo;
   assignments: Assignment[];
   variations: Variation[];
   balance: AnnualLeave[];
   leaves: LeaveDay[];
   requests: LeaveRequest[];
-  laborCodes: EmployeeLaborCode[];
+  user?: User;
+  work?: Work[];
 
-  constructor(ed?: IEmployeeData) {
-    this.companyinfo = (ed) ? new CompanyInfo(ed.companyinfo) : new CompanyInfo();
+  constructor(emp?: IEmployee) {
+    this.id = (emp) ? emp.id : '';
+    this.team = (emp) ? emp.team : '';
+    this.site = (emp) ? emp.site : '';
+    this.email = (emp) ? emp.email : '';
+    this.name = (emp) ? new EmployeeName(emp.name) : new EmployeeName();
+    this.user = (emp && emp.user) ? new User(emp.user) : undefined;
+    if (emp && emp.work) {
+      this.work = [];
+      emp.work.forEach(wk => {
+        this.work?.push(new Work(wk));
+      });
+      this.work.sort((a,b) => a.compareTo(b));
+    }this.companyinfo = (emp) ? new CompanyInfo(emp.companyinfo) : new CompanyInfo();
     this.assignments = [];
-    if (ed && ed.assignments && ed.assignments.length > 0) {
-      ed.assignments.forEach(asgmt => {
+    if (emp && emp.assignments && emp.assignments.length > 0) {
+      emp.assignments.forEach(asgmt => {
         this.assignments.push(new Assignment(asgmt));
       });
       this.assignments.sort((a,b) => a.compareTo(b))
     }
     this.variations = [];
-    if (ed && ed.variations && ed.variations.length > 0) {
-      ed.variations.forEach(vari => {
+    if (emp && emp.variations && emp.variations.length > 0) {
+      emp.variations.forEach(vari => {
         this.variations.push(new Variation(vari));
       });
       this.variations.sort((a,b) => a.compareTo(b));
     }
     this.balance = [];
-    if (ed && ed.balance && ed.balance.length > 0) {
-      ed.balance.forEach(bal => {
+    if (emp && emp.balance && emp.balance.length > 0) {
+      emp.balance.forEach(bal => {
         this.balance.push(new AnnualLeave(bal));
       });
       this.balance.sort((a,b) => a.compareTo(b));
     }
     this.leaves = [];
-    if (ed && ed.leaves && ed.leaves.length > 0) {
-      ed.leaves.forEach(lv => {
+    if (emp && emp.leaves && emp.leaves.length > 0) {
+      emp.leaves.forEach(lv => {
         this.leaves.push(new LeaveDay(lv));
       });
       this.leaves.sort((a,b) => a.compareTo(b));
     }
     this.requests = [];
-    if (ed && ed.requests && ed.requests.length > 0) {
-      ed.requests.forEach(req => {
+    if (emp && emp.requests && emp.requests.length > 0) {
+      emp.requests.forEach(req => {
         this.requests.push(new LeaveRequest(req));
       });
       this.requests.sort((a,b) => a.compareTo(b));
     }
-    this.laborCodes = [];
-    if (ed && ed.laborCodes && ed.laborCodes.length > 0) {
-      ed.laborCodes.forEach(lc => {
-        this.laborCodes.push(new EmployeeLaborCode(lc));
-      });
-      this.laborCodes.sort((a,b) => a.compareTo(b));
+  }
+
+  compareTo(other?: Employee): number {
+    if (other) {
+      if (this.name.last === other.name.last) {
+        if (this.name.first === other.name.first) {
+          return (this.name.middle < this.name.middle) ? -1 : 1;
+        }
+        return (this.name.first < other.name.first) ? -1 : 1;
+      }
+      return (this.name.last < other.name.last) ? -1 : 1;
     }
+    return -1;
+  }
+
+  isActive(): boolean {
+    const now = new Date();
+    const atSite = this.atSite(this.site, now, now);
+
+    return atSite;
+  }
+
+  activeOnDate(month: Date): boolean {
+    let end = new Date(Date.UTC(month.getFullYear(), month.getMonth() + 1, -1))
+    return this.atSite(this.site, month, end);
+  }
+
+  getIngestValue(date: Date): string {
+    // the ingest value is determined by work performed.  If a labor code was
+    // charged or a work record is available for the date, this value is shown
+    // as a number.  if the value is zero after checking work, leave is checked
+    // for this date and the higher hours work code is displayed.
+    let work = 0.0;
+    if (this.work && this.work.length > 0) {
+      this.work.forEach(wk => {
+        if (wk.dateWorked.getFullYear() === date.getFullYear() 
+          && wk.dateWorked.getMonth() === date.getMonth()
+          && wk.dateWorked.getDate() === date.getDate()) {
+          work += wk.hours;
+        }
+      });
+    }
+    if (work > 0.0) {
+      return work.toFixed(1);
+    }
+    let code: string = '';
+    let codeHours: number = 0.0;
+    if (this.leaves && this.leaves.length > 0) {
+      this.leaves.forEach(lv => {
+        if (lv.leavedate.getFullYear() === date.getFullYear()
+        && lv.leavedate.getMonth() === date.getMonth()
+        && lv.leavedate.getDate() === date.getDate()
+        && (lv.hours > codeHours || code === '')) {
+          code = lv.code;
+          codeHours = lv.hours;
+        }
+      });
+    }
+    return code;
   }
 
   isAssigned(site: string, wkctr: string, start: Date, end: Date): boolean {
@@ -217,111 +293,5 @@ export class EmployeeData implements IEmployeeData {
       }
     });
     return answer;
-  }
-
-  hasLaborCode(chgNo: string, ext: string): boolean {
-    let answer = false;
-    this.laborCodes.forEach(lc => {
-      if (lc.chargeNumber === chgNo && lc.extension === ext) {
-        answer = true;
-      }
-    });
-    return answer;
-  }
-}
-
-export interface IEmployee {
-  id: string;
-  team: string;
-  site: string;
-  email: string;
-  name: IEmployeeName;
-  data: IEmployeeData;
-  user?: IUser;
-  work?: IWork[];
-}
-
-export class Employee implements IEmployee {
-  id: string;
-  team: string;
-  site: string;
-  email: string;
-  name: EmployeeName;
-  data: EmployeeData;
-  user?: User;
-  work?: Work[];
-
-  constructor(emp?: IEmployee) {
-    this.id = (emp) ? emp.id : '';
-    this.team = (emp) ? emp.team : '';
-    this.site = (emp) ? emp.site : '';
-    this.email = (emp) ? emp.email : '';
-    this.name = (emp) ? new EmployeeName(emp.name) : new EmployeeName();
-    this.data = (emp) ? new EmployeeData(emp.data) : new EmployeeData();
-    this.user = (emp && emp.user) ? new User(emp.user) : undefined;
-    if (emp && emp.work) {
-      this.work = [];
-      emp.work.forEach(wk => {
-        this.work?.push(new Work(wk));
-      });
-      this.work.sort((a,b) => a.compareTo(b));
-    }
-  }
-
-  compareTo(other?: Employee): number {
-    if (other) {
-      if (this.name.last === other.name.last) {
-        if (this.name.first === other.name.first) {
-          return (this.name.middle < this.name.middle) ? -1 : 1;
-        }
-        return (this.name.first < other.name.first) ? -1 : 1;
-      }
-      return (this.name.last < other.name.last) ? -1 : 1;
-    }
-    return -1;
-  }
-
-  isActive(): boolean {
-    const now = new Date();
-    return this.data.atSite(this.site, now, now);
-  }
-
-  activeOnDate(month: Date): boolean {
-    let end = new Date(Date.UTC(month.getFullYear(), month.getMonth() + 1, -1))
-    return this.data.atSite(this.site, month, end);
-  }
-
-  getIngestValue(date: Date): string {
-    // the ingest value is determined by work performed.  If a labor code was
-    // charged or a work record is available for the date, this value is shown
-    // as a number.  if the value is zero after checking work, leave is checked
-    // for this date and the higher hours work code is displayed.
-    let work = 0.0;
-    if (this.work && this.work.length > 0) {
-      this.work.forEach(wk => {
-        if (wk.dateWorked.getFullYear() === date.getFullYear() 
-          && wk.dateWorked.getMonth() === date.getMonth()
-          && wk.dateWorked.getDate() === date.getDate()) {
-          work += wk.hours;
-        }
-      });
-    }
-    if (work > 0.0) {
-      return work.toFixed(1);
-    }
-    let code: string = '';
-    let codeHours: number = 0.0;
-    if (this.data.leaves && this.data.leaves.length > 0) {
-      this.data.leaves.forEach(lv => {
-        if (lv.leavedate.getFullYear() === date.getFullYear()
-        && lv.leavedate.getMonth() === date.getMonth()
-        && lv.leavedate.getDate() === date.getDate()
-        && (lv.hours > codeHours || code === '')) {
-          code = lv.code;
-          codeHours = lv.hours;
-        }
-      });
-    }
-    return code;
   }
 }

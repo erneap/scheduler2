@@ -140,7 +140,7 @@ func (lr *LeaveReport) Create() error {
 
 	for _, emp := range emps {
 		if emp.AtSite(lr.SiteID, startDate, endDate) {
-			if strings.EqualFold(emp.Data.CompanyInfo.Company, lr.CompanyID) {
+			if strings.EqualFold(emp.CompanyInfo.Company, lr.CompanyID) {
 				lr.Employees = append(lr.Employees, emp)
 			}
 		}
@@ -903,7 +903,7 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 	for _, emp := range lr.Employees {
 		annual := 0.0
 		carry := 0.0
-		for _, bal := range emp.Data.Balances {
+		for _, bal := range emp.Balances {
 			if bal.Year == lr.Year {
 				annual = bal.Annual
 				carry = bal.Carryover
@@ -1017,8 +1017,8 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 			})
 		holRow := 0
 		lvRow := 0
-		startAsgmt := emp.Data.Assignments[0]
-		endAsgmt := emp.Data.Assignments[len(emp.Data.Assignments)-1]
+		startAsgmt := emp.Assignments[0]
+		endAsgmt := emp.Assignments[len(emp.Assignments)-1]
 		// clear months
 		for m, month := range months {
 			month.Periods = month.Periods[:0]
@@ -1040,10 +1040,10 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 			lr.Holidays[h] = hol
 		}
 
-		sort.Sort(employees.ByLeaveDay(emp.Data.Leaves))
+		sort.Sort(employees.ByLeaveDay(emp.Leaves))
 		std := emp.GetStandardWorkday(time.Date(lr.Year, 1, 1, 0, 0, 0, 0, time.UTC))
 
-		for _, lv := range emp.Data.Leaves {
+		for _, lv := range emp.Leaves {
 			if lv.LeaveDate.Year() == lr.Year {
 				if strings.EqualFold(lv.Code, "H") {
 					bFound := false

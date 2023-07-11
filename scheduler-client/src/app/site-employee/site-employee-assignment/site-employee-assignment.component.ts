@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { DeletionConfirmationComponent } from 'src/app/generic/deletion-confirmation/deletion-confirmation.component';
 import { Assignment, Schedule } from 'src/app/models/employees/assignments';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
+import { LaborCharge } from 'src/app/models/sites/laborcode';
 import { ISite, Site } from 'src/app/models/sites/site';
 import { Workcenter } from 'src/app/models/sites/workcenter';
 import { ChangeAssignmentRequest, EmployeeResponse } from 'src/app/models/web/employeeWeb';
@@ -46,6 +48,7 @@ export class SiteEmployeeAssignmentComponent {
   asgmtForm: FormGroup;
   showSchedule: boolean = false;
   rotatePeriods: string[] = new Array("28", "56", "84", "112", "140", "168", "336");
+  laborcodes: LaborCharge[] = [];
 
   constructor(
     protected siteService: SiteService,
@@ -81,23 +84,60 @@ export class SiteEmployeeAssignmentComponent {
     }
   }
 
+  setLaborCodes() {
+    this.laborcodes = [];
+    const now = new Date()
+    const start = new Date(now.getFullYear(), 0, 1);
+    const end = new Date(now.getFullYear() + 1, 11, 31);
+    if (this.site && this.site.forecasts) {
+      this.site.forecasts.forEach(f => {
+        if (f.endDate.getTime() >= start.getTime() && f.startDate.getTime() <= end.getTime()) {
+          if (f.laborCodes) {
+            f.laborCodes.forEach(lc => {
+              const newLc: LaborCharge = {
+                chargenumber: lc.chargeNumber,
+                extension: lc.extension,
+                checked: false,
+              }
+              this.laborcodes.push(newLc);
+            });
+          }
+        }
+      });
+    }
+    this.laborcodes.sort((a,b) => {
+      if (a.chargenumber === b.chargenumber) {
+        return (a.extension < b.extension) ? -1 : 1;
+      }
+      return (a.chargenumber < b.chargenumber) ? -1 : 1;
+    })
+  }
+
   setAssignments() {
     this.assignmentList = [];
     this.showSchedule = false;
+    let oldAsgmtID: number = -1;
+    if (this.assignment && this.assignment.id > 0) {
+      oldAsgmtID = this.assignment.id;
+    }
     this.assignment = new Assignment();
-    this.employee.data.assignments.forEach(asgmt => {
+    this.employee.assignments.forEach(asgmt => {
       if (asgmt.site.toLowerCase() === this.site.id.toLowerCase()) {
         this.assignmentList.push(new Assignment(asgmt));
+        if (asgmt.id === oldAsgmtID) {
+          this.assignment = new Assignment(asgmt);
+        }
       }
     });
     this.assignmentList.sort((a,b) => b.compareTo(a));
-    if (this.assignmentList.length > 0) {
+    if (oldAsgmtID < 0 && this.assignmentList.length > 0) {
       this.assignment = this.assignmentList[0];
     }
     this.setAssignment();
   }
 
   setAssignment() {
+    this.setLaborCodes();
     this.showSchedule = (this.assignment.schedules.length > 0);
     if (this.assignment.schedules.length > 0) {
       this.schedule = this.assignment.schedules[0];
@@ -117,12 +157,23 @@ export class SiteEmployeeAssignmentComponent {
       new Date(this.assignment.rotationdate));
     this.asgmtForm.controls["rotationdays"].setValue(
       `${this.assignment.rotationdays}`);
+    if (this.assignment.laborcodes) {
+      this.assignment.laborcodes.forEach(alc => {
+        for (let i=0; i < this.laborcodes.length; i++) {
+          const lc = this.laborcodes[i];
+          if (alc.chargeNumber === lc.chargenumber && alc.extension === lc.extension) {
+            lc.checked = true;
+            this.laborcodes[i] = lc;
+          }
+        }
+      })
+    }
   }
   
   selectAssignment() {
     const id = Number(this.asgmtForm.value.assignment);
     this.assignment = new Assignment();
-    this.employee.data.assignments.forEach(asgmt => {
+    this.employee.assignments.forEach(asgmt => {
       if (asgmt.id === id) {
         this.assignment = new Assignment(asgmt);
       }
@@ -202,7 +253,7 @@ export class SiteEmployeeAssignmentComponent {
             if (data && data !== null) {
               if (data.employee) {
                 this.employee = new Employee(data.employee);
-                this.employee.data.assignments.forEach(agmt => {
+                this.employee.assignments.forEach(agmt => {
                   if (agmt.id === this.assignment.id) {
                     this.assignment = new Assignment(agmt);
                     this.setAssignment();
@@ -260,7 +311,7 @@ export class SiteEmployeeAssignmentComponent {
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
-                  this.employee.data.assignments.forEach(agmt => {
+                  this.employee.assignments.forEach(agmt => {
                     if (agmt.id === this.assignment.id) {
                       this.assignment = new Assignment(agmt);
                       this.setAssignment();
@@ -299,7 +350,7 @@ export class SiteEmployeeAssignmentComponent {
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
-                  this.employee.data.assignments.forEach(agmt => {
+                  this.employee.assignments.forEach(agmt => {
                     if (agmt.id === this.assignment.id) {
                       this.assignment = new Assignment(agmt);
                       this.setAssignment();
@@ -341,9 +392,9 @@ export class SiteEmployeeAssignmentComponent {
           if (data && data !== null) {
             if (data.employee) {
               this.employee = new Employee(data.employee);
-              this.employee.data.assignments.sort((a,b) => a.compareTo(b));
-              this.assignment = new Assignment(this.employee.data.assignments[
-                this.employee.data.assignments.length - 1]);
+              this.employee.assignments.sort((a,b) => a.compareTo(b));
+              this.assignment = new Assignment(this.employee.assignments[
+                this.employee.assignments.length - 1]);
               this.schedule = this.assignment.schedules[0];
             }
           }
@@ -383,9 +434,9 @@ export class SiteEmployeeAssignmentComponent {
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
-                  this.employee.data.assignments.sort((a,b) => a.compareTo(b));
-                  this.assignment = new Assignment(this.employee.data.assignments[
-                    this.employee.data.assignments.length - 1]);
+                  this.employee.assignments.sort((a,b) => a.compareTo(b));
+                  this.assignment = new Assignment(this.employee.assignments[
+                    this.employee.assignments.length - 1]);
                   this.schedule = this.assignment.schedules[0];
                 }
               }
@@ -399,5 +450,57 @@ export class SiteEmployeeAssignmentComponent {
           });
       }
     })
+  }
+  
+  onSelect(chgNo: string, ext: string, event: MatCheckboxChange) {
+    if (event.checked) {
+      this.empService.addLaborCode(this.employee.id, this.assignment.id, 
+        chgNo, ext)
+      .subscribe({
+        next: (data: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          if (data && data !== null) {
+            if (data.employee) {
+              this.employee = new Employee(data.employee);
+              this.setLaborCodes();
+            }
+            const emp = this.empService.getEmployee();
+            if (data.employee && emp && emp.id === data.employee.id) {
+              this.empService.setEmployee(data.employee);
+            }
+          }
+          this.changed.emit(new Employee(this.employee));
+          this.authService.statusMessage = "Update complete";
+        },
+        error: (err: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          this.authService.statusMessage = err.exception;
+        }
+      });
+    } else {
+      this.empService.removeLaborCode(this.employee.id, this.assignment.id, 
+        chgNo, ext)
+      .subscribe({
+        next: (data: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          if (data && data !== null) {
+            if (data.employee) {
+              this.employee = new Employee(data.employee);
+              this.setLaborCodes();
+            }
+            const emp = this.empService.getEmployee();
+            if (data.employee && emp && emp.id === data.employee.id) {
+              this.empService.setEmployee(data.employee);
+            }
+          }
+          this.changed.emit(new Employee(this.employee));
+          this.authService.statusMessage = "Update complete";
+        },
+        error: (err: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          this.authService.statusMessage = err.exception;
+        }
+      });
+    }
   }
 }

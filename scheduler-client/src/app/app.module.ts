@@ -30,6 +30,7 @@ import { ReportsModule } from './reports/reports.module';
 import { ForgotPasswordComponent } from './home/forgot-password/forgot-password.component';
 import { ForgotPasswordResetComponent } from './home/forgot-password-reset/forgot-password-reset.component';
 import { PtoHolidayBelowDialogComponent } from './home/pto-holiday-below-dialog/pto-holiday-below-dialog.component';
+import { interceptorProviders } from './services/spin-interceptor.interceptor';
 
 @NgModule({
   declarations: [
@@ -66,12 +67,7 @@ import { PtoHolidayBelowDialogComponent } from './home/pto-holiday-below-dialog/
     DeletionConfirmationComponent
   ],
   providers: [AuthService, DialogService, EmployeeService, SiteService, 
-    TeamService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthHttpInterceptor,
-      multi: true,
-    }
+    TeamService, interceptorProviders,
   ],
   bootstrap: [AppComponent]
 })

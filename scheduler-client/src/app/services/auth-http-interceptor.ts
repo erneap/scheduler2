@@ -6,9 +6,11 @@ import { catchError } from "rxjs/operators";
 import { AuthService } from "./auth.service";
 import { AuthenticationResponse } from "../models/web/employeeWeb";
 import { ExceptionResponse } from "../models/web/userWeb";
+import { DialogService } from "./dialog-service.service";
 
 @Injectable()
 export class AuthHttpInterceptor implements HttpInterceptor {
+
     constructor(
         private authService: AuthService,
         private router: Router) { }

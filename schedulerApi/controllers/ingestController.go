@@ -173,16 +173,12 @@ func IngestFiles(c *gin.Context) {
 
 				work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(start.Year()))
 				if err == nil {
-					svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
-						"IngestFiles: GetEmployeeWork: %s", err.Error()))
 					work.RemoveWork(start, end)
 					services.UpdateEmployeeWork(work)
 				}
 				if start.Year() != end.Year() {
 					work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(end.Year()))
 					if err == nil {
-						svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
-							"IngestFiles: GetEmployeeWork (Year2): %s", err.Error()))
 						work.RemoveWork(start, end)
 						services.UpdateEmployeeWork(work)
 					}

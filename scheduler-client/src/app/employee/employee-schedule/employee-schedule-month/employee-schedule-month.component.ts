@@ -40,16 +40,17 @@ export class EmployeeScheduleMonthComponent {
     // the sunday before the 1st of the month and end date is the saturday after
     // the end of the month.
     this.startDate = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth(), 1));
+      this.month.getMonth(), 1, 0, 0, 0));
     while (this.startDate.getDay() !== 0) {
       this.startDate = new Date(this.startDate.getTime() - (24 * 3600000));
     }
     this.endDate = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth() + 1, 1));
-    this.endDate = new Date(this.endDate.getTime() - 1000);
+      this.month.getMonth() + 1, 1, 0, 0, 0));
     while (this.endDate.getDay() !== 0) {
       this.endDate = new Date(this.endDate.getTime() + (24 * 3600000));
     }
+    console.log(`Day: ${this.endDate.getDay()} - UTC: ${this.endDate.getUTCDay()}`);
+
 
     let count = -1;
     let start = new Date(this.startDate);

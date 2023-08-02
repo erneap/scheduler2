@@ -63,7 +63,7 @@ export class AppComponent {
   }
 
   getHelp() {
-    let url = '/scheduler2/help/index.html';
+    let url = '/scheduler/help/index.html';
     window.open(url, "help_win");
   }
 

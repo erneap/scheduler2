@@ -12,9 +12,9 @@ export class SiteIngestService {
   ) 
   {}
 
-  getIngestEmployees(team: string, site: string, company: string): 
+  getIngestEmployees(team: string, site: string, company: string, year: number): 
     Observable<IngestResponse> {
-    const url = `/scheduler/api/v2/ingest/${team}/${site}/${company}`;
+    const url = `/scheduler/api/v2/ingest/${team}/${site}/${company}/${year}`;
     return this.httpClient.get<IngestResponse>(url);
   }
 

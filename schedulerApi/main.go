@@ -159,7 +159,7 @@ func main() {
 
 		ingest := api.Group("/ingest", svcs.CheckJWT("scheduler"))
 		{
-			ingest.GET("/:teamid/:siteid/:company",
+			ingest.GET("/:teamid/:siteid/:company/:year",
 				svcs.CheckRoles("scheduler", roles),
 				controllers.GetIngestEmployees)
 			ingest.POST("/", svcs.CheckRoles("scheduler", roles),

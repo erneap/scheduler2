@@ -80,10 +80,11 @@ export class FileIngestComponent {
         })
       }
       if (this.employees.length <= 0) {
+        const now = new Date();
         this.authService.statusMessage = "Retrieving site's employees and ingest type";
         this.dialogService.showSpinner();
         this.ingestService.getIngestEmployees(emp.team, emp.site, 
-          emp.companyinfo.company).subscribe({
+          emp.companyinfo.company, now.getFullYear()).subscribe({
           next: (data: IngestResponse) => {
             this.dialogService.closeSpinner();
             if (data && data !== null) {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -24,8 +25,14 @@ func GetIngestEmployees(c *gin.Context) {
 	teamid := c.Param("teamid")
 	siteid := c.Param("siteid")
 	companyid := c.Param("company")
+	uyear, err := strconv.ParseUint(c.Param("year"), 10, 32)
+	if err != nil {
+		uyear = uint64(time.Now().Year())
+	}
+	year := uint(uyear)
 
-	companyEmployees, err := getEmployeesAfterIngest(teamid, siteid, companyid)
+	companyEmployees, err := getEmployeesAfterIngest(teamid, siteid, companyid,
+		year, year)
 	if err != nil {
 		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
 			"GetIngestEmployees: GetEmployees: %s", err.Error()))
@@ -56,9 +63,9 @@ func GetIngestEmployees(c *gin.Context) {
 	})
 }
 
-func getEmployeesAfterIngest(team, site, company string) ([]employees.Employee, error) {
+func getEmployeesAfterIngest(team, site, company string, startyear uint,
+	endyear uint) ([]employees.Employee, error) {
 	var companyEmployees []employees.Employee
-	now := time.Now()
 
 	empls, err := services.GetEmployees(team, site)
 	if err != nil {
@@ -68,13 +75,15 @@ func getEmployeesAfterIngest(team, site, company string) ([]employees.Employee, 
 	for _, emp := range empls {
 		if emp.CompanyInfo.Company == company {
 			// get work for current and previous years
-			work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(now.Year()))
+			work, err := services.GetEmployeeWork(emp.ID.Hex(), startyear)
 			if err == nil && len(work.Work) > 0 {
 				emp.Work = append(emp.Work, work.Work...)
 			}
-			work, err = services.GetEmployeeWork(emp.ID.Hex(), uint(now.Year()-1))
-			if err == nil && len(work.Work) > 0 {
-				emp.Work = append(emp.Work, work.Work...)
+			if endyear != startyear {
+				work, err := services.GetEmployeeWork(emp.ID.Hex(), endyear)
+				if err == nil && len(work.Work) > 0 {
+					emp.Work = append(emp.Work, work.Work...)
+				}
 			}
 			sort.Sort(employees.ByEmployeeWork(emp.Work))
 			companyEmployees = append(companyEmployees, emp)
@@ -243,7 +252,8 @@ func IngestFiles(c *gin.Context) {
 		}
 	}
 
-	companyEmployees, err := getEmployeesAfterIngest(teamid, siteid, companyid)
+	companyEmployees, err := getEmployeesAfterIngest(teamid, siteid, companyid,
+		uint(start.Year()), uint(end.Year()))
 	if err != nil {
 		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
 			"IngestFiles: GetEmployeesAfterIngest: %s", err.Error()))
@@ -272,7 +282,11 @@ func ManualIngestActions(c *gin.Context) {
 	}
 
 	// step through each employee change
+	year := uint(time.Now().Year())
 	for _, change := range data.Changes {
+		if uint(change.Work.DateWorked.Year()) != year {
+			year = uint(change.Work.DateWorked.Year())
+		}
 		// actions are different based on work or leave
 		parts := strings.Split(change.ChangeType, "-")
 		if parts[1] == "work" {
@@ -341,7 +355,7 @@ func ManualIngestActions(c *gin.Context) {
 		}
 	}
 	companyEmployees, err := getEmployeesAfterIngest(data.TeamID, data.SiteID,
-		data.CompanyID)
+		data.CompanyID, year, year)
 	if err != nil {
 		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
 			"ManualIngestActions: GetEmployeesAfterIngest: %s", err.Error()))

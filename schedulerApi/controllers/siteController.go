@@ -52,12 +52,6 @@ func getSite(teamid, siteid string) (*sites.Site, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	emps, err := services.GetEmployees(teamid, siteid)
-	if err != nil {
-		return nil, err
-	}
-	site.Employees = append(site.Employees, emps...)
 	sort.Sort(employees.ByEmployees(site.Employees))
 
 	return site, nil

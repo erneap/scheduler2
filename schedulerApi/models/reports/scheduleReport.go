@@ -23,6 +23,7 @@ type ScheduleReport struct {
 	Workcodes   map[string]bool
 	Styles      map[string]int
 	Employees   []employees.Employee
+	Offset      float64
 }
 
 func (sr *ScheduleReport) Create() error {
@@ -51,6 +52,7 @@ func (sr *ScheduleReport) Create() error {
 	if err != nil {
 		return err
 	}
+	sr.Offset = site.UtcOffset
 	sr.Workcenters = append(sr.Workcenters, site.Workcenters...)
 	sort.Sort(sites.ByWorkcenter(sr.Workcenters))
 
@@ -417,7 +419,7 @@ func (sr *ScheduleReport) CreateEmployeeRow(sheetLabel string,
 	current := time.Date(start.Year(), start.Month(), start.Day(), 0, 0, 0, 0,
 		time.UTC)
 	for current.Before(end) {
-		wd := emp.GetWorkday(current, 0)
+		wd := emp.GetWorkday(current, sr.Offset)
 		code := ""
 		styleID = "weekday"
 		if wd != nil && wd.Code != "" {

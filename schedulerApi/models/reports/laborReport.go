@@ -28,6 +28,7 @@ type LaborReport struct {
 	StatsRow          int
 	CurrentAsOf       time.Time
 	EndWork           time.Time
+	Offset            float64
 }
 
 func (lr *LaborReport) Create() error {
@@ -74,6 +75,11 @@ func (lr *LaborReport) Create() error {
 	}
 	for _, wc := range team.Workcodes {
 		lr.Workcodes[wc.Id] = wc
+	}
+	for _, site := range team.Sites {
+		if strings.EqualFold(site.ID, lr.SiteID) {
+			lr.Offset = site.UtcOffset
+		}
 	}
 
 	// get employees with assignments for the site that are assigned
@@ -1016,7 +1022,7 @@ func (lr *LaborReport) CreateContractReport(
 			forecast := emp.GetForecastHours(lCode.ChargeNumber,
 				lCode.Extension, fr.StartDate,
 				fr.EndDate.AddDate(0, 0, 1),
-				compareCodes)
+				compareCodes, lr.Offset)
 			if actual > 0.0 || forecast > 0.0 {
 				// show employee for this labor code
 				row++
@@ -1088,7 +1094,7 @@ func (lr *LaborReport) CreateContractReport(
 								style = lr.Styles["forecast"]
 							}
 							hours += emp.GetForecastHours(lCode.ChargeNumber,
-								lCode.Extension, first, last, compareCodes)
+								lCode.Extension, first, last, compareCodes, lr.Offset)
 						}
 						lr.Report.SetCellStyle(sheetName, cellID, cellID, style)
 						format := lr.ConditionalStyles["cellpink"]

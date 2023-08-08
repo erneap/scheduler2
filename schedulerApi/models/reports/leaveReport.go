@@ -122,6 +122,7 @@ type LeaveReport struct {
 	Workcodes map[string]teams.Workcode
 	Styles    map[string]int
 	Employees []employees.Employee
+	Offset    float64
 }
 
 func (lr *LeaveReport) Create() error {
@@ -173,6 +174,11 @@ func (lr *LeaveReport) Create() error {
 	for _, wc := range team.Workcodes {
 		if wc.IsLeave {
 			lr.Workcodes[wc.Id] = wc
+		}
+	}
+	for _, site := range team.Sites {
+		if strings.EqualFold(site.ID, lr.SiteID) {
+			lr.Offset = site.UtcOffset
 		}
 	}
 
@@ -1067,6 +1073,10 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 					}
 				} else {
 					for m, month := range months {
+						if lv.LeaveDate.Hour() != 0 {
+							delta := time.Hour * time.Duration(lr.Offset)
+							lv.LeaveDate = lv.LeaveDate.Add(delta)
+						}
 						if month.Month.Year() == lv.LeaveDate.Year() &&
 							month.Month.Month() == lv.LeaveDate.Month() {
 							bFound := false

@@ -47,3 +47,7 @@ a + a {
 p.role {
   color: red;
 }
+
+html {
+  text-align: center;
+}

@@ -106,7 +106,7 @@
                     </div>
                     <div class="formField">
                       <mat-form-field class="fieldWidth">
-                        <mat-label>Select Schedule</mat-label>
+                        <mat-label>Rotation Days</mat-label>
                         <mat-select formControlName="rotationdays" 
                           (selectionChange)="updateField('rotationdays')">
                           <mat-option *ngFor="let days of rotatePeriods"
@@ -125,7 +125,8 @@
           </form>
         </div>
         <div class="flexlayout column topcenter" 
-          style="background-color: white;margin: 5px;">
+          style="background-color: white;margin: 5px;"
+          *ngIf="showSchedule">
           <div style="background-color: red;color: white;">
             Assignment Labor Codes
           </div>

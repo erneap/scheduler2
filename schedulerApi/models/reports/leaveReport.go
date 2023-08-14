@@ -894,7 +894,7 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 
 	// set column widths
 	if lr.BHolidays {
-		lr.Report.SetColWidth(sheetName, GetColumn(0), GetColumn(0), 4.0)
+		lr.Report.SetColWidth(sheetName, GetColumn(0), GetColumn(0), 4.5)
 		lr.Report.SetColWidth(sheetName, GetColumn(1), GetColumn(1), 13.0)
 		lr.Report.SetColWidth(sheetName, GetColumn(2), GetColumn(2), 30.0)
 		lr.Report.SetColWidth(sheetName, GetColumn(3), GetColumn(3), 7.0)
@@ -1272,22 +1272,30 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 				} else {
 					text = prd.StartDate.Format("2")
 				}
+				color := wc.BackColor
+				if !strings.EqualFold(prd.Code, "v") ||
+					!strings.EqualFold(prd.Status, "actual") {
+					color = wc.BackColor
+				} else {
+					color = "000000"
+				}
 				rt = &excelize.RichTextRun{
 					Text: text,
 					Font: &excelize.Font{
 						Bold:  true,
 						Size:  10,
-						Color: wc.BackColor,
+						Color: color,
 					},
 				}
 				richText = append(richText, *rt)
+
 				if len(prd.Leaves) == 1 && prd.Leaves[0].Hours < std {
 					rt = &excelize.RichTextRun{
 						Text: "(" + fmt.Sprintf("%.1f", prd.Leaves[0].Hours) + ")",
 						Font: &excelize.Font{
 							Bold:      true,
 							Size:      10,
-							Color:     wc.BackColor,
+							Color:     color,
 							VertAlign: "superscript",
 						},
 					}
@@ -1399,7 +1407,7 @@ func (lr *LeaveReport) CreateFullMonthlyReference() error {
 	// set all the column widths
 	lr.Report.SetColWidth(sheetName, "A", "A", 3.5)
 	lr.Report.SetColWidth(sheetName, "B", "B", 20.0)
-	lr.Report.SetColWidth(sheetName, "C", "AG", 4.0)
+	lr.Report.SetColWidth(sheetName, "C", "AG", 4.5)
 	lr.Report.SetColWidth(sheetName, "AH", "AJ", 7.0)
 
 	// add page label at top, legend on left and freeze
@@ -1485,7 +1493,7 @@ func (lr *LeaveReport) CreateMinumimMonthlyReference() error {
 	// set all the column widths
 	lr.Report.SetColWidth(sheetName, "A", "A", 3.5)
 	lr.Report.SetColWidth(sheetName, "B", "B", 20.0)
-	lr.Report.SetColWidth(sheetName, "C", "AG", 4.0)
+	lr.Report.SetColWidth(sheetName, "C", "AG", 4.5)
 	lr.Report.SetColWidth(sheetName, "AH", "AJ", 7.0)
 
 	// add page label at top, legend on left and freeze

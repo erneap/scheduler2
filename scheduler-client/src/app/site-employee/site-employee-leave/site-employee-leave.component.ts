@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { LeaveDay } from 'src/app/models/employees/leave';
+import { Site } from 'src/app/models/sites/site';
 import { Workcode } from 'src/app/models/teams/workcode';
 import { EmployeeResponse } from 'src/app/models/web/employeeWeb';
 import { AuthService } from 'src/app/services/auth.service';
@@ -31,6 +32,7 @@ export class SiteEmployeeLeaveComponent {
   leaveDays: LeaveDay[];
   leaveCodes: Workcode[];
   leaveForm: FormGroup;
+  site: Site | undefined;
 
   constructor(
     protected authService: AuthService,
@@ -58,6 +60,10 @@ export class SiteEmployeeLeaveComponent {
       hours: [0, [Validators.required]],
       status: ['', [Validators.required]],
     });
+    let tSite = this.siteService.getSite();
+    if (tSite) {
+      this.site = new Site(tSite);
+    }
   }
 
   clearLeaveForm() {
@@ -69,8 +75,15 @@ export class SiteEmployeeLeaveComponent {
 
   setLeaves() {
     this.leaveDays = [];
-    const start = new Date(Date.UTC(this.year, 0, 1));
-    const end = new Date(Date.UTC(this.year + 1, 0, 1));
+    let start = new Date(Date.UTC(this.year, 0, 1));
+    let end = new Date(Date.UTC(this.year + 1, 0, 1));
+    if (this.site && this.site.utcOffset) {
+      start = new Date(Date.UTC(this.year, 0, 1, (this.site.utcOffset * -1), 
+        0, 0));
+      end = new Date(Date.UTC(this.year + 1, 0, 1, (this.site.utcOffset * -1), 
+        0, 0));
+    }
+    console.log(`${start} - ${end}`);
     this.employee.leaves.forEach(lv => {
       if (lv.leavedate.getTime() >= start.getTime() 
         && lv.leavedate.getTime() < end.getTime()) {

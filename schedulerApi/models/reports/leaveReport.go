@@ -416,6 +416,23 @@ func (lr *LeaveReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 1},
 			{Type: "bottom", Color: "000000", Style: 1},
 		},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"999999"}, Pattern: 1},
+		Font: &excelize.Font{Bold: false, Size: 10, Color: "000000"},
+		Alignment: &excelize.Alignment{Horizontal: "left", Vertical: "center",
+			WrapText: true},
+	})
+	if err != nil {
+		return err
+	}
+	lr.Styles["disabledlt"] = style
+
+	style, err = lr.Report.NewStyle(&excelize.Style{
+		Border: []excelize.Border{
+			{Type: "left", Color: "000000", Style: 1},
+			{Type: "top", Color: "000000", Style: 1},
+			{Type: "right", Color: "000000", Style: 1},
+			{Type: "bottom", Color: "000000", Style: 1},
+		},
 		Fill: excelize.Fill{Type: "pattern", Color: []string{"ffffff"}, Pattern: 1},
 		Font: &excelize.Font{Bold: false, Size: 10, Color: "00ffff"},
 		Alignment: &excelize.Alignment{Horizontal: "left", Vertical: "center",
@@ -1050,7 +1067,11 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 		std := emp.GetStandardWorkday(time.Date(lr.Year, 1, 1, 0, 0, 0, 0, time.UTC))
 
 		for _, lv := range emp.Leaves {
-			if lv.LeaveDate.Year() == lr.Year {
+			if lv.LeaveDate.UTC().Year() == lr.Year &&
+				(lv.LeaveDate.Equal(startAsgmt.StartDate) ||
+					lv.LeaveDate.After(startAsgmt.StartDate)) &&
+				(lv.LeaveDate.Equal(endAsgmt.EndDate) ||
+					lv.LeaveDate.Before(endAsgmt.EndDate)) {
 				if strings.EqualFold(lv.Code, "H") {
 					bFound := false
 					for h, hol := range lr.Holidays {
@@ -1217,7 +1238,7 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 			lvRow++
 			style := lr.Styles["ptodates"]
 			if month.Disable {
-				style = lr.Styles["disabled"]
+				style = lr.Styles["disabledlt"]
 			}
 			lr.Report.SetCellStyle(sheetName, GetCellID(col+0, row+lvRow),
 				GetCellID(col+1, row+lvRow), style)
@@ -1329,16 +1350,15 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 				"Total Hours")
 			daysLeft := 0
 			hoursTaken := 0.0
-			totalHours := 8.0 * float64(len(lr.Holidays))
 			for _, hol := range lr.Holidays {
-				if hol.GetHolidayHours() < 8.0 {
+				if hol.GetHolidayHours() < 8.0 && !hol.Disable {
 					daysLeft++
 				}
 				if hol.GetHolidayHours() > 0.0 {
 					hoursTaken += hol.GetHolidayHours()
 				}
 			}
-			hoursLeft := totalHours - hoursTaken
+			hoursLeft := daysLeft * 8.0
 			style = lr.Styles["holdaysleft"]
 			lr.Report.SetCellStyle(sheetName, GetCellID(0, row+1),
 				GetCellID(1, row+1), style)
@@ -1358,11 +1378,11 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 		lr.Report.SetCellValue(sheetName, GetCellID(col+0, row),
 			"Annual Leave")
 		lr.Report.SetCellValue(sheetName, GetCellID(col+1, row),
-			"carry")
+			"Carry")
 		lr.Report.SetCellValue(sheetName, GetCellID(col+2, row),
 			"Total Taken")
 		lr.Report.SetCellValue(sheetName, GetCellID(col+3, row),
-			"Requested")
+			"Request")
 		lr.Report.SetCellValue(sheetName, GetCellID(col+4, row),
 			"Balance")
 		totalTaken := 0.0

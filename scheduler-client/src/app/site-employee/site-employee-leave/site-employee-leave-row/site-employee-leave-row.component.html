@@ -18,7 +18,8 @@
       <ng-container *ngIf="showInput">
         <select class="form-field" formControlName="code" 
         [style]="getInputStyle()" (change)="updateLeave('code')">
-          <option *ngFor="let lc of leaveCodes" [value]="lc.id">
+          <option *ngFor="let lc of leaveCodes" style="color: black;" 
+          [value]="lc.id">
             {{lc.title}}
           </option>
         </select>
@@ -40,9 +41,9 @@
       <ng-container *ngIf="showInput">
         <select class="form-field" formControlName="status" 
         [style]="getInputStyle()" (change)="updateLeave('status')">
-          <option value="REQUESTED">Requested</option>
-          <option value="APPROVED">Approved</option>
-          <option value="ACTUAL">Actual</option>
+          <option style="color: black;" value="REQUESTED">Requested</option>
+          <option style="color: black;" value="APPROVED">Approved</option>
+          <option style="color: black;" value="ACTUAL">Actual</option>
         </select>
       </ng-container>
       <ng-container *ngIf="!showInput">

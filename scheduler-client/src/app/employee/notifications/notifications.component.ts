@@ -59,6 +59,8 @@ export class NotificationsComponent {
       tmsgs.push(new Notification(msg));
     });
     this.messages = tmsgs;
+    this.allChecked = this.messages.every(m => m.checked);
+    this.anyChecked = this.messages.filter(m => m.checked).length > 0;
   }
 
   onChange(chg: string) {

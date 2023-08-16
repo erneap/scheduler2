@@ -242,10 +242,11 @@ export class AuthService extends CacheService {
 
   changePassword(id: string, passwd: string): 
     Observable<EmployeeResponse> {
-    const url = '/authentication/api/v2/user/password';
-    const data: ChangePasswordRequest = {
+    const url = '/authentication/api/v2/user';
+    const data: UpdateRequest = {
       id: id,
-      password: passwd,
+      field: "password",
+      value: passwd,
     }
     return this.httpClient.put<EmployeeResponse>(url, data);
   }

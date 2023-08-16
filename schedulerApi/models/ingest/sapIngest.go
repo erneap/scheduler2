@@ -1,4 +1,4 @@
-package reports
+package ingest
 
 import (
 	"log"
@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/erneap/go-models/converters"
-	"github.com/erneap/scheduler2/schedulerApi/models/ingest"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -15,11 +14,11 @@ type SAPIngest struct {
 	Files []*multipart.FileHeader
 }
 
-func (s *SAPIngest) Process() ([]ingest.ExcelRow, time.Time,
+func (s *SAPIngest) Process() ([]ExcelRow, time.Time,
 	time.Time) {
 	start := time.Now()
 	end := time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
-	var records []ingest.ExcelRow
+	var records []ExcelRow
 	for _, file := range s.Files {
 		recs, fStart, fEnd := s.ProcessFile(file)
 		records = append(records, recs...)
@@ -33,7 +32,7 @@ func (s *SAPIngest) Process() ([]ingest.ExcelRow, time.Time,
 	return records, start, end
 }
 
-func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ingest.ExcelRow, time.Time, time.Time) {
+func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ExcelRow, time.Time, time.Time) {
 	readerFile, _ := file.Open()
 	f, err := excelize.OpenReader(readerFile)
 	if err != nil {
@@ -49,7 +48,7 @@ func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ingest.ExcelRow, 
 	}
 	startDate := time.Now()
 	endDate := time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
-	var records []ingest.ExcelRow
+	var records []ExcelRow
 	for i, row := range rows {
 		if i == 0 {
 			for j, colCell := range row {
@@ -91,7 +90,7 @@ func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ingest.ExcelRow, 
 					case "jury":
 						code = "J"
 					}
-					record := ingest.ExcelRow{
+					record := ExcelRow{
 						Date:      date,
 						CompanyID: companyID,
 						Code:      code,
@@ -112,7 +111,7 @@ func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ingest.ExcelRow, 
 						}
 					}
 					if !found {
-						record := ingest.ExcelRow{
+						record := ExcelRow{
 							Date:         date,
 							CompanyID:    companyID,
 							Preminum:     premimum,

@@ -4,6 +4,7 @@ import { Employee } from 'src/app/models/employees/employee';
 import { LeaveDay } from 'src/app/models/employees/leave';
 import { Work } from 'src/app/models/employees/work';
 import { Site } from 'src/app/models/sites/site';
+import { Company } from 'src/app/models/teams/company';
 import { Team } from 'src/app/models/teams/team';
 import { Workcode } from 'src/app/models/teams/workcode';
 import { IngestManualChange } from 'src/app/models/web/internalWeb';
@@ -22,12 +23,16 @@ import { TeamService } from 'src/app/services/team.service';
 })
 export class FileIngestComponent {
   ingestForm: FormGroup;
+  companyForm: FormGroup;
   employees: Employee[] = [];
   ingestType: string = 'manual';
   leavecodes: Workcode[] = [];
   myFiles: File[] = [];
   showApprove: boolean = false;
   manualUpdateList: IngestChange[] = [];
+  companies: Company[] = [];
+  company: string = "";
+  monthShown: Date = new Date();
 
   constructor(
     protected authService: AuthService,
@@ -38,10 +43,35 @@ export class FileIngestComponent {
     protected ingestService: SiteIngestService,
     private fb: FormBuilder
   ) {
+    const tEmp = this.empService.getEmployee()
+    if (tEmp) {
+      this.company = tEmp.companyinfo.company;
+    }
     this.ingestForm = this.fb.group({
       file: ['', [Validators.required]],
     });
+    this.companyForm = this.fb.group({
+      company: this.company,
+    });
     this.getEmployees();
+
+    const iTeam = this.teamService.getTeam();
+    if (iTeam) {
+      this.companies = [];
+      iTeam.companies.forEach(co => {
+        this.companies.push(new Company(co));
+      });
+    }
+  }
+
+  onChangeCompany() {
+    this.company = this.companyForm.value.company;
+    this.getEmployees();
+  }
+
+  onMonthChanged(newMonth: Date) {
+    this.monthShown = new Date(newMonth);
+    console.log(this.monthShown);
   }
 
   getEmployees() {
@@ -57,77 +87,77 @@ export class FileIngestComponent {
       });
       this.leavecodes.sort((a,b) => a.compareTo(b))
     }
-    const iEmp = this.empService.getEmployee();
-    if (iEmp) {
-      const emp = new Employee(iEmp);
-      const iSite = this.siteService.getSite();
-      if (iSite) {
-        const site = new Site(iSite);
-        if (site.employees) {
-          site.employees.forEach(tEmp => {
-            if (tEmp.companyinfo.company === emp.companyinfo.company) {
-              this.employees.push(new Employee(tEmp));
-            }
-          });
-        }
-      }
-      if (iTeam) {
-        this.ingestType = 'manual';
-        iTeam.companies.forEach(co => {
-          if (co.id === emp.companyinfo.company) {
-            this.ingestType = co.ingest;
-          }
-        })
-      }
-      if (this.employees.length <= 0) {
-        const now = new Date();
-        this.authService.statusMessage = "Retrieving site's employees and ingest type";
-        this.dialogService.showSpinner();
-        this.ingestService.getIngestEmployees(emp.team, emp.site, 
-          emp.companyinfo.company, now.getFullYear()).subscribe({
-          next: (data: IngestResponse) => {
-            this.dialogService.closeSpinner();
-            if (data && data !== null) {
-              this.authService.statusMessage = "Retrieval complete";
-              this.ingestType = data.ingest;
-              this.employees = [];
-              const iSite = this.siteService.getSite();
-              if (iSite) {
-                const site = new Site(iSite);
-                if (!site.employees) {
-                  site.employees = [];
-                }
-                data.employees.forEach(tEmp => {
-                  this.employees.push(new Employee(tEmp));
-                  if (site.employees) {
-                    let found = false;
-                    for (let e=0; e < site.employees.length && !found; e++) {
-                      if (site.employees[e].id === tEmp.id) {
-                        found = true;
-                        site.employees[e] = new Employee(tEmp);
-                      }
-                    }
-                    if (!found) {
-                      site.employees.push(new Employee(tEmp));
-                    }
-                  }
-                });
-                this.siteService.setSite(site);
-              } else {
-                data.employees.forEach(tEmp => {
-                  this.employees.push(new Employee(tEmp));
-                });
-              }
-            }
-            this.ingestForm.controls["file"].setValue('');
-            this.myFiles = [];
-          },
-          error: (err: IngestResponse) => {
-            this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.exception;
+    let siteid = "";
+    const iSite = this.siteService.getSite();
+    if (iSite) {
+      const site = new Site(iSite);
+      siteid = site.id;
+      if (site.employees) {
+        site.employees.forEach(tEmp => {
+          if (tEmp.companyinfo.company === this.company) {
+            this.employees.push(new Employee(tEmp));
           }
         });
       }
+    }
+    let teamid = "";
+    if (iTeam) {
+      teamid = iTeam.id;
+      this.ingestType = 'manual';
+      iTeam.companies.forEach(co => {
+        if (co.id === this.company) {
+          this.ingestType = co.ingest;
+        }
+      })
+    }
+    if (this.employees.length <= 0) {
+      const now = new Date();
+      this.authService.statusMessage = "Retrieving site's employees and ingest type";
+      this.dialogService.showSpinner();
+      this.ingestService.getIngestEmployees(teamid, siteid, 
+        this.company, now.getFullYear()).subscribe({
+        next: (data: IngestResponse) => {
+          this.dialogService.closeSpinner();
+          if (data && data !== null) {
+            this.authService.statusMessage = "Retrieval complete";
+            this.ingestType = data.ingest;
+            this.employees = [];
+            const iSite = this.siteService.getSite();
+            if (iSite) {
+              const site = new Site(iSite);
+              if (!site.employees) {
+                site.employees = [];
+              }
+              data.employees.forEach(tEmp => {
+                this.employees.push(new Employee(tEmp));
+                if (site.employees) {
+                  let found = false;
+                  for (let e=0; e < site.employees.length && !found; e++) {
+                    if (site.employees[e].id === tEmp.id) {
+                      found = true;
+                      site.employees[e] = new Employee(tEmp);
+                    }
+                  }
+                  if (!found) {
+                    site.employees.push(new Employee(tEmp));
+                  }
+                }
+              });
+              this.siteService.setSite(site);
+            } else {
+              data.employees.forEach(tEmp => {
+                this.employees.push(new Employee(tEmp));
+              });
+            }
+          }
+          this.ingestForm.controls["file"].setValue('');
+          this.myFiles = [];
+        },
+        error: (err: IngestResponse) => {
+          this.dialogService.closeSpinner();
+          this.authService.statusMessage = err.exception;
+        }
+      });
     }
   }
 
@@ -149,7 +179,13 @@ export class FileIngestComponent {
       const emp = new Employee(iEmp);
       formData.append("team", emp.team);
       formData.append("site", emp.site);
-      formData.append("company", emp.companyinfo.company);
+      formData.append("company", this.company);
+      let month = `${this.monthShown.getFullYear()}-`;
+      if (this.monthShown.getMonth() < 9) {
+        month += "0";
+      }
+      month += `${this.monthShown.getMonth() + 1}-01`;
+      formData.append("start", month);
       this.myFiles.forEach(file => {
         formData.append("file", file);
       });

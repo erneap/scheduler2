@@ -32,6 +32,7 @@ export class SiteIngestMonthComponent {
   @Input() leavecodes: Workcode[] = [];
   @Input() ingestType: string = 'manual';
   @Output() changed = new EventEmitter<IngestManualChange>();
+  @Output() monthChanged = new EventEmitter<Date>();
   month: Date;
   dateLabel: string = '';
   showList: Employee[] = [];
@@ -48,6 +49,7 @@ export class SiteIngestMonthComponent {
   ) {
     const now = new Date();
     this.month = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1, 0, 0, 0));
+    this.monthChanged.emit(this.month);
     this.changeMonth('set');
   }
 
@@ -78,6 +80,7 @@ export class SiteIngestMonthComponent {
             this.month = new Date(Date.UTC(this.month.getFullYear(), 
               this.month.getMonth() + 1, 1))
           }
+          this.monthChanged.emit(this.month);
     
           this.dateLabel = `${months[this.month.getMonth()]} ${this.month.getFullYear()}`;
           this.showList = [];
@@ -110,6 +113,7 @@ export class SiteIngestMonthComponent {
         this.month = new Date(Date.UTC(this.month.getFullYear(), 
           this.month.getMonth() + 1, 1))
       }
+      this.monthChanged.emit(this.month);
 
       this.dateLabel = `${months[this.month.getMonth()]} ${this.month.getFullYear()}`;
       this.showList = [];

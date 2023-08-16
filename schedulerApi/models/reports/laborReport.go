@@ -219,7 +219,7 @@ func (lr *LaborReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 2},
 			{Type: "bottom", Color: "000000", Style: 2},
 		},
-		Fill: excelize.Fill{Type: "pattern", Color: []string{"6699ff"}, Pattern: 1},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"99ccff"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12,
 			Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center",
@@ -238,7 +238,7 @@ func (lr *LaborReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 2},
 			{Type: "bottom", Color: "000000", Style: 2},
 		},
-		Fill: excelize.Fill{Type: "pattern", Color: []string{"00e600"}, Pattern: 1},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"99cc00"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12,
 			Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center",
@@ -276,7 +276,7 @@ func (lr *LaborReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 2},
 			{Type: "bottom", Color: "000000", Style: 2},
 		},
-		Fill: excelize.Fill{Type: "pattern", Color: []string{"6699ff"}, Pattern: 1},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"99ccff"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12,
 			Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center",
@@ -295,7 +295,7 @@ func (lr *LaborReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 2},
 			{Type: "bottom", Color: "000000", Style: 2},
 		},
-		Fill: excelize.Fill{Type: "pattern", Color: []string{"00e600"}, Pattern: 1},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"99cc00"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12,
 			Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center",
@@ -625,7 +625,7 @@ func (lr *LaborReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 1},
 			{Type: "bottom", Color: "000000", Style: 1},
 		},
-		Fill: excelize.Fill{Type: "pattern", Color: []string{"6699ff"}, Pattern: 1},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"99ccff"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12, Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center",
 			WrapText: true},
@@ -643,7 +643,7 @@ func (lr *LaborReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 1},
 			{Type: "bottom", Color: "000000", Style: 1},
 		},
-		Fill: excelize.Fill{Type: "pattern", Color: []string{"6699ff"}, Pattern: 1},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"99ccff"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12, Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center",
 			WrapText: true},
@@ -661,7 +661,7 @@ func (lr *LaborReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 1},
 			{Type: "bottom", Color: "000000", Style: 1},
 		},
-		Fill: excelize.Fill{Type: "pattern", Color: []string{"b3ccff"}, Pattern: 1},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"ccffff"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12, Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center",
 			WrapText: true},
@@ -679,7 +679,7 @@ func (lr *LaborReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 1},
 			{Type: "bottom", Color: "000000", Style: 1},
 		},
-		Fill: excelize.Fill{Type: "pattern", Color: []string{"b3ccff"}, Pattern: 1},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"ccffff"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12, Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center",
 			WrapText: true},
@@ -697,7 +697,7 @@ func (lr *LaborReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 1},
 			{Type: "bottom", Color: "000000", Style: 1},
 		},
-		Fill: excelize.Fill{Type: "pattern", Color: []string{"00e600"}, Pattern: 1},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"99cc00"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12, Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center",
 			WrapText: true},
@@ -715,7 +715,7 @@ func (lr *LaborReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 1},
 			{Type: "bottom", Color: "000000", Style: 1},
 		},
-		Fill: excelize.Fill{Type: "pattern", Color: []string{"00e600"}, Pattern: 1},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"99cc00"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12, Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center",
 			WrapText: true},
@@ -733,7 +733,7 @@ func (lr *LaborReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 1},
 			{Type: "bottom", Color: "000000", Style: 1},
 		},
-		Fill: excelize.Fill{Type: "pattern", Color: []string{"80ff80"}, Pattern: 1},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"ccffcc"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12, Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center",
 			WrapText: true},
@@ -751,7 +751,7 @@ func (lr *LaborReport) CreateStyles() error {
 			{Type: "right", Color: "000000", Style: 1},
 			{Type: "bottom", Color: "000000", Style: 1},
 		},
-		Fill: excelize.Fill{Type: "pattern", Color: []string{"80ff80"}, Pattern: 1},
+		Fill: excelize.Fill{Type: "pattern", Color: []string{"ccffcc"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12, Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center",
 			WrapText: true},
@@ -1138,8 +1138,8 @@ func (lr *LaborReport) CreateContractReport(
 			}
 		}
 		if current {
-			days := math.Ceil(fr.EndDate.Sub(fr.StartDate).Hours() / 24.0)
-			daysToNow := math.Ceil(lr.EndWork.Sub(fr.StartDate).Hours() / 24.0)
+			days := math.Ceil(lCode.EndDate.Sub(lCode.StartDate).Hours() / 24.0)
+			daysToNow := math.Ceil(lr.EndWork.Sub(lCode.StartDate).Hours() / 24.0)
 			lr.StatsRow += 1
 			codeTxt := lCode.ChargeNumber + " " + lCode.Extension
 			totalHours := lCode.HoursPerEmployee * float64(lCode.MinimumEmployees)
@@ -1158,9 +1158,9 @@ func (lr *LaborReport) CreateContractReport(
 			lr.Report.SetCellValue("Statistics", GetCellID(0,
 				lr.StatsRow), codeTxt)
 			lr.Report.SetCellValue("Statistics", GetCellID(1,
-				lr.StatsRow), fr.StartDate.Format("01/02/2006"))
+				lr.StatsRow), lCode.StartDate.Format("01/02/2006"))
 			lr.Report.SetCellValue("Statistics", GetCellID(2,
-				lr.StatsRow), fr.EndDate.Format("01/02/2006"))
+				lr.StatsRow), lCode.EndDate.Format("01/02/2006"))
 			if bLight {
 				style = lr.Styles["bluenum"]
 				pctStyle = lr.Styles["bluepct"]

@@ -32,7 +32,6 @@ export class MessageService  extends CacheService {
   clearMessages() {
     this.removeItem('current-alerts');
     this.showAlerts = false;
-    console.log("Stopping Alert Checks!");
     if (this.interval && this.interval !== null) {
       clearInterval(this.interval)
     }
@@ -55,9 +54,7 @@ export class MessageService  extends CacheService {
     if (this.interval && this.interval !== null) {
       clearInterval(this.interval)
     }
-    console.log('Starting Alerts');
     this.interval = setInterval(() => {
-      console.log('Awaiting Interval');
       this.updateMessages()
     }, minutes * 60 * 1000);
   }

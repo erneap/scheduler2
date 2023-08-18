@@ -71,7 +71,6 @@ export class FileIngestComponent {
 
   onMonthChanged(newMonth: Date) {
     this.monthShown = new Date(newMonth);
-    console.log(this.monthShown);
   }
 
   getEmployees() {

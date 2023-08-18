@@ -66,9 +66,7 @@ export class SiteService extends CacheService {
       const user = new User(iUser);
       if (user.isInGroup("scheduler","scheduler") 
         || user.isInGroup("scheduler", "siteleader")) {
-        console.log("Starting Site Update Interval");
         this.interval = setInterval(() => {
-          console.log('Awaiting Site Update Interval');
           this.processAutoUpdate()
         }, minutes * 60 * 1000);
       }
@@ -100,7 +98,6 @@ export class SiteService extends CacheService {
 
   stopAutoUpdate() {
     if (this.interval && this.interval !== null) {
-      console.log("Stopping Site Update interval");
       clearInterval(this.interval);
     }
   }

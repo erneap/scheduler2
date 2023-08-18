@@ -82,7 +82,6 @@ export class SiteEmployeeProfileComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       if (result.data) {
         if (result.emailAddress !== '') {
           this.dialogService.showSpinner();

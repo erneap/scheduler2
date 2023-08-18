@@ -71,13 +71,15 @@ func (mei *ManualExcelIngest) ProcessFile(file *multipart.FileHeader) ([]ExcelRo
 			empName := ""
 
 			for c, col := range row {
-				switch c {
-				case 0:
+				switch {
+				case c == 0:
 					empName = col
-				case 1:
-				default:
-					date := mei.StartDate.AddDate(0, 0, c-3)
-					if endDate.Before(date) {
+				case c > 1 && c < 33:
+					date := mei.StartDate.AddDate(0, 0, c-2)
+					if date.Before(startDate) {
+						startDate = date
+					}
+					if date.After(endDate) {
 						endDate = date
 					}
 					val, err := strconv.ParseFloat(col, 64)

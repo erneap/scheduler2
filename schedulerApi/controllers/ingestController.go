@@ -278,39 +278,89 @@ func IngestFiles(c *gin.Context) {
 		/////////////////////////////////////////////////////////////////////////////
 
 		sort.Sort(ingest.ByExcelRow(records))
+		cEmployees := make(map[string]employees.Employee)
 		// step througn records to get list of employee ids, then step through this
 		// list and remove leaves and work associated with these employees
-		var employeeIDs []string
-		for _, rec := range records {
-			found := false
-			for _, id := range employeeIDs {
-				if rec.CompanyID == id {
-					found = true
+		for _, emp := range empls {
+			if strings.EqualFold(emp.CompanyInfo.Company, companyid) &&
+				(emp.IsActive(start) || emp.IsActive(end)) {
+				emp.RemoveLeaves(start, end)
+				services.UpdateEmployee(&emp)
+				cEmployees[emp.Name.GetLastFirst()] = emp
+
+				work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(start.Year()))
+				if err == nil {
+					work.RemoveWork(start, end)
+					services.UpdateEmployeeWork(work)
 				}
-			}
-			if !found {
-				employeeIDs = append(employeeIDs, rec.CompanyID)
-			}
-		}
-
-		for _, id := range employeeIDs {
-			for i, emp := range empls {
-				if emp.CompanyInfo.Company == companyid &&
-					emp.CompanyInfo.EmployeeID == id {
-					emp.RemoveLeaves(start, end)
-					services.UpdateEmployee(&emp)
-					empls[i] = emp
-
-					work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(start.Year()))
+				if start.Year() != end.Year() {
+					work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(end.Year()))
 					if err == nil {
 						work.RemoveWork(start, end)
 						services.UpdateEmployeeWork(work)
 					}
-					if start.Year() != end.Year() {
-						work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(end.Year()))
-						if err == nil {
-							work.RemoveWork(start, end)
-							services.UpdateEmployeeWork(work)
+				}
+			}
+		}
+
+		for _, rec := range records {
+			// find the employee in the employees list
+			for i, emp := range cEmployees {
+				if strings.EqualFold(emp.Name.GetLastFirst(), rec.CompanyID) {
+					if rec.Code != "" {
+						// leave, so add to employee and update
+						// hours is the number of normal work hours
+						hours := emp.GetStandardWorkday(rec.Date)
+
+						// convert code to used by system
+						for _, cd := range team.Workcodes {
+							if strings.EqualFold(cd.AltCode, rec.Code) {
+								rec.Code = cd.Id
+							}
+						}
+						lvid := -1
+						for _, lv := range emp.Leaves {
+							if lvid < lv.ID {
+								lvid = lv.ID
+							}
+						}
+						lv := employees.LeaveDay{
+							ID:        lvid + 1,
+							LeaveDate: rec.Date,
+							Code:      rec.Code,
+							Hours:     hours,
+							Status:    "ACTUAL",
+							RequestID: "",
+						}
+						emp.Leaves = append(emp.Leaves, lv)
+						cEmployees[i] = emp
+						err := services.UpdateEmployee(&emp)
+						if err != nil {
+							fmt.Println(err)
+						}
+					} else {
+						// work object, so get work record object for employee and year, then
+						// add it to the work record, update it in the database.
+						wr := employees.Work{
+							DateWorked:   rec.Date,
+							ChargeNumber: rec.ChargeNumber,
+							Extension:    rec.Extension,
+							PayCode:      1,
+							Hours:        rec.Hours,
+						}
+						workrec, err := services.GetEmployeeWork(emp.ID.Hex(),
+							uint(rec.Date.Year()))
+						if err != nil {
+							workrec = &employees.EmployeeWorkRecord{
+								ID:         primitive.NewObjectID(),
+								EmployeeID: emp.ID,
+								Year:       uint(rec.Date.Year()),
+							}
+							workrec.Work = append(workrec.Work, wr)
+							services.CreateEmployeeWork(workrec)
+						} else {
+							workrec.Work = append(workrec.Work, wr)
+							services.UpdateEmployeeWork(workrec)
 						}
 					}
 				}

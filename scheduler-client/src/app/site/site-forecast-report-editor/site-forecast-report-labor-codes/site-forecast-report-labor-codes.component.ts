@@ -222,9 +222,7 @@ export class SiteForecastReportLaborCodesComponent {
       const chgNo = this.laborForm.value.chargeNumber;
       const ext = this.laborForm.value.extension;
 
-      console.log(`${chgNo} - ${ext} - ${field} - ${value}`);
-
-      if (value !== '') {
+     if (value !== '') {
         this.authService.statusMessage = "Adding new labor code";
         this.dialogService.showSpinner();
         this.siteService.updateReportLaborCode(this.teamid, this.site.id, 

@@ -226,7 +226,6 @@ export class SiteEmployeeVariationComponent {
                   if (v.id > max) {
                     this.variation = new Variation(v);
                     max = v.id;
-                    console.log(max);
                   }
                 });
                 this.variationForm.controls['variation'].setValue(max);

@@ -147,7 +147,6 @@ func CreateReport(c *gin.Context) {
 	case "cofs":
 		reportDate := time.Date(year, month, 1, 0, 0, 0, 0,
 			time.UTC)
-		fmt.Println(reportDate)
 		cofsReport := reports.ReportCofS{
 			Date:   reportDate,
 			TeamID: data.TeamID,

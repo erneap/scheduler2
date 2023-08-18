@@ -267,10 +267,8 @@ func DeleteEmployee(empID string) error {
 			}
 		}
 		if found && len(user.Workgroups) > 0 {
-			fmt.Println("Updating User")
 			userCol.UpdateOne(context.TODO(), filter, user)
 		} else {
-			fmt.Println("Deleting User")
 			_, err = userCol.DeleteOne(context.TODO(), filter)
 			if err != nil {
 				fmt.Println(err.Error())

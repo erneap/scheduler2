@@ -50,7 +50,6 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
 
       if (roleMatch) {
         params = { redirectUrl: route.pathFromRoot.map( r => r.url.join('/')) }
-        console.log(params);
       }
     }
     if (!this.authService.isAuthenticated || !roleMatch) {

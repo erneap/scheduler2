@@ -52,7 +52,6 @@ export class HomeComponent {
     });
     const user = this.authService.getUser();
     if (user) {
-      console.log(`Initial User: ${user.lastName}`);
       this.authService.isAuthenticated = true;
       this.getInitialData(user.id)
     }

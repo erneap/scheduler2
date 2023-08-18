@@ -95,7 +95,6 @@ export class SiteEmployeeAssignmentScheduleComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       if (result === 'yes') {
         this.removeSchedule();
       }

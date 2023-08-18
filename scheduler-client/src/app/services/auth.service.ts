@@ -50,9 +50,7 @@ export class AuthService extends CacheService {
   startTokenRenewal() {
     const minutes = 358;
     if (!this.isTokenExpired()) {
-      console.log("Starting Token Renewal Interval");
       this.interval = setInterval(() => {
-        console.log('Awaiting Token Renewal');
         this.processToken()
       }, minutes * 60 * 1000);
     }
@@ -67,7 +65,6 @@ export class AuthService extends CacheService {
     this.httpClient.put<AuthenticationResponse>(url, data).subscribe({
       next: (data: AuthenticationResponse) => {
         if (data && data.token) {
-          console.log("Setting New Token");
           this.setToken(data.token);
         }
       },
@@ -79,7 +76,6 @@ export class AuthService extends CacheService {
 
   stopTokenInterval() {
     if (this.interval && this.interval !== null) {
-      console.log("Stop Token Renewal");
       clearInterval(this.interval);
     }
   }

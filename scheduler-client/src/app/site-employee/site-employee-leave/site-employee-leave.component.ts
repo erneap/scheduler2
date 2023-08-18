@@ -83,7 +83,6 @@ export class SiteEmployeeLeaveComponent {
       end = new Date(Date.UTC(this.year + 1, 0, 1, (this.site.utcOffset * -1), 
         0, 0));
     }
-    console.log(`${start} - ${end}`);
     this.employee.leaves.forEach(lv => {
       if (lv.leavedate.getTime() >= start.getTime() 
         && lv.leavedate.getTime() < end.getTime()) {

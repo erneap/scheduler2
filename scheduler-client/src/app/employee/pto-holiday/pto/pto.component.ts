@@ -169,7 +169,6 @@ export class PtoComponent {
               total -= lv.hours;
             }
           });
-          console.log(total);
           if (total > 40.0) { 
             total = 40.0;
           }

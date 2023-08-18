@@ -49,9 +49,7 @@ export class EmployeeScheduleMonthComponent {
     while (this.endDate.getDay() !== 0) {
       this.endDate = new Date(this.endDate.getTime() + (24 * 3600000));
     }
-    console.log(`Day: ${this.endDate.getDay()} - UTC: ${this.endDate.getUTCDay()}`);
-
-
+    
     let count = -1;
     let start = new Date(this.startDate);
     const emp = this.employeeService.getEmployee();

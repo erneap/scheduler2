@@ -1068,8 +1068,6 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(msg)
-
 	if msg != "" {
 		if strings.Contains(strings.ToLower(msg), "approved") {
 			err = svcs.CreateMessage(emp.ID.Hex(), data.Value, msg)
@@ -1087,7 +1085,6 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 			for _, e := range siteEmps {
 				if e.User.IsInGroup("scheduler", "siteleader") ||
 					e.User.IsInGroup("scheduler", "scheduler") {
-					fmt.Println(e.Name.GetLastFirst())
 					to := []string{e.User.EmailAddress}
 					err = svcs.CreateMessage(e.ID.Hex(), emp.ID.Hex(), msg)
 					if err != nil {

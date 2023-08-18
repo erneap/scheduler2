@@ -36,7 +36,6 @@ export class ReportChargeNumberComponent {
       const period = `${year.getFullYear()}|`
         + `${year.getMonth() + 1}|`
         + `${year.getDate()}`;
-      console.log(period);
       const request: ReportRequest = {
         reportType: 'chargenumber',
         period: period,

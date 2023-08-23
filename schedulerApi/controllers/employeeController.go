@@ -1082,18 +1082,21 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 			}
 		} else {
 			siteEmps, _ := services.GetEmployees(emp.TeamID.Hex(), emp.SiteID)
+			var to []string
 			for _, e := range siteEmps {
 				if e.User.IsInGroup("scheduler", "siteleader") ||
 					e.User.IsInGroup("scheduler", "scheduler") {
-					to := []string{e.User.EmailAddress}
+					to = append(to, e.User.EmailAddress)
 					err = svcs.CreateMessage(e.ID.Hex(), emp.ID.Hex(), msg)
 					if err != nil {
 						fmt.Println(err.Error())
 					}
-					err = svcs.SendMail(to, "Leave Request Submitted", msg)
-					if err != nil {
-						fmt.Println(err.Error())
-					}
+				}
+			}
+			if len(to) > 0 {
+				err = svcs.SendMail(to, "Leave Request Submitted", msg)
+				if err != nil {
+					fmt.Println(err.Error())
 				}
 			}
 		}

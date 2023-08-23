@@ -18,7 +18,9 @@
             </div>
           </div>
           <app-leave-request-editor [request]="request"
-            [employee]="requestEmployee" (changed)="employeeChanged($event)">
+            [employee]="requestEmployee" 
+            (changed)="employeeChanged($event)"
+            [approver]="true">
           </app-leave-request-editor>
         </div>
         <hr />

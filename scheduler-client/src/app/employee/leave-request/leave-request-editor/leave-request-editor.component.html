@@ -29,22 +29,22 @@
         </mat-form-field>
       </div> 
       <button mat-icon-button  
-        *ngIf="editorForm.valid"
+        *ngIf="editorForm.valid && !approver"
         matTooltip="Add/Update Leave Request"
         (click)="processNewRequest()">
         <mat-icon>add</mat-icon>
       </button> 
       <button mat-icon-button color="accent"
-          *ngIf="request.id !== ''"
-          matTooltip="Delete Current Leave Request"
-          (click)="deleteRequest()">
-          <mat-icon>delete</mat-icon>
-        </button>
-        <button mat-icon-button
-          matTooltip="Clear editor"
-          (click)="clearRequest()">
-          <mat-icon>deselect</mat-icon>
-        </button>
+        *ngIf="request.id !== '' && !approver"
+        matTooltip="Delete Current Leave Request"
+        (click)="deleteRequest()">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-icon-button
+        matTooltip="Clear editor"
+        (click)="clearRequest()">
+        <mat-icon>deselect</mat-icon>
+      </button>
     </div>
   </form>
   <div *ngIf="request.id !== ''" style="padding-bottom: 10px;"

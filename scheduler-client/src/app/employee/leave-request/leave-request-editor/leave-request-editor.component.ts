@@ -21,6 +21,7 @@ import { MessageService } from 'src/app/services/message.service';
 export class LeaveRequestEditorComponent {
   private _employee: Employee = new Employee();
   private _request: LeaveRequest = new LeaveRequest();
+  private _approver: boolean = false;
   @Input()
   public set employee(emp: IEmployee) {
     this._employee = new Employee(emp);
@@ -36,10 +37,16 @@ export class LeaveRequestEditorComponent {
   get request(): LeaveRequest {
     return this._request;
   }
+  @Input()
+  public set approver(show: boolean) {
+    this._approver = show;
+  }
+  get approver(): boolean {
+    return this._approver;
+  }
   @Output() changed = new EventEmitter<Employee>();
   editorForm: FormGroup;
   leaveList: Workcode[];
-  approver: boolean = false;
   draft: boolean = false;
   ptohours: number = 0;
   holidayhours: number = 0;

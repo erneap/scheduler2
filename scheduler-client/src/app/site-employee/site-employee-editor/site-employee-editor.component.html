@@ -1,5 +1,25 @@
 <mat-tab-group preserveContent="true" [backgroundColor]="'primary'"
   style="margin-top: 10px;width: 100%;">
+  <mat-tab label="Leave Information">
+    <mat-tab-group preserveContent="true">
+      <mat-tab label="PTO/Holidays List">
+        <app-site-pto-holiday [employee]="employee"></app-site-pto-holiday>
+      </mat-tab>
+      <mat-tab label="Leaves">
+        <app-site-employee-leave [employee]="employee"
+        (changed)="employeeChanged($event)"></app-site-employee-leave>
+      </mat-tab>
+      <mat-tab label="Leave Balances">
+        <app-site-employee-leave-balance [employee]="employee"
+          [site]="site"
+          (changed)="employeeChanged($event)"></app-site-employee-leave-balance>
+      </mat-tab>
+      <mat-tab label="Leave Requests">
+        <app-site-employee-leave-request [employee]="employee"
+          (changed)="employeeChanged($event)"></app-site-employee-leave-request>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-tab>
   <mat-tab label="Personal/Company">
     <mat-tab-group preserveContent="true">
       <mat-tab label="Personal Information">
@@ -25,26 +45,6 @@
         <app-site-employee-variation [employee]="employee"
           [site]="site"
           (changed)="employeeChanged($event)"></app-site-employee-variation>
-      </mat-tab>
-    </mat-tab-group>
-  </mat-tab>
-  <mat-tab label="Leave Information">
-    <mat-tab-group preserveContent="true">
-      <mat-tab label="PTO/Holidays List">
-        <app-site-pto-holiday [employee]="employee"></app-site-pto-holiday>
-      </mat-tab>
-      <mat-tab label="Leaves">
-        <app-site-employee-leave [employee]="employee"
-        (changed)="employeeChanged($event)"></app-site-employee-leave>
-      </mat-tab>
-      <mat-tab label="Leave Balances">
-        <app-site-employee-leave-balance [employee]="employee"
-          [site]="site"
-          (changed)="employeeChanged($event)"></app-site-employee-leave-balance>
-      </mat-tab>
-      <mat-tab label="Leave Requests">
-        <app-site-employee-leave-request [employee]="employee"
-          (changed)="employeeChanged($event)"></app-site-employee-leave-request>
       </mat-tab>
     </mat-tab-group>
   </mat-tab>

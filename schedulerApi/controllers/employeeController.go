@@ -356,9 +356,25 @@ func UpdateEmployeeAssignment(c *gin.Context) {
 			case "workcenter":
 				asgmt.Workcenter = data.Value
 			case "start", "startdate":
-				asgmt.StartDate = converters.ParseDate(data.Value)
+				asgmt.StartDate, err = time.ParseInLocation("2006-01-02", data.Value,
+					time.UTC)
+				if err != nil {
+					svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+						"UpdateEmployeeAssignment: UpdateEmployee Problem: %s", err.Error()))
+					c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
+						Exception: err.Error()})
+					return
+				}
 			case "end", "enddate":
-				asgmt.EndDate = converters.ParseDate(data.Value)
+				asgmt.EndDate, err = time.ParseInLocation("2006-01-02", data.Value,
+					time.UTC)
+				if err != nil {
+					svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+						"UpdateEmployeeAssignment: UpdateEmployee Problem: %s", err.Error()))
+					c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
+						Exception: err.Error()})
+					return
+				}
 			case "rotationdate":
 				asgmt.RotationDate = converters.ParseDate(data.Value)
 			case "rotationdays":
@@ -605,9 +621,25 @@ func UpdateEmployeeVariation(c *gin.Context) {
 			case "mids", "ismids":
 				vari.IsMids = converters.ParseBoolean(data.Value)
 			case "start", "startdate":
-				vari.StartDate = converters.ParseDate(data.Value)
+				vari.StartDate, err = time.ParseInLocation("2006-01-02", data.Value,
+					time.UTC)
+				if err != nil {
+					svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+						"UpdateEmployeeAssignment: UpdateEmployee Problem: %s", err.Error()))
+					c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
+						Exception: err.Error()})
+					return
+				}
 			case "end", "enddate":
-				vari.EndDate = converters.ParseDate(data.Value)
+				vari.EndDate, err = time.ParseInLocation("2006-01-02", data.Value,
+					time.UTC)
+				if err != nil {
+					svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+						"UpdateEmployeeAssignment: UpdateEmployee Problem: %s", err.Error()))
+					c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
+						Exception: err.Error()})
+					return
+				}
 			case "changeschedule":
 				vari.Schedule.SetScheduleDays(converters.ParseInt(data.Value))
 			case "resetschedule":

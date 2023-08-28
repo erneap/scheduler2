@@ -28,21 +28,26 @@
           </mat-select>
         </mat-form-field>
         <div class="fxLayout-row-center" style="align-items: flex-start;">
-          <mat-form-field appearance="fill" class="formFieldWide">
-            <mat-label>Variation Date Range</mat-label>
-            <mat-date-range-input [rangePicker]="picker">
-              <input matStartDate formControlName="start" 
-                placeholder="Start Date" style="color: black;"
+          <div class="formField">
+            <mat-form-field class="fieldWidth">
+              <mat-label>Start Date</mat-label>
+              <input matInput [matDatepicker]="startpicker"
+                formControlName="start" 
                 (dateChange)="updateVariation('start')">
-              <input matEndDate formControlName="end" 
-                placeholder="End Date" style="color: black;"
+              <mat-datepicker-toggle matIconSuffix [for]="startpicker"></mat-datepicker-toggle>
+              <mat-datepicker #startpicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="formField">
+            <mat-form-field class="fieldWidth">
+              <mat-label>End Date</mat-label>
+              <input matInput [matDatepicker]="endpicker"
+                formControlName="end" 
                 (dateChange)="updateVariation('end')">
-            </mat-date-range-input>
-            <mat-hint> MM/DD/YYYY - MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle matIconSuffix [for]="picker">
-            </mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
-          </mat-form-field>
+              <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
+              <mat-datepicker #endpicker></mat-datepicker>
+            </mat-form-field>
+          </div>
           <div class="checkbox" style="background-color: white;">
             <mat-checkbox formControlName="mids" style="height: 55px;"
               (change)="updateVariation('mids')">

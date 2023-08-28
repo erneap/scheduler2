@@ -246,8 +246,17 @@ func (cr *ReportCofS) CreateEmployeeData(count, coCount int,
 		label := fmt.Sprintf("Section%dRow%d_%02d", coCount,
 			count, current.Day())
 		for _, lc := range labor {
-			hours += emp.GetWorkedHoursForLabor(lc.ChargeNumber,
-				lc.Extension, current, current.AddDate(0, 0, 1))
+			lcExercise := false
+			for _, ec := range cr.ExerciseCodes {
+				if strings.EqualFold(lc.ChargeNumber, ec.ChargeNumber) &&
+					strings.EqualFold(lc.Extension, ec.Extension) {
+					lcExercise = true
+				}
+			}
+			if !lcExercise || bExercise {
+				hours += emp.GetWorkedHoursForLabor(lc.ChargeNumber,
+					lc.Extension, current, current.AddDate(0, 0, 1))
+			}
 		}
 		if hours > 0.0 {
 			hours = (math.Floor(hours * 10)) / 10.0

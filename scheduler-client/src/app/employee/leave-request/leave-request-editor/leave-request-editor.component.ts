@@ -12,6 +12,7 @@ import { SiteService } from 'src/app/services/site.service';
 import { TeamService } from 'src/app/services/team.service';
 import { DeleteLeaveRequestDialogComponent } from '../delete-leave-request-dialog/delete-leave-request-dialog.component';
 import { MessageService } from 'src/app/services/message.service';
+import { LeaveUnapproveDialogComponent } from './leave-unapprove-dialog/leave-unapprove-dialog.component';
 
 @Component({
   selector: 'app-leave-request-editor',
@@ -372,6 +373,45 @@ export class LeaveRequestEditorComponent {
         }
       });
     }
+  }
+
+  unapproveLeaveRequest() {
+    const dialogRef = this.dialog.open(LeaveUnapproveDialogComponent, {
+      width: '300px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== '') {
+        this.authService.statusMessage = "Un-Approving Leave Request";
+        this.dialogService.showSpinner();
+        const iEmp = this.empService.getEmployee();
+        if (iEmp) {
+          this.empService.updateLeaveRequest(this.employee.id, this.request.id, 
+            "unapprove", result).subscribe({
+            next: (data: EmployeeResponse) => {
+              this.dialogService.closeSpinner();
+              if (data && data !== null) {
+                if (data.employee) {
+                  this.employee = data.employee;
+                  this.employee.requests.forEach(req => {
+                    if (this.request.id === req.id) {
+                      this.request = new LeaveRequest(req)
+                    }
+                  });
+                }
+                this.setCurrent();
+              }
+              this.authService.statusMessage = "Un-Approval Complete";
+              this.changed.emit(new Employee(this.employee));
+            },
+            error: (err: EmployeeResponse) => {
+              this.dialogService.closeSpinner();
+              this.authService.statusMessage = err.exception;
+            }
+          });
+        }
+      }
+    });
   }
 
   submitForApproval() {

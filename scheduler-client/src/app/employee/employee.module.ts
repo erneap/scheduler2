@@ -25,6 +25,7 @@ import { LeaveRequestFormComponent } from './leave-request/leave-request-form/le
 import { LeaveRequestEditorComponent } from './leave-request/leave-request-editor/leave-request-editor.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { NotificationsMessageComponent } from './notifications/notifications-message/notifications-message.component';
+import { LeaveUnapproveDialogComponent } from './leave-request/leave-request-editor/leave-unapprove-dialog/leave-unapprove-dialog.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { NotificationsMessageComponent } from './notifications/notifications-mes
     LeaveRequestFormComponent,
     LeaveRequestEditorComponent,
     NotificationsComponent,
-    NotificationsMessageComponent
+    NotificationsMessageComponent,
+    LeaveUnapproveDialogComponent
   ],
   imports: [
     CommonModule,

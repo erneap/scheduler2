@@ -63,6 +63,42 @@ export class LeaveDay implements ILeaveDay {
   }
 }
 
+export interface ILeaveRequestComment {
+  commentdate: Date;
+  comment: string;
+}
+
+export class LeaveRequestComment implements ILeaveRequestComment {
+  commentdate: Date;
+  comment: string;
+
+  constructor(lrc?: ILeaveRequestComment) {
+    this.commentdate = (lrc) ? new Date(lrc.commentdate) : new Date();
+    this.comment = (lrc) ? lrc.comment : '';
+  }
+
+  compareTo(other?: LeaveRequestComment): number {
+    if (other) {
+      return (this.commentdate.getTime() < other.commentdate.getTime()) ? -1 : 1;
+    }
+    return -1;
+  }
+
+  getDate(): string {
+    const months: string[] = new Array("Jan", "Feb", "Mar",
+      "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
+      "Dec");
+    let answer = '';
+    if (this.commentdate.getDate() < 9) {
+      answer += "0";
+    }
+    answer += `${this.commentdate.getDate()} ` 
+      + `${months[this.commentdate.getMonth()]} `
+      + `${this.commentdate.getFullYear()}`;
+    return answer;
+  }
+}
+
 export interface ILeaveRequest {
   id: string;
   employeeid: string;
@@ -74,6 +110,7 @@ export interface ILeaveRequest {
   approvedby: string;
   approvalDate: Date;
   requesteddays: ILeaveDay[];
+  comments: ILeaveRequestComment[];
 }
 
 export class LeaveRequest implements ILeaveRequest {
@@ -87,6 +124,7 @@ export class LeaveRequest implements ILeaveRequest {
   approvedby: string;
   approvalDate: Date;
   requesteddays: LeaveDay[];
+  comments: LeaveRequestComment[];
 
   constructor(lr?: ILeaveRequest) {
     this.id = (lr) ? lr.id : '';
@@ -105,17 +143,24 @@ export class LeaveRequest implements ILeaveRequest {
       });
       this.requesteddays.sort((a,b) => a.compareTo(b))
     }
+    this.comments = [];
+    if (lr && lr.comments && lr.comments.length > 0) {
+      lr.comments.forEach(lrc => {
+        this.comments.push(new LeaveRequestComment(lrc));
+      });
+      this.comments.sort((a,b) => a.compareTo(b));
+    }
   }
 
   compareTo(other?: LeaveRequest): number {
     if (other) {
-      if (this.requestDate.getTime() === other.requestDate.getTime()) {
-        if (this.startdate.getTime() === other.startdate.getTime()) {
-          return (this.enddate.getTime() < other.enddate.getTime()) ? -1 : 1;
+      if (this.startdate.getTime() === other.startdate.getTime()) {
+        if (this.enddate.getTime() === other.enddate.getTime()) {
+          return (this.requestDate.getTime() < other.requestDate.getTime()) ? -1 : 1;
         }
-        return (this.startdate.getTime() < other.startdate.getTime()) ? -1 : 1;
+        return (this.enddate.getTime() < other.enddate.getTime()) ? -1 : 1;
       }
-      return (this.requestDate.getTime() < other.requestDate.getTime()) ? -1 : 1;
+      return (this.startdate.getTime() < other.startdate.getTime()) ? -1 : 1;
     }
     return -1;
   }

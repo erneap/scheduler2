@@ -1101,7 +1101,8 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 	}
 
 	if msg != "" {
-		if strings.Contains(strings.ToLower(msg), "approved") {
+		if strings.Contains(strings.ToLower(msg), "approved") ||
+			strings.Contains(strings.ToLower(msg), "unapproved") {
 			err = svcs.CreateMessage(emp.ID.Hex(), data.Value, msg)
 			if err != nil {
 				fmt.Println(err.Error())

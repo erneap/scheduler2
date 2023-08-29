@@ -89,6 +89,18 @@
         Approve Request
       </button>
     </div>
+    <div class="flexlayout row center" *ngIf="approver" style="padding-left: 50px;">
+      <button mat-raised-button color="warn" 
+        matTooltip="Supervisor Un-Approve Leave Request"
+        (click)="unapproveLeaveRequest()">
+        Un-Approve Request
+      </button>
+    </div>
+  </div>
+  <div class="comments" *ngIf="request.comments.length > 0">
+    <div *ngFor="let cmt of request.comments">
+      <div>{{cmt.getDate()}} - {{cmt.comment}}</div>
+    </div>
   </div>
   <div class="fxLayout-row-center" *ngIf="request.id !== ''">
     <app-leave-request-calendar [leaveCodes]="leaveList" 

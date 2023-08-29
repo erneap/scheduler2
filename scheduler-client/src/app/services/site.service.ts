@@ -14,6 +14,7 @@ import { NewSiteRequest, NewSiteWorkcenter, SiteResponse, SiteWorkcenterUpdate,
 import { CacheService } from './cache.service';
 import { NewSiteLaborCode } from '../models/web/siteWeb';
 import { AuthService } from './auth.service';
+import { ITeam } from '../models/teams/team';
 
 @Injectable({
   providedIn: 'root'
@@ -60,36 +61,44 @@ export class SiteService extends CacheService {
   }
 
   startAutoUpdates() {
-    const minutes = 1;
+    if (this.interval && this.interval !== null) {
+      clearInterval(this.interval);
+    }
+    let minutes = 15;
     const iUser = this.authService.getUser();
     if (iUser) {
       const user = new User(iUser);
       if (user.isInGroup("scheduler","scheduler") 
         || user.isInGroup("scheduler", "siteleader")) {
-        this.interval = setInterval(() => {
-          this.processAutoUpdate()
-        }, minutes * 60 * 1000);
+        minutes = 3;
       }
     }
+    console.log("Starting Site Update Process");
+    this.interval = setInterval(() => {
+      this.processAutoUpdate()
+    }, minutes * 60 * 1000);
   }
 
   processAutoUpdate() {
+    console.log("Processing Site Auto Update");
     const iUser = this.authService.getUser();
     if (iUser) {
       const user = new User(iUser);
-      if (user.isInGroup("scheduler","scheduler") || user.isInGroup("scheduler", "siteleader")) {
-        if (this.authService.teamID !== '' && this.authService.siteID !== '') {
-          this.retrieveSite(this.authService.teamID, this.authService.siteID, 
-            true).subscribe({
-              next: (data: SiteResponse) => {
-                if (data && data !== null && data.site) {
-                  this.setSite(data.site);
-                }
-              },
-              error: err => {
-                this.authService.statusMessage = "Error retrieving site update: "
-                  + err.exception;
+      if (user.isInGroup("scheduler","scheduler") 
+        || user.isInGroup("scheduler", "siteleader")) {
+        const team = this.getItem<ITeam>('current-team');
+        const site = this.getSite();
+        if (team && site) {
+          this.retrieveSite(team.id, site.id, true).subscribe({
+            next: (data: SiteResponse) => {
+              if (data && data !== null && data.site) {
+                this.setSite(data.site);
               }
+            },
+            error: err => {
+              this.authService.statusMessage = "Error retrieving site update: "
+                + err.exception;
+            }
           })
         }
       }

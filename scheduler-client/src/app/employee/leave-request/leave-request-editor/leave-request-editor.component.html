@@ -75,26 +75,28 @@
         <div class="label">{{holidayhours}}</div>
       </div>
     </div>
-    <div class="flexlayout row center" *ngIf="draft" style="padding-left: 50px;">
-      <button mat-raised-button color="accent" 
-        matTooltip="Submit for Approval"
-        (click)="submitForApproval()">
-        Submit for Approval
-      </button>
-    </div>
-    <div class="flexlayout row center" *ngIf="approver" style="padding-left: 50px;">
-      <button mat-raised-button color="accent" 
-        matTooltip="Supervisor Approve Leave Request"
-        (click)="approveLeaveRequest()">
-        Approve Request
-      </button>
-    </div>
-    <div class="flexlayout row center" *ngIf="approver" style="padding-left: 50px;">
-      <button mat-raised-button color="warn" 
-        matTooltip="Supervisor Un-Approve Leave Request"
-        (click)="unapproveLeaveRequest()">
-        Un-Approve Request
-      </button>
+    <div class="flexlayout column center" style="gap: 5px;">
+      <div class="flexlayout row center" *ngIf="draft" style="padding-left: 50px;">
+        <button mat-raised-button color="accent" 
+          matTooltip="Submit for Approval"
+          (click)="submitForApproval()">
+          Submit for Approval
+        </button>
+      </div>
+      <div class="flexlayout row center" *ngIf="approver" style="padding-left: 50px;">
+        <button mat-raised-button color="accent" 
+          matTooltip="Supervisor Approve Leave Request"
+          (click)="approveLeaveRequest()">
+          Approve Request
+        </button>
+      </div>
+      <div class="flexlayout row center" *ngIf="approver" style="padding-left: 50px;">
+        <button mat-raised-button color="warn" 
+          matTooltip="Supervisor Un-Approve Leave Request"
+          (click)="unapproveLeaveRequest()">
+          Un-Approve Request
+        </button>
+      </div>
     </div>
   </div>
   <div class="comments" *ngIf="request.comments.length > 0">

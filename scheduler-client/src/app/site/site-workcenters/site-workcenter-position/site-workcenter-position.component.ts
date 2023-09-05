@@ -332,6 +332,7 @@ export class SiteWorkcenterPositionComponent {
 
   showAddButton(): boolean {
     return (this.shiftForm.controls['id'].valid 
-      && this.shiftForm.controls['name'].valid);
+      && this.shiftForm.controls['name'].valid
+      && this.selected === 'new');
   }
 }

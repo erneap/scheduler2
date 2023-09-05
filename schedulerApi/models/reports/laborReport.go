@@ -515,13 +515,13 @@ func (lr *LaborReport) CreateStyles() error {
 	style, err = lr.Report.NewStyle(&excelize.Style{
 		Border: []excelize.Border{
 			{Type: "left", Color: "000000", Style: 1},
-			{Type: "top", Color: "000000", Style: 1},
+			{Type: "top", Color: "000000", Style: 2},
 			{Type: "right", Color: "000000", Style: 1},
-			{Type: "bottom", Color: "000000", Style: 1},
+			{Type: "bottom", Color: "000000", Style: 2},
 		},
 		Fill: excelize.Fill{Type: "pattern", Color: []string{"DA9694"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12, Color: "000000", Family: "Calibri Light"},
-		Alignment: &excelize.Alignment{Horizontal: "right", Vertical: "center",
+		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center",
 			WrapText: true},
 		CustomNumFmt: &sumFmt,
 	})
@@ -541,7 +541,7 @@ func (lr *LaborReport) CreateStyles() error {
 		Font: &excelize.Font{Bold: false, Size: 12, Color: "000000", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center",
 			WrapText: true},
-		CustomNumFmt: &sumFmt,
+		CustomNumFmt: &numFmt,
 	})
 	if err != nil {
 		return err
@@ -559,7 +559,7 @@ func (lr *LaborReport) CreateStyles() error {
 		Font: &excelize.Font{Bold: false, Size: 12, Color: "0000ff", Family: "Calibri Light"},
 		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center",
 			WrapText: true},
-		CustomNumFmt: &sumFmt,
+		CustomNumFmt: &numFmt,
 	})
 	if err != nil {
 		return err
@@ -569,15 +569,15 @@ func (lr *LaborReport) CreateStyles() error {
 	style, err = lr.Report.NewStyle(&excelize.Style{
 		Border: []excelize.Border{
 			{Type: "left", Color: "000000", Style: 1},
-			{Type: "top", Color: "000000", Style: 1},
+			{Type: "top", Color: "000000", Style: 2},
 			{Type: "right", Color: "000000", Style: 1},
-			{Type: "bottom", Color: "000000", Style: 1},
+			{Type: "bottom", Color: "000000", Style: 2},
 		},
 		Fill: excelize.Fill{Type: "pattern", Color: []string{"bfbfbf"}, Pattern: 1},
 		Font: &excelize.Font{Bold: true, Size: 12, Color: "000000", Family: "Calibri Light"},
-		Alignment: &excelize.Alignment{Horizontal: "left", Vertical: "center",
+		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center",
 			WrapText: true},
-		CustomNumFmt: &sumFmt,
+		CustomNumFmt: &numFmt,
 	})
 	if err != nil {
 		return err
@@ -907,11 +907,16 @@ func (lr *LaborReport) CreateContractReport(
 	lr.Report.SetColWidth(sheetName, "H", "H", 17.57)
 	lr.Report.SetColWidth(sheetName, "I", "K", 14.57)
 	lr.Report.SetColWidth(sheetName, "L", "L", 55.14)
-	columns := 13
+	columns := 12
 	for _, period := range fr.Periods {
+		sumCol := GetColumn(columns)
+		startCol := GetColumn(columns + 1)
+		endCol := GetColumn(columns + len(period.Periods))
+		lr.Report.SetColWidth(sheetName, sumCol, sumCol, 12.00)
+		lr.Report.SetColWidth(sheetName, startCol, endCol, 9.00)
 		columns += len(period.Periods) + 1
 	}
-	lr.Report.SetColWidth(sheetName, "M", GetColumn(columns), 15.43)
+	lr.Report.SetColWidth(sheetName, GetColumn(columns), GetColumn(columns), 15.43)
 
 	// headers for page
 	style := lr.Styles["header"]
@@ -983,7 +988,7 @@ func (lr *LaborReport) CreateContractReport(
 		for i, prd := range period.Periods {
 			cellID := GetCellID(column+i+1, 3)
 			lr.Report.SetCellStyle(sheetName, cellID, cellID, style)
-			lr.Report.SetCellValue(sheetName, cellID, prd.Format("1/2/06"))
+			lr.Report.SetCellValue(sheetName, cellID, prd.Format("02-Jan"))
 			cellID = GetCellID(column+i+1, 4)
 			lr.Report.SetCellStyle(sheetName, cellID, cellID, style2)
 			lr.Report.SetCellValue(sheetName, cellID, "Week"+strconv.Itoa(i+1))

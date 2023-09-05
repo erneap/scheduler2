@@ -2,34 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Site Editing</title>
+  <title>Forecast Report Editing</title>
   <link rel="stylesheet" href="../../../styles.css">
 </head>
 <body>
-  <h1>Site Editing Overview</h1>
+  <h1>Site Forecast Report Editing</h1>
   <p class="role">(Site Scheduler/Leadership only)</p>
   <p>
-    The site is the local grouping of employees associated with a mission or 
-    missions.  
-    <ol class="level1">
-      <li>
-        It is normally lead by a single individual designated by the 
-        lead company and responsible to the company contract leadership for the 
-        accomplishment of the objective.  
-      </li>
-      <li> 
-        Site will normally have at least one workcenter in which employees 
-        are scheduled to work.  Workcenter's can, in turn, be populated with 
-        positions and/or shifts for work assignment.
-      </li>
-      <li>
-        The site is also the level where two of the report types are defined. 
-        These two report types are the local charge number status and the 
-        certificate of service reports.  They will both be described and the 
-        process for creation will be explained in later portions of this 
-        tutorial.
-      </li>
-    </ol>
+    The forecast report is a excel-based output that allows the site 
+    leadership to track contract accomplishment.  Each contract for support 
+    breaks up its accomplishment into periods of time with an allotted number 
+    of hours per employee per function.  The contract probably lists a site 
+    leader, an admin person, plus several other functional areas.  As an 
+    example the site lead might be allocated 1860 hours for a period from 
+    1 Oct to 30 Sep.  To define a forecast report, we need a name for it, the 
+    report's period and the day of the week each weekly period ends.  Each 
+    report's task list contains a series of charge number/extensions to define 
+    the positions and hours for the period.
+  </p>
+  <p>
+    <b>Example: </b> I'm going to use this example to explain the report and its 
+    components.  The site consists of a site lead, 3 shift supervisors and 30 
+    workers in 3 workcenters, each with 3 shifts.
+    <ul>
+      <li>Name: Demo_23_24</li>
+      <li>Period: 1 Jan 2023 - 31 Dec 2023</li>
+      <li>Week Ends: Friday</li>
+      <li>Task List:
+        <ol class="level2">
+          <li>Lead - 2023/SiteLead - 1940hrs - Qty: 1</li>
+          <li>Shift Supervisor - 2023/sftsup - 1860hrs - Qty: 3</li>
+          <li>Workcenter Worker (WC1) - 2023/wc1wkr - 1860hrs - Qty: 5</li>
+          <li>Workcenter Worker (WC2) - 2023/wc2wkr - 1860hrs - Qty: 12</li>
+          <li>Workcenter Worker (WC3) - 2023/wc3wkr - 1860hrs - Qty: 13</li>
+        </ol>
+    </ul>
   </p>
     
   <p class="bottomNav">

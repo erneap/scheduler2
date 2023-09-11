@@ -1150,6 +1150,9 @@ func (lr *LaborReport) CreateContractReport(
 			totalHours := lCode.HoursPerEmployee * float64(lCode.MinimumEmployees)
 			perDay := totalHours / days
 			codeHours := perDay * daysToNow
+			if codeHours > totalHours {
+				codeHours = totalHours
+			}
 			pctStyle := 0
 
 			bLight := (lr.StatsRow%2 == 0)

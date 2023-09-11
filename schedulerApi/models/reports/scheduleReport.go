@@ -43,6 +43,18 @@ func (sr *ScheduleReport) Create() error {
 
 	for _, emp := range emps {
 		if emp.AtSite(sr.SiteID, startDate, endDate) {
+			// get timecard data/work hours for each employee
+			// for time period.
+			wr, err := services.GetEmployeeWork(emp.ID.Hex(), uint(startDate.Year()))
+			if err == nil {
+				emp.Work = append(emp.Work, wr.Work...)
+			}
+			if startDate.Year() != endDate.Year() {
+				wr, err = services.GetEmployeeWork(emp.ID.Hex(), uint(endDate.Year()))
+				if err == nil {
+					emp.Work = append(emp.Work, wr.Work...)
+				}
+			}
 			sr.Employees = append(sr.Employees, emp)
 		}
 	}

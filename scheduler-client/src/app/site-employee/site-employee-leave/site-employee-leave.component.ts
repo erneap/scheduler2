@@ -121,7 +121,7 @@ export class SiteEmployeeLeaveComponent {
 
   addLeave() {
     const reDate = new RegExp('^[0-9]{2}/[0-9]{2}/[0-9]{4}$');
-    const reHours = new RegExp('^[0-9]{1,2}\.[0-9]$');
+    const reHours = new RegExp('^\d{1,2}(\.\d{1})$');
     let error = '';
     const sDate: string = this.leaveForm.value.date;
     let leave: LeaveDay = new LeaveDay();

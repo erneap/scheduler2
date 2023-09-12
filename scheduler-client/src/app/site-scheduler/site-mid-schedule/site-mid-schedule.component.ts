@@ -32,7 +32,9 @@ export class SiteMidScheduleComponent {
           const vari = new Variation(iVar);
           if (vari.mids && vari.site === site.id 
             && vari.enddate.getTime() >= start.getTime() 
-            && vari.startdate.getTime() < end.getTime()) {
+            && vari.startdate.getTime() < end.getTime()
+            && (emp.activeOnDate(vari.startdate) 
+            || emp.activeOnDate(vari.enddate))) {
             const midvar = new WebEmployeeVariation(emp, vari);
             this.midList.push(midvar);
           }

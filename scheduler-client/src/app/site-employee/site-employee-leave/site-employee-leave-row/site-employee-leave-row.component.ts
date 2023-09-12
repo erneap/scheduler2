@@ -153,7 +153,7 @@ export class SiteEmployeeLeaveRowComponent {
         break;
       case "hours":
         value = this.leaveForm.value.hours;
-        let hoursregexp = new RegExp('^[0-9]{1,2}(\.[0.9])?$');
+        const hoursregexp = /^\d{1,2}(\.\d{1})?$/;
         valid = hoursregexp.test(value);
         if (!valid) {
           this.authService.statusMessage = "Leave hours must be a decimal number";

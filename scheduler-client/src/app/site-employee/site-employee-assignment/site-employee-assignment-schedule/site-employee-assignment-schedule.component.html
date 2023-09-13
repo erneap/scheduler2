@@ -37,6 +37,7 @@
         [site]="site"
         [usedate]="getScheduleDate(wd.id)"
         [disabled]="isDisabled(wd.id)"
+        [copy]="setCopy(wd.id)"
         [workday]="wd" (changedate)="updateDate($event)">
       </app-site-employee-assignment-schedule-day>
     </div>

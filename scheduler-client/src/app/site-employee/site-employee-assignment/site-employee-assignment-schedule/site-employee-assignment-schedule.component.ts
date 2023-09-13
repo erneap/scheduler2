@@ -106,6 +106,8 @@ export class SiteEmployeeAssignmentScheduleComponent {
       let date = new Date(2023, 0, i + 1);
       workweek.setWorkday(this.schedule.workdays[i], date);
     }
+    this.startid = 0;
+    this.endid = this._schedule.workdays.length - 1;
     this.workweeks.sort((a,b) => a.compareTo(b));
   }
 
@@ -153,5 +155,21 @@ export class SiteEmployeeAssignmentScheduleComponent {
       return tDate;
     }
     return undefined;
+  }
+
+  setCopy(id: number): boolean {
+    let answer: boolean = false;
+    const current = this.schedule.workdays[id];
+    if (current.hours === 0.0 || current.workcenter === '' || current.code === '') {
+      id--;
+      while (!answer && id >= 0) {
+        const wd = this.schedule.workdays[id];
+        if (wd.code !== '') {
+          answer = true;
+        }
+        id--;
+      }
+    }
+    return answer;
   }
 }

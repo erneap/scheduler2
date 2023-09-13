@@ -56,6 +56,14 @@ export class SiteEmployeeAssignmentScheduleDayComponent {
   get disabled(): boolean {
     return this._disabled;
   }
+  private _copy: boolean = false;
+  @Input()
+  public set copy(bval: boolean) {
+    this._copy = bval;
+  }
+  get copy(): boolean {
+    return this._copy;
+  }
   @Output() changedate = new EventEmitter<string>();
   workCodes: Workcode[] = [];
   workcenters: Workcenter[] = [];

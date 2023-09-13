@@ -447,6 +447,19 @@ func UpdateEmployeeAssignmentWorkday(c *gin.Context) {
 								wd.Code = data.Value
 							case "hours":
 								wd.Hours = converters.ParseFloat(data.Value)
+							case "copy":
+								var wdOld *employees.Workday
+								for w := k - 1; w >= 0 && wdOld == nil; w-- {
+									oWd := sch.Workdays[w]
+									if oWd.Code != "" && oWd.Workcenter != "" && oWd.Hours > 0.0 {
+										wdOld = &oWd
+									}
+								}
+								if wdOld != nil {
+									wd.Code = wdOld.Code
+									wd.Workcenter = wdOld.Workcenter
+									wd.Hours = wdOld.Hours
+								}
 							}
 							sch.Workdays[k] = wd
 							asgmt.Schedules[j] = sch
@@ -759,6 +772,19 @@ func UpdateEmployeeVariationWorkday(c *gin.Context) {
 						wd.Code = data.Value
 					case "hours":
 						wd.Hours = converters.ParseFloat(data.Value)
+					case "copy":
+						var wdOld *employees.Workday
+						for w := k - 1; w >= 0 && wdOld == nil; w-- {
+							oWd := vari.Schedule.Workdays[w]
+							if oWd.Code != "" && oWd.Workcenter != "" && oWd.Hours > 0.0 {
+								wdOld = &oWd
+							}
+						}
+						if wdOld != nil {
+							wd.Code = wdOld.Code
+							wd.Workcenter = wdOld.Workcenter
+							wd.Hours = wdOld.Hours
+						}
 					}
 					vari.Schedule.Workdays[k] = wd
 					emp.Variations[i] = vari

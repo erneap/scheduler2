@@ -14,6 +14,7 @@ import { HttpResponse } from '@angular/common/http';
 import { NotificationResponse } from './models/web/internalWeb';
 import { Team } from './models/teams/team';
 import { Location } from '@angular/common';
+const { version: appVersion } = require('../../package.json');
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent {
   title = 'client';
   isMobile = false;
   initialUrl: string = '';
+  appVersion: string;
 
   constructor(
     iconRegistry: MatIconRegistry,
@@ -37,6 +39,7 @@ export class AppComponent {
     private router: Router,
     private location: Location
   ) {
+    this.appVersion = appVersion;
     if (this.location.path() && this.location.path() !== '') {
       this.initialUrl = this.location.path();
     } else {

@@ -27,7 +27,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <div class="fxLayout-row-center" style="align-items: flex-start;">
+        <div class="fxLayout-row-center" style="align-items: flex-start;gap: 5px;">
           <div class="formField">
             <mat-form-field class="fieldWidth">
               <mat-label>Start Date</mat-label>
@@ -53,11 +53,19 @@
               (change)="updateVariation('mids')">
               MID Shift Rotation</mat-checkbox>
           </div>
+          <div class="checkbox" style="background-color: white;">
+            <mat-checkbox formControlName="dates" style="height: 55px;"
+              (change)="updateVariation('dates')">
+              Show Dates for Period</mat-checkbox>
+          </div>
         </div>
       </form>
       <div class="fxLayout-row-center">
-        <app-site-employee-assignment-schedule [schedule]="schedule"
+        <app-site-employee-assignment-schedule 
+          [schedule]="schedule"
           [site]="site"
+          [startdate]="startDate"
+          [enddate]="endDate"
           (change)="updateSchedule($event)">
         </app-site-employee-assignment-schedule>
       </div>

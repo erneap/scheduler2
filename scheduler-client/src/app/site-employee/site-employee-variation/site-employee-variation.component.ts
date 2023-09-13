@@ -22,6 +22,13 @@ export class SiteEmployeeVariationComponent {
   public set employee(iEmp: IEmployee) {
     this._employee = new Employee(iEmp);
     this.setVariationLists();
+    if (!this.variation || this.variation.id === 0) {
+      this.variation = new Variation();
+      this.variation.schedule.setScheduleDays(7);
+      this.startDate = undefined;
+      this.schedule = new Schedule(this.variation.schedule);
+      this.setVariation();
+    }
   }
   get employee(): Employee {
     return this._employee;
@@ -40,6 +47,8 @@ export class SiteEmployeeVariationComponent {
   variation: Variation;
   schedule: Schedule;
   variationForm: FormGroup;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
 
   constructor(
     protected authService: AuthService,
@@ -51,12 +60,13 @@ export class SiteEmployeeVariationComponent {
   ) {
     this.variation = new Variation();
     this.variation.schedule.setScheduleDays(7);
-    this.schedule = this.variation.schedule;
+    this.schedule = new Schedule(this.variation.schedule);
     this.variationForm = this.fb.group({
       variation: '0',
       start: [new Date(), [Validators.required]],
       end: [new Date(), [Validators.required]],
       mids: false,
+      dates: false,
     });
     const iSite = this.siteService.getSite();
     if (iSite) {
@@ -106,21 +116,31 @@ export class SiteEmployeeVariationComponent {
       this.employee.variations.forEach(vari => {
         if (vari.id === variID) {
           this.variation = new Variation(vari);
-          this.schedule = this.variation.schedule;
+          this.schedule = new Schedule(this.variation.schedule);
+          this.setVariation();
         }
       });
     } else {
       this.variation = new Variation();
       this.variation.schedule.setScheduleDays(7);
-      this.schedule = this.variation.schedule;
+      this.schedule = new Schedule(this.variation.schedule);
+      this.setVariation();
     }
-    this.setVariation();
   }
 
   setVariation() {
     this.variationForm.controls['start'].setValue(this.variation.startdate);
     this.variationForm.controls['end'].setValue(this.variation.enddate);
     this.variationForm.controls['mids'].setValue(this.variation.mids);
+    this.variationForm.controls['dates'].setValue(
+      this.variation.schedule.showdates);
+    if (this.variation.schedule.showdates) {
+      this.startDate = new Date(this.variation.startdate);
+      this.endDate = new Date(this.variation.enddate);
+    } else {
+      this.startDate = undefined;
+      this.endDate = undefined;
+    }
     this.schedule = new Schedule(this.variation.schedule);
   }
   
@@ -211,6 +231,7 @@ export class SiteEmployeeVariationComponent {
       this.variation.mids = this.variationForm.value.mids;
       this.variation.startdate = this.variationForm.value.start;
       this.variation.enddate = this.variationForm.value.end;
+      this.variation.schedule.showdates = this.variationForm.value.dates;
       this.authService.statusMessage = "Adding New Variation";
       this.dialogService.showSpinner();
       this.empService.addVariation(this.employee.id, this.variation)
@@ -219,16 +240,16 @@ export class SiteEmployeeVariationComponent {
             this.dialogService.closeSpinner();
             if (data && data !== null) {
               if (data.employee) {
-                this.employee = new Employee(data.employee);
+                this._employee = new Employee(data.employee);
                 this.setVariationLists();
                 let max = 0;
                 this.employee.variations.forEach(v => {
                   if (v.id > max) {
-                    this.variation = new Variation(v);
                     max = v.id;
                   }
                 });
                 this.variationForm.controls['variation'].setValue(max);
+                this.selectVariation();
               }
               const emp = this.empService.getEmployee();
               if (data.employee && emp && emp.id === data.employee.id) {
@@ -279,6 +300,9 @@ export class SiteEmployeeVariationComponent {
         case "mids":
           data.value = (this.variationForm.value.mids) ? 'true' : 'false';
           break;
+        case "dates":
+          data.value = (this.variationForm.value.dates) ? 'true' : 'false';
+          break;
       }
       this.authService.statusMessage = "Updating Variation";
       this.dialogService.showSpinner();
@@ -317,6 +341,20 @@ export class SiteEmployeeVariationComponent {
         this.variation.schedule.workdays[i].hours = 8.0;
       }
       this.schedule = new Schedule(this.variation.schedule);
+    } else if (field.toLowerCase() === 'dates') {
+      if (this.variationForm.value.dates) {
+        let start = new Date(this.variationForm.value.start);
+        while (start.getDay() !== 0) {
+          start = new Date(start.getTime() - (24 * 3600000));
+        }
+        let end = new Date(this.variationForm.value.end);
+        while (end.getDay() !== 6) {
+          end = new Date(end.getTime() + (24 * 3600000));
+        }
+        const days = Math.floor((end.getTime() - start.getTime()) / (24 * 3600000)) + 1;
+        this.variation.schedule.setScheduleDays(days);
+        this.schedule = new Schedule(this.variation.schedule);
+      }
     }
   }
 
@@ -342,7 +380,9 @@ export class SiteEmployeeVariationComponent {
                   this.variation = new Variation();
                   this.variation.startdate = new Date();
                   this.variation.enddate = new Date();
+                  this.startDate = undefined;
                   this.variation.mids = false;
+                  this.variation.schedule.showdates = false;
                   this.variation.schedule.setScheduleDays(7);
                   this.setVariation();
                 }

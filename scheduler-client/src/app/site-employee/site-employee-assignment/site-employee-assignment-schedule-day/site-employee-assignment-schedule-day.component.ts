@@ -14,6 +14,9 @@ import { TeamService } from 'src/app/services/team.service';
   styleUrls: ['./site-employee-assignment-schedule-day.component.scss']
 })
 export class SiteEmployeeAssignmentScheduleDayComponent {
+  dayStyle: string = 'background-color: white; color: black;';
+  fontStyle: string = 'background-color: white !important;'
+    + 'color: #000000 !important;';
   private _workday: Workday = new Workday();
   @Input()
   public set workday(wd: IWorkday) {
@@ -32,14 +35,32 @@ export class SiteEmployeeAssignmentScheduleDayComponent {
   get site(): Site {
     return this._site;
   }
+  private _useDate: Date | undefined;
+  @Input()
+  public set usedate(tDate: Date | undefined) {
+    if (tDate) {
+      this._useDate = new Date(tDate);
+    } else {
+      this._useDate = undefined;
+    }
+  }
+  get usedate(): Date | undefined {
+    return this._useDate;
+  }
+  private _disabled: boolean = false;
+  @Input() 
+  public set disabled(bval: boolean) {
+    this._disabled = bval;
+    this.setDay();
+  }
+  get disabled(): boolean {
+    return this._disabled;
+  }
   @Output() changedate = new EventEmitter<string>();
   workCodes: Workcode[] = [];
   workcenters: Workcenter[] = [];
   workHours: string[] = new Array("", "2", "3", "4", "6", "8", "10", "12");
   dayForm: FormGroup;
-  dayStyle: string = 'background-color: white; color: black;';
-  fontStyle: string = 'background-color: white !important;'
-    + 'color: #000000 !important;';
 
   constructor(
     protected teamService: TeamService,
@@ -80,13 +101,18 @@ export class SiteEmployeeAssignmentScheduleDayComponent {
     this.dayForm.controls["code"].setValue(this.workday.code);
     this.dayForm.controls["workcenter"].setValue(this.workday.workcenter);
     this.dayForm.controls["hours"].setValue(`${this.workday.hours}`);
-    this.dayStyle = 'background-color: white; color: black;';
-    this.workCodes.forEach(wc => {
-      if (wc.id.toLowerCase() === this.workday.code.toLowerCase()) {
-        this.dayStyle = `background-color: #${wc.backcolor};`
-          + `color:#${wc.textcolor};`;
-      }
-    })
+    if (this.disabled) {
+      this.dayStyle = 'background-color: black; color: black;';
+      this.fontStyle = 'background-color: black !important;'
+      + 'color: black !important;';
+    } else {
+      this.workCodes.forEach(wc => {
+        if (wc.id.toLowerCase() === this.workday.code.toLowerCase()) {
+          this.dayStyle = `background-color: #${wc.backcolor};`
+            + `color:#${wc.textcolor};`;
+        }
+      });
+    }
   }
 
   changeField(field: string) {
@@ -104,5 +130,12 @@ export class SiteEmployeeAssignmentScheduleDayComponent {
     }
     const data = `${this.workday.id}|${field}|${value}`;
     this.changedate.emit(data);
+  }
+
+  getDisplayDate(): string {
+    if (this.usedate) {
+      return this.usedate.getDate().toString(10);
+    }
+    return this.workday.id.toString(10);
   }
 }

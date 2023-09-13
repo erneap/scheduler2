@@ -14,6 +14,8 @@ import { WorkWeek } from 'src/app/models/web/internalWeb';
 })
 export class SiteEmployeeAssignmentScheduleComponent {
   private _schedule: Schedule = new Schedule();
+  private _startDate: Date | undefined;
+  private _endDate: Date | undefined;
   @Input()
   public set schedule(sch: ISchedule) {
     this._schedule = new Schedule(sch);
@@ -30,6 +32,39 @@ export class SiteEmployeeAssignmentScheduleComponent {
   get site(): Site {
     return this._site;
   }
+  @Input()
+  public set startdate(sDate: Date | undefined) {
+    if (sDate) {
+      this._startDate = new Date(sDate);
+      this.startid = this._startDate.getDay();
+      this.endid = 6;
+    } else {
+      this._startDate = undefined;
+      this.startid = 0;
+    }
+  }
+  get startdate(): Date | undefined {
+    return this._startDate;
+  }
+  @Input()
+  public set enddate(sDate: Date | undefined) {
+    if (sDate) {
+      this._endDate = new Date(sDate);
+      if (this._startDate) {
+        const time = this._endDate.getTime() - this._startDate.getTime();
+        const days = Math.floor(time / (24 * 3600000)) + 1;
+        this.endid = this.startid + days;
+        while ((this.endid % 7) > this._endDate.getDay()) {
+          this.endid--;
+        }
+      }
+    } else {
+      this._endDate = undefined;
+    }
+  }
+  get enddate(): Date | undefined {
+    return this._endDate;
+  }
   @Output() change = new EventEmitter<string>();
 
   days: string[] = [];
@@ -37,6 +72,8 @@ export class SiteEmployeeAssignmentScheduleComponent {
   workweeks: WorkWeek[] = [];
   label: string = 'SCHEDULE 0';
   deletable: boolean;
+  startid: number = 0;
+  endid: number = 7;
   
   constructor(
     private fb: FormBuilder,
@@ -99,5 +136,22 @@ export class SiteEmployeeAssignmentScheduleComponent {
         this.removeSchedule();
       }
     })
+  }
+
+  isDisabled(id: number): boolean {
+    const answer =  (id < this.startid || id > this.endid);
+    return answer;
+  }
+
+  getScheduleDate(id: number): Date | undefined {
+    if (this._startDate) {
+      let tDate = new Date(this._startDate);
+      while (tDate.getDay() !== 0) {
+        tDate = new Date(tDate.getTime() - (24 * 3600000));
+      }
+      tDate.setTime(tDate.getTime() + (id * 24 * 3600000));
+      return tDate;
+    }
+    return undefined;
   }
 }

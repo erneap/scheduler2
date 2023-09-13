@@ -581,8 +581,8 @@ func CreateEmployeeVariation(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
-		"CreateEmployeeVariation: UpdateEmployee Problem: %s", err.Error()))
+	svcs.AddLogEntry("scheduler", logs.Debug,
+		"CreateEmployeeVariation: Employee Variation Added.")
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -620,6 +620,8 @@ func UpdateEmployeeVariation(c *gin.Context) {
 				vari.Site = data.Value
 			case "mids", "ismids":
 				vari.IsMids = converters.ParseBoolean(data.Value)
+			case "dates":
+				vari.Schedule.ShowDates = converters.ParseBoolean(data.Value)
 			case "start", "startdate":
 				vari.StartDate, err = time.ParseInLocation("2006-01-02", data.Value,
 					time.UTC)

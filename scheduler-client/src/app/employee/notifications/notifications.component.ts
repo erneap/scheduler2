@@ -93,14 +93,20 @@ export class NotificationsComponent {
         next: (data: NotificationResponse) => {
           this.dialogService.closeSpinner();
           this.messages = [];
-          if (data && data.messages && data.exception === '') {
-            data.messages.forEach(msg => {
-              this.messages.push(new Notification(msg));
-            });
+          if (data && data.exception && data.exception === '') {
+            if (data.messages) {
+              data.messages.forEach(msg => {
+                this.messages.push(new Notification(msg));
+              });
+              this.msgService.setMessages(this.messages);
+            } else {
+              this.msgService.clearMessages();
+            }
+            this.authService.statusMessage = "Acknowledgement Complete";
+          } else if (data && data.exception && data.exception !== '') {
+            this.authService.statusMessage = data.exception;
           }
-          this.msgService.setMessages(this.messages);
           this.msgService.showAlerts = (this.messages.length > 0);
-          this.authService.statusMessage = "Acknowledgement Complete";
         },
         error: err => {
           this.dialogService.closeSpinner();

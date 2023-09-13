@@ -67,6 +67,8 @@ export class MessageService  extends CacheService {
           if (data && data !== null && data.messages) {
             this.setMessages(data.messages)
             this.showAlerts = data.messages.length > 0;
+          } else {
+            this.clearMessages();
           }
         },
         error: err => {

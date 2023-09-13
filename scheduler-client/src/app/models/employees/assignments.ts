@@ -35,14 +35,17 @@ export class Workday implements IWorkday {
 export interface ISchedule {
   id: number;
   workdays: IWorkday[];
+  showdates?: boolean
 }
 
 export class Schedule implements ISchedule {
   id: number;
   workdays: Workday[];
+  showdates: boolean
 
   constructor(sch?: ISchedule) {
     this.id = (sch) ? sch.id : 0;
+    this.showdates = (sch && sch.showdates) ? sch.showdates : false;
     this.workdays = [];
     if (sch) {
       sch.workdays.forEach(wd => {
@@ -214,8 +217,8 @@ export class Variation implements IVariation {
     this.id = (vari) ? vari.id : 0;
     this.site = (vari) ? vari.site : '';
     this.mids = (vari) ? vari.mids : false;
-    this.startdate = (vari) ? new Date(vari.startdate) : new Date(0);
-    this.enddate = (vari) ? new Date(vari.enddate) : new Date(0);
+    this.startdate = (vari) ? new Date(vari.startdate) : new Date();
+    this.enddate = (vari) ? new Date(vari.enddate) : new Date();
     this.schedule = (vari) ? new Schedule(vari.schedule) : new Schedule();
   }
 

@@ -62,7 +62,8 @@ export class SiteEmployeeLeaveRequestApproverComponent {
             let reqs = emp.requests.sort((a,b) => b.compareTo(a));
             reqs.forEach(req => {
               if (req.enddate.getTime() > now.getTime() 
-              && req.approvedby === '') {
+              && req.approvedby === '' 
+              && req.status.toLowerCase() === 'requested') {
                 let id = `${emp.id}|${req.id}`;
                 let label = `${emp.name.last}: `
                   + `${this.getDateString(req.startdate)} - `

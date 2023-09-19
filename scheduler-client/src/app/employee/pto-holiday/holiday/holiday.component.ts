@@ -84,7 +84,9 @@ export class HolidayComponent {
         if (co.id.toLowerCase() === emp.companyinfo.company.toLowerCase()) {
           if (co.holidays.length > 0) {
             co.holidays.forEach(hol => {
-              this.holidays.push(new CompanyHoliday(hol));
+              const holiday = new CompanyHoliday(hol);
+              holiday.active = this.isEmployeeActive(holiday, emp);
+              this.holidays.push(holiday);
             });
           }
         }
@@ -95,7 +97,8 @@ export class HolidayComponent {
           if (lv.hours === 8.0) {
             let found = false;
             for (let i=0; i < this.holidays.length && !found; i++) {
-              if (this.holidays[i].getLeaveDayTotalHours() === 0.0) {
+              if (this.holidays[i].getLeaveDayTotalHours() === 0.0 
+                && this.holidays[i].active) {
                 found = true;
                 this.holidays[i].addLeaveDay(lv);
               }
@@ -103,7 +106,8 @@ export class HolidayComponent {
           } else if (lv.hours < 8.0) {
             let found = false;
             for (let i=0; i < this.holidays.length && !found; i++) {
-              if (this.holidays[i].getLeaveDayTotalHours() + lv.hours <= 8.0) {
+              if (this.holidays[i].getLeaveDayTotalHours() + lv.hours <= 8.0 
+                && this.holidays[i].active) {
                 found = true;
                 this.holidays[i].addLeaveDay(lv);
               }
@@ -168,6 +172,19 @@ export class HolidayComponent {
     const startasgmt = this.employee.assignments[0];
     const endasgmt = this.employee.assignments[
       this.employee.assignments.length - 1];
+    if (actual) {
+      return (actual.getTime() >= startasgmt.startDate.getTime() &&
+        actual.getTime() <= endasgmt.endDate.getTime());
+    }
+    return true;
+  }
+
+  isEmployeeActive(holiday: CompanyHoliday, employee: Employee): boolean {
+    employee.assignments.sort((a,b) => a.compareTo(b));
+    const actual = holiday.getActual(this.year);
+    const startasgmt = employee.assignments[0];
+    const endasgmt = employee.assignments[
+      employee.assignments.length - 1];
     if (actual) {
       return (actual.getTime() >= startasgmt.startDate.getTime() &&
         actual.getTime() <= endasgmt.endDate.getTime());

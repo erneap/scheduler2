@@ -14,6 +14,49 @@
         <div class="year">{{this.year}}</div>
         <div class="movement" (click)="updateYear('up')">&gt;&gt;</div>
       </div>
+      <form [formGroup]="leaveForm">
+        <div class="fxLayout-row-center">
+          <div class="delete">
+            <mat-icon class="addIcon" *ngIf="leaveForm.valid"
+            matTooltip="Add Leave" (click)="addLeave()">add</mat-icon>
+          </div>
+          <div class="date">
+            <mat-form-field appearance="fill">
+              <mat-label>Leave Date</mat-label>
+              <input matInput class="form-field" formControlName="date">
+              <mat-hint>MM/DD/YYYY</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="code">
+            <mat-form-field appearance="fill">
+              <mat-label>Leave Type</mat-label>
+              <mat-select class="form-field" formControlName="code" >
+                <mat-option *ngFor="let lc of leaveCodes" [value]="lc.id">
+                  {{lc.title}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="hours">
+            <mat-form-field appearance="fill">
+              <mat-label>Hours</mat-label>
+              <input matInput class="form-field" formControlName="hours">
+            </mat-form-field>
+          </div>
+          <div class="status">
+            <mat-form-field appearance="fill">
+              <mat-label>Status</mat-label>
+              <mat-select class="form-field" formControlName="status">
+                <mat-option value="REQUESTED">Requested</mat-option>
+                <mat-option value="APPROVED">Approved</mat-option>
+                <mat-option value="ACTUAL">Actual</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
       <div class="fxLayout-row-center">
         <div class="delete">&nbsp;</div>
         <div class="date">Leave Date</div>
@@ -28,34 +71,6 @@
           (changed)="updateEmployee($event)"></app-site-employee-leave-row>
         </div>
       </div>
-      <form [formGroup]="leaveForm">
-        <div class="fxLayout-row-center">
-          <div class="delete">
-            <mat-icon class="addIcon" *ngIf="leaveForm.valid"
-            matTooltip="Add Leave" (click)="addLeave()">add</mat-icon>
-          </div>
-          <div class="date">
-            <input matInput class="form-field" formControlName="date">
-          </div>
-          <div class="code">
-            <select class="form-field" formControlName="code" >
-              <option *ngFor="let lc of leaveCodes" [value]="lc.id">
-                {{lc.title}}
-              </option>
-            </select>
-          </div>
-          <div class="hours">
-            <input class="form-field" formControlName="hours">
-          </div>
-          <div class="status">
-            <select class="form-field" formControlName="status">
-              <option value="REQUESTED">Requested</option>
-              <option value="APPROVED">Approved</option>
-              <option value="ACTUAL">Actual</option>
-            </select>
-          </div>
-        </div>
-      </form>
     </mat-card-content>
   </mat-card>
 </div>

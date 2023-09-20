@@ -57,7 +57,7 @@ export class SiteEmployeeLeaveComponent {
     this.leaveForm = this.fb.group({
       date: ['', [Validators.required]],
       code: ['', [Validators.required]],
-      hours: [0, [Validators.required]],
+      hours: [0.0, [Validators.required, Validators.min(0.1), Validators.max(12.0)]],
       status: ['', [Validators.required]],
     });
     let tSite = this.siteService.getSite();
@@ -68,9 +68,34 @@ export class SiteEmployeeLeaveComponent {
 
   clearLeaveForm() {
     this.leaveForm.controls['date'].setValue('');
+    this.leaveForm.controls['date'].setErrors(null);
     this.leaveForm.controls['code'].setValue('');
+    this.leaveForm.controls['code'].setErrors(null);
     this.leaveForm.controls['hours'].setValue(0);
+    this.leaveForm.controls['hours'].setErrors(null);
     this.leaveForm.controls['status'].setValue('');
+    this.leaveForm.controls['status'].setErrors(null);
+  }
+
+  showAddButton(): boolean {
+    const now = new Date();
+    const lvDate = this.leaveForm.value.date;
+    if (!(lvDate instanceof Date)) {
+      return false;
+    }
+    const lvType = this.leaveForm.value.code;
+    const lvHours = this.leaveForm.value.hours;
+    const lvStatus = this.leaveForm.value.status;
+    if (this.leaveForm.valid && now.getTime() < lvDate.getTime() && lvType !== '' 
+      && lvHours > 0 && lvHours <= 12.0 && lvStatus !== '') {
+      return true;
+    }
+    return false;
+  }
+
+  showLeaveEditor(): boolean {
+    const now = new Date();
+    return (this.year >= now.getFullYear());
   }
 
   setLeaves() {
@@ -120,24 +145,20 @@ export class SiteEmployeeLeaveComponent {
   }
 
   addLeave() {
-    const reDate = new RegExp('^[0-9]{2}/[0-9]{2}/[0-9]{4}$');
-    const reHours = new RegExp('^\d{1,2}(\.\d{1})$');
     let error = '';
-    const sDate: string = this.leaveForm.value.date;
+    const reHours = new RegExp("^\d{1,2}(.\d{1})?$");
+    const sDate = this.leaveForm.value.date;
     let leave: LeaveDay = new LeaveDay();
     leave.id = 0;
-    if (reDate.test(sDate)) {
-      const parts = sDate.split('/');
-      const iYear = Number(parts[2]);
-      const iMonth = Number(parts[0]);
-      const iDate = Number(parts[1]);
-      leave.leavedate = new Date(Date.UTC(iYear, iMonth-1, iDate));
+    if (sDate instanceof Date) {
+      leave.leavedate = new Date(Date.UTC(sDate.getFullYear(), 
+      sDate.getMonth(), sDate.getDate()));
     } else {
       error += 'Leave Date incorrect format (MM/DD/YYYY)';
     }
     leave.code = this.leaveForm.value.code;
     const sHours = this.leaveForm.value.hours;
-    if (reHours.test(sHours)) {
+    if (sHours > 0.1 && sHours <= 12.0) {
       leave.hours = Number(sHours);
     } else {
       if (error !== '') {

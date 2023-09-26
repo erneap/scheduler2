@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/labor"
 	"github.com/erneap/go-models/logs"
 	"github.com/erneap/go-models/sites"
 	"github.com/erneap/go-models/svcs"
@@ -950,7 +951,7 @@ func CreateSiteLaborCode(c *gin.Context) {
 				}
 			}
 			if !found {
-				lCode := sites.LaborCode{
+				lCode := labor.LaborCode{
 					ChargeNumber: data.ChargeNumber,
 					Extension:    data.Extension,
 				}
@@ -1038,6 +1039,8 @@ func UpdateSiteLaborCode(c *gin.Context) {
 	for r, rpt := range site.ForecastReports {
 		if rpt.ID == data.ReportID {
 			for l, lCode := range rpt.LaborCodes {
+				fmt.Printf("CN: %s - Ext: %s - Field: %s\n",
+					data.ChargeNumber, data.Extension, data.Field)
 				if strings.EqualFold(lCode.ChargeNumber, data.ChargeNumber) &&
 					strings.EqualFold(lCode.Extension, data.Extension) {
 					switch strings.ToLower(data.Field) {
@@ -1055,7 +1058,11 @@ func UpdateSiteLaborCode(c *gin.Context) {
 					case "notassigned", "notassignedname":
 						lCode.NotAssignedName = data.Value
 					case "hours", "hoursperemployee":
-						hours, _ := strconv.ParseFloat(data.Value, 64)
+						fmt.Println(data.Value)
+						hours, err := strconv.ParseFloat(data.Value, 64)
+						if err != nil {
+							fmt.Println(err)
+						}
 						lCode.HoursPerEmployee = hours
 					case "exercise":
 						lCode.Exercise = strings.EqualFold(data.Value, "true")
@@ -1180,6 +1187,7 @@ func CreateSiteForecastReport(c *gin.Context) {
 	if !found {
 		rpt := sites.ForecastReport{
 			ID:        fID + 1,
+			CompanyID: data.CompanyID,
 			Name:      data.Name,
 			StartDate: data.StartDate,
 			EndDate:   data.EndDate,
@@ -1231,6 +1239,8 @@ func UpdateSiteForecastReport(c *gin.Context) {
 	for r, rpt := range site.ForecastReports {
 		if rpt.ID == data.ReportID {
 			switch strings.ToLower(data.Field) {
+			case "company":
+				rpt.CompanyID = data.Value
 			case "name":
 				rpt.Name = data.Value
 			case "start", "startdate":
@@ -1249,7 +1259,7 @@ func UpdateSiteForecastReport(c *gin.Context) {
 					}
 				}
 				if !found {
-					lc := sites.LaborCode{
+					lc := labor.LaborCode{
 						ChargeNumber: parts[0],
 						Extension:    parts[1],
 					}
@@ -1559,7 +1569,7 @@ func UpdateSiteCofSReport(c *gin.Context) {
 							}
 						}
 						if !found {
-							lc := sites.LaborCode{
+							lc := labor.LaborCode{
 								ChargeNumber: parts[0],
 								Extension:    parts[1],
 							}

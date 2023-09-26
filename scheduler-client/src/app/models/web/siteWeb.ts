@@ -84,6 +84,7 @@ export interface UpdateSiteLaborCode {
 export interface CreateSiteForecast {
   team: string;
   siteid: string;
+  companyid: string;
   name: string;
   startdate: Date;
   enddate: Date;

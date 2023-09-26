@@ -5,6 +5,7 @@ import { ListItem } from 'src/app/generic/button-list/listitem';
 import { DeletionConfirmationComponent } from 'src/app/generic/deletion-confirmation/deletion-confirmation.component';
 import { ForecastReport, IForecastReport } from 'src/app/models/sites/forecastreport';
 import { ISite, Site } from 'src/app/models/sites/site';
+import { Company } from 'src/app/models/teams/company';
 import { SiteResponse } from 'src/app/models/web/siteWeb';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
@@ -35,6 +36,7 @@ export class SiteForecastReportEditorComponent {
   showSortDown: boolean = true;
   reportForm: FormGroup;
   weekdays: string[];
+  companyList: Company[];
 
   constructor(
     protected authService: AuthService,
@@ -44,9 +46,13 @@ export class SiteForecastReportEditorComponent {
     protected dialog: MatDialog,
     private fb: FormBuilder
   ) {
+    this.companyList = [];
     const team = this.teamService.getTeam();
     if (team) {
-      this.teamid = team.id
+      this.teamid = team.id;
+      team.companies.forEach(co => {
+        this.companyList.push(new Company(co));
+      });
     } else {
       this.teamid = '';
     }
@@ -54,7 +60,8 @@ export class SiteForecastReportEditorComponent {
       name: ['', [Validators.required]],
       start: [new Date(), [Validators.required]],
       end: [new Date(), [Validators.required]],
-      period: ["0", [Validators.required]]
+      period: ["0", [Validators.required]],
+      companyid: ["", [Validators.required]]
     });
     this.weekdays = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
       'Friday', 'Saturday'];
@@ -68,8 +75,8 @@ export class SiteForecastReportEditorComponent {
     if (this.site.forecasts) {
       this.site.forecasts.forEach(rpt => {
         if (rpt.endDate.getTime() > now.getTime()) {
-          const label = `${rpt.name} (${this.getDate(rpt.startDate)}-`
-            + `${this.getDate(rpt.endDate)})`;
+          const label = `(${rpt.companyid?.toUpperCase()}) ${rpt.name} `
+            + `(${this.getDate(rpt.startDate)}-${this.getDate(rpt.endDate)})`;
           this.reports.push(new ListItem(`${rpt.id}`, label));
         }
       });
@@ -93,6 +100,7 @@ export class SiteForecastReportEditorComponent {
             this.reportForm.controls['start'].setValue(rpt.startDate);
             this.reportForm.controls['end'].setValue(rpt.endDate);
             this.reportForm.controls['period'].setValue(`${weekday}`);
+            this.reportForm.controls['companyid'].setValue((rpt.companyid) ? rpt.companyid : '');
           }
         });
       }
@@ -102,6 +110,7 @@ export class SiteForecastReportEditorComponent {
       this.reportForm.controls['start'].setValue(new Date());
       this.reportForm.controls['end'].setValue(new Date());
       this.reportForm.controls['period'].setValue('5');
+      this.reportForm.controls['companyid'].setValue('');
     }
   }
   
@@ -193,10 +202,11 @@ export class SiteForecastReportEditorComponent {
       const name = this.reportForm.value.name;
       const start = this.reportForm.value.start;
       const end = this.reportForm.value.end;
+      const company = this.reportForm.value.companyid;
       this.authService.statusMessage = 'Adding new Forecast Report';
       this.dialogService.showSpinner();
       this.siteService.addForecastReport(this.teamid, this.site.id, 
-        name, start, end, Number(this.reportForm.value.period))
+        company, name, start, end, Number(this.reportForm.value.period))
         .subscribe({
         next: (data: SiteResponse) => {
           this.dialogService.closeSpinner();

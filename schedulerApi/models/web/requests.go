@@ -152,6 +152,7 @@ type UpdateSiteLaborCode struct {
 type CreateSiteForecast struct {
 	TeamID    string    `json:"team"`
 	SiteID    string    `json:"siteid"`
+	CompanyID string    `json:"companyid"`
 	Name      string    `json:"name"`
 	StartDate time.Time `json:"startdate"`
 	EndDate   time.Time `json:"enddate"`

@@ -114,9 +114,10 @@ func CreateReport(c *gin.Context) {
 	case "chargenumber":
 		reportDate := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
 		laborrpt := reports.LaborReport{
-			Date:   reportDate,
-			TeamID: data.TeamID,
-			SiteID: data.SiteID,
+			Date:      reportDate,
+			TeamID:    data.TeamID,
+			SiteID:    data.SiteID,
+			CompanyID: data.CompanyID,
 		}
 		if err := laborrpt.Create(); err != nil {
 			svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(

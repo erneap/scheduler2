@@ -35,6 +35,7 @@ export interface IForecastReport {
   endDate: Date;
   periods?: ForecastPeriod[];
   laborCodes?: LaborCode[];
+  companyid?: string;
 }
 
 export class ForecastReport implements IForecastReport {
@@ -44,12 +45,14 @@ export class ForecastReport implements IForecastReport {
   endDate: Date;
   periods?: ForecastPeriod[];
   laborCodes?: LaborCode[];
+  companyid?: string;
 
   constructor(fr?: IForecastReport) {
     this.id = (fr) ? fr.id : 0;
     this.name = (fr) ? fr.name : 'New Forecast';
     this.startDate = (fr) ? new Date(fr.startDate) : new Date();
     this.endDate = (fr) ? new Date(fr.endDate) : new Date();
+    this.companyid = (fr && fr.companyid) ? fr.companyid : '';
     this.periods = [];
     if (fr && fr.periods && fr.periods.length > 0) {
       fr.periods.forEach(prd => {

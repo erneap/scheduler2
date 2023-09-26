@@ -20,6 +20,7 @@ type LaborReport struct {
 	Date              time.Time
 	TeamID            string
 	SiteID            string
+	CompanyID         string
 	ForecastReports   []sites.ForecastReport
 	Workcodes         map[string]teams.Workcode
 	Styles            map[string]int
@@ -50,10 +51,11 @@ func (lr *LaborReport) Create() error {
 		return err
 	}
 	for _, fr := range site.ForecastReports {
-		if lr.Date.Equal(fr.StartDate) ||
-			lr.Date.Equal(fr.EndDate) ||
-			(lr.Date.After(fr.StartDate) &&
-				lr.Date.Before(fr.EndDate)) {
+		if strings.EqualFold(lr.CompanyID, fr.CompanyID) &&
+			(lr.Date.Equal(fr.StartDate) ||
+				lr.Date.Equal(fr.EndDate) ||
+				(lr.Date.After(fr.StartDate) &&
+					lr.Date.Before(fr.EndDate))) {
 			lr.ForecastReports = append(lr.ForecastReports, fr)
 			if fr.StartDate.Before(minDate) {
 				minDate = time.Date(fr.StartDate.Year(),
@@ -1024,8 +1026,7 @@ func (lr *LaborReport) CreateContractReport(
 			actual := emp.GetWorkedHoursForLabor(
 				lCode.ChargeNumber, lCode.Extension, fr.StartDate,
 				fr.EndDate.AddDate(0, 0, 1))
-			forecast := emp.GetForecastHours(lCode.ChargeNumber,
-				lCode.Extension, fr.StartDate,
+			forecast := emp.GetForecastHours(lCode, fr.StartDate,
 				fr.EndDate.AddDate(0, 0, 1),
 				compareCodes, lr.Offset)
 			if actual > 0.0 || forecast > 0.0 {
@@ -1098,8 +1099,7 @@ func (lr *LaborReport) CreateContractReport(
 							if last.After(lastWorkday) {
 								style = lr.Styles["forecast"]
 							}
-							hours += emp.GetForecastHours(lCode.ChargeNumber,
-								lCode.Extension, first, last, compareCodes, lr.Offset)
+							hours += emp.GetForecastHours(lCode, first, last, compareCodes, lr.Offset)
 						}
 						lr.Report.SetCellStyle(sheetName, cellID, cellID, style)
 						format := lr.ConditionalStyles["cellpink"]
@@ -1152,6 +1152,9 @@ func (lr *LaborReport) CreateContractReport(
 			codeHours := perDay * daysToNow
 			if codeHours > totalHours {
 				codeHours = totalHours
+			}
+			if codeHours < 0.0 {
+				codeHours = 0.0
 			}
 			pctStyle := 0
 

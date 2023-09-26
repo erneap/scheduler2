@@ -271,12 +271,14 @@ export class SiteService extends CacheService {
     return this.httpClient.delete<SiteResponse>(url);
   }
 
-  addForecastReport(teamid: string, siteid: string, name: string, start: Date, 
-  end: Date, period: number): Observable<SiteResponse> {
+  addForecastReport(teamid: string, siteid: string, company: string, 
+    name: string, start: Date, 
+    end: Date, period: number): Observable<SiteResponse> {
     const url = '/scheduler/api/v2/site/forecast';
     const data: CreateSiteForecast = {
       team: teamid,
       siteid: siteid,
+      companyid: company,
       name: name,
       startdate: start,
       enddate: end,

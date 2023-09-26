@@ -1,7 +1,6 @@
 package ingest
 
 import (
-	"fmt"
 	"log"
 	"mime/multipart"
 	"strconv"
@@ -46,7 +45,6 @@ func (mei *ManualExcelIngest) ProcessFile(file *multipart.FileHeader) ([]ExcelRo
 			wkctr = strings.ToLower(parts[0])
 		}
 	}
-	fmt.Println(wkctr)
 
 	readerFile, _ := file.Open()
 	options := excelize.Options{

@@ -245,8 +245,8 @@ export class SiteForecastReportEditorComponent {
   onDeleteReport() {
     if (this.selected !== 'new' && this.selected !== '') {
       const dialogRef = this.dialog.open(DeletionConfirmationComponent, {
-        data: {title: 'Confirm CofS Report Deletion', 
-        message: 'Are you sure you want to delete this CofS Report?'},
+        data: {title: 'Confirm Forecast Report Deletion', 
+        message: 'Are you sure you want to delete this Forecast Report?'},
       });
   
       dialogRef.afterClosed().subscribe(result => {

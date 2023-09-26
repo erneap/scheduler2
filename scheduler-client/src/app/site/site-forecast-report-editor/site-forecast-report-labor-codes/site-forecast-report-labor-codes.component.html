@@ -10,7 +10,8 @@
     <div class="flexlayout column center">
       <button mat-icon-button color="warn"
         matTooltip="Delete selected labor code"
-        *ngIf="selected != 'new'">
+        *ngIf="selected != 'new'"
+        (click)="onDeleteLaborCode()">
         <mat-icon>delete</mat-icon>
       </button>
     </div>

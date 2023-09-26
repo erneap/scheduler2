@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ListItem } from 'src/app/generic/button-list/listitem';
+import { DeletionConfirmationComponent } from 'src/app/generic/deletion-confirmation/deletion-confirmation.component';
 import { ForecastReport, IForecastReport } from 'src/app/models/sites/forecastreport';
 import { ISite, Site } from 'src/app/models/sites/site';
 import { SiteResponse } from 'src/app/models/web/siteWeb';
@@ -43,7 +45,8 @@ export class SiteForecastReportLaborCodesComponent {
     protected dialogService: DialogService,
     protected siteService: SiteService,
     protected teamService: TeamService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
     const team = this.teamService.getTeam();
     if (team) {
@@ -257,5 +260,48 @@ export class SiteForecastReportLaborCodesComponent {
     }
   }
 
-
+  onDeleteLaborCode() {
+    if (this.selected !== 'new') {
+      const chgNo = this.laborForm.value.chargeNumber;
+      const ext = this.laborForm.value.extension;
+      const dialogRef = this.dialog.open(DeletionConfirmationComponent, {
+        data: {title: 'Confirm Labor Code Deletion', 
+        message: 'Are you sure you want to delete this Labor Code?'},
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'yes') {
+          this.authService.statusMessage = "Deleting CofS Report";
+          this.dialogService.showSpinner();
+          this.siteService.updateForecastReport(this.teamid, this.site.id, 
+            this.report.id, "deletelabor", `${chgNo}|${ext}`).subscribe({
+              next: (data: SiteResponse) => {
+                if (data && data != null && data.site) {
+                  this.site = new Site(data.site);
+                  this.siteChanged.emit(new Site(data.site));
+                  if (this.site.forecasts) {
+                    this.site.forecasts.forEach(rpt => {
+                      if (rpt.id === this.report.id) {
+                        this.report = rpt;
+                        this.setLaborCode();
+                      }
+                    })
+                  }
+                  const site = this.siteService.getSite();
+                  if (site && data.site.id === site.id) {
+                    this.siteService.setSite(new Site(data.site));
+                  }
+                  this.teamService.setSelectedSite(new Site(data.site));
+                }
+                this.authService.statusMessage = "Retrieval complete";
+              },
+              error: (err: SiteResponse) => {
+                this.dialogService.closeSpinner();
+              this.authService.statusMessage = err.exception;
+              }
+            });
+        }
+      });
+    }
+  }
 }

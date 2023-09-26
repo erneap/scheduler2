@@ -12,6 +12,7 @@ import (
 	"github.com/erneap/go-models/employees"
 	"github.com/erneap/go-models/logs"
 	"github.com/erneap/go-models/notifications"
+	"github.com/erneap/go-models/sites"
 	"github.com/erneap/go-models/svcs"
 	"github.com/erneap/scheduler2/schedulerApi/models/ingest"
 	"github.com/erneap/scheduler2/schedulerApi/models/web"
@@ -244,6 +245,16 @@ func IngestFiles(c *gin.Context) {
 			}
 		}
 	case "mexcel":
+		var cNumbers []sites.ForecastReport
+		for _, s := range team.Sites {
+			if s.ID == siteid {
+				for _, fr := range s.ForecastReports {
+					if strings.EqualFold(fr.CompanyID, companyid) {
+						cNumbers = append(cNumbers, fr)
+					}
+				}
+			}
+		}
 		password := ""
 		for _, co := range team.Companies {
 			if co.ID == companyid {
@@ -339,12 +350,36 @@ func IngestFiles(c *gin.Context) {
 							fmt.Println(err)
 						}
 					} else {
+						cn := rec.ChargeNumber
+						ext := rec.Extension
+						// check to see if employee has a valid charge number/extension
+						for _, fr := range cNumbers {
+							if rec.Date.Equal(fr.StartDate) || rec.Date.Equal(fr.EndDate) ||
+								(rec.Date.After(fr.StartDate) && rec.Date.Before(fr.EndDate)) {
+								found := false
+								for i := 0; i < len(emp.Assignments) && !found; i++ {
+									asgmt := emp.Assignments[i]
+									if rec.Date.Before(asgmt.EndDate) && rec.Date.After(asgmt.StartDate) {
+										for _, alc := range asgmt.LaborCodes {
+											for _, flc := range fr.LaborCodes {
+												if strings.EqualFold(alc.ChargeNumber, flc.ChargeNumber) &&
+													strings.EqualFold(alc.Extension, flc.Extension) {
+													found = true
+													cn = alc.ChargeNumber
+													ext = alc.Extension
+												}
+											}
+										}
+									}
+								}
+							}
+						}
 						// work object, so get work record object for employee and year, then
 						// add it to the work record, update it in the database.
 						wr := employees.Work{
 							DateWorked:   rec.Date,
-							ChargeNumber: rec.ChargeNumber,
-							Extension:    rec.Extension,
+							ChargeNumber: cn,
+							Extension:    ext,
 							PayCode:      1,
 							Hours:        rec.Hours,
 						}

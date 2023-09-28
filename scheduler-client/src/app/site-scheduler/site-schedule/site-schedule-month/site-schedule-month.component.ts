@@ -67,7 +67,7 @@ export class SiteScheduleMonthComponent {
           let start = new Date(Date.UTC(this.month.getFullYear(), 
             this.month.getMonth(), 1));
           this.dates.forEach(dt => {
-            const wd = emp.getWorkday(site.id, dt);
+            const wd = emp.getWorkdayWOLeaves(site.id, dt);
             if (wd.workcenter !== '') {
               let cnt = wkctrMap.get(wd.workcenter);
               if (cnt) {
@@ -89,6 +89,9 @@ export class SiteScheduleMonthComponent {
                 wkctr = key;
               }
             }
+          }
+          if (count === 0) {
+
           }
           this.workcenters.forEach(wk => {
             if (wk.id.toLowerCase() === wkctr.toLowerCase()) {

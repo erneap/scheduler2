@@ -1,3 +1,4 @@
+import { Workcenter } from "../sites/workcenter";
 import { IUser, User } from "../users/user";
 import { Assignment, IAssignment, IVariation, Variation, Workday } from "./assignments";
 import { CompanyInfo, ICompanyInfo } from "./company";

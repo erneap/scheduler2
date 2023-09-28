@@ -19,6 +19,7 @@ import (
 	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func GetIngestEmployees(c *gin.Context) {
@@ -303,12 +304,28 @@ func IngestFiles(c *gin.Context) {
 				if err == nil {
 					work.RemoveWork(start, end)
 					services.UpdateEmployeeWork(work)
+				} else if err == mongo.ErrNoDocuments {
+					work = &employees.EmployeeWorkRecord{
+						Year:       uint(start.Year()),
+						EmployeeID: emp.ID,
+					}
+					services.CreateEmployeeWork(work)
+				} else {
+					fmt.Println(err)
 				}
 				if start.Year() != end.Year() {
 					work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(end.Year()))
 					if err == nil {
 						work.RemoveWork(start, end)
 						services.UpdateEmployeeWork(work)
+					} else if err == mongo.ErrNoDocuments {
+						work = &employees.EmployeeWorkRecord{
+							Year:       uint(end.Year()),
+							EmployeeID: emp.ID,
+						}
+						services.CreateEmployeeWork(work)
+					} else {
+						fmt.Println(err)
 					}
 				}
 			}

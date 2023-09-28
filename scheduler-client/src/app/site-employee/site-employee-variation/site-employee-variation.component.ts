@@ -143,6 +143,14 @@ export class SiteEmployeeVariationComponent {
     }
     this.schedule = new Schedule(this.variation.schedule);
   }
+
+  setVariationEnd() {
+    const sDate = new Date(this.variationForm.value.start);
+    const eDate = new Date(this.variation.enddate);
+    if (eDate.getTime() < sDate.getTime()) {
+      this.variationForm.controls['end'].setValue(sDate);
+    }
+  }
   
   updateSchedule(data: string) {
     if (typeof(data) === 'string') {
@@ -229,8 +237,14 @@ export class SiteEmployeeVariationComponent {
       this.variation.site = site.id;
       this.variation.id = 0;
       this.variation.mids = this.variationForm.value.mids;
-      this.variation.startdate = this.variationForm.value.start;
-      this.variation.enddate = this.variationForm.value.end;
+      let sDate = new Date(this.variationForm.value.start);
+      let eDate = new Date(this.variationForm.value.end);
+      if (site.utcOffset) {
+        sDate = new Date(sDate.getTime() + (site.utcOffset * 3600000));
+        eDate = new Date(eDate.getTime() + (site.utcOffset * 3600000));
+      }
+      this.variation.startdate = sDate;
+      this.variation.enddate = eDate;
       this.variation.schedule.showdates = this.variationForm.value.dates;
       this.authService.statusMessage = "Adding New Variation";
       this.dialogService.showSpinner();
@@ -282,6 +296,9 @@ export class SiteEmployeeVariationComponent {
   }
 
   updateVariation(field: string) {
+    if (field.toLowerCase() === 'start') {
+      this.setVariationEnd();
+    }
     if (this.variation.id > 0) {
       let empID = '';
       const data: ChangeAssignmentRequest = {

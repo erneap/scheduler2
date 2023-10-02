@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/erneap/go-models/logs"
 	"github.com/erneap/go-models/notifications"
 	"github.com/erneap/go-models/svcs"
 	"github.com/erneap/scheduler2/schedulerApi/models/web"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,7 +24,7 @@ func GetMessagesForEmployee(c *gin.Context) {
 
 	msgs, err := svcs.GetMessagesByEmployee(userid)
 	if err != nil {
-		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
 			"GetMessagesForEmployee: GetMessagesByEmployee: %s", err.Error()))
 		resp := &web.NotificationResponse{
 			Exception: err.Error(),
@@ -33,7 +33,7 @@ func GetMessagesForEmployee(c *gin.Context) {
 		return
 	}
 
-	svcs.AddLogEntry("scheduler", logs.Debug,
+	services.AddLogEntry(c, "scheduler", "Debug",
 		"GetMessagesForEmployee: Provided messages for: "+userid)
 	resp := &web.NotificationResponse{
 		Messages:  msgs,
@@ -55,7 +55,7 @@ func GetMessage(c *gin.Context) {
 
 	msgs, err := svcs.GetMessage(messageid)
 	if err != nil {
-		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
 			"GetMessage: GetMessage Problem: %s", err.Error()))
 		resp := &web.NotificationResponse{
 			Exception: err.Error(),
@@ -70,7 +70,7 @@ func GetMessage(c *gin.Context) {
 		Messages:  messages,
 		Exception: "",
 	}
-	svcs.AddLogEntry("scheduler", logs.Debug, "GetMessage: Message Retrieved: "+
+	services.AddLogEntry(c, "scheduler", "Debug", "GetMessage: Message Retrieved: "+
 		messageid)
 	c.JSON(http.StatusOK, resp)
 }
@@ -78,7 +78,7 @@ func GetMessage(c *gin.Context) {
 func GetAllMessages(c *gin.Context) {
 	msgs, err := svcs.GetAllMessages()
 	if err != nil {
-		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
 			"GetAllMessages: GetMessages Problem: %s", err.Error()))
 		resp := &web.NotificationResponse{
 			Exception: err.Error(),
@@ -91,7 +91,7 @@ func GetAllMessages(c *gin.Context) {
 		Messages:  msgs,
 		Exception: "",
 	}
-	svcs.AddLogEntry("scheduler", logs.Debug, "GetAllMessages: Provided all messages.")
+	services.AddLogEntry(c, "scheduler", "Debug", "GetAllMessages: Provided all messages.")
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -99,7 +99,7 @@ func CreateMessage(c *gin.Context) {
 	var data web.MessageRequest
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
 			"CreateMessage: DataBinding Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.NotificationResponse{
@@ -110,7 +110,7 @@ func CreateMessage(c *gin.Context) {
 
 	err := svcs.CreateMessage(data.To, data.From, data.Message)
 	if err != nil {
-		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
 			"CreateMessage: CreateMessage Problem: %s", err.Error()))
 		resp := &web.NotificationResponse{
 			Exception: err.Error(),
@@ -124,7 +124,7 @@ func CreateMessage(c *gin.Context) {
 		Messages:  messages,
 		Exception: "",
 	}
-	svcs.AddLogEntry("scheduler", logs.Debug, "CreateMessage: New Message Provided")
+	services.AddLogEntry(c, "scheduler", "Debug", "CreateMessage: New Message Provided")
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -132,7 +132,7 @@ func AcknowledgeMessages(c *gin.Context) {
 	var data web.NotificationAck
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
 			"AcknowledgeMessages: DataBinding Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.NotificationResponse{
@@ -161,7 +161,7 @@ func AcknowledgeMessages(c *gin.Context) {
 		}
 	}
 	if exceptions != "" {
-		svcs.AddLogEntry("scheduler", logs.Debug, fmt.Sprintf(
+		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
 			"AcknowledgeMessages; Exceptions Noted: %s", exceptions))
 		resp := &web.NotificationResponse{
 			Exception: exceptions,

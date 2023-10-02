@@ -230,7 +230,7 @@ func (cr *ReportCofS) CreateEmployeeData(count, coCount int,
 		label += fmt.Sprintf("_%d", coCount)
 	}
 	esb.WriteString(fmt.Sprintf(
-		"<%s>%s</%s>", label, emp.Name.GetLastFirst(), label))
+		"<%s>%s</%s>", label, emp.Name.GetLastFirstMI(), label))
 	label = fmt.Sprintf("PositionRow%d", count)
 	if coCount > 1 {
 		label += fmt.Sprintf("_%d", coCount)

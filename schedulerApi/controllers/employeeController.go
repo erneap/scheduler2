@@ -1258,8 +1258,8 @@ func DeleteEmployeeLeaveRequest(c *gin.Context) {
 func AddEmployeeLeaveDay(c *gin.Context) {
 	var data web.EmployeeLeaveDayRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug",
-			"AddEmployeeLeaveDay, Request Data Binding, Trouble with request")
+		services.AddLogEntry(c, "scheduler", "Debug", "AddEmployeeLeaveDay",
+			"Request Data Binding, Trouble with request")
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
@@ -1268,13 +1268,13 @@ func AddEmployeeLeaveDay(c *gin.Context) {
 	emp, err := services.GetEmployee(data.EmployeeID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug",
-				"AddEmployeeLeaveDay: Updating Employee problem: Employee Not Found")
+			services.AddLogEntry(c, "scheduler", "Debug", "AddEmployeeLeaveDay",
+				"Updating Employee problem: Employee Not Found")
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
 				Exception: "Employee Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug",
-				"AddEmployeeLeaveDay: GetEmployee problem: "+err.Error())
+			services.AddLogEntry(c, "scheduler", "Debug", "AddEmployeeLeaveDay",
+				"GetEmployee problem: "+err.Error())
 			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 				Exception: err.Error()})
 		}
@@ -1283,27 +1283,20 @@ func AddEmployeeLeaveDay(c *gin.Context) {
 
 	emp.AddLeave(data.Leave.ID, data.Leave.LeaveDate, data.Leave.Code,
 		data.Leave.Status, data.Leave.Hours, &primitive.NilObjectID)
-	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug",
-			"AddEmployeeLeaveDay: Adding Leave problem: "+err.Error())
-		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
-			Exception: err.Error()})
-		return
-	}
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug",
-			"AddEmployeeLeaveDay: Updating Employee problem: "+err.Error())
+		services.AddLogEntry(c, "scheduler", "Debug", "AddEmployeeLeaveDay",
+			"Updating Employee problem: "+err.Error())
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "Debug",
-		"AddEmployeeLeaveDay: LeaveDay added: "+data.EmployeeID+": "+data.Leave.Code+
-			"-"+data.Leave.LeaveDate.Format("01/02/06"))
+	services.AddLogEntry(c, "leave", "Create", "Manual Leave ADD",
+		fmt.Sprintf("%s: %s, Code: %s, Hours: %2.1f", emp.Name.GetLastFirstMI(),
+			data.Leave.LeaveDate.Format("01-02-06"), data.Leave.Code, data.Leave.Hours))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 

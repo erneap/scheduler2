@@ -835,8 +835,8 @@ func DeleteEmployeeVariation(c *gin.Context) {
 	empID := c.Param("empid")
 	variID, err := strconv.ParseUint(c.Param("variid"), 10, 32)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"DeleteEmployeeVariation: Convert Variation ID Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug", "DeleteEmployeeVariation",
+			fmt.Sprintf("Convert Variation ID Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
@@ -845,13 +845,13 @@ func DeleteEmployeeVariation(c *gin.Context) {
 	emp, err := services.GetEmployee(empID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"DeleteEmployeeVariation: GetEmployee Problem: %s", "Employee Not Found"))
+			services.AddLogEntry(c, "scheduler", "Debug", "DeleteEmployeeVariation",
+				fmt.Sprintf("GetEmployee Problem: %s", "Employee Not Found"))
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
 				Exception: "Employee Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"DeleteEmployeeVariation: GetEmployee Problem: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Debug", "DeleteEmployeeVariation",
+				fmt.Sprintf("GetEmployee Problem: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 				Exception: err.Error()})
 		}
@@ -871,24 +871,24 @@ func DeleteEmployeeVariation(c *gin.Context) {
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"DeleteEmployeeVariation: UpdateEmployee Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug", "DeleteEmployeeVariation",
+			fmt.Sprintf("UpdateEmployee Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-		"DeleteEmployeeVariation: Variation Created: %s: %d", empID, variID))
+	services.AddLogEntry(c, "scheduler", "Debug", "DeleteEmployeeVariation",
+		fmt.Sprintf("Variation Created: %s: %d", empID, variID))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
 func CreateEmployeeLeaveBalance(c *gin.Context) {
 	var data web.LeaveBalanceRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug",
-			"CreateEmployeeLeaveBalance, Request Data Binding, Trouble with request")
+		services.AddLogEntry(c, "scheduler", "Debug", "CreateEmployeeLeaveBalance",
+			"Request Data Binding, Trouble with request")
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
@@ -897,13 +897,13 @@ func CreateEmployeeLeaveBalance(c *gin.Context) {
 	emp, err := services.GetEmployee(data.EmployeeID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"CreateEmployeeLeaveBalance: GetEmployee Problem: %s", "Employee Not Found"))
+			services.AddLogEntry(c, "scheduler", "Debug", "CreateEmployeeLeaveBalance",
+				fmt.Sprintf("GetEmployee Problem: %s", "Employee Not Found"))
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
 				Exception: "Employee Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"CreateEmployeeLeaveBalance: GetEmployee Problem: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Debug", "CreateEmployeeLeaveBalance",
+				fmt.Sprintf("GetEmployee Problem: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 				Exception: err.Error()})
 		}
@@ -914,25 +914,25 @@ func CreateEmployeeLeaveBalance(c *gin.Context) {
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"CreateEmployeeLeaveBalance: UpdateEmployee Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug", "CreateEmployeeLeaveBalance",
+			fmt.Sprintf("UpdateEmployee Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-		"CreateEmployeeLeaveBalance: Leave Balance Created: %s: %d", data.EmployeeID,
-		data.Year))
+	services.AddLogEntry(c, "scheduler", "Debug", "CreateEmployeeLeaveBalance",
+		fmt.Sprintf("Leave Balance Created: %s: %d", data.EmployeeID,
+			data.Year))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
 func UpdateEmployeeLeaveBalance(c *gin.Context) {
 	var data users.UpdateRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug",
-			"UpdateEmployeeLeaveBalance, Request Data Binding, Trouble with request")
+		services.AddLogEntry(c, "scheduler", "Debug", "CreateEmployeeLeaveBalance",
+			fmt.Sprintf("Request Data Binding, Trouble with request"))
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
@@ -941,13 +941,13 @@ func UpdateEmployeeLeaveBalance(c *gin.Context) {
 	emp, err := services.GetEmployee(data.ID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"UpdateEmployeeLeaveBalance: GetEmployee Problem: %s", "Employee Not Found"))
+			services.AddLogEntry(c, "scheduler", "Debug", "UpdateEmployeeLeaveBalance",
+				fmt.Sprintf("GetEmployee Problem: %s", "Employee Not Found"))
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
 				Exception: "Employee Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"UpdateEmployeeLeaveBalance: GetEmployee Problem: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Debug", "UpdateEmployeeLeaveBalance",
+				fmt.Sprintf("GetEmployee Problem: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 				Exception: err.Error()})
 		}
@@ -956,8 +956,8 @@ func UpdateEmployeeLeaveBalance(c *gin.Context) {
 
 	year, err := strconv.Atoi(data.OptionalID)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"UpdateEmployeeLeaveBalance: Convert Year Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug", "UpdateEmployeeLeaveBalance",
+			fmt.Sprintf("Convert Year Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
@@ -965,8 +965,8 @@ func UpdateEmployeeLeaveBalance(c *gin.Context) {
 
 	fvalue, err := strconv.ParseFloat(data.Value, 64)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"UpdateEmployeeLeaveBalance: Convert Value Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug", "UpdateEmployeeLeaveBalance",
+			fmt.Sprintf("Convert Value Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
@@ -985,16 +985,16 @@ func UpdateEmployeeLeaveBalance(c *gin.Context) {
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"UpdateEmployeeLeaveBalance: UpdateEmployee Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug", "UpdateEmployeeLeaveBalance",
+			fmt.Sprintf("UpdateEmployee Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-		"UpdateEmployeeLeaveBalance: LeaveBalance Updated: %s", err.Error()))
+	services.AddLogEntry(c, "scheduler", "Debug", "UpdateEmployeeLeaveBalance",
+		fmt.Sprintf("LeaveBalance Updated: %s", err.Error()))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -1002,8 +1002,8 @@ func DeleteEmployeeLeaveBalance(c *gin.Context) {
 	empID := c.Param("empid")
 	year, err := strconv.ParseInt(c.Param("year"), 10, 32)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"DeleteEmployeeLeaveBalance: Convert Year Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug", "DeleteEmployeeLeaveBalance",
+			fmt.Sprintf("Convert Year Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
@@ -1012,13 +1012,13 @@ func DeleteEmployeeLeaveBalance(c *gin.Context) {
 	emp, err := services.GetEmployee(empID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"DeleteEmployeeLeaveBalance: UpdateEmployee Problem: %s", "Employee Not Found"))
+			services.AddLogEntry(c, "scheduler", "Debug", "DeleteEmployeeLeaveBalance",
+				fmt.Sprintf("UpdateEmployee Problem: %s", "Employee Not Found"))
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
 				Exception: "Employee Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"DeleteEmployeeLeaveBalance: GetEmployee Problem: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Debug", "DeleteEmployeeLeaveBalance",
+				fmt.Sprintf("GetEmployee Problem: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 				Exception: err.Error()})
 		}
@@ -1038,16 +1038,16 @@ func DeleteEmployeeLeaveBalance(c *gin.Context) {
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"DeleteEmployeeLeaveBalance: UpdateEmployee Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug", "DeleteEmployeeLeaveBalance",
+			fmt.Sprintf("UpdateEmployee Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-		"DeleteEmployeeLeaveBalance: LeaveBalance Deleted: %s: %d", empID, year))
+	services.AddLogEntry(c, "scheduler", "Debug", "DeleteEmployeeLeaveBalance",
+		fmt.Sprintf("LeaveBalance Deleted: %s: %d", empID, year))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -1055,8 +1055,8 @@ func CreateEmployeeLeaveRequest(c *gin.Context) {
 	var data web.EmployeeLeaveRequest
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug",
-			"CreateEmployeeLeaveRequest, Request Data Binding, Trouble with request")
+		services.AddLogEntry(c, "scheduler", "Debug", "CreateEmployeeLeaveRequest",
+			"Request Data Binding, Trouble with request")
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
@@ -1065,13 +1065,13 @@ func CreateEmployeeLeaveRequest(c *gin.Context) {
 	emp, err := services.GetEmployee(data.EmployeeID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"CreateEmployeeLeaveRequest: GetEmployee Problem: %s", "Employee Not Found"))
+			services.AddLogEntry(c, "scheduler", "Debug", "CreateEmployeeLeaveRequest",
+				fmt.Sprintf("GetEmployee Problem: %s", "Employee Not Found"))
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
 				Exception: "Employee Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"CreateEmployeeLeaveRequest: GetEmployee Problem: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Debug", "CreateEmployeeLeaveRequest",
+				fmt.Sprintf("GetEmployee Problem: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 				Exception: err.Error()})
 		}
@@ -1080,8 +1080,8 @@ func CreateEmployeeLeaveRequest(c *gin.Context) {
 
 	site, err := services.GetSite(emp.TeamID.Hex(), emp.SiteID)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"CreateEmployeeLeaveRequest: GetSite Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug", "CreateEmployeeLeaveRequest",
+			fmt.Sprintf("GetSite Problem: %s", err.Error()))
 	}
 	data.StartDate = data.StartDate.Add(time.Hour * time.Duration(site.UtcOffset))
 	data.EndDate = data.EndDate.Add(time.Hour * time.Duration(site.UtcOffset))
@@ -1090,25 +1090,26 @@ func CreateEmployeeLeaveRequest(c *gin.Context) {
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"CreateEmployeeLeaveRequest: UpdateEmployee Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug", "CreateEmployeeLeaveRequest",
+			fmt.Sprintf("UpdateEmployee Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-		"CreateEmployeeLeaveRequest: Request Created: %s: %s", data.EmployeeID,
-		data.StartDate.Format("01/02/06")))
+	services.AddLogEntry(c, "leaverequest", "CREATE",
+		"LeaveRequest Created",
+		fmt.Sprintf("Request Created: %s: %s-%s", emp.Name.GetLastFirstMI(),
+			data.StartDate.Format("01/02/06"), data.EndDate.Format("01/02/06")))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
 func UpdateEmployeeLeaveRequest(c *gin.Context) {
 	var data users.UpdateRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug",
-			"UpdateEmployeeLeaveRequest, Request Data Binding, Trouble with request")
+		services.AddLogEntry(c, "scheduler", "Debug", "UpdateEmployeeLeaveRequest",
+			"Request Data Binding, Trouble with request")
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
@@ -1117,13 +1118,15 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 	emp, err := services.GetEmployee(data.ID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"UpdateEmployeeLeaveRequest: GetEmployee Problem: %s", "Employee Not Found"))
+			services.AddLogEntry(c, "scheduler", "Debug",
+				"UpdateEmployeeLeaveRequest",
+				fmt.Sprintf("GetEmployee Problem: %s", "Employee Not Found"))
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
 				Exception: "Employee Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"UpdateEmployeeLeaveRequest: GetEmployee Problem: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Debug",
+				"UpdateEmployeeLeaveRequest",
+				fmt.Sprintf("GetEmployee Problem: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 				Exception: err.Error()})
 		}
@@ -1131,8 +1134,9 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 	}
 	site, err := services.GetSite(emp.TeamID.Hex(), emp.SiteID)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"UpdateEmployeeLeaveRequest: Retrieving Site Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug",
+			"UpdateEmployeeLeaveRequest",
+			fmt.Sprintf("Retrieving Site Problem: %s", err.Error()))
 	}
 	offset := 0.0
 	if site != nil {
@@ -1142,9 +1146,10 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 	msg, err := emp.UpdateLeaveRequest(data.OptionalID, data.Field,
 		data.Value, offset)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"UpdateEmployeeLeaveRequest: Updating LeaveRequest Problem: %s",
-			err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug",
+			"UpdateEmployeeLeaveRequest",
+			fmt.Sprintf("Updating LeaveRequest Problem: %s",
+				err.Error()))
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
@@ -1187,17 +1192,17 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"UpdateEmployeeLeaveRequest: UpdateEmployee Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug",
+			"UpdateEmployeeLeaveRequest",
+			fmt.Sprintf("UpdateEmployee Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-		"UpdateEmployeeLeaveRequest: Updated Leave Request: %s: %s", data.ID,
-		data.OptionalID))
+	services.AddLogEntry(c, "leaverequest", "UPDATE", "Update Leave Request",
+		fmt.Sprintf("Update: Field: %s, Value: %s", data.Field, data.Value))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -1208,13 +1213,15 @@ func DeleteEmployeeLeaveRequest(c *gin.Context) {
 	emp, err := services.GetEmployee(empID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"DeleteEmployeeLeaveRequest: GetEmployee Problem: %s", "Employee Not Found"))
+			services.AddLogEntry(c, "scheduler", "Debug",
+				"DeleteEmployeeLeaveRequest",
+				fmt.Sprintf("GetEmployee Problem: %s", "Employee Not Found"))
 			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
 				Exception: "Employee Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-				"DeleteEmployeeLeaveRequest: GetEmployee Problem: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Debug",
+				"DeleteEmployeeLeaveRequest",
+				fmt.Sprintf("GetEmployee Problem: %s", err.Error()))
 			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 				Exception: err.Error()})
 		}
@@ -1223,8 +1230,9 @@ func DeleteEmployeeLeaveRequest(c *gin.Context) {
 
 	err = emp.DeleteLeaveRequest(reqID)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"DeleteEmployeeLeaveRequest: DeleteLeaveRequest Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug",
+			"DeleteEmployeeLeaveRequest",
+			fmt.Sprintf("DeleteLeaveRequest Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
@@ -1232,16 +1240,18 @@ func DeleteEmployeeLeaveRequest(c *gin.Context) {
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", fmt.Sprintf(
-			"DeleteEmployeeLeaveRequest: UpdateEmployee Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Debug",
+			"DeleteEmployeeLeaveRequest",
+			fmt.Sprintf("UpdateEmployee Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
 			Exception: err.Error()})
 		return
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "Debug", "DeleteEmployeeLeaveRequest: "+
-		"Deleted Leave Request: "+empID+": "+reqID)
+	services.AddLogEntry(c, "leaverequest", "DELETE", "DeleteEmployeeLeaveRequest",
+		fmt.Sprintf("Leave Request Deleted: %s - Leave Request ID: %s",
+			emp.Name.GetLastFirstMI(), reqID))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 

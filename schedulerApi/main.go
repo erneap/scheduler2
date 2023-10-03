@@ -188,6 +188,13 @@ func main() {
 			notes.POST("/", controllers.CreateMessage)
 			notes.PUT("/acknowledge", controllers.AcknowledgeMessages)
 		}
+
+		logs := api.Group("/logs", svcs.CheckJWT("scheduler"),
+			svcs.CheckRoles("scheduler", roles))
+		{
+			logs.GET("/:portion/:year", controllers.GetAllMessages)
+			logs.POST("/", controllers.AddLogEntry)
+		}
 	}
 
 	// listen on port 6002

@@ -46,3 +46,8 @@ type NotificationResponse struct {
 	Messages  []notifications.Notification `json:"messages,omitempty"`
 	Exception string                       `json:"exception"`
 }
+
+type LogResponse struct {
+	Entries   []string `json:"entries"`
+	Exception string   `json:"exception"`
+}

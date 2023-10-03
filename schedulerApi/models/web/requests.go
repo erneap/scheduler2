@@ -250,3 +250,10 @@ type UpdateCofSReport struct {
 	Field     string `json:"field"`
 	Value     string `json:"value"`
 }
+
+type AddLogEntry struct {
+	Portion  string `json:"portion"`
+	Category string `json:"category"`
+	Title    string `json:"title"`
+	Message  string `json:"message"`
+}

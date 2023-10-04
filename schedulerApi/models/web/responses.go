@@ -2,6 +2,7 @@ package web
 
 import (
 	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/logs"
 	"github.com/erneap/go-models/notifications"
 	"github.com/erneap/go-models/sites"
 	"github.com/erneap/go-models/teams"
@@ -48,6 +49,6 @@ type NotificationResponse struct {
 }
 
 type LogResponse struct {
-	Entries   []string `json:"entries"`
-	Exception string   `json:"exception"`
+	Entries   []logs.LogEntry2 `json:"entries"`
+	Exception string           `json:"exception"`
 }

@@ -377,7 +377,9 @@ export class SiteEmployeeAssignmentComponent {
 
   addAssignment() {
     const wkctr = this.asgmtForm.value.workcenter;
-    const start = this.asgmtForm.value.startdate;
+    let start = this.asgmtForm.value.startdate;
+    start = new Date(Date.UTC(start.getFullYear(), start.getMonth(), 
+      start.getDate(), 0, 0, 0, 0))
     let siteID = '';
     let empID = this.employee.id;
     const site = this.siteService.getSite();

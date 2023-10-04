@@ -18,6 +18,7 @@
             <mat-option value="chargenumber">Charge Number Status</mat-option>
             <mat-option value="midshift">Mid-Shift Rotation</mat-option>
             <mat-option value="cofs">Certificate Of Service</mat-option>
+            <mat-option value="enterprise">MSP Finder Input</mat-option>
           </mat-select>
         </mat-form-field>
       </form>
@@ -32,6 +33,8 @@
         [reportType]="reportType"></app-report-cert-of-service>
       <app-report-mid-shift *ngIf="reportType === 'midshift'"
         [reportType]="reportType"></app-report-mid-shift>
+      <app-report-enterprise *ngIf="reportType === 'enterprise'"
+        [reportType]="reportType"></app-report-enterprise>
     </mat-card-content>
   </mat-card>
 </div>

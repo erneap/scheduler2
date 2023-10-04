@@ -1,9 +1,9 @@
 package reports
 
 import (
+	"fmt"
 	"sort"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/erneap/go-models/employees"
@@ -20,7 +20,7 @@ type EnterpriseSchedule struct {
 	TeamID      string
 	SiteID      string
 	Workcenters []sites.Workcenter
-	Workcodes   map[string]bool
+	Workcodes   map[string]teams.Workcode
 	Styles      map[string]int
 	Employees   []employees.Employee
 	Offset      float64
@@ -28,7 +28,7 @@ type EnterpriseSchedule struct {
 
 func (sr *EnterpriseSchedule) Create() error {
 	sr.Styles = make(map[string]int)
-	sr.Workcodes = make(map[string]bool)
+	sr.Workcodes = make(map[string]teams.Workcode)
 	sr.Report = excelize.NewFile()
 	sr.Date = time.Now().UTC()
 
@@ -59,6 +59,15 @@ func (sr *EnterpriseSchedule) Create() error {
 		}
 	}
 
+	// get the team's workcodes
+	team, err := services.GetTeam(sr.TeamID)
+	if err != nil {
+		return err
+	}
+	for _, wc := range team.Workcodes {
+		sr.Workcodes[wc.Id] = wc
+	}
+
 	// get the site's workcenters
 	site, err := services.GetSite(sr.TeamID, sr.SiteID)
 	if err != nil {
@@ -81,9 +90,6 @@ func (sr *EnterpriseSchedule) Create() error {
 			return err
 		}
 	}
-
-	// add a leave legend sheet
-	sr.CreateLegendSheet()
 
 	// remove the provided sheet "Sheet1" from the workbook
 	sr.Report.DeleteSheet("Sheet1")
@@ -127,7 +133,6 @@ func (sr *EnterpriseSchedule) CreateStyles() error {
 			return err
 		}
 		sr.Styles[wc.Id] = style
-		sr.Workcodes[wc.Id] = strings.EqualFold(wc.BackColor, "FFFFFF")
 	}
 
 	style, err := sr.Report.NewStyle(&excelize.Style{
@@ -300,8 +305,6 @@ func (sr *EnterpriseSchedule) AddMonth(monthID int) error {
 
 	current := time.Date(sr.Year, time.Month(monthID), 1, 0, 0, 0, 0, time.UTC)
 	for current.Before(endDate) {
-		styleID := "weekday"
-		style = sr.Styles[styleID]
 		sr.Report.SetCellStyle(sheetLabel, GetCellID(current.Day(), 0),
 			GetCellID(current.Day(), 2), style)
 		weekday := current.Format("Mon")
@@ -315,8 +318,9 @@ func (sr *EnterpriseSchedule) AddMonth(monthID int) error {
 	}
 
 	row := 2
-	for _, wc := range sr.Workcenters {
+	for _, emp := range employeeList {
 		row++
+		sr.CreateEmployeeRow(sheetLabel, startDate, endDate, row, &emp)
 	}
 	printrange := "$A$1:$" + endColumn + "$" + strconv.Itoa(row)
 	if err := sr.Report.SetDefinedName(&excelize.DefinedName{
@@ -332,14 +336,11 @@ func (sr *EnterpriseSchedule) AddMonth(monthID int) error {
 func (sr *EnterpriseSchedule) CreateEmployeeRow(sheetLabel string,
 	start, end time.Time, row int, emp *employees.Employee) {
 	styleID := "weekday"
-	if row%2 == 0 {
-		styleID = "evenday"
-	}
 	style := sr.Styles[styleID]
 	sr.Report.SetRowHeight(sheetLabel, row, 20)
 	sr.Report.SetCellStyle(sheetLabel, GetCellID(0, row), GetCellID(0, row), style)
 	sr.Report.SetCellValue(sheetLabel, GetCellID(0, row),
-		emp.Name.LastName+", "+emp.Name.FirstName[0:1])
+		emp.Name.GetLastFirst())
 
 	current := time.Date(start.Year(), start.Month(), start.Day(), 0, 0, 0, 0,
 		time.UTC)
@@ -348,23 +349,7 @@ func (sr *EnterpriseSchedule) CreateEmployeeRow(sheetLabel string,
 		code := ""
 		styleID = "weekday"
 		if wd != nil && wd.Code != "" {
-			code = wd.Code
-			if !sr.Workcodes[wd.Code] {
-				styleID = wd.Code
-			}
-		}
-		if styleID == "weekday" {
-			if current.Weekday() == time.Saturday || current.Weekday() == time.Sunday {
-				if row%2 == 0 {
-					styleID = "evenend"
-				} else {
-					styleID = "weekend"
-				}
-			} else {
-				if row%2 == 0 {
-					styleID = "evenday"
-				}
-			}
+			code = sr.GetDateValue(wd.Code, wd.Hours)
 		}
 		style = sr.Styles[styleID]
 		cellID := GetCellID(current.Day(), row)
@@ -374,29 +359,20 @@ func (sr *EnterpriseSchedule) CreateEmployeeRow(sheetLabel string,
 	}
 }
 
-func (sr *EnterpriseSchedule) CreateLegendSheet() error {
-	sheetLabel := "Legend"
-	sr.Report.NewSheet(sheetLabel)
-	options := excelize.ViewOptions{}
-	options.ShowGridLines = &[]bool{false}[0]
-	sr.Report.SetSheetView(sheetLabel, 0, &options)
-	sr.Report.SetColWidth(sheetLabel, "A", "A", 30)
-
-	team, err := services.GetTeam(sr.TeamID)
-	if err != nil {
-		return err
-	}
-
-	sort.Sort(teams.ByWorkcode(team.Workcodes))
-	row := 0
-	for _, wc := range team.Workcodes {
-		if !strings.EqualFold(wc.BackColor, "ffffff") {
-			row++
-			sr.Report.SetRowHeight(sheetLabel, row, 20)
-			style := sr.Styles[wc.Id]
-			sr.Report.SetCellStyle(sheetLabel, GetCellID(0, row), GetCellID(0, row), style)
-			sr.Report.SetCellValue(sheetLabel, GetCellID(0, row), wc.Title)
+func (sr *EnterpriseSchedule) GetDateValue(code string, hours float64) string {
+	letters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	answer := ""
+	if code != "" {
+		wc, ok := sr.Workcodes[code]
+		if ok {
+			if wc.IsLeave {
+				answer = wc.AltCode
+			} else {
+				answer = fmt.Sprintf("%02d", wc.StartTime)
+				ihours := int(hours)
+				answer += letters[ihours-1 : ihours]
+			}
 		}
 	}
-	return nil
+	return answer
 }

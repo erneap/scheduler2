@@ -137,7 +137,7 @@ func CreateReport(c *gin.Context) {
 		team, _ := services.GetTeam(data.TeamID)
 		site, _ := services.GetSite(data.TeamID, data.SiteID)
 		downloadName := strings.ReplaceAll(team.Name, " ", "_") + "-" + site.Name +
-			"-ChargeNumber.xlsx"
+			"-ChargeNumber-" + data.CompanyID + ".xlsx"
 		c.Header("Content-Description", "File Transfer")
 		c.Header("Content-Disposition", "attachment; filename="+downloadName)
 		services.AddLogEntry(c, "scheduler", "Debug", "CreateReport",
@@ -197,6 +197,38 @@ func CreateReport(c *gin.Context) {
 		c.Header("Content-Disposition", "attachment; filename="+downloadName)
 		services.AddLogEntry(c, "scheduler", "Debug", "CreateReport",
 			" Mid Report Created")
+		c.Data(http.StatusOK,
+			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+			b.Bytes())
+	case "enterprise":
+		sr := reports.EnterpriseSchedule{
+			Year:   year,
+			TeamID: data.TeamID,
+			SiteID: data.SiteID,
+		}
+		if err := sr.Create(); err != nil {
+			services.AddLogEntry(c, "scheduler", "Debug", "CreateReport",
+				fmt.Sprintf("Schedule Creation Problem: %s", err.Error()))
+			c.JSON(http.StatusInternalServerError, "Creation: "+err.Error())
+			return
+		}
+		var b bytes.Buffer
+		if err := sr.Report.Write(&b); err != nil {
+			services.AddLogEntry(c, "scheduler", "Debug", "CreateReport",
+				fmt.Sprintf("Schedule Write Problem: %s", err.Error()))
+			c.JSON(http.StatusInternalServerError, "Buffer Write: "+err.Error())
+			return
+		}
+
+		// get team to include in the download name
+		team, _ := services.GetTeam(data.TeamID)
+		site, _ := services.GetSite(data.TeamID, data.SiteID)
+		downloadName := strings.ReplaceAll(team.Name, " ", "_") + "-" + site.Name +
+			"-Enterprise.xlsx"
+		c.Header("Content-Description", "File Transfer")
+		c.Header("Content-Disposition", "attachment; filename="+downloadName)
+		services.AddLogEntry(c, "scheduler", "Debug", "CreateReport",
+			"Schedule Created")
 		c.Data(http.StatusOK,
 			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 			b.Bytes())

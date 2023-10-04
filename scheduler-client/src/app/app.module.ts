@@ -31,6 +31,7 @@ import { ForgotPasswordComponent } from './home/forgot-password/forgot-password.
 import { ForgotPasswordResetComponent } from './home/forgot-password-reset/forgot-password-reset.component';
 import { PtoHolidayBelowDialogComponent } from './home/pto-holiday-below-dialog/pto-holiday-below-dialog.component';
 import { interceptorProviders } from './services/spin-interceptor.interceptor';
+import { LogViewerModule } from './log-viewer/log-viewer.module';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { interceptorProviders } from './services/spin-interceptor.interceptor';
     GenericModule,
     TeamModule,
     AdminActionsModule,
-    ReportsModule
+    ReportsModule,
+    LogViewerModule
   ],
   exports: [
     DeletionConfirmationComponent

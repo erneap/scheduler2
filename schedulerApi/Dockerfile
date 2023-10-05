@@ -18,6 +18,7 @@ RUN go build -o /schedulerApi
 
 # add directory for reports to be stored and mounted with compose
 ADD . /data/reports
+ADD . /data/logs
 
 # expose the network port for runtime access
 EXPOSE 6002

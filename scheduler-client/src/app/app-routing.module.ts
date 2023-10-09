@@ -16,6 +16,7 @@ import { ReportsComponent } from './reports/reports.component';
 import { NotificationsComponent } from './employee/notifications/notifications.component';
 import { ForgotPasswordComponent } from './home/forgot-password/forgot-password.component';
 import { ForgotPasswordResetComponent } from './home/forgot-password-reset/forgot-password-reset.component';
+import { LogViewerComponent } from './log-viewer/log-viewer.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -42,6 +43,7 @@ const routes: Routes = [
   { path: 'admin/purge', component: DataPurgeComponent },
   { path: 'reports', component: ReportsComponent },
   { path: 'notifications', component: NotificationsComponent },
+  { path: 'logs', component: LogViewerComponent },
   { path: '**', component: NotFoundComponent}
 ];
 

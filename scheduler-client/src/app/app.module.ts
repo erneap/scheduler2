@@ -32,6 +32,7 @@ import { ForgotPasswordResetComponent } from './home/forgot-password-reset/forgo
 import { PtoHolidayBelowDialogComponent } from './home/pto-holiday-below-dialog/pto-holiday-below-dialog.component';
 import { interceptorProviders } from './services/spin-interceptor.interceptor';
 import { LogViewerModule } from './log-viewer/log-viewer.module';
+import { LogsService } from './services/logs.service';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,7 @@ import { LogViewerModule } from './log-viewer/log-viewer.module';
     DeletionConfirmationComponent
   ],
   providers: [AuthService, DialogService, EmployeeService, SiteService, 
-    TeamService, interceptorProviders,
+    TeamService, LogsService, interceptorProviders,
   ],
   bootstrap: [AppComponent]
 })

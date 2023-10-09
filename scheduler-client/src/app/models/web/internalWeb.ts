@@ -5,6 +5,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { throwError } from "rxjs";
 import { Router } from "@angular/router";
 import { INotification } from "../employees/notification";
+import { ILogEntry, LogEntry } from "../logs/logentry";
 
 export class WorkWeek {
   private week: Workday[];
@@ -123,4 +124,32 @@ export interface NotificationAck {
 export interface NotificationResponse {
   messages?: INotification[];
   exception?: string;
+}
+
+export interface AddLogEntry {
+  portion: string;
+  category: string;
+  title: string;
+  message: string;
+}
+
+export interface ILogResponse {
+  entries: ILogEntry[];
+  exception: string;
+}
+
+export class LogResponse {
+  entries: LogEntry[];
+  exception: string;
+
+  constructor(resp?: ILogResponse) {
+    this.entries = [];
+    if (resp && resp.entries) {
+      resp.entries.forEach(entry => {
+        this.entries.push(new LogEntry(entry));
+      });
+      this.entries.sort((a,b) => a.compareTo(b));
+    }
+    this.exception = (resp) ? resp.exception : "";
+  }
 }

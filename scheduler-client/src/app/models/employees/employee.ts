@@ -233,8 +233,22 @@ export class Employee implements IEmployee {
   getWorkday(site: string, date: Date): Workday {
     let answer: Workday = new Workday();
     let stdHours: number = 8.0;
+    let actualHours: number = 0.0;
+    let lastWork: Date = new Date(0);
     this.assignments.sort((a,b) => a.compareTo(b));
     this.variations.sort((a,b) => a.compareTo(b));
+    if (this.work) {
+      this.work.forEach(wk => {
+        if (date.getFullYear() === wk.dateWorked.getFullYear() 
+        && date.getMonth() === wk.dateWorked.getMonth() 
+        && date.getDate() === wk.dateWorked.getDate()) {
+          actualHours += wk.hours;
+        }
+        if (wk.dateWorked.getTime() > lastWork.getTime()) {
+          lastWork = new Date(wk.dateWorked)
+        }
+      });
+    }
     this.assignments.forEach(asgmt => {
       let wd = asgmt.getWorkday(site, date);
       if (wd) {
@@ -250,11 +264,17 @@ export class Employee implements IEmployee {
         answer = new Workday(wd);
       }
     });
+    if (this.name.last.toLowerCase() === 'mabe') {
+      console.log(`${this.name.last} = ${date} = ${actualHours} (${actualHours > 0.0})`);
+    }
+    if (actualHours > 0.0) {
+      return answer;
+    }
     this.leaves.forEach(lv => {
       if (lv.leavedate.getFullYear() === date.getFullYear()
         && lv.leavedate.getMonth() === date.getMonth()
         && lv.leavedate.getDate() === date.getDate()
-        && lv.hours > (stdHours/2)) {
+        && (lv.hours > (stdHours/2) || date.getTime() <= lastWork.getTime())) {
         answer.code = lv.code;
         answer.hours = lv.hours;
         answer.workcenter = '';

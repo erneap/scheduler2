@@ -5,7 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"sort"
 	"strings"
+	"time"
 
 	"github.com/erneap/go-models/config"
 	"github.com/erneap/go-models/employees"
@@ -163,6 +165,7 @@ func GetEmployeeByName(first, middle, last string) (*employees.Employee, error) 
 func GetEmployees(teamid, siteid string) ([]employees.Employee, error) {
 	empCol := config.GetCollection(config.DB, "scheduler", "employees")
 	userCol := config.GetCollection(config.DB, "authenticate", "users")
+	now := time.Now().UTC()
 
 	oTID, _ := primitive.ObjectIDFromHex(teamid)
 	filter := bson.M{
@@ -170,28 +173,41 @@ func GetEmployees(teamid, siteid string) ([]employees.Employee, error) {
 		"site": siteid,
 	}
 
-	var employees []employees.Employee
+	var emps []employees.Employee
 
 	cursor, err := empCol.Find(context.TODO(), filter)
 	if err != nil {
-		return employees[:0], err
+		return emps[:0], err
 	}
 
-	if err = cursor.All(context.TODO(), &employees); err != nil {
+	if err = cursor.All(context.TODO(), &emps); err != nil {
 		log.Println(err)
 	}
 
-	for i, emp := range employees {
+	for i, emp := range emps {
 		filter = bson.M{
 			"_id": emp.ID,
 		}
 		var user users.User
 		userCol.FindOne(context.TODO(), filter).Decode(&user)
 		emp.User = &user
-		employees[i] = emp
+
+		work, _ := GetEmployeeWork(emp.ID.Hex(), uint(now.Year()))
+		if work != nil {
+			emp.Work = append(emp.Work, work.Work...)
+		}
+		if now.Month() == time.January {
+			work, _ = GetEmployeeWork(emp.ID.Hex(), uint(now.Year()-1))
+			if work != nil {
+				emp.Work = append(emp.Work, work.Work...)
+			}
+		}
+		sort.Sort(employees.ByEmployeeWork(emp.Work))
+
+		emps[i] = emp
 	}
 
-	return employees, nil
+	return emps, nil
 }
 
 func GetEmployeesForTeam(teamid string) ([]employees.Employee, error) {

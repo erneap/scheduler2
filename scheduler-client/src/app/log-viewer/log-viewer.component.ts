@@ -15,9 +15,9 @@ export class LogViewerComponent {
   logForm: FormGroup
   logEntries: LogEntry[] = [];
   portionTitles: string[] = new Array("Authentication", "Leave", 
-    "Leave Request", "Debug");
+    "Leave Requests", "Debug");
   portions: string[] = new Array("authenticate", "leaves", 
-    "leaverequests", "scheduler");
+    "leaverequest", "scheduler");
 
   constructor(
     protected logService: LogsService,

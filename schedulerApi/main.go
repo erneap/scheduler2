@@ -192,7 +192,7 @@ func main() {
 		logs := api.Group("/logs", svcs.CheckJWT("scheduler"),
 			svcs.CheckRoles("scheduler", roles))
 		{
-			logs.GET("/:portion/:year", controllers.GetAllMessages)
+			logs.GET("/:portion/:year", controllers.GetLogEntries)
 			logs.POST("/", controllers.AddLogEntry)
 		}
 	}

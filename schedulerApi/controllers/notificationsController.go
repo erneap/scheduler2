@@ -13,6 +13,7 @@ import (
 
 func GetMessagesForEmployee(c *gin.Context) {
 	userid := c.Param("userid")
+	logmsg := "NotificationsController: GetMEssageForEmployee:"
 
 	if userid == "" {
 		resp := &web.NotificationResponse{
@@ -24,8 +25,8 @@ func GetMessagesForEmployee(c *gin.Context) {
 
 	msgs, err := svcs.GetMessagesByEmployee(userid)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "GetMessagesForEmployee",
-			fmt.Sprintf("GetMessagesByEmployee: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s GetMessagesByEmployee: %s", logmsg, err.Error()))
 		resp := &web.NotificationResponse{
 			Exception: err.Error(),
 		}
@@ -33,8 +34,20 @@ func GetMessagesForEmployee(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "Debug", "GetMessagesForEmployee",
-		"Provided messages for: "+userid)
+	emp, err := services.GetEmployee(userid)
+	if err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s GetEmployee: %s", logmsg, err.Error()))
+		resp := &web.NotificationResponse{
+			Messages:  msgs,
+			Exception: err.Error(),
+		}
+		c.JSON(http.StatusBadRequest, resp)
+	}
+
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "GET",
+		fmt.Sprintf("%s Provided notification messages for: %s", logmsg,
+			emp.Name.GetLastFirstMI()))
 	resp := &web.NotificationResponse{
 		Messages:  msgs,
 		Exception: "",
@@ -44,6 +57,7 @@ func GetMessagesForEmployee(c *gin.Context) {
 
 func GetMessage(c *gin.Context) {
 	messageid := c.Param("id")
+	logmsg := "NotificationsController: GetMessage:"
 
 	if messageid == "" {
 		resp := &web.NotificationResponse{
@@ -55,8 +69,8 @@ func GetMessage(c *gin.Context) {
 
 	msgs, err := svcs.GetMessage(messageid)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "GetMessages",
-			fmt.Sprintf("GetMessage Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s GetMessage Problem: %s", logmsg, err.Error()))
 		resp := &web.NotificationResponse{
 			Exception: err.Error(),
 		}
@@ -70,16 +84,17 @@ func GetMessage(c *gin.Context) {
 		Messages:  messages,
 		Exception: "",
 	}
-	services.AddLogEntry(c, "scheduler", "Debug", "GetMessage",
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "GET",
 		"Message Retrieved: "+messageid)
 	c.JSON(http.StatusOK, resp)
 }
 
 func GetAllMessages(c *gin.Context) {
 	msgs, err := svcs.GetAllMessages()
+	logmsg := "NotificationsController: GetAllMessages:"
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "GetAllMessages",
-			fmt.Sprintf("GetMessages Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s GetMessages Problem: %s", logmsg, err.Error()))
 		resp := &web.NotificationResponse{
 			Exception: err.Error(),
 		}
@@ -91,17 +106,18 @@ func GetAllMessages(c *gin.Context) {
 		Messages:  msgs,
 		Exception: "",
 	}
-	services.AddLogEntry(c, "scheduler", "Debug", "GetAllMessages",
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "GETALL",
 		"Provided all messages.")
 	c.JSON(http.StatusOK, resp)
 }
 
 func CreateMessage(c *gin.Context) {
 	var data web.MessageRequest
+	logmsg := "NotificationsController: CreateMessage:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateMessage",
-			fmt.Sprintf("DataBinding Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding Problem: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.NotificationResponse{
 				Exception: err.Error(),
@@ -111,8 +127,8 @@ func CreateMessage(c *gin.Context) {
 
 	err := svcs.CreateMessage(data.To, data.From, data.Message)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateMessage",
-			fmt.Sprintf("CreateMessage Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s CreateMessage Problem: %s", logmsg, err.Error()))
 		resp := &web.NotificationResponse{
 			Exception: err.Error(),
 		}
@@ -120,22 +136,32 @@ func CreateMessage(c *gin.Context) {
 		return
 	}
 
+	empTo, _ := services.GetEmployee(data.To)
+	empFrom, _ := services.GetEmployee(data.From)
+
 	messages, _ := svcs.GetMessagesByEmployee(data.UserID)
 	resp := &web.NotificationResponse{
 		Messages:  messages,
 		Exception: "",
 	}
-	services.AddLogEntry(c, "scheduler", "Debug", "CreateMessage",
-		"New Message Provided")
+	if empTo != nil && empFrom != nil {
+		services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
+			fmt.Sprintf("New Message Provided: TO: %s, FROM: %s, Message: %s",
+				empTo.Name.GetLastFirstMI(), empFrom.Name.GetLastFirstMI(), data.Message))
+	} else {
+		services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
+			fmt.Sprintf("New Message Provided: Message: %s", data.Message))
+	}
 	c.JSON(http.StatusOK, resp)
 }
 
 func AcknowledgeMessages(c *gin.Context) {
 	var data web.NotificationAck
+	logmsg := "NotificationsController: AcknowledgeMessages:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "AcknowledgeMessages",
-			fmt.Sprintf("DataBinding Problem: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding Problem: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.NotificationResponse{
 				Exception: err.Error(),
@@ -163,8 +189,8 @@ func AcknowledgeMessages(c *gin.Context) {
 		}
 	}
 	if exceptions != "" {
-		services.AddLogEntry(c, "scheduler", "Debug", "AcknowledgeMessages",
-			fmt.Sprintf("Exceptions Noted: %s", exceptions))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Exceptions Noted: %s", logmsg, exceptions))
 		resp := &web.NotificationResponse{
 			Exception: exceptions,
 		}
@@ -173,6 +199,22 @@ func AcknowledgeMessages(c *gin.Context) {
 	}
 
 	messages, _ := svcs.GetMessagesByEmployee(userid)
+	msgList := ""
+	for msg, _ := range data.Messages {
+		if msgList != "" {
+			msgList += ","
+		}
+		msgList += fmt.Sprintf("%d", msg)
+	}
+	if userid != "" {
+		emp, _ := services.GetEmployee(userid)
+		services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATE",
+			fmt.Sprintf("%s Message Acknowledged: To: %s, Messages: %s", logmsg,
+				emp.Name.GetLastFirstMI(), msgList))
+	} else {
+		services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATE",
+			fmt.Sprintf("%s Message Acknowledged: Messages: %s", logmsg, msgList))
+	}
 	resp := &web.NotificationResponse{
 		Messages:  messages,
 		Exception: "",

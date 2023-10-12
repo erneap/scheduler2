@@ -1,5 +1,9 @@
 <div class="row">
-  <div class="date">{{dateTime()}}</div>
+  <div class="date">{{dateTime()}}
+    <ng-container *ngIf="entry.requestor !== ''">
+      <br/>By: {{entry.requestor}}
+    </ng-container>
+  </div>
   <div class="category">{{entry.category.toUpperCase()}}</div>
   <div class="title">{{entry.title}}</div>
   <div class="message">{{entry.message}}</div>

@@ -21,6 +21,7 @@ import (
 )
 
 func GetIngestEmployees(c *gin.Context) {
+	logmsg := "IngestController: GetIngestEmployees:"
 	teamid := c.Param("teamid")
 	siteid := c.Param("siteid")
 	companyid := c.Param("company")
@@ -33,15 +34,15 @@ func GetIngestEmployees(c *gin.Context) {
 	companyEmployees, err := getEmployeesAfterIngest(teamid, siteid, companyid,
 		year, year)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "GetIngestEmployees",
-			fmt.Sprintf("GetEmployees: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s GetEmployeesAfterIngest: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.IngestResponse{Exception: err.Error()})
 	}
 
 	team, err := services.GetTeam(teamid)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "GetIngestEmployees",
-			fmt.Sprintf("GetTeam: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s GetTeam: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.IngestResponse{Exception: err.Error()})
 		return
 	}
@@ -53,8 +54,8 @@ func GetIngestEmployees(c *gin.Context) {
 		}
 	}
 
-	services.AddLogEntry(c, "scheduler", "Debug", "GetIngestEmployees",
-		fmt.Sprintf("Provided employees: %d", len(companyEmployees)))
+	services.AddLogEntry(c, "scheduler", "Debug", "INFORMATION",
+		fmt.Sprintf("%s Provided employees: %d", logmsg, len(companyEmployees)))
 	c.JSON(http.StatusOK, web.IngestResponse{
 		Employees:  companyEmployees,
 		IngestType: ingestType,
@@ -98,11 +99,12 @@ func IngestFiles(c *gin.Context) {
 	teamid := form.Value["team"][0]
 	siteid := form.Value["site"][0]
 	companyid := form.Value["company"][0]
+	logmsg := "IngestController: IngestFiles:"
 
 	team, err := services.GetTeam(teamid)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "IngestFiles",
-			fmt.Sprintf("GetTeam: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s GetTeam: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.IngestResponse{Exception: "Team not found"})
 		return
 	}
@@ -123,7 +125,7 @@ func IngestFiles(c *gin.Context) {
 	files := form.File["file"]
 	empls, err := services.GetEmployees(teamid, siteid)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "IngestFiles",
+		services.AddLogEntry(c, "scheduler", "Error", "IngestFiles",
 			fmt.Sprintf("GetEmployees: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, notifications.Message{Message: err.Error()})
 		return
@@ -428,13 +430,13 @@ func IngestFiles(c *gin.Context) {
 	companyEmployees, err := getEmployeesAfterIngest(teamid, siteid, companyid,
 		uint(start.Year()), uint(end.Year()))
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "IngestFiles",
+		services.AddLogEntry(c, "scheduler", "Error", "IngestFiles",
 			fmt.Sprintf("GetEmployeesAfterIngest: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.IngestResponse{Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "Debug", "IngestFiles",
+	services.AddLogEntry(c, "scheduler", "Error", "IngestFiles",
 		fmt.Sprintf("Provided Employees for Company: %s", companyid))
 	c.JSON(http.StatusOK, web.IngestResponse{
 		Employees:  companyEmployees,
@@ -447,7 +449,7 @@ func ManualIngestActions(c *gin.Context) {
 	var data web.ManualIngestChanges
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "ManualIngestActions",
+		services.AddLogEntry(c, "scheduler", "Error", "ManualIngestActions",
 			fmt.Sprintf("BindRequest: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
@@ -530,12 +532,12 @@ func ManualIngestActions(c *gin.Context) {
 	companyEmployees, err := getEmployeesAfterIngest(data.TeamID, data.SiteID,
 		data.CompanyID, year, year)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "ManualIngestActions",
+		services.AddLogEntry(c, "scheduler", "Error", "ManualIngestActions",
 			fmt.Sprintf("GetEmployeesAfterIngest: %s", err.Error()))
 		c.JSON(http.StatusBadRequest, web.IngestResponse{Exception: err.Error()})
 	}
 
-	services.AddLogEntry(c, "scheduler", "Debug", "ManualIngestActions",
+	services.AddLogEntry(c, "scheduler", "Error", "ManualIngestActions",
 		fmt.Sprintf("Provided company employees: %s", data.CompanyID))
 	c.JSON(http.StatusOK, web.IngestResponse{
 		Employees:  companyEmployees,

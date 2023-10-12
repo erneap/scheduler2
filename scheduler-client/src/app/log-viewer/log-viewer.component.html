@@ -22,6 +22,10 @@
             <input matInput type="number" formControlName="year"
               (change)="setLogEntries()">
           </mat-form-field>
+          <button mat-fab color="accent" (click)="setLogEntries()"
+            matTooltip="Refresh the log">
+            <mat-icon>refresh</mat-icon>
+          </button>
         </form>
         <div class="logViewer">
           <app-log-entry *ngFor="let entry of logEntries" [entry]="entry">

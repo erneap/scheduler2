@@ -200,20 +200,20 @@ func AcknowledgeMessages(c *gin.Context) {
 
 	messages, _ := svcs.GetMessagesByEmployee(userid)
 	msgList := ""
-	for msg, _ := range data.Messages {
+	for _, msg := range data.Messages {
 		if msgList != "" {
 			msgList += ","
 		}
-		msgList += fmt.Sprintf("%d", msg)
+		msgList += msg
 	}
-	if userid != "" {
+	if userid == "" {
+		services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATE",
+			fmt.Sprintf("%s Message Acknowledged: Messages: %s", logmsg, msgList))
+	} else {
 		emp, _ := services.GetEmployee(userid)
 		services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATE",
 			fmt.Sprintf("%s Message Acknowledged: To: %s, Messages: %s", logmsg,
 				emp.Name.GetLastFirstMI(), msgList))
-	} else {
-		services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATE",
-			fmt.Sprintf("%s Message Acknowledged: Messages: %s", logmsg, msgList))
 	}
 	resp := &web.NotificationResponse{
 		Messages:  messages,

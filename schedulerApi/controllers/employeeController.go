@@ -75,8 +75,6 @@ func GetInitial(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "INITIAL DATA",
-		fmt.Sprintf("%s provided initial data to %s", logmsg, emp.Name.GetLastFirst()))
 	c.JSON(http.StatusOK, web.InitialResponse{
 		Team:      team,
 		Site:      site,

@@ -21,25 +21,29 @@ import (
 func GetSite(c *gin.Context) {
 	teamID := c.Param("teamid")
 	siteID := c.Param("siteid")
+	logmsg := "SiteController: GetSite:"
 
 	site, err := getSite(teamID, siteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "GetSite",
-				"Site Not Found")
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s Site Not Found: Team: %s, Site: %s", logmsg, teamID,
+					siteID))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "GetSite",
-				err.Error())
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s Team: %s, Site: %s, Exception: %s", logmsg, teamID,
+					siteID, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "Debug", "GetSite",
-		"Provided site with employees")
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "GetSite",
+		fmt.Sprintf("Provided site with employees: Team: %s, Site: %s", teamID,
+			siteID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -59,10 +63,11 @@ func getSite(teamid, siteid string) (*sites.Site, error) {
 
 func CreateSite(c *gin.Context) {
 	var data web.NewSiteRequest
+	logmsg := "SiteController: CreateSite:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateSite", fmt.Sprintf(
-			"DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -70,8 +75,9 @@ func CreateSite(c *gin.Context) {
 
 	site, err := services.CreateSite(data.TeamID, data.SiteID, data.Name)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateSite", fmt.Sprintf(
-			"Error: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Unable to create site: Team: %s, Site: %s, Name: %s, Error: %s",
+				logmsg, data.TeamID, data.SiteID, data.Name, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
@@ -86,8 +92,8 @@ func CreateSite(c *gin.Context) {
 	site.Workcenters = append(site.Workcenters, newWorkcenter)
 	err = services.UpdateSite(data.TeamID, *site)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateSite", fmt.Sprintf(
-			"UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite after creation: %s", logmsg, err.Error()))
 	}
 	teamID, _ := primitive.ObjectIDFromHex(data.TeamID)
 
@@ -120,13 +126,13 @@ func CreateSite(c *gin.Context) {
 	empl, err := services.CreateEmployee(emp, data.Leader.Password,
 		"scheduler-siteleader", data.TeamID, data.SiteID)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateSite", fmt.Sprintf(
-			"CreateEmployee (Lead): %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM", fmt.Sprintf(
+			"%s CreateEmployee (Lead) for new site: %s", logmsg, err.Error()))
 	}
 	empl, err = services.GetEmployee(empl.ID.Hex())
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateSite", fmt.Sprintf(
-			"GetEmployee (siteleader): %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM", fmt.Sprintf(
+			"%s GetEmployee (siteleader): %s", logmsg, err.Error()))
 	}
 	site.Employees = append(site.Employees, *empl)
 
@@ -160,29 +166,30 @@ func CreateSite(c *gin.Context) {
 		empl, err = services.CreateEmployee(emp, data.Scheduler.Password,
 			"scheduler-scheduler", data.TeamID, data.SiteID)
 		if err != nil {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateSite", fmt.Sprintf(
-				"CreateEmployee (scheduler): %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM", fmt.Sprintf(
+				"%s CreateEmployee (scheduler): %s", logmsg, err.Error()))
 		}
 		empl, err = services.GetEmployee(empl.ID.Hex())
 		if err != nil {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateSite", fmt.Sprintf(
-				"GetEmployee (scheduler): %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM", fmt.Sprintf(
+				"%s GetEmployee (scheduler): %s", logmsg, err.Error()))
 		}
 		site.Employees = append(site.Employees, *empl)
 	}
 	sort.Sort(employees.ByEmployees(site.Employees))
 
-	services.AddLogEntry(c, "scheduler", "CREATE", "CreateSite",
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "CreateSite",
 		fmt.Sprintf("Site Created: %s", site.ID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
 func UpdateSite(c *gin.Context) {
 	var data web.NewSiteRequest
+	logmsg := "SiteController: UpdateSite:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateSite", fmt.Sprintf(
-			"DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM", fmt.Sprintf(
+			"%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -191,13 +198,13 @@ func UpdateSite(c *gin.Context) {
 	site, err := getSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateSIte", fmt.Sprintf(
-				"GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM", fmt.Sprintf(
+				"%s GetSite (No Document): %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateSite", fmt.Sprintf(
-				"GetSite: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM", fmt.Sprintf(
+				"%s GetSite (Exception): %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -210,14 +217,14 @@ func UpdateSite(c *gin.Context) {
 
 	err = services.UpdateSite(data.TeamID, *site)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateSite", fmt.Sprintf(
-			"Update Error: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM", fmt.Sprintf(
+			"%s Site Update Error: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "UPDATE", "UpdateSite",
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "UpdateSite",
 		fmt.Sprintf("Site Updated: %s", site.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
@@ -225,17 +232,18 @@ func UpdateSite(c *gin.Context) {
 func DeleteSite(c *gin.Context) {
 	teamid := c.Param("teamid")
 	siteid := c.Param("siteid")
+	logmsg := "SiteController: DeleteSite:"
 
 	err := services.DeleteSite(teamid, siteid)
 
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "DeleteSite", fmt.Sprintf(
-			"Delete Error: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM", fmt.Sprintf(
+			"%s Delete Error: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
-	services.AddLogEntry(c, "scheduler", "DELETE", "DeleteSite",
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "DeleteSite",
 		fmt.Sprintf("Site Deleted: %s", siteid))
 	c.Status(http.StatusOK)
 }
@@ -243,10 +251,10 @@ func DeleteSite(c *gin.Context) {
 // mass create for site's employee leave balances
 func AddSitesEmployeeLeaveBalances(c *gin.Context) {
 	var data web.CreateEmployeeLeaveBalances
+	logmsg := "SiteController: AddSitesEmployeeLeaveBalances:"
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug",
-			"AddSitesEmployeeLeaveBalances",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
 		return
@@ -265,34 +273,33 @@ func AddSitesEmployeeLeaveBalances(c *gin.Context) {
 	site, err := getSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug",
-				"AddSitesEmployeeLeaveBalances",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug",
-				"AddSitesEmployeeLeaveBalances", fmt.Sprintf(
-					"GetSite error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM", fmt.Sprintf(
+				"%s GetSite error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "RETRIEVE",
-		"AddSitesEmployeeLeaveBalances",
-		"Site With Employee Provided after update")
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "LeaveBalances", fmt.Sprintf(
+		"Site %s Leave Balances for Year %d With Employee Provided after update",
+		data.SiteID, data.Year))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
 // workcenter controls
 func CreateWorkcenter(c *gin.Context) {
 	var data web.NewSiteWorkcenter
+	logmsg := "SiteController: CreateWorkcenter:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateWorkcenter",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -301,13 +308,13 @@ func CreateWorkcenter(c *gin.Context) {
 	site, err := getSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateWorkcenter",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateWorkcenter",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -335,24 +342,25 @@ func CreateWorkcenter(c *gin.Context) {
 	}
 	err = services.UpdateSite(data.TeamID, *site)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateWorkcenter",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "CREATE", "CreateWorkcenter",
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
 		fmt.Sprintf("Site Workcenter created: %s", data.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
 func UpdateWorkcenter(c *gin.Context) {
 	var data web.SiteWorkcenterUpdate
+	logmsg := "SiteController: UpdateWorkcenter:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenter",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -361,13 +369,13 @@ func UpdateWorkcenter(c *gin.Context) {
 	site, err := getSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenter",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenter",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -403,15 +411,15 @@ func UpdateWorkcenter(c *gin.Context) {
 	}
 	err = services.UpdateSite(data.TeamID, *site)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenter",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
-	services.AddLogEntry(c, "scheduler", "UPDATE", "UpdateWorkcenter",
-		fmt.Sprintf("Update Complete: Field: %s, Value: %s", data.Field,
-			data.Value))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "Updated", fmt.Sprintf(
+		"Update Workcenter Complete: Site: %s, Workcenter: %s, Field: %s, Value: %s",
+		data.SiteID, data.WkctrID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -419,17 +427,18 @@ func DeleteSiteWorkcenter(c *gin.Context) {
 	teamID := c.Param("teamid")
 	siteID := c.Param("siteid")
 	wkctrID := c.Param("wkctrid")
+	logmsg := "SiteController: DeleteSiteWorkcenter:"
 
 	site, err := getSite(teamID, siteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "DeleteSiteWorkcenter",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "DeleteSiteWorkcenter",
-				fmt.Sprintf("GetSite: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -453,23 +462,24 @@ func DeleteSiteWorkcenter(c *gin.Context) {
 	}
 	err = services.UpdateSite(teamID, *site)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "DeleteSiteWorkcenter",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
-	services.AddLogEntry(c, "scheduler", "DELETE", "DeleteSiteWorkcenter",
-		fmt.Sprintf("Workcenter deleted: Wkctr: %s", wkctrID))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "Deleted",
+		fmt.Sprintf("Workcenter deleted: Site: %s, Wkctr: %s", site.Name, wkctrID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
 func CreateWorkcenterPosition(c *gin.Context) {
 	var data web.NewWorkcenterPosition
+	logmsg := "SiteController: CreateWorkcenterPosition:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateWorkcenterPosition",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -478,13 +488,13 @@ func CreateWorkcenterPosition(c *gin.Context) {
 	site, err := services.GetSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateWorkcenterPosition",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateWorkcenterPosition",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -519,24 +529,26 @@ func CreateWorkcenterPosition(c *gin.Context) {
 	}
 
 	if err = services.UpdateSite(data.TeamID, *site); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateWorkcenterPosition",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "CREATE", "CreateWorkcenterPosition",
-		fmt.Sprintf("Workcenter Position Created: Position: %s", data.Name))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED", fmt.Sprintf(
+		"Workcenter Position Created: Site: %s, Workcenter: %s, Position: %s",
+		site.Name, data.WkctrID, data.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
 func UpdateWorkcenterPosition(c *gin.Context) {
 	var data web.WorkcenterPositionUpdate
+	logmsg := "SiteController: UpdateWorkcenterPosition:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenterPosition",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -545,13 +557,13 @@ func UpdateWorkcenterPosition(c *gin.Context) {
 	site, err := services.GetSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenterPosition",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenterPosition",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -610,16 +622,16 @@ func UpdateWorkcenterPosition(c *gin.Context) {
 	}
 
 	if err = services.UpdateSite(data.TeamID, *site); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenterPosition",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenterPosition",
-		fmt.Sprintf("Workcenter Position Updated: %s = Value: %s", data.Field,
-			data.Value))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED", fmt.Sprintf(
+		"Workcenter Position Updated: Site: %s, Wkctr: %s, Pos: %s, Field: %s, Value: %s",
+		site.Name, data.WkctrID, data.PositionID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -628,17 +640,18 @@ func DeleteWorkcenterPosition(c *gin.Context) {
 	siteID := c.Param("siteid")
 	wkctrID := c.Param("wkctrid")
 	positionID := c.Param("posid")
+	logmsg := "SiteController: DeleteWorkcenterPosition:"
 
 	site, err := services.GetSite(teamID, siteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "DeleteWorkcenterPosition",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "DeleteWorkcenterPosition",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -661,24 +674,26 @@ func DeleteWorkcenterPosition(c *gin.Context) {
 	}
 
 	if err = services.UpdateSite(teamID, *site); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "DeleteWorkcenterPosition",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "DELETE", "DeleteWorkcenterPosition",
-		fmt.Sprintf("Workcenter Position Deleted: %s-%s", wkctrID, positionID))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETION", fmt.Sprintf(
+		"Workcenter Position Deleted: Site: %s, Wkctr: %s, Position: %s",
+		site.Name, wkctrID, positionID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
 func CreateWorkcenterShift(c *gin.Context) {
 	var data web.NewWorkcenterPosition
+	logmsg := "SiteController: CreateWorkcenterShift:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateWorkcenterShift",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -687,13 +702,13 @@ func CreateWorkcenterShift(c *gin.Context) {
 	site, err := services.GetSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateWorkcenterShift",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateWorkcenterShift",
-				fmt.Sprintf("GetSite: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -728,25 +743,26 @@ func CreateWorkcenterShift(c *gin.Context) {
 	}
 
 	if err = services.UpdateSite(data.TeamID, *site); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateWorkcenterShift",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "CREATE", "CreateWorkcenterShift",
-		fmt.Sprintf("Workcenter Shift Created: %s-%s", data.WkctrID,
-			data.PositionID))
+	services.AddLogEntry(c, "scheduler", "CREATE", "PROBLEM", fmt.Sprintf(
+		"Workcenter Shift Created: Site: %s, Wkctr: %s, Shift: %s", site.Name,
+		data.WkctrID, data.PositionID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
 func UpdateWorkcenterShift(c *gin.Context) {
 	var data web.WorkcenterPositionUpdate
+	logmsg := "SiteController: UpdateWorkcenterShift:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenterShift",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -755,13 +771,13 @@ func UpdateWorkcenterShift(c *gin.Context) {
 	site, err := services.GetSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenterShift",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenterShift",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -826,15 +842,16 @@ func UpdateWorkcenterShift(c *gin.Context) {
 	}
 
 	if err = services.UpdateSite(data.TeamID, *site); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateWorkcenterShift",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "UPDATE", "UpdateWorkcenterShift",
-		fmt.Sprintf("Workcenter Shift Updated: %s = %s", data.Field, data.Value))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED", fmt.Sprintf(
+		"Workcenter Shift Updated: Site: %s, Wkcgtr: %s, Shift: %s, Field: %s, Value: %s",
+		site.Name, data.WkctrID, data.PositionID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -843,17 +860,18 @@ func DeleteWorkcenterShift(c *gin.Context) {
 	siteID := c.Param("siteid")
 	wkctrID := c.Param("wkctrid")
 	shiftID := c.Param("shiftid")
+	logmsg := "SiteController: DeleteWorkcenterShift:"
 
 	site, err := services.GetSite(teamID, siteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "DeleteWorkcenterShift",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "DeleteWorkcenterShift",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -876,24 +894,26 @@ func DeleteWorkcenterShift(c *gin.Context) {
 	}
 
 	if err = services.UpdateSite(teamID, *site); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "DeleteWorkcenterShift",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "DELETE", "DeleteWorkcenterShift",
-		fmt.Sprintf("Workcenter Shift Deleted: %s-%s", wkctrID, shiftID))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETED",
+		fmt.Sprintf("Workcenter Shift Deleted: Site: %s, Wkctr: %s, Shift: %s",
+			site.Name, wkctrID, shiftID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
 func CreateSiteLaborCode(c *gin.Context) {
 	var data web.NewSiteLaborCode
+	logmsg := "SiteController: CreateSiteLaborCode:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateSiteLaborCode",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -902,13 +922,13 @@ func CreateSiteLaborCode(c *gin.Context) {
 	site, err := services.GetSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateSiteLaborCode",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateSiteLaborCode",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -1005,25 +1025,26 @@ func CreateSiteLaborCode(c *gin.Context) {
 	}
 
 	if err = services.UpdateSite(data.TeamID, *site); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateSiteLaborCode",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "CREATE", "CreateSiteLaborCode",
-		fmt.Sprintf("Created Site Labor Code: %s-%s", data.ChargeNumber,
-			data.Extension))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
+		fmt.Sprintf("Created Site Labor Code: Site: %s, ChargeNumber: %s, Ext: %s",
+			site.Name, data.ChargeNumber, data.Extension))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
 func UpdateSiteLaborCode(c *gin.Context) {
 	var data web.UpdateSiteLaborCode
+	logmsg := "SiteController: UpdateSiteLaborCode:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteLaborCode",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -1032,13 +1053,13 @@ func UpdateSiteLaborCode(c *gin.Context) {
 	site, err := services.GetSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteLaborCode",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteLaborCode",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -1090,16 +1111,17 @@ func UpdateSiteLaborCode(c *gin.Context) {
 	}
 
 	if err = services.UpdateSite(data.TeamID, *site); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteLaborCode",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "UPDATE", "UpdateSiteLaborCode",
-		fmt.Sprintf("Site Labor Code Updated: %s-%s", data.ChargeNumber,
-			data.Extension))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED",
+		fmt.Sprintf("Site Labor Code Updated: Site: %s, ChargeNumber: %s, Ext: %s,"+
+			"Field: %s, Value: %s", site.Name, data.ChargeNumber, data.Extension,
+			data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -1109,17 +1131,18 @@ func DeleteSiteLaborCode(c *gin.Context) {
 	rptID, _ := strconv.Atoi(c.Param("reportid"))
 	chgNo := c.Param("chgno")
 	ext := c.Param("ext")
+	logmsg := "SiteController: DeleteSiteLaborCode:"
 
 	site, err := services.GetSite(teamID, siteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "DeleteSiteLaborCode",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "DeleteSiteLaborCode",
-				fmt.Sprintf("GetSite: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -1143,24 +1166,26 @@ func DeleteSiteLaborCode(c *gin.Context) {
 	}
 
 	if err = services.UpdateSite(teamID, *site); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "DeleteSiteLaborCode",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "DELETE", "DeleteSiteLaborCode",
-		fmt.Sprintf("Site Labor Code Deleted: %s-%s", chgNo, ext))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "Deleted",
+		fmt.Sprintf("Site Labor Code Deleted: Site: %s, ChargeNumber: %s, Ext: %s",
+			site.Name, chgNo, ext))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
 func CreateSiteForecastReport(c *gin.Context) {
 	var data web.CreateSiteForecast
+	logmsg := "SiteController: CreateSiteForecastReport:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateSiteForecastReport",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -1169,13 +1194,13 @@ func CreateSiteForecastReport(c *gin.Context) {
 	site, err := services.GetSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateSiteForecastReport",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateSiteForecastReport",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -1206,24 +1231,26 @@ func CreateSiteForecastReport(c *gin.Context) {
 	}
 
 	if err = services.UpdateSite(data.TeamID, *site); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateSiteForecastReport",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "CREATE", "CreateSiteForecastReport",
-		fmt.Sprintf("Created Forecast Report: %s", data.Name))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
+		fmt.Sprintf("Created Forecast Report: Site: %s, Name: %s",
+			site.Name, data.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
 func UpdateSiteForecastReport(c *gin.Context) {
 	var data web.UpdateSiteForecast
+	logmsg := "SiteController: UpdateSiteForecastReport:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteForecastReport",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -1232,13 +1259,13 @@ func UpdateSiteForecastReport(c *gin.Context) {
 	site, err := services.GetSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteForecastReport",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteForecastReport",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -1301,15 +1328,16 @@ func UpdateSiteForecastReport(c *gin.Context) {
 	}
 
 	if err = services.UpdateSite(data.TeamID, *site); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteForecastReport",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "UPDATE", "UpdateSiteForecastReport",
-		fmt.Sprintf("Forecast Report Updated: %s = %s", data.Field, data.Value))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED",
+		fmt.Sprintf("Forecast Report Updated: Site: %s, Rpt: %d, Field:%s, Value: %s",
+			site.Name, data.ReportID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -1317,10 +1345,11 @@ func DeleteSiteForecastReport(c *gin.Context) {
 	teamID := c.Param("teamid")
 	siteID := c.Param("siteid")
 	rptID, err := strconv.Atoi(c.Param("rptid"))
+	logmsg := "SiteController: DeleteSiteForecastReport:"
 
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "DeleteSiteForecastReport",
-			fmt.Sprintf("Report ID Convert: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Report ID Convert: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 	}
@@ -1328,13 +1357,13 @@ func DeleteSiteForecastReport(c *gin.Context) {
 	site, err := services.GetSite(teamID, siteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "DeleteSiteForecastReport",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "DeleteSiteForecastReport",
-				fmt.Sprintf("GetSite: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -1348,9 +1377,9 @@ func DeleteSiteForecastReport(c *gin.Context) {
 		}
 	}
 	if found < 0 {
-		services.AddLogEntry(c, "scheduler", "Debug", "DeleteSiteForecastReport",
-			fmt.Sprintf("Forecast Report Not Found: %s - %d", siteID,
-				rptID))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Forecast Report Not Found: Site: %s, Rpt: %d",
+				logmsg, site.Name, rptID))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: "Report Not Found"})
 		return
@@ -1359,24 +1388,25 @@ func DeleteSiteForecastReport(c *gin.Context) {
 	site.ForecastReports = append(site.ForecastReports[:found],
 		site.ForecastReports[found+1:]...)
 	if err = services.UpdateSite(teamID, *site); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "DeleteSiteForecastReport",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "DELETE", "DeleteSiteForecastReport",
-		fmt.Sprintf("Forecast Report Deleted: %s-%d", siteID, rptID))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETED",
+		fmt.Sprintf("Forecast Report Deleted: Site: %s, Rpt: %d", site.Name, rptID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
 func CreateSiteCofSReport(c *gin.Context) {
 	var data web.NewCofSReport
+	logmsg := "SiteController: CreateSiteCofSReport:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateSiteCofSReport",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -1385,13 +1415,13 @@ func CreateSiteCofSReport(c *gin.Context) {
 	site, err := services.GetSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateSiteCofSReport",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "CreateSiteCofSReport",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -1423,15 +1453,16 @@ func CreateSiteCofSReport(c *gin.Context) {
 
 	err = services.UpdateSite(data.TeamID, *site)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "CreateSiteCofSReport",
-			fmt.Sprintf("Update Site: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Update Site: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil,
 			Site: nil, Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "CREATE", "CreateSiteCofSReport",
-		fmt.Sprintf("CofS Report Created: %s", data.Name))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
+		fmt.Sprintf("CofS Report Created: Site: %s, CofS Rpt: %s",
+			site.Name, data.Name))
 	c.JSON(http.StatusOK,
 		web.SiteResponse{
 			Team: nil, Site: site, Exception: "",
@@ -1440,10 +1471,11 @@ func CreateSiteCofSReport(c *gin.Context) {
 
 func UpdateSiteCofSReport(c *gin.Context) {
 	var data web.UpdateCofSReport
+	logmsg := "SiteController: UpdateSiteCofSReport:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteCofSReport",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -1452,13 +1484,13 @@ func UpdateSiteCofSReport(c *gin.Context) {
 	site, err := services.GetSite(data.TeamID, data.SiteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteCofSReport",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteCofSReport",
-				fmt.Sprintf("GetSite: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -1478,8 +1510,8 @@ func UpdateSiteCofSReport(c *gin.Context) {
 				dt, err := time.ParseInLocation("01/02/2006",
 					data.Value, time.UTC)
 				if err != nil {
-					services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteCofSReport",
-						fmt.Sprintf("Start Date Convert: %s", err.Error()))
+					services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+						fmt.Sprintf("%s Start Date Convert: %s", logmsg, err.Error()))
 					c.JSON(http.StatusBadRequest, web.SiteResponse{
 						Team: nil, Site: nil,
 						Exception: err.Error()})
@@ -1490,8 +1522,8 @@ func UpdateSiteCofSReport(c *gin.Context) {
 				dt, err := time.ParseInLocation("01/02/2006",
 					data.Value, time.UTC)
 				if err != nil {
-					services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteCofSReport",
-						fmt.Sprintf("End Date Convert: %s", err.Error()))
+					services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+						fmt.Sprintf("%s End Date Convert: %s", logmsg, err.Error()))
 					c.JSON(http.StatusBadRequest, web.SiteResponse{
 						Team: nil, Site: nil,
 						Exception: err.Error()})
@@ -1504,8 +1536,8 @@ func UpdateSiteCofSReport(c *gin.Context) {
 					dt, err := time.ParseInLocation("01/02/2006",
 						data.Value, time.UTC)
 					if err != nil {
-						services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteCofSReport",
-							fmt.Sprintf("Dates Convert (Start): %s", err.Error()))
+						services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+							fmt.Sprintf("%s Dates Convert (Start): %s", logmsg, err.Error()))
 						c.JSON(http.StatusBadRequest, web.SiteResponse{
 							Team: nil, Site: nil,
 							Exception: err.Error()})
@@ -1515,8 +1547,8 @@ func UpdateSiteCofSReport(c *gin.Context) {
 					dt, err = time.ParseInLocation("01/02/2006",
 						data.Value, time.UTC)
 					if err != nil {
-						services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteCofSReport",
-							fmt.Sprintf("Date Convert (End): %s", err.Error()))
+						services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+							fmt.Sprintf("%s Date Convert (End): %s", logmsg, err.Error()))
 						c.JSON(http.StatusBadRequest, web.SiteResponse{
 							Team: nil, Site: nil,
 							Exception: err.Error()})
@@ -1629,15 +1661,16 @@ func UpdateSiteCofSReport(c *gin.Context) {
 
 	err = services.UpdateSite(data.TeamID, *site)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "UpdateSiteCofSReport",
-			fmt.Sprintf("UpdateSite: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateSite: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil,
 			Site: nil, Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "UPDATE", "UpdateSiteCofSReport",
-		fmt.Sprintf("CofS Updated: %s = %s", data.Field, data.Value))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDAtED",
+		fmt.Sprintf("CofS Updated: Site: %s, RptID: %d, Field: %s, Value: %s",
+			site.Name, data.ReportID, data.Field, data.Value))
 	c.JSON(http.StatusOK,
 		web.SiteResponse{
 			Team: nil, Site: site, Exception: "",
@@ -1647,10 +1680,11 @@ func UpdateSiteCofSReport(c *gin.Context) {
 func DeleteCofSReport(c *gin.Context) {
 	teamID := c.Param("teamid")
 	siteID := c.Param("siteid")
+	logmsg := "SiteController: DeleteCofSReport:"
 	rptID, err := strconv.Atoi(c.Param("rptid"))
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "DeleteCofSReport",
-			fmt.Sprintf("Report ID Convert: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Report ID Convert: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 	}
@@ -1658,13 +1692,13 @@ func DeleteCofSReport(c *gin.Context) {
 	site, err := services.GetSite(teamID, siteID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Debug", "DeleteCofSReport",
-				fmt.Sprintf("GetSite: %s", "Site Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite: %s", logmsg, "Site Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Site Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Debug", "DeleteCofSReport",
-				fmt.Sprintf("GetSite Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetSite Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -1684,15 +1718,15 @@ func DeleteCofSReport(c *gin.Context) {
 
 	err = services.UpdateSite(teamID, *site)
 	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Debug", "DeleteCofSReport",
-			fmt.Sprintf("Update Site: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Update Site: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil,
 			Site: nil, Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "DELETE", "DeleteCofSReport",
-		fmt.Sprintf("CofS Report Deleted: %d", rptID))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETED",
+		fmt.Sprintf("CofS Report Deleted: Site: %s, RptID: %d", site.Name, rptID))
 	c.JSON(http.StatusOK,
 		web.SiteResponse{
 			Team: nil, Site: site, Exception: "",

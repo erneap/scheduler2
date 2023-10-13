@@ -393,10 +393,11 @@ func DeleteTeamWorkcode(c *gin.Context) {
 
 func CreateTeamCompany(c *gin.Context) {
 	var data web.CreateTeamCompany
+	logmsg := "TeamController: CreateTeamCompany:"
 
 	if err := c.ShouldBindJSON(&data); err != nil {
-		services.AddLogEntry(c, "scheduler", "Error", "CreateTeamCompany",
-			fmt.Sprintf("DataBinding: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest,
 			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
 		return
@@ -405,13 +406,13 @@ func CreateTeamCompany(c *gin.Context) {
 	team, err := services.GetTeam(data.TeamID)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			services.AddLogEntry(c, "scheduler", "Error", "CreateTeamCompany",
-				fmt.Sprintf("GetTeam: %s", "Team Not Found"))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam: %s", logmsg, "Team Not Found"))
 			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
 				Exception: "Team Not Found"})
 		} else {
-			services.AddLogEntry(c, "scheduler", "Error", "CreateTeamCompany",
-				fmt.Sprintf("GetTeam Error: %s", err.Error()))
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam Error: %s", logmsg, err.Error()))
 			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 				Exception: err.Error()})
 		}
@@ -438,15 +439,16 @@ func CreateTeamCompany(c *gin.Context) {
 	}
 
 	if err = services.UpdateTeam(team); err != nil {
-		services.AddLogEntry(c, "scheduler", "Error", "CreateTeamCompany",
-			fmt.Sprintf("UpdateTeam: %s", err.Error()))
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateTeam: %s", logmsg, err.Error()))
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "CREATE", "CreateTeamCompany",
-		fmt.Sprintf("Team Company Created: %s: %s", data.TeamID, data.ID))
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
+		fmt.Sprintf("Team Company Created: Team: %s, Company: %s-%s",
+			team.Name, data.ID, data.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 

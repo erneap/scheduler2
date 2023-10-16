@@ -62,6 +62,7 @@ func (cr *ReportCofS) Create() error {
 
 	// get workrecords for employees
 	for e, emp := range cr.Site.Employees {
+		emp.Work = emp.Work[:0]
 		work, err := services.GetEmployeeWork(emp.ID.Hex(),
 			uint(cr.Date.Year()))
 		if err == nil {

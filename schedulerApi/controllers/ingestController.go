@@ -74,6 +74,7 @@ func getEmployeesAfterIngest(team, site, company string, startyear uint,
 
 	for _, emp := range empls {
 		if emp.CompanyInfo.Company == company {
+			emp.Work = emp.Work[:0]
 			// get work for current and previous years
 			work, err := services.GetEmployeeWork(emp.ID.Hex(), startyear)
 			if err == nil && len(work.Work) > 0 {

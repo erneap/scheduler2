@@ -93,25 +93,28 @@ export class TeamSiteEmployeeEditorComponent {
     this.setEmployees();
   }
 
-  siteUpdated(site: Site) {
-    this.siteChanged.emit(site);
-    const iSite = this.siteService.getSite();
-    if (iSite && iSite.id === site.id) {
-      this.siteService.setSite(site)
+  siteUpdated(emp: Employee) {
+    const cEmp = this.siteService.getSelectedEmployee();
+    if (cEmp && cEmp.id === emp.id) {
+      this.siteService.setSelectedEmployee(emp);
     }
-    this.teamService.setSelectedSite(site);
-    const iTeam = this.teamService.getTeam();
-    if (iTeam) {
-      const team = new Team(iTeam);
-      if (team.sites) {
-        for (let i=0; i < team.sites.length; i++) {
-          if (team.sites[i].id === site.id) {
-            team.sites[i] = site;
-          }
+    if (this.site && this.site.employees) {
+      let found = false;
+      for (let i=0; i < this.site.employees.length; i++) {
+        if (this.site.employees[i].id === emp.id) {
+          this.site.employees[i] = new Employee(emp);
+          found = true;
         }
       }
+      if (!found) {
+        this.site.employees.push(new Employee(emp));
+      }
+      const cSite = this.siteService.getSite()
+      if (cSite && cSite.id === this.site.id) {
+        this.siteService.setSite(this.site);
+      }
+      this.teamService.setSelectedSite(this.site);
     }
-    this.site = new Site(site);
     this.setEmployees();
   }
 

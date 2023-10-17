@@ -1211,6 +1211,7 @@ func CreateSiteForecastReport(c *gin.Context) {
 	found := false
 	for _, rpt := range site.ForecastReports {
 		if strings.EqualFold(rpt.Name, data.Name) &&
+			strings.EqualFold(data.CompanyID, rpt.CompanyID) &&
 			rpt.StartDate.Equal(data.StartDate) && rpt.EndDate.Equal(data.EndDate) {
 			found = true
 		}

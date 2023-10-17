@@ -137,10 +137,18 @@ export class SiteEmployeeAssignmentComponent {
   }
 
   setAssignment() {
+    let schID: number = 0;
+    if (this.schedule && this.schedule.id > 0) {
+      schID = this.schedule.id;
+    }
     this.setLaborCodes();
     this.showSchedule = (this.assignment.schedules.length > 0);
     if (this.assignment.schedules.length > 0) {
-      this.schedule = this.assignment.schedules[0];
+      this.assignment.schedules.forEach(sch => {
+        if (sch.id === schID) {
+          this.schedule = sch;
+        }
+      });
     } 
     this.asgmtForm.controls["assignment"].setValue(this.asgmtID(this.assignment));
     this.asgmtForm.controls["workcenter"].setValue(this.assignment.workcenter);
@@ -239,7 +247,7 @@ export class SiteEmployeeAssignmentComponent {
           value = this.getYearFirstDate(this.asgmtForm.value.rotationdate);
           break;
         case "rotationdays":
-          value = this.asgmtForm.value.rotationdays;
+          value = `${this.asgmtForm.value.rotationdays}`;
           break;
       }
       this.dialogService.showSpinner();
@@ -294,7 +302,9 @@ export class SiteEmployeeAssignmentComponent {
         field: chgParts[3],
         value: chgParts[4],
       }
-      let schID = this.schedule.id;
+      let asgmtID = change.asgmt;
+      let schID = change.schedule;
+      
       if (chgParts[0].toLowerCase() === 'schedule') {
         if (change.field.toLowerCase() === 'removeschedule') {
           this.authService.statusMessage = "Removing Employee Assignment "
@@ -312,13 +322,14 @@ export class SiteEmployeeAssignmentComponent {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
                   this.employee.assignments.forEach(agmt => {
-                    if (agmt.id === this.assignment.id) {
+                    if (agmt.id === asgmtID) {
                       this.assignment = new Assignment(agmt);
                       this.setAssignment();
                       let found = false;
                       this.assignment.schedules.forEach(sch => {
-                        if (sch.id === schID) {
+                        if (schID && sch.id === schID) {
                           this.schedule = new Schedule(sch);
+                          this.asgmtForm.controls['schedule'].setValue(`schID`);
                           found = true;
                         }
                       });
@@ -351,14 +362,9 @@ export class SiteEmployeeAssignmentComponent {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
                   this.employee.assignments.forEach(agmt => {
-                    if (agmt.id === this.assignment.id) {
+                    if (agmt.id === asgmtID) {
                       this.assignment = new Assignment(agmt);
                       this.setAssignment();
-                      this.assignment.schedules.forEach(sch => {
-                        if (sch.id === schID) {
-                          this.schedule = new Schedule(sch);
-                        }
-                      });
                     }
                   });
                 }

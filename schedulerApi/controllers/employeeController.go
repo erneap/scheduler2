@@ -383,7 +383,13 @@ func UpdateEmployeeAssignment(c *gin.Context) {
 					return
 				}
 			case "rotationdate":
-				asgmt.RotationDate = converters.ParseDate(data.Value)
+				fmt.Println(data.Value)
+				asgmt.RotationDate, err = time.ParseInLocation("2006-01-02", data.Value, time.UTC)
+				if err != nil {
+					services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+						fmt.Sprintf("%s RotationDate: Time Parse Error: %s", logmsg,
+							err.Error()))
+				}
 			case "rotationdays":
 				asgmt.RotationDays = converters.ParseInt(data.Value)
 			case "addschedule":

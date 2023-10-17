@@ -86,7 +86,7 @@ export class SiteEmployeeLeaveComponent {
     const lvType = this.leaveForm.value.code;
     const lvHours = this.leaveForm.value.hours;
     const lvStatus = this.leaveForm.value.status;
-    if (this.leaveForm.valid && now.getTime() < lvDate.getTime() && lvType !== '' 
+    if (this.leaveForm.valid && lvType !== '' 
       && lvHours > 0 && lvHours <= 12.0 && lvStatus !== '') {
       return true;
     }

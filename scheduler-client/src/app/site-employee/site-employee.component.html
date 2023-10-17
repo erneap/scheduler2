@@ -16,7 +16,8 @@
     <div class="employee expired">Password Expired</div>
     <div class="employee locked">Account Locked</div>
   </div>
-  <app-new-employee [site]="site" *ngIf="selected === 'new'">
+  <app-new-employee [site]="site" *ngIf="selected === 'new'"
+    (siteChanged)="siteUpdated($event)">
   </app-new-employee>
   <app-site-employee-editor [site]="site" [employee]="employee"
     *ngIf="selected !== 'new'" style="width: 100%;"

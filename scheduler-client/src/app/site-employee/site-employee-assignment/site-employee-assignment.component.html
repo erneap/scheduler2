@@ -107,11 +107,9 @@
                     <div class="formField">
                       <mat-form-field class="fieldWidth">
                         <mat-label>Rotation Days</mat-label>
-                        <mat-select formControlName="rotationdays" 
-                          (selectionChange)="updateField('rotationdays')">
-                          <mat-option *ngFor="let days of rotatePeriods"
-                            [value]="days">{{days}}</mat-option>
-                        </mat-select>
+                        <input matInput type="number" step="7" min="0" max="336" 
+                          formControlName="rotationdays" 
+                          (change)="updateField('rotationdays')">
                       </mat-form-field>
                     </div>
                   </ng-container>

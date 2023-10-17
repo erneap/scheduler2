@@ -54,27 +54,22 @@ export class TeamSiteEditorComponent {
 
   onSelect(id: string) {
     this.selected = id;
-    const iSite = this.teamService.getSelectedSite(this.selected);
-    if (iSite && iSite.id === id) {
-      this.site = new Site(iSite);
-    } else {
-      this.authService.statusMessage = "Retrieving requested site";
-      this.dialogService.showSpinner();
-      this.teamService.retrieveSelectedSite(this.team.id, this.selected).subscribe({
-        next: (data: SiteResponse) => {
-          this.dialogService.closeSpinner();
-          if (data && data != null && data.site) {
-            this.site = new Site(data.site);
-            this.teamService.setSelectedSite(data.site)
-          }
-          this.authService.statusMessage = "Retrieval complete"
-        },
-        error: (err: SiteResponse) => {
-          this.dialogService.closeSpinner();
-          this.authService.statusMessage = err.exception;
+   this.authService.statusMessage = "Retrieving requested site";
+    this.dialogService.showSpinner();
+    this.teamService.retrieveSelectedSite(this.team.id, this.selected).subscribe({
+      next: (data: SiteResponse) => {
+        this.dialogService.closeSpinner();
+        if (data && data != null && data.site) {
+          this.site = new Site(data.site);
+          this.teamService.setSelectedSite(data.site)
         }
-      })
-    }
+        this.authService.statusMessage = "Retrieval complete"
+      },
+      error: (err: SiteResponse) => {
+        this.dialogService.closeSpinner();
+        this.authService.statusMessage = err.exception;
+      }
+    });
   }
 
   getButtonClass(id: string) {

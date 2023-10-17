@@ -34,7 +34,7 @@ export class NewEmployeeComponent {
   get site(): Site {
     return this._site;
   }
-  @Output() siteChanged = new EventEmitter<Site>();
+  @Output() siteChanged = new EventEmitter<Employee>();
   @Output() changeEmployee = new EventEmitter<string>();
   employee: Employee = new Employee();
   employeeForm: FormGroup;
@@ -297,7 +297,7 @@ export class NewEmployeeComponent {
               this.site.employees.push(new Employee(this.employee));
             }
             this.changeEmployee.emit(this.employee.id);
-            this.siteChanged.emit(this.site);
+            this.siteChanged.emit(this.employee);
           }
           this.authService.statusMessage = "Employee Created";
         },

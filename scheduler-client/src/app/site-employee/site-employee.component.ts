@@ -112,25 +112,29 @@ export class SiteEmployeeComponent {
     this.setEmployees();
   }
 
-  siteUpdated(site: Site) {
-    this.siteChanged.emit(site);
-    const iSite = this.siteService.getSite();
-    if (iSite && iSite.id === site.id) {
-      this.siteService.setSite(site)
-    }
-    this.teamService.setSelectedSite(site);
-    const iTeam = this.teamService.getTeam();
-    if (iTeam) {
-      const team = new Team(iTeam);
-      if (team.sites) {
-        for (let i=0; i < team.sites.length; i++) {
-          if (team.sites[i].id === site.id) {
-            team.sites[i] = site;
+  siteUpdated(emp: Employee) {
+    if (this._site) {
+      if (this._site.employees) {
+        let found = false;
+        for (let i=0; i < this._site.employees.length; i++) {
+          if (this._site.employees[i].id === emp.id) {
+            this._site.employees[i] = new Employee(emp);
+            found = true;
           }
         }
+        if (!found) {
+          this._site.employees.push(new Employee(emp));
+        }
+      }
+      const cSite = this.siteService.getSite();
+      if (cSite && cSite.id === this._site.id) {
+        this.siteService.setSite(this._site);
+      }
+      const sEmp = this.siteService.getSelectedEmployee();
+      if (sEmp && sEmp.id === emp.id) {
+        this.siteService.setSelectedEmployee(emp);
       }
     }
-    this.site = new Site(site);
     this.setEmployees();
   }
 

@@ -31,7 +31,7 @@ export class SiteEmployeeEditorComponent {
   get site(): Site {
     return this._site;
   }
-  @Output() siteChanged = new EventEmitter<Site>()
+  @Output() siteChanged = new EventEmitter<Employee>()
 
   constructor(
     protected empService: EmployeeService,
@@ -53,25 +53,7 @@ export class SiteEmployeeEditorComponent {
       if ( iEmp && iEmp.id === this.employee.id) {
         this.empService.setEmployee(this.employee);
       }
-      if (this.site.employees) {
-        for (let i=0; i < this.site.employees.length && !found; i++) {
-          if (this.site.employees[i].id === emp.id) {
-            found = true;
-            this.site.employees[i] = emp;
-          }
-        }
-      } else {
-        this.site.employees = [];
-      }
-      if (!found) {
-        this.site.employees.push(emp);
-      }
-      this.siteChanged.emit(this.site);
+      this.siteChanged.emit(emp);
     }
-  }
-
-  siteUpdated(iSite: Site) {
-    this.site = new Site(iSite);
-    this.siteChanged.emit(this.site);
   }
 }

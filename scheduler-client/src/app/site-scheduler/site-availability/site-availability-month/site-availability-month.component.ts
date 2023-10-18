@@ -25,23 +25,23 @@ export class SiteAvailabilityMonthComponent {
     protected siteService: SiteService
   ) {
     const now = new Date();
-    this.month = new Date(now.getFullYear(), now.getMonth(), 1);
+    this.month = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
     this.setStyles();
   }
 
   setStyles() {
-    let nextMonth = new Date(this.month.getFullYear(), this.month.getMonth() + 1, 1);
+    let nextMonth = new Date(this.month.getUTCFullYear(), this.month.getUTCMonth() + 1, 1);
     nextMonth = new Date(nextMonth.getTime() - (24 * 3600000));
     this.daysInMonth = nextMonth.getDate();
     let width = ((27 * this.daysInMonth) + 202) - 2;
     let monthWidth = width - 408;
     this.wkctrStyle = `width: ${width}px;`;
     this.monthStyle = `width: ${monthWidth}px;`;
-    this.monthLabel = `${this.months[this.month.getMonth()]} ${this.month.getFullYear()}`;
+    this.monthLabel = `${this.months[this.month.getUTCMonth()]} ${this.month.getUTCFullYear()}`;
     this.dates = [];
-    let start = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth(), 1));
-    while (start.getMonth() === this.month.getMonth()) {
+    let start = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth(), 1));
+    while (start.getUTCMonth() === this.month.getUTCMonth()) {
       this.dates.push(new Date(start));
       start = new Date(start.getTime() + (24 * 3600000));
     }
@@ -57,7 +57,7 @@ export class SiteAvailabilityMonthComponent {
   }
 
   getDateSyyle(dt: Date): string {
-    if (dt.getDay() === 0 || dt.getDay() === 6) {
+    if (dt.getUTCDay() === 0 || dt.getUTCDay() === 6) {
       return 'background-color: cyan;color: black;';
     }
     return 'background-color: white;color: black;';
@@ -66,19 +66,19 @@ export class SiteAvailabilityMonthComponent {
   changeMonth(direction: string, period: string) {
     if (direction.substring(0,1).toLowerCase() === 'u') {
       if (period.substring(0,1).toLowerCase() === 'm') {
-        this.month = new Date(this.month.getFullYear(), 
-          this.month.getMonth() + 1, 1);
+        this.month = new Date(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() + 1, 1);
       } else {
-        this.month = new Date(this.month.getFullYear() + 1,
-          this.month.getMonth(), 1)
+        this.month = new Date(this.month.getUTCFullYear() + 1,
+          this.month.getUTCMonth(), 1)
       }
     } else {
       if (period.substring(0,1).toLowerCase() === 'm') {
-        this.month = new Date(this.month.getFullYear(), 
-          this.month.getMonth() - 1, 1);
+        this.month = new Date(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() - 1, 1);
       } else {
-        this.month = new Date(this.month.getFullYear() - 1,
-          this.month.getMonth(), 1)
+        this.month = new Date(this.month.getUTCFullYear() - 1,
+          this.month.getUTCMonth(), 1)
       }
     }
     this.setStyles();

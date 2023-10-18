@@ -43,8 +43,8 @@ export class SiteScheduleRowComponent {
   setMonth() {
     this.workdays = [];
     this.dates = [];
-    let start = new Date(Date.UTC(this.month.getFullYear(), this.month.getMonth(), 1));
-    while (start.getMonth() === this.month.getMonth()) {
+    let start = new Date(Date.UTC(this.month.getUTCFullYear(), this.month.getUTCMonth(), 1));
+    while (start.getUTCMonth() === this.month.getUTCMonth()) {
       this.dates.push(new Date(start));
       this.workdays.push(this.employee.getWorkday(this.employee.site, start));
       start = new Date(start.getTime() + (24 * 3600000));

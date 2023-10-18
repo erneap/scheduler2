@@ -41,12 +41,12 @@ export class EmployeeScheduleMonthComponent {
     // the end of the month.
     this.startDate = new Date(Date.UTC(this.month.getFullYear(), 
       this.month.getMonth(), 1, 0, 0, 0));
-    while (this.startDate.getDay() !== 0) {
+    while (this.startDate.getUTCDay() !== 0) {
       this.startDate = new Date(this.startDate.getTime() - (24 * 3600000));
     }
     this.endDate = new Date(Date.UTC(this.month.getFullYear(), 
       this.month.getMonth() + 1, 1, 0, 0, 0));
-    while (this.endDate.getDay() !== 0) {
+    while (this.endDate.getUTCDay() !== 0) {
       this.endDate = new Date(this.endDate.getTime() + (24 * 3600000));
     }
     
@@ -55,7 +55,7 @@ export class EmployeeScheduleMonthComponent {
     const emp = this.employeeService.getEmployee();
     var workweek: WorkWeek | undefined;
     while (start.getTime() < this.endDate.getTime()) {
-      if (!workweek || start.getDay() === 0) {
+      if (!workweek || start.getUTCDay() === 0) {
         count++;
         workweek = new WorkWeek(count);
         this.workweeks.push(workweek);
@@ -64,10 +64,11 @@ export class EmployeeScheduleMonthComponent {
         let wd = emp.getWorkday(emp.site, start);
         if (!wd) {
           wd = new Workday();
-          wd.date = new Date(start);
+          wd.id = start.getUTCDay();
         } else if (wd.id === 0) {
-          wd.id = start.getDay();
+          wd.id = start.getUTCDay();
         }
+        wd.date = new Date(start.getTime());
         workweek.setWorkday(wd, start)
       } else {
         const wd = new Workday();
@@ -81,19 +82,19 @@ export class EmployeeScheduleMonthComponent {
   changeMonth(direction: string, period: string) {
     if (direction.toLowerCase() === 'up') {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getFullYear(), 
-          this.month.getMonth() + 1, 1);
+        this.month = new Date(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() + 1, 1);
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getFullYear() + 1, 
-        this.month.getMonth(), 1);
+        this.month = new Date(this.month.getUTCFullYear() + 1, 
+        this.month.getUTCMonth(), 1);
       }
     } else {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getFullYear(), 
-          this.month.getMonth() - 1, 1);
+        this.month = new Date(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() - 1, 1);
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getFullYear() - 1, 
-        this.month.getMonth(), 1);
+        this.month = new Date(this.month.getUTCFullYear() - 1, 
+        this.month.getUTCMonth(), 1);
       }
     }
     this.setMonth();

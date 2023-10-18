@@ -80,7 +80,7 @@ func (lr *LaborReport) Create() error {
 	}
 	for _, site := range team.Sites {
 		if strings.EqualFold(site.ID, lr.SiteID) {
-			lr.Offset = site.UtcOffset
+			lr.Offset = 0
 		}
 	}
 

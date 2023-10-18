@@ -60,7 +60,7 @@ export class Schedule implements ISchedule {
   }
 
   getWorkday(id: number): Workday | undefined {
-    this.workdays.sort((a,b) => a.compareTo(b));
+    this.workdays = this.workdays.sort((a,b) => a.compareTo(b));
     if (id < this.workdays.length) {
       return this.workdays[id]
     }
@@ -163,7 +163,7 @@ export class Assignment implements IAssignment {
       && this.site.toLowerCase() === site.toLowerCase()) {
       let start = new Date(Date.UTC(this.startDate.getFullYear(), 
         this.startDate.getMonth(), this.startDate.getDate()));
-      while (start.getDay() != 0) {
+      while (start.getUTCDay() != 0) {
         start = new Date(start.getTime() - (24 * 3600000));
       }
       let dateDays = Math.floor(date.getTime() / (24 * 3600000));
@@ -240,12 +240,12 @@ export class Variation implements IVariation {
   getWorkday(site: string, date: Date): Workday | undefined {
     const tdate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), 
       date.getDate()));
-    if (this.useVariation(site, tdate)) {
+    if (this.useVariation(site, date)) {
       let start = new Date(this.startdate);
-      while (start.getDay() !== 0) {
+      while (start.getUTCDay() !== 0) {
         start = new Date(start.getTime() - (24 * 3600000));
       }
-      let days = Math.floor((tdate.getTime() - start.getTime()) / (24 * 3600000));
+      let days = Math.floor((date.getTime() - start.getTime()) / (24 * 3600000));
       let iDay = days % this.schedule.workdays.length;
       return this.schedule.getWorkday(iDay);
     }

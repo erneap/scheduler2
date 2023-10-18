@@ -28,7 +28,7 @@ export class WorkWeek {
     }
     const id = wDay.id % 7;
     this.week[id] = wDay;
-    this.week.sort((a,b) => a.compareTo(b));
+    this.week = this.week.sort((a,b) => a.compareTo(b));
   }
 
   getWorkday(id: number): Workday {

@@ -264,9 +264,6 @@ export class Employee implements IEmployee {
         answer = new Workday(wd);
       }
     });
-    if (this.name.last.toLowerCase() === 'mabe') {
-      console.log(`${this.name.last} = ${date} = ${actualHours} (${actualHours > 0.0})`);
-    }
     if (actualHours > 0.0) {
       return answer;
     }

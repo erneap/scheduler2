@@ -64,7 +64,7 @@ export class SiteAvailabilityDayComponent {
         if (this.shift.minimums && this.count < this.shift.minimums) {
           this.dayStyle = 'background-color: #FFB3B3;';
         } else {
-          if (this.date.getDay() === 0 || this.date.getDay() === 6) {
+          if (this.date.getUTCDay() === 0 || this.date.getUTCDay() === 6) {
             this.dayStyle = 'background-color: cyan;';
           } else {
             this.dayStyle = 'background-color: white;';

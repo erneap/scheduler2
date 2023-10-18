@@ -52,7 +52,7 @@ export class SiteScheduleDayComponent {
           this.dayStyle = `background-color: #${wc.backcolor};`
             + `color: #${wc.textcolor};`
           if (wc.backcolor.toLowerCase() === "ffffff" 
-            && (this.date.getDay() === 0 || this.date.getDay() === 6)) {
+            && (this.date.getUTCDay() === 0 || this.date.getUTCDay() === 6)) {
             this.dayStyle = `background-color: cyan;`
               + `color: black;`
           } else if (wc.backcolor.toLowerCase() === "ffffff") {
@@ -61,7 +61,7 @@ export class SiteScheduleDayComponent {
         }
       });
     }
-    if (!found && (this.date.getDay() === 0 || this.date.getDay() === 6)) {
+    if (!found && (this.date.getUTCDay() === 0 || this.date.getUTCDay() === 6)) {
       this.dayStyle = `background-color: cyan;color: black;`;
     }
   }

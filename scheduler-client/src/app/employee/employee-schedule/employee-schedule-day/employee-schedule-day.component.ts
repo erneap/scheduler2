@@ -43,12 +43,12 @@ export class EmployeeScheduleDayComponent {
   setDateClass() {
     const today = new Date();
     if (this.workday && this.workday.date) {
-      if (today.getFullYear() === this.workday.date.getFullYear() 
-        && today.getMonth() === this.workday.date.getMonth()
-        && today.getDate() === this.workday.date.getDate()) {
+      if (today.getUTCFullYear() === this.workday.date.getUTCFullYear() 
+        && today.getUTCMonth() === this.workday.date.getUTCMonth()
+        && today.getUTCDate() === this.workday.date.getUTCDate()) {
         this.dateClass = "dayOfMonth today";
-      } else if (this.workday.date.getDay() === 0 
-        || this.workday.date.getDay() === 6) {
+      } else if (this.workday.date.getUTCDay() === 0 
+        || this.workday.date.getUTCDay() === 6) {
         this.dateClass = "dayOfMonth weekend";
       } else {
         this.dateClass = "dayOfMonth weekday";

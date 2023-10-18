@@ -27,25 +27,26 @@ export class SiteScheduleMonthComponent {
     protected dialogService: DialogService
   ) {
     const now = new Date();
-    this.month = new Date(now.getFullYear(), now.getMonth(), 1);
+    this.month = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+    console.log(this.month.toUTCString());
     this.setStyles();
     this.setWorkcenters();
   }
 
   setStyles() {
-    let nextMonth = new Date(this.month.getFullYear(), this.month.getMonth() + 1, 1);
+    let nextMonth = new Date(this.month.getUTCFullYear(), this.month.getUTCMonth() + 1, 1);
     nextMonth = new Date(nextMonth.getTime() - (24 * 3600000));
     this.daysInMonth = nextMonth.getDate();
     let width = ((27 * this.daysInMonth) + 202) - 2;
     let monthWidth = width - 408;
     this.wkctrStyle = `width: ${width}px;`;
     this.monthStyle = `width: ${monthWidth}px;`;
-    this.monthLabel = `${this.months[this.month.getMonth()]} ${this.month.getFullYear()}`;
+    this.monthLabel = `${this.months[this.month.getUTCMonth()]} ${this.month.getUTCFullYear()}`;
     this.dates = [];
-    let start = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth(), 1));
-    while (start.getMonth() === this.month.getMonth()) {
-      this.dates.push(new Date(start));
+    let start = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth(), 1));
+    while (start.getUTCMonth() === this.month.getUTCMonth()) {
+      this.dates.push(new Date(start.getTime()));
       start = new Date(start.getTime() + (24 * 3600000));
     }
   }
@@ -64,8 +65,8 @@ export class SiteScheduleMonthComponent {
           // figure workcenter to include this employee, based on workcenter
           // individual works the most
           wkctrMap.clear();
-          let start = new Date(Date.UTC(this.month.getFullYear(), 
-            this.month.getMonth(), 1));
+          let start = new Date(Date.UTC(this.month.getUTCFullYear(), 
+            this.month.getUTCMonth(), 1));
           this.dates.forEach(dt => {
             const wd = emp.getWorkdayWOLeaves(site.id, dt);
             if (wd.workcenter !== '') {
@@ -114,7 +115,7 @@ export class SiteScheduleMonthComponent {
   }
 
   getDateSyyle(dt: Date): string {
-    if (dt.getDay() === 0 || dt.getDay() === 6) {
+    if (dt.getUTCDay() === 0 || dt.getUTCDay() === 6) {
       return 'background-color: cyan;color: black;';
     }
     return 'background-color: white;color: black;';

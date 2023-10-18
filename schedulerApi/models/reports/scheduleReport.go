@@ -64,7 +64,7 @@ func (sr *ScheduleReport) Create() error {
 	if err != nil {
 		return err
 	}
-	sr.Offset = site.UtcOffset
+	sr.Offset = 0 //site.UtcOffset
 	sr.Workcenters = append(sr.Workcenters, site.Workcenters...)
 	sort.Sort(sites.ByWorkcenter(sr.Workcenters))
 

@@ -6,7 +6,7 @@
   </div>
   <div class="flexlayout row center">
     <div class="name">Employee</div>
-    <div class="day" *ngFor="let day of dates">{{day.getDate()}}</div>
+    <div class="day" *ngFor="let day of dates">{{day.getUTCDate()}}</div>
     <div class="total">Totals</div>
   </div>
   <app-site-ingest-month-employee *ngFor="let emp of showList"

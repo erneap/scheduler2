@@ -33,9 +33,9 @@ export class SiteIngestMonthLegendComponent {
 
   setPerRow() {
     let dates: Date[] = [];
-    let start = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth(), 1));
-    while (start.getMonth() === this.month.getMonth()) {
+    let start = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth(), 1));
+    while (start.getUTCMonth() === this.month.getUTCMonth()) {
       dates.push(start);
       start = new Date(start.getTime() + (24 * 3600000));
     }

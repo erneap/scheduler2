@@ -156,6 +156,8 @@ export class SiteEmployeeVariationComponent {
     if (typeof(data) === 'string') {
       const chgParts = data.split("|");
       let bWorkdays = false;
+      let variationID = this.variation.id;
+
       if (this.variation.id > 0) {
         const change: ChangeAssignmentRequest = {
           employee: this.employee.id,
@@ -182,7 +184,7 @@ export class SiteEmployeeVariationComponent {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
                   this.employee.variations.forEach(agmt => {
-                    if (agmt.id === this.variation.id) {
+                    if (agmt.id === variationID) {
                       this.variation = new Variation(agmt);
                       this.setVariation();
                     }
@@ -299,6 +301,8 @@ export class SiteEmployeeVariationComponent {
     if (field.toLowerCase() === 'start') {
       this.setVariationEnd();
     }
+    let variationID = this.variation.id;
+
     if (this.variation.id > 0) {
       let empID = '';
       const data: ChangeAssignmentRequest = {
@@ -332,9 +336,8 @@ export class SiteEmployeeVariationComponent {
                 this.employee = new Employee(data.employee);
                 let max = 0;
                 this.employee.variations.forEach(v => {
-                  if (v.id > max) {
+                  if (v.id === variationID) {
                     this.variation = new Variation(v);
-                    max = v.id;
                   }
                 });
                 this.setVariation();

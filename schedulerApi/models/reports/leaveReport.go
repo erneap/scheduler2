@@ -893,7 +893,7 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 		YSplit:      1,
 		TopLeftCell: "A2",
 		ActivePane:  "bottomLeft",
-		Panes: []excelize.PaneOptions{
+		Selection: []excelize.Selection{
 			{SQRef: "A2", ActiveCell: "A2", Pane: "bottomLeft"},
 		},
 	})
@@ -1468,7 +1468,7 @@ func (lr *LeaveReport) CreateFullMonthlyReference() error {
 	}
 
 	freezeCell := GetCellID(1, row+1)
-	option := &excelize.PaneOptions{
+	option := &excelize.Selection{
 		SQRef:      freezeCell,
 		ActiveCell: freezeCell,
 		Pane:       "bottomLeft",
@@ -1478,7 +1478,7 @@ func (lr *LeaveReport) CreateFullMonthlyReference() error {
 		YSplit:      row,
 		TopLeftCell: freezeCell,
 		ActivePane:  "bottomLeft",
-		Panes: []excelize.PaneOptions{
+		Selection: []excelize.Selection{
 			*option,
 		},
 	}
@@ -1554,7 +1554,7 @@ func (lr *LeaveReport) CreateMinumimMonthlyReference() error {
 	}
 
 	freezeCell := GetCellID(1, row+1)
-	option := &excelize.PaneOptions{
+	option := &excelize.Selection{
 		SQRef:      freezeCell,
 		ActiveCell: freezeCell,
 		Pane:       "bottomLeft",
@@ -1564,7 +1564,7 @@ func (lr *LeaveReport) CreateMinumimMonthlyReference() error {
 		YSplit:      row,
 		TopLeftCell: freezeCell,
 		ActivePane:  "bottomLeft",
-		Panes: []excelize.PaneOptions{
+		Selection: []excelize.Selection{
 			*option,
 		},
 	}

@@ -1280,7 +1280,7 @@ func (lr *LaborReport) CreateContractReport(
 		YSplit:      4,
 		TopLeftCell: "H5",
 		ActivePane:  "bottomLeft",
-		Panes: []excelize.PaneOptions{
+		Selection: []excelize.Selection{
 			{SQRef: "H5", ActiveCell: "H5", Pane: "bottomLeft"},
 		},
 	})

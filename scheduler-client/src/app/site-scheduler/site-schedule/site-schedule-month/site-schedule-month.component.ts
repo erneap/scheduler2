@@ -26,28 +26,30 @@ export class SiteScheduleMonthComponent {
     protected siteService: SiteService,
     protected dialogService: DialogService
   ) {
-    const now = new Date();
-    this.month = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1));
+    this.month = new Date();
+    this.month = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
     this.setStyles();
     this.setWorkcenters();
   }
 
   setStyles() {
-    let nextMonth = new Date(this.month.getUTCFullYear(), this.month.getUTCMonth() + 1, 1);
-    nextMonth = new Date(nextMonth.getTime() - (24 * 3600000));
-    this.daysInMonth = nextMonth.getDate();
+    this.monthLabel = `${this.months[this.month.getMonth()]} `
+      + `${this.month.getFullYear()}`;
+    this.dates = [];
+    let start = new Date(Date.UTC(this.month.getFullYear(), 
+      this.month.getMonth(), 1));
+      console.log(start);
+    while (start.getMonth() === this.month.getMonth()) {
+      this.dates.push(new Date(start.getTime()));
+      start = new Date(start.getTime() + (24 * 3600000));
+    }
+    console.log(start);
+    this.daysInMonth = this.dates.length;
+    console.log(this.daysInMonth);
     let width = ((27 * this.daysInMonth) + 202) - 2;
     let monthWidth = width - 408;
     this.wkctrStyle = `width: ${width}px;`;
     this.monthStyle = `width: ${monthWidth}px;`;
-    this.monthLabel = `${this.months[this.month.getUTCMonth()]} ${this.month.getUTCFullYear()}`;
-    this.dates = [];
-    let start = new Date(Date.UTC(this.month.getUTCFullYear(), 
-      this.month.getUTCMonth(), 1));
-    while (start.getUTCMonth() === this.month.getUTCMonth()) {
-      this.dates.push(new Date(start.getTime()));
-      start = new Date(start.getTime() + (24 * 3600000));
-    }
   }
 
   setWorkcenters() {
@@ -123,19 +125,19 @@ export class SiteScheduleMonthComponent {
   changeMonth(direction: string, period: string) {
     if (direction.toLowerCase() === 'up') {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getUTCFullYear(), 
-          this.month.getUTCMonth() + 1, 1);
+        this.month = new Date(this.month.getFullYear(), 
+          this.month.getMonth() + 1, 1);
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getUTCFullYear() + 1, 
-        this.month.getUTCMonth(), 1);
+        this.month = new Date(this.month.getFullYear() + 1, 
+        this.month.getMonth(), 1);
       }
     } else {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getUTCFullYear(), 
-          this.month.getUTCMonth() - 1, 1);
+        this.month = new Date(this.month.getFullYear(), 
+          this.month.getMonth() - 1, 1);
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getUTCFullYear() - 1, 
-        this.month.getUTCMonth(), 1);
+        this.month = new Date(this.month.getFullYear() - 1, 
+        this.month.getMonth(), 1);
       }
     }
     this.setStyles();

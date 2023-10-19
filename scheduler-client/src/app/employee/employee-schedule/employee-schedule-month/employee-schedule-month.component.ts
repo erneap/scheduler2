@@ -82,7 +82,7 @@ export class EmployeeScheduleMonthComponent {
   changeMonth(direction: string, period: string) {
     if (direction.toLowerCase() === 'up') {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getUTCFullYear(), 
+        this.month = new Date(this.month.getFullYear(), 
           this.month.getMonth() + 1, 1);
       } else if (period.toLowerCase() === 'year') {
         this.month = new Date(this.month.getFullYear() + 1, 

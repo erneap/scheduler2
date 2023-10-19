@@ -48,7 +48,7 @@ export class SiteIngestMonthComponent {
     protected dialog: MatDialog
   ) {
     const now = new Date();
-    this.month = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1, 0, 0, 0));
+    this.month = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0));
     this.monthChanged.emit(this.month);
     this.changeMonth('set');
   }
@@ -74,11 +74,11 @@ export class SiteIngestMonthComponent {
           const months: string[] = [ "January", "Febuary", "March", "April", "May",
             "June", "July", "August", "September", "October", "November", "December"];
           if (direction.toLowerCase() === 'down') {
-            this.month = new Date(Date.UTC(this.month.getFullYear(), 
-              this.month.getMonth() - 1, 1))
+            this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+              this.month.getUTCMonth() - 1, 1))
           } else if (direction.toLowerCase() === 'up') {
-            this.month = new Date(Date.UTC(this.month.getFullYear(), 
-              this.month.getMonth() + 1, 1))
+            this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+              this.month.getUTCMonth() + 1, 1))
           }
           this.monthChanged.emit(this.month);
     
@@ -92,7 +92,7 @@ export class SiteIngestMonthComponent {
               company = tEmp.companyinfo.company;
               if (tEmp.work) {
                 tEmp.work.forEach(wk => {
-                  if (wk.dateWorked.getFullYear() === this.month.getFullYear()) {
+                  if (wk.dateWorked.getUTCFullYear() === this.month.getUTCFullYear()) {
                     workFound = true;
                   }
                 });
@@ -107,15 +107,15 @@ export class SiteIngestMonthComponent {
       const months: string[] = [ "January", "Febuary", "March", "April", "May",
         "June", "July", "August", "September", "October", "November", "December"];
       if (direction.toLowerCase() === 'down') {
-        this.month = new Date(Date.UTC(this.month.getFullYear(), 
-          this.month.getMonth() - 1, 1))
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() - 1, 1))
       } else if (direction.toLowerCase() === 'up') {
-        this.month = new Date(Date.UTC(this.month.getFullYear(), 
-          this.month.getMonth() + 1, 1))
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() + 1, 1))
       }
       this.monthChanged.emit(this.month);
 
-      this.dateLabel = `${months[this.month.getMonth()]} ${this.month.getFullYear()}`;
+      this.dateLabel = `${months[this.month.getUTCMonth()]} ${this.month.getUTCFullYear()}`;
       this.showList = [];
       this.employees.forEach(emp => {
         if (emp.activeOnDate(this.month)) {
@@ -125,7 +125,7 @@ export class SiteIngestMonthComponent {
           company = tEmp.companyinfo.company;
           if (tEmp.work) {
             tEmp.work.forEach(wk => {
-              if (wk.dateWorked.getFullYear() === this.month.getFullYear()) {
+              if (wk.dateWorked.getUTCFullYear() === this.month.getUTCFullYear()) {
                 workFound = true;
               }
             });
@@ -139,7 +139,7 @@ export class SiteIngestMonthComponent {
       this.authService.statusMessage = "Pulling Work for Month";
       this.dialogService.showSpinner();
       this.ingestService.getIngestEmployees(teamid, siteid, company, 
-        this.month.getFullYear()).subscribe({
+        this.month.getUTCFullYear()).subscribe({
           next: (data: IngestResponse) => {
             this.dialogService.closeSpinner();
             if (data && data !== null) {
@@ -242,9 +242,9 @@ export class SiteIngestMonthComponent {
 
   setDates() {
     this.dates = [];
-    let start = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth(), 1))
-    while (start.getMonth() === this.month.getMonth()) {
+    let start = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth(), 1))
+    while (start.getUTCMonth() === this.month.getUTCMonth()) {
       this.dates.push(start);
       start = new Date(start.getTime() + (24 * 3600000));
     }

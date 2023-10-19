@@ -27,8 +27,7 @@ export class SiteScheduleMonthComponent {
     protected dialogService: DialogService
   ) {
     const now = new Date();
-    this.month = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
-    console.log(this.month.toUTCString());
+    this.month = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1));
     this.setStyles();
     this.setWorkcenters();
   }
@@ -122,21 +121,21 @@ export class SiteScheduleMonthComponent {
   }
 
   changeMonth(direction: string, period: string) {
-    if (direction.substring(0,1).toLowerCase() === 'u') {
-      if (period.substring(0,1).toLowerCase() === 'm') {
-        this.month = new Date(this.month.getFullYear(), 
-          this.month.getMonth() + 1, 1);
-      } else {
-        this.month = new Date(this.month.getFullYear() + 1,
-          this.month.getMonth(), 1)
+    if (direction.toLowerCase() === 'up') {
+      if (period.toLowerCase() === 'month') {
+        this.month = new Date(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() + 1, 1);
+      } else if (period.toLowerCase() === 'year') {
+        this.month = new Date(this.month.getUTCFullYear() + 1, 
+        this.month.getUTCMonth(), 1);
       }
     } else {
-      if (period.substring(0,1).toLowerCase() === 'm') {
-        this.month = new Date(this.month.getFullYear(), 
-          this.month.getMonth() - 1, 1);
-      } else {
-        this.month = new Date(this.month.getFullYear() - 1,
-          this.month.getMonth(), 1)
+      if (period.toLowerCase() === 'month') {
+        this.month = new Date(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() - 1, 1);
+      } else if (period.toLowerCase() === 'year') {
+        this.month = new Date(this.month.getUTCFullYear() - 1, 
+        this.month.getUTCMonth(), 1);
       }
     }
     this.setStyles();

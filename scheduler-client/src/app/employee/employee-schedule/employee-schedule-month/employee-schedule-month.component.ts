@@ -83,18 +83,18 @@ export class EmployeeScheduleMonthComponent {
     if (direction.toLowerCase() === 'up') {
       if (period.toLowerCase() === 'month') {
         this.month = new Date(this.month.getUTCFullYear(), 
-          this.month.getUTCMonth() + 1, 1);
+          this.month.getMonth() + 1, 1);
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getUTCFullYear() + 1, 
-        this.month.getUTCMonth(), 1);
+        this.month = new Date(this.month.getFullYear() + 1, 
+        this.month.getMonth(), 1);
       }
     } else {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getUTCFullYear(), 
-          this.month.getUTCMonth() - 1, 1);
+        this.month = new Date(this.month.getFullYear(), 
+          this.month.getMonth() - 1, 1);
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getUTCFullYear() - 1, 
-        this.month.getUTCMonth(), 1);
+        this.month = new Date(this.month.getFullYear() - 1, 
+        this.month.getMonth(), 1);
       }
     }
     this.setMonth();

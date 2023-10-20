@@ -19,32 +19,44 @@ export class SiteAvailabilityMonthComponent {
   wkctrStyle: string = "width: 1700px;";
   monthStyle: string = "width: 1300px;";
   dates: Date[] = [];
+  startDate: Date = new Date();
+  endDate: Date = new Date();
   workcenters: Workcenter[] = [];
 
   constructor(
     protected siteService: SiteService
   ) {
-    const now = new Date();
-    this.month = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
-    this.setStyles();
+    this.month = new Date();
+    this.month = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
+    this.setMonth();
   }
+  
+  setMonth() {
+    this.monthLabel = `${this.months[this.month.getMonth()]} `
+      + `${this.month.getFullYear()}`;
+    
+    // calculate the display's start and end date, where start date is always
+    // the sunday before the 1st of the month and end date is the saturday after
+    // the end of the month.
+    this.startDate = new Date(Date.UTC(this.month.getFullYear(), 
+      this.month.getMonth(), 1, 0, 0, 0));
+    this.endDate = new Date(Date.UTC(this.month.getFullYear(), 
+      this.month.getMonth() + 1, 1, 0, 0, 0));
+    
+    let start = new Date(this.startDate);
 
-  setStyles() {
-    let nextMonth = new Date(this.month.getUTCFullYear(), this.month.getUTCMonth() + 1, 1);
-    nextMonth = new Date(nextMonth.getTime() - (24 * 3600000));
-    this.daysInMonth = nextMonth.getDate();
+    this.dates = [];
+    while (start.getTime() < this.endDate.getTime()) {
+      this.dates.push(new Date(start));
+      start = new Date(start.getTime() + (24 * 3600000));
+    }
+
+    this.daysInMonth = this.dates.length;
     let width = ((27 * this.daysInMonth) + 202) - 2;
     let monthWidth = width - 408;
     this.wkctrStyle = `width: ${width}px;`;
     this.monthStyle = `width: ${monthWidth}px;`;
-    this.monthLabel = `${this.months[this.month.getUTCMonth()]} ${this.month.getUTCFullYear()}`;
-    this.dates = [];
-    let start = new Date(Date.UTC(this.month.getUTCFullYear(), 
-      this.month.getUTCMonth(), 1));
-    while (start.getUTCMonth() === this.month.getUTCMonth()) {
-      this.dates.push(new Date(start));
-      start = new Date(start.getTime() + (24 * 3600000));
-    }
+
     this.workcenters = [];
     const site = this.siteService.getSite();
     if (site && site.workcenters && site.workcenters.length > 0) {
@@ -64,23 +76,23 @@ export class SiteAvailabilityMonthComponent {
   }
 
   changeMonth(direction: string, period: string) {
-    if (direction.substring(0,1).toLowerCase() === 'u') {
-      if (period.substring(0,1).toLowerCase() === 'm') {
-        this.month = new Date(this.month.getUTCFullYear(), 
-          this.month.getUTCMonth() + 1, 1);
-      } else {
-        this.month = new Date(this.month.getUTCFullYear() + 1,
-          this.month.getUTCMonth(), 1)
+    if (direction.toLowerCase() === 'up') {
+      if (period.toLowerCase() === 'month') {
+        this.month = new Date(this.month.getFullYear(), 
+          this.month.getMonth() + 1, 1);
+      } else if (period.toLowerCase() === 'year') {
+        this.month = new Date(this.month.getFullYear() + 1, 
+        this.month.getMonth(), 1);
       }
     } else {
-      if (period.substring(0,1).toLowerCase() === 'm') {
-        this.month = new Date(this.month.getUTCFullYear(), 
-          this.month.getUTCMonth() - 1, 1);
-      } else {
-        this.month = new Date(this.month.getUTCFullYear() - 1,
-          this.month.getUTCMonth(), 1)
+      if (period.toLowerCase() === 'month') {
+        this.month = new Date(this.month.getFullYear(), 
+          this.month.getMonth() - 1, 1);
+      } else if (period.toLowerCase() === 'year') {
+        this.month = new Date(this.month.getFullYear() - 1, 
+        this.month.getMonth(), 1);
       }
     }
-    this.setStyles();
+    this.setMonth();
   }
 }

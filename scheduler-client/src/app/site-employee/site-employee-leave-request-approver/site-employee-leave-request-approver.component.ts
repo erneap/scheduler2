@@ -1,4 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ListItem } from 'src/app/generic/button-list/listitem';
 import { Employee } from 'src/app/models/employees/employee';
 import { LeaveRequest } from 'src/app/models/employees/leave';
@@ -13,7 +15,16 @@ import { TeamService } from 'src/app/services/team.service';
 @Component({
   selector: 'app-site-employee-leave-request-approver',
   templateUrl: './site-employee-leave-request-approver.component.html',
-  styleUrls: ['./site-employee-leave-request-approver.component.scss']
+  styleUrls: ['./site-employee-leave-request-approver.component.scss'],
+  providers: [
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true}},
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+  ]
 })
 export class SiteEmployeeLeaveRequestApproverComponent {
   private _site: Site;

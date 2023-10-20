@@ -383,7 +383,6 @@ func UpdateEmployeeAssignment(c *gin.Context) {
 					return
 				}
 			case "rotationdate":
-				fmt.Println(data.Value)
 				asgmt.RotationDate, err = time.ParseInLocation("2006-01-02", data.Value, time.UTC)
 				if err != nil {
 					services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
@@ -1127,8 +1126,6 @@ func CreateEmployeeLeaveRequest(c *gin.Context) {
 		services.AddLogEntry(c, "scheduler", "ERROR", "PROBLEM",
 			fmt.Sprintf("%s GetSite Problem: %s", logmsg, err.Error()))
 	}
-	data.StartDate = data.StartDate.Add(time.Hour * time.Duration(site.UtcOffset))
-	data.EndDate = data.EndDate.Add(time.Hour * time.Duration(site.UtcOffset))
 	emp.NewLeaveRequest(data.EmployeeID, data.Code, data.StartDate,
 		data.EndDate, site.UtcOffset)
 

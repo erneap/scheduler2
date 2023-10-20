@@ -13,11 +13,22 @@ import { TeamService } from 'src/app/services/team.service';
 import { DeleteLeaveRequestDialogComponent } from '../delete-leave-request-dialog/delete-leave-request-dialog.component';
 import { MessageService } from 'src/app/services/message.service';
 import { LeaveUnapproveDialogComponent } from './leave-unapprove-dialog/leave-unapprove-dialog.component';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 
 @Component({
   selector: 'app-leave-request-editor',
   templateUrl: './leave-request-editor.component.html',
-  styleUrls: ['./leave-request-editor.component.scss']
+  styleUrls: ['./leave-request-editor.component.scss'],
+  providers: [
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true}},
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+  ]
 })
 export class LeaveRequestEditorComponent {
   private _employee: Employee = new Employee();
@@ -169,8 +180,8 @@ export class LeaveRequestEditorComponent {
 
   processNewRequest() {
     if (this.editorForm.valid && this.employee) {
-      const start = this.editorForm.value.start;
-      const end = this.editorForm.value.end;
+      let start = new Date(this.editorForm.value.start);
+      let end = new Date(this.editorForm.value.end);
       const code = this.editorForm.value.primarycode;
       this.dialogService.showSpinner();
       this.authService.statusMessage = "Processing leave request";
@@ -221,20 +232,25 @@ export class LeaveRequestEditorComponent {
           field = "dates";
           const start = this.editorForm.value.start;
           const end = this.editorForm.value.end;
-          value = `${start.getFullYear()}-`
-            + `${(start.getMonth() < 9) ? '0' : ''}${start.getMonth() + 1}-`
-            + `${(start.getDate() < 10) ? '0' : ''}${start.getDate()}|`
-            + `${end.getFullYear()}-`
-            + `${(end.getMonth() < 9)? '0' : ''}${end.getMonth() + 1}-`
-            + `${(end.getDate() < 10) ? '0' : ''}${end.getDate()}`;
+          if (start && end) {
+            const dStart = new Date(start);
+            const dEnd = new Date(end);
+            value = `${dStart.getUTCFullYear()}-`
+              + `${(dStart.getUTCMonth() < 9) ? '0' : ''}${dStart.getUTCMonth() + 1}-`
+              + `${(dStart.getUTCDate() < 10) ? '0' : ''}${dStart.getUTCDate()}|`
+              + `${dEnd.getUTCFullYear()}-`
+              + `${(dEnd.getUTCMonth() < 9)? '0' : ''}${dEnd.getUTCMonth() + 1}-`
+              + `${(dEnd.getUTCDate() < 10) ? '0' : ''}${dEnd.getUTCDate()}`;
+          }
           break;
         case "code":
           value = this.editorForm.value.primarycode;
           break;
       }
       this.dialogService.showSpinner();
-      this.empService.updateLeaveRequest(this.employee.id, 
-        this.request.id, field, value)
+      if (value !== '') {
+        this.empService.updateLeaveRequest(this.employee.id, 
+          this.request.id, field, value)
         .subscribe({
           next: (data: EmployeeResponse) => {
             this.authService.statusMessage = "Updating Leave Request "
@@ -263,6 +279,7 @@ export class LeaveRequestEditorComponent {
             this.authService.statusMessage = err.exception;
           }
         });
+      }
     }
   }
 

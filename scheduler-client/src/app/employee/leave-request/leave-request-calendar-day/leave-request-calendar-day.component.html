@@ -1,6 +1,6 @@
 <div class="cell" [style]="dayStyle">
   <form [formGroup]="dayForm">
-    <div class="dayOfMonth weekday">{{leave.leavedate.getDate()}}</div>
+    <div class="dayOfMonth weekday">{{leave.leavedate.getUTCDate()}}</div>
     <div class="code">
       <select class="day-form-field" formControlName="code"
       [style]="fontStyle"

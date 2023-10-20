@@ -46,19 +46,19 @@ export class LeaveRequestCalendarComponent {
 
   setMonth() {
     this.calendar = new LeaveMonth();
-    let start = new Date(this.startdate);
+    let start = new Date(Date.UTC(this.startdate.getUTCFullYear(), this.startdate.getUTCMonth(), this.startdate.getUTCDate()));
 
-    while (start.getDay() !== 0) {
+    while (start.getUTCDay() !== 0) {
       start = new Date(start.getTime() - (24 * 3600000));
     }
-    let end = new Date(this.enddate);
+    let end = new Date(Date.UTC(this.enddate.getUTCFullYear(), this.enddate.getUTCMonth(), this.enddate.getUTCDate()));
     end = new Date(end.getTime() + (24 * 3600000));
-    while (end.getDay() !== 0) {
+    while (end.getUTCDay() !== 0) {
       end = new Date(end.getTime() + (24 * 3600000));
     }
     let week: LeaveGroup = new LeaveGroup();
     while (start.getTime() < end.getTime()) {
-      if (start.getDay() == 0) {
+      if (start.getUTCDay() == 0) {
         week = new LeaveGroup()
         this.calendar.leaveGroups.push(week);
       }

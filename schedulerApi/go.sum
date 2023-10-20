@@ -11,6 +11,12 @@ github.com/erneap/go-models v1.2.1 h1:l+6WiDJM/a1ZjlbMbYIfoq1BfTcIB+rKdG3oJM5q9/
 github.com/erneap/go-models v1.2.1/go.mod h1:p2ZX+1lQMCF5HYcXztKZg2F0eGzaMqcYzT7dsa9ugx8=
 github.com/erneap/go-models v1.2.2 h1:QxsHlSoETuHLBjA5pPTH5yJc0PTxTmPTKQbxbkcqBZ0=
 github.com/erneap/go-models v1.2.2/go.mod h1:p2ZX+1lQMCF5HYcXztKZg2F0eGzaMqcYzT7dsa9ugx8=
+github.com/erneap/go-models v1.2.3 h1:/isSVqj4AbG8PSI+jbIjt97gTlR6kh66dEH4qeljzrU=
+github.com/erneap/go-models v1.2.3/go.mod h1:p2ZX+1lQMCF5HYcXztKZg2F0eGzaMqcYzT7dsa9ugx8=
+github.com/erneap/go-models v1.2.4 h1:uF6HdV9l0hhN0cfHQU7aq0911LkmGPfKkwY/fuGl5B8=
+github.com/erneap/go-models v1.2.4/go.mod h1:p2ZX+1lQMCF5HYcXztKZg2F0eGzaMqcYzT7dsa9ugx8=
+github.com/erneap/go-models v1.2.5 h1:/E5RDoNiuPvZxN2H/lpv1dgkpX/Y3rEFh9ROZTbMFmw=
+github.com/erneap/go-models v1.2.5/go.mod h1:p2ZX+1lQMCF5HYcXztKZg2F0eGzaMqcYzT7dsa9ugx8=
 github.com/gabriel-vasile/mimetype v1.4.2 h1:w5qFW6JKBz9Y393Y4q372O9A7cUSequkh1Q7OhCmWKU=
 github.com/gabriel-vasile/mimetype v1.4.2/go.mod h1:zApsH/mKG4w07erKIaJPFiX0Tsq9BFQgN3qGY5GnNgA=
 github.com/gin-contrib/sse v0.1.0 h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE=

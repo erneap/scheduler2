@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { Assignment, Schedule } from 'src/app/models/employees/assignments';
 import { Employee, EmployeeLaborCode } from 'src/app/models/employees/employee';
@@ -20,7 +22,16 @@ import { TeamService } from 'src/app/services/team.service';
 @Component({
   selector: 'app-new-employee',
   templateUrl: './new-employee.component.html',
-  styleUrls: ['./new-employee.component.scss']
+  styleUrls: ['./new-employee.component.scss'],
+  providers: [
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true}},
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+  ]
 })
 export class NewEmployeeComponent {
   private _site: Site = new Site();

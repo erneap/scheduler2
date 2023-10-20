@@ -28,21 +28,28 @@ export class SiteAvailabilityShiftComponent {
   @Input()
   public set month(dt: Date) {
     this._date = new Date(dt);
-    this.setDates();
+    this.setMonth();
   }
   get month(): Date {
     return this._date;
   }
   dates: Date[] = [];
+  startDate: Date = new Date();
+  endDate: Date = new Date();
 
-  constructor(
-  ) {}
+  constructor() {}
 
-  setDates() {
+  setMonth() {
     this.dates = [];
-    let start = new Date(Date.UTC(this.month.getUTCFullYear(), 
-      this.month.getUTCMonth(), 1));
-    while (start.getUTCMonth() === this.month.getUTCMonth()) {
+    this.startDate = new Date(Date.UTC(this.month.getFullYear(), 
+      this.month.getMonth(), 1, 0, 0, 0));
+    this.endDate = new Date(Date.UTC(this.month.getFullYear(), 
+      this.month.getMonth() + 1, 1, 0, 0, 0));
+    
+    let start = new Date(this.startDate);
+
+    this.dates = [];
+    while (start.getTime() < this.endDate.getTime()) {
       this.dates.push(new Date(start));
       start = new Date(start.getTime() + (24 * 3600000));
     }

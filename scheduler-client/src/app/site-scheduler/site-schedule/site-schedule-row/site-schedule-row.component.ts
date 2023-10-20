@@ -37,16 +37,30 @@ export class SiteScheduleRowComponent {
   baseClass: string = 'background-color: white; color: black;';
   workdays: Workday[] = [];
   dates: Date[] = [];
+  startDate: Date = new Date();
+  endDate: Date = new Date();
 
   constructor() {}
 
   setMonth() {
     this.workdays = [];
     this.dates = [];
-    let start = new Date(Date.UTC(this.month.getFullYear(), this.month.getMonth(), 1));
-    while (start.getMonth() === this.month.getMonth()) {
+    this.startDate = new Date(Date.UTC(this.month.getFullYear(), 
+      this.month.getMonth(), 1, 0, 0, 0));
+    this.endDate = new Date(Date.UTC(this.month.getFullYear(), 
+      this.month.getMonth() + 1, 1, 0, 0, 0));
+    
+    let start = new Date(this.startDate);
+
+    this.dates = [];
+    while (start.getTime() < this.endDate.getTime()) {
       this.dates.push(new Date(start));
-      this.workdays.push(this.employee.getWorkday(this.employee.site, start));
+      const wd = this.employee.getWorkday(this.employee.site, start);
+      if (wd) {
+        this.workdays.push(new Workday(wd));
+      } else {
+        this.workdays.push(new Workday());
+      }
       start = new Date(start.getTime() + (24 * 3600000));
     }
   }

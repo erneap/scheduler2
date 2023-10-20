@@ -20,6 +20,8 @@ export class SiteScheduleMonthComponent {
   wkctrStyle: string = "width: 1700px;";
   monthStyle: string = "width: 1300px;";
   workcenters: Workcenter[] = [];
+  startDate: Date = new Date();
+  endDate: Date = new Date();
   dates: Date[] = [];
 
   constructor(
@@ -28,28 +30,37 @@ export class SiteScheduleMonthComponent {
   ) {
     this.month = new Date();
     this.month = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
-    this.setStyles();
-    this.setWorkcenters();
+    this.setMonth();
   }
 
-  setStyles() {
+  setMonth() {
+
     this.monthLabel = `${this.months[this.month.getMonth()]} `
       + `${this.month.getFullYear()}`;
+    
+    // calculate the display's start and end date, where start date is always
+    // the sunday before the 1st of the month and end date is the saturday after
+    // the end of the month.
+    this.startDate = new Date(Date.UTC(this.month.getFullYear(), 
+      this.month.getMonth(), 1, 0, 0, 0));
+    this.endDate = new Date(Date.UTC(this.month.getFullYear(), 
+      this.month.getMonth() + 1, 1, 0, 0, 0));
+    
+    let start = new Date(this.startDate);
+
     this.dates = [];
-    let start = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth(), 1));
-      console.log(start);
-    while (start.getMonth() === this.month.getMonth()) {
-      this.dates.push(new Date(start.getTime()));
+    while (start.getTime() < this.endDate.getTime()) {
+      this.dates.push(new Date(start));
       start = new Date(start.getTime() + (24 * 3600000));
     }
-    console.log(start);
+
     this.daysInMonth = this.dates.length;
-    console.log(this.daysInMonth);
     let width = ((27 * this.daysInMonth) + 202) - 2;
     let monthWidth = width - 408;
     this.wkctrStyle = `width: ${width}px;`;
     this.monthStyle = `width: ${monthWidth}px;`;
+
+    this.setWorkcenters();
   }
 
   setWorkcenters() {
@@ -140,7 +151,6 @@ export class SiteScheduleMonthComponent {
         this.month.getMonth(), 1);
       }
     }
-    this.setStyles();
-    this.setWorkcenters();
+    this.setMonth();
   }
 }

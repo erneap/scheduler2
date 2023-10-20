@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ListItem } from 'src/app/generic/button-list/listitem';
 import { DeletionConfirmationComponent } from 'src/app/generic/deletion-confirmation/deletion-confirmation.component';
@@ -15,7 +17,16 @@ import { TeamService } from 'src/app/services/team.service';
 @Component({
   selector: 'app-site-cofs-report-editor',
   templateUrl: './site-cofs-report-editor.component.html',
-  styleUrls: ['./site-cofs-report-editor.component.scss']
+  styleUrls: ['./site-cofs-report-editor.component.scss'],
+  providers: [
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true}},
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+  ]
 })
 export class SiteCofsReportEditorComponent {
   private _site: Site = new Site();
@@ -201,8 +212,8 @@ export class SiteCofsReportEditorComponent {
       this.site.id, this.reportForm.value.name, 
       this.reportForm.value.short, 
       this.reportForm.value.unit,
-      this.reportForm.value.start, 
-      this.reportForm.value.end).subscribe({
+      new Date(this.reportForm.value.start), 
+      new Date(this.reportForm.value.end)).subscribe({
       next: (data: SiteResponse) => {
         this.dialogService.closeSpinner();
         if (data && data != null && data.site) {

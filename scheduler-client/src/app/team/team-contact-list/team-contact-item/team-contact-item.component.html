@@ -1,0 +1,15 @@
+<form [formGroup]="contactForm">
+<div class="flexlayout row center">
+  <div class="flexlayout row center" style="width: 400px;">
+    <input formControlName="name" style="width: 100%;height: 100%;" 
+    (blur)="updateType()">
+  </div>
+  <div class="flexlayout row center" style="width: 60px;">
+    <mat-icon *ngIf="showMoveDown" class="sort" (click)="updateSort('down')">
+      arrow_drop_down</mat-icon>
+    <mat-icon *ngIf="showMoveUp" class="sort" (click)="updateSort('up')">
+      arrow_drop_up</mat-icon>
+    <mat-icon color="warn" (click)="deleteType()">delete</mat-icon>
+  </div>
+</div>
+</form>

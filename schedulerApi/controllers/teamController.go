@@ -837,3 +837,279 @@ func DeleteCompanyHoliday(c *gin.Context) {
 			teamID, companyID, holidayID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
+
+func CreateContactType(c *gin.Context) {
+	var data web.AddType
+	logmsg := "TeamController: CreateTeamContactType:"
+
+	if err := c.ShouldBindJSON(&data); err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest,
+			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
+		return
+	}
+
+	team, err := services.GetTeam(data.TeamID)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam: %s", logmsg, "Team Not Found"))
+			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
+				Exception: "Team Not Found"})
+		} else {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam Error: %s", logmsg, err.Error()))
+			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+				Exception: err.Error()})
+		}
+		return
+	}
+
+	newID := team.AddContactType(data.ID, data.Name)
+
+	if err = services.UpdateTeam(team); err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateTeam: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+			Exception: err.Error()})
+		return
+	}
+
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "Add/Update",
+		fmt.Sprintf("Team Contact Type Added/updated: Team: %s, ID: %d, Name: %s",
+			data.TeamID, newID, data.Name))
+	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
+}
+
+func ChangeContactType(c *gin.Context) {
+	var data web.UpdateType
+	logmsg := "TeamController: ChangeContactType:"
+
+	if err := c.ShouldBindJSON(&data); err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest,
+			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
+		return
+	}
+
+	team, err := services.GetTeam(data.TeamID)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam: %s", logmsg, "Team Not Found"))
+			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
+				Exception: "Team Not Found"})
+		} else {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam Error: %s", logmsg, err.Error()))
+			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+				Exception: err.Error()})
+		}
+		return
+	}
+
+	if strings.EqualFold(data.Field, "sort") {
+		team.UpdateContactTypeSort(data.ID, data.Value)
+	} else {
+		team.AddContactType(data.ID, data.Value)
+	}
+
+	if err = services.UpdateTeam(team); err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateTeam: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+			Exception: err.Error()})
+		return
+	}
+
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "Update",
+		fmt.Sprintf("Team Contact Type Added/updated: Team: %s, ID: %d, Field: %s, Value: %s",
+			data.TeamID, data.ID, data.Field, data.Value))
+	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
+}
+
+func DeleteContactType(c *gin.Context) {
+	teamid := c.Param("teamid")
+	ctID := c.Param("id")
+	logmsg := "TeamController: DeleteContactType:"
+
+	id, err := strconv.Atoi(ctID)
+	if err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Contact Type ID Convertion: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+			Exception: err.Error()})
+		return
+	}
+
+	team, err := services.GetTeam(teamid)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam: %s", logmsg, "Team Not Found"))
+			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
+				Exception: "Team Not Found"})
+		} else {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam Error: %s", logmsg, err.Error()))
+			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+				Exception: err.Error()})
+		}
+		return
+	}
+
+	team.DeleteContactType(id)
+
+	if err = services.UpdateTeam(team); err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateTeam: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+			Exception: err.Error()})
+		return
+	}
+
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "Deleted",
+		fmt.Sprintf("Team Contact Type Deleted: Team: %s, ID: %d",
+			teamid, id))
+	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
+}
+
+func CreateSpecialtyType(c *gin.Context) {
+	var data web.AddType
+	logmsg := "TeamController: CreateTeamContactType:"
+
+	if err := c.ShouldBindJSON(&data); err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest,
+			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
+		return
+	}
+
+	team, err := services.GetTeam(data.TeamID)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam: %s", logmsg, "Team Not Found"))
+			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
+				Exception: "Team Not Found"})
+		} else {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam Error: %s", logmsg, err.Error()))
+			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+				Exception: err.Error()})
+		}
+		return
+	}
+
+	newID := team.AddSpecialtyType(data.ID, data.Name)
+
+	if err = services.UpdateTeam(team); err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateTeam: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+			Exception: err.Error()})
+		return
+	}
+
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "Add/Update",
+		fmt.Sprintf("Team Specialty Type Added/updated: Team: %s, ID: %d, Name: %s",
+			data.TeamID, newID, data.Name))
+	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
+}
+
+func ChangeSpecialtyType(c *gin.Context) {
+	var data web.UpdateType
+	logmsg := "TeamController: ChangeContactType:"
+
+	if err := c.ShouldBindJSON(&data); err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s DataBinding: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest,
+			web.SiteResponse{Team: nil, Site: nil, Exception: "Trouble with request"})
+		return
+	}
+
+	team, err := services.GetTeam(data.TeamID)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam: %s", logmsg, "Team Not Found"))
+			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
+				Exception: "Team Not Found"})
+		} else {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam Error: %s", logmsg, err.Error()))
+			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+				Exception: err.Error()})
+		}
+		return
+	}
+
+	if strings.ToLower(data.Field) == "sort" {
+		team.UpdateSpecialtyTypeSort(data.ID, data.Value)
+	} else {
+		team.AddSpecialtyType(data.ID, data.Value)
+	}
+
+	if err = services.UpdateTeam(team); err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateTeam: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+			Exception: err.Error()})
+		return
+	}
+
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "Update",
+		fmt.Sprintf("Team Specialty Type Added/updated: Team: %s, ID: %d, Field: %s, Value: %s",
+			data.TeamID, data.ID, data.Field, data.Value))
+	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
+}
+
+func DeleteSpecialtyType(c *gin.Context) {
+	teamid := c.Param("teamid")
+	ctID := c.Param("id")
+	logmsg := "TeamController: DeleteContactType:"
+
+	id, err := strconv.Atoi(ctID)
+	if err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Contact Type ID Convertion: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+			Exception: err.Error()})
+		return
+	}
+
+	team, err := services.GetTeam(teamid)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam: %s", logmsg, "Team Not Found"))
+			c.JSON(http.StatusNotFound, web.SiteResponse{Team: nil, Site: nil,
+				Exception: "Team Not Found"})
+		} else {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetTeam Error: %s", logmsg, err.Error()))
+			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+				Exception: err.Error()})
+		}
+		return
+	}
+
+	team.DeleteSpecialtyType(id)
+
+	if err = services.UpdateTeam(team); err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s UpdateTeam: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+			Exception: err.Error()})
+		return
+	}
+
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "Deleted",
+		fmt.Sprintf("Team Specialty Type Deleted: Team: %s, ID: %d",
+			teamid, id))
+	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
+}

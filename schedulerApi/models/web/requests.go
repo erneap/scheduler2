@@ -263,3 +263,10 @@ type AddType struct {
 	ID     int    `json:"id"`
 	Name   string `json:"name"`
 }
+
+type UpdateType struct {
+	TeamID string `json:"teamid"`
+	ID     int    `json:"id"`
+	Field  string `json:"field"`
+	Value  string `json:"value"`
+}

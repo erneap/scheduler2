@@ -155,6 +155,18 @@ func main() {
 						controllers.DeleteCompanyHoliday)
 				}
 			}
+			contact := team.Group("/contact", svcs.CheckRoles("scheduler", roles))
+			{
+				contact.POST("/", controllers.CreateContactType)
+				contact.PUT("/", controllers.ChangeContactType)
+				contact.DELETE("/:teamid/:id", controllers.DeleteContactType)
+			}
+			specialty := team.Group("/specialty", svcs.CheckRoles("scheduler", roles))
+			{
+				specialty.POST("/", controllers.CreateSpecialtyType)
+				specialty.PUT("/", controllers.ChangeSpecialtyType)
+				specialty.DELETE("/:teamid/:id", controllers.DeleteSpecialtyType)
+			}
 		}
 
 		ingest := api.Group("/ingest", svcs.CheckJWT("scheduler"))

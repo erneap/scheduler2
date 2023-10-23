@@ -56,3 +56,16 @@ export interface ReportRequest {
   companyid?: string;
   password?: string;
 }
+
+export interface AddTypeRequest {
+  teamid: string;
+  id: number;
+  name: string;
+}
+
+export interface UpdateTypeRequest {
+  teamid: string;
+  id: number;
+  field: string;
+  value: string;
+}

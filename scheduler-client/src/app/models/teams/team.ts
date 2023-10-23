@@ -1,5 +1,6 @@
 import { ISite, Site } from "../sites/site";
 import { Company, ICompany } from "./company";
+import { ContactType, IType, SpecialtyType } from "./contacttype";
 import { IWorkcode, Workcode } from "./workcode";
 
 export interface ITeam {
@@ -8,6 +9,8 @@ export interface ITeam {
   workcodes: IWorkcode[];
   sites: ISite[];
   companies?: ICompany[];
+  contacttypes?: IType[];
+  specialties?: IType[];
 }
 
 export class Team implements ITeam {
@@ -16,6 +19,8 @@ export class Team implements ITeam {
   workcodes: Workcode[];
   sites: Site[];
   companies: Company[];
+  contacttypes: ContactType[];
+  specialties: SpecialtyType[];
 
   constructor(team?: ITeam) {
     this.id = (team) ? team.id : '';
@@ -40,6 +45,20 @@ export class Team implements ITeam {
         this.companies.push(new Company(com));
       });
       this.companies.sort((a,b) => a.compareTo(b));
+    }
+    this.contacttypes = [];
+    if (team && team.contacttypes && team.contacttypes.length > 0) {
+      team.contacttypes.forEach(ctype => {
+        this.contacttypes.push(new ContactType(ctype));
+      });
+      this.contacttypes.sort((a,b) => a.compareTo(b));
+    }
+    this.specialties = [];
+    if (team && team.specialties && team.specialties.length > 0) {
+      team.specialties.forEach(sp => {
+        this.specialties?.push(new SpecialtyType(sp));
+      });
+      this.specialties.sort((a,b) => a.compareTo(b));
     }
   }
 

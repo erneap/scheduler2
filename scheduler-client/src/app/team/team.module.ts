@@ -12,6 +12,8 @@ import { TeamWorkcodesComponent } from './team-workcodes/team-workcodes.componen
 import { EditorComponent } from './editor/editor.component';
 import { NewTeamComponent } from './new-team/new-team.component';
 import { TeamComponent } from './team.component';
+import { TeamContactListComponent } from './team-contact-list/team-contact-list.component';
+import { TeamContactItemComponent } from './team-contact-list/team-contact-item/team-contact-item.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { TeamComponent } from './team.component';
     TeamWorkcodesComponent,
     EditorComponent,
     NewTeamComponent,
-    TeamComponent
+    TeamComponent,
+    TeamContactListComponent,
+    TeamContactItemComponent
   ],
   imports: [
     CommonModule,

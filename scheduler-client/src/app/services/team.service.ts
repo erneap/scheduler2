@@ -5,7 +5,7 @@ import { ISite, Site } from '../models/sites/site';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { SiteResponse } from '../models/web/siteWeb';
-import { CreateTeamCompany, CreateTeamRequest, CreateTeamWorkcodeRequest, TeamsResponse, UpdateTeamRequest } from '../models/web/teamWeb';
+import { AddTypeRequest, CreateTeamCompany, CreateTeamRequest, CreateTeamWorkcodeRequest, TeamsResponse, UpdateTeamRequest, UpdateTypeRequest } from '../models/web/teamWeb';
 import { CreateCompanyHoliday } from '../models/web/teamWeb';
 import { IUser } from '../models/users/user';
 import { AuthService } from './auth.service';
@@ -184,5 +184,32 @@ export class TeamService extends CacheService {
   getTeams(): Observable<TeamsResponse> {
     const url = '/scheduler/api/v2/admin/teams';
     return this.httpClient.get<TeamsResponse>(url);
+  }
+
+  addContactType(team: string, name: string): Observable<SiteResponse> {
+    const url = `/scheduler/api/v2/team/contact`;
+    const data: AddTypeRequest = {
+      teamid: team,
+      id: 0,
+      name: name,
+    };
+    return this.httpClient.post<SiteResponse>(url, data);
+  }
+
+  updateContactType(team: string, id: number, field: string, 
+    value: string): Observable<SiteResponse> {
+    const url = `/scheduler/api/v2/team/contact`;
+    const data: UpdateTypeRequest = {
+      teamid: team,
+      id: id,
+      field: field,
+      value: value,
+    }
+    return this.httpClient.put<SiteResponse>(url, data);
+  }
+
+  deleteContactType(team: string, id: number): Observable<SiteResponse> {
+    const url = `/scheduler/api/v2/team/contact/${team}/${id}`;
+    return this.httpClient.delete<SiteResponse>(url);
   }
 }

@@ -1,0 +1,30 @@
+<div class="fxLayout fxLayout-column-center">
+  <mat-card style="background-color: #3f51b5; color: white;">
+      <mat-card-header style="text-align: center;">
+          <mat-card-title>
+              <div class="mat-headline">Team's Contact Types</div>
+              </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="fxLayout-column-center">
+        <div class="flexlayout column center">
+          <form class="flexlayout row center" style="border:solid 1px black;"
+            [formGroup]="contactForm">
+            <div class="flexlayout row center" style="width: 400px;;">
+              <mat-form-field appearance="fill" style="width: 390px;">
+                <mat-label>New Contact Type</mat-label>
+                <input matInput formControlName="name">
+                <mat-error *ngIf="" class="error">Required</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="flexlayout row center" style="width: 100px;">
+              <button mat-raised-button color="accent" (click)="addContactType()">Add</button>
+            </div>
+          </form>
+          <app-team-contact-item *ngFor="let ct of contactTypes;let i = index"
+            [showMoveDown]="i < (contactTypes.length - 1)"
+            [showMoveUp]="i > 0" [contactType]="ct"
+            (updated)="updateContactType($event)"></app-team-contact-item>
+        </div>
+      </mat-card-content>
+  </mat-card>
+</div>

@@ -257,3 +257,9 @@ type AddLogEntry struct {
 	Title    string `json:"title"`
 	Message  string `json:"message"`
 }
+
+type AddType struct {
+	TeamID string `json:"teamid"`
+	ID     int    `json:"id"`
+	Name   string `json:"name"`
+}

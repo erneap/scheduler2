@@ -322,14 +322,6 @@ func (sr *EnterpriseSchedule) AddMonth(monthID int) error {
 		row++
 		sr.CreateEmployeeRow(sheetLabel, startDate, endDate, row, &emp)
 	}
-	printrange := "$A$1:$" + endColumn + "$" + strconv.Itoa(row)
-	if err := sr.Report.SetDefinedName(&excelize.DefinedName{
-		Name:     "_xlnm.Print_Area",
-		RefersTo: sheetLabel + "!" + printrange,
-		Scope:    sheetLabel,
-	}); err != nil {
-		return err
-	}
 	return nil
 }
 

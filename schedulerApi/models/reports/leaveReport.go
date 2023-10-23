@@ -1293,7 +1293,7 @@ func (lr *LeaveReport) CreateLeaveListing() error {
 				} else {
 					text = prd.StartDate.Format("2")
 				}
-				color := wc.BackColor
+				var color string
 				if !strings.EqualFold(prd.Code, "v") ||
 					!strings.EqualFold(prd.Status, "actual") {
 					color = wc.BackColor

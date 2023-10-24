@@ -13,7 +13,7 @@ import { EditorComponent } from './editor/editor.component';
 import { NewTeamComponent } from './new-team/new-team.component';
 import { TeamComponent } from './team.component';
 import { TeamContactListComponent } from './team-contact-list/team-contact-list.component';
-import { TeamContactItemComponent } from './team-contact-list/team-contact-item/team-contact-item.component';
+import { TeamSpecialtiesListComponent } from './team-specialties-list/team-specialties-list.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +26,7 @@ import { TeamContactItemComponent } from './team-contact-list/team-contact-item/
     NewTeamComponent,
     TeamComponent,
     TeamContactListComponent,
-    TeamContactItemComponent
+    TeamSpecialtiesListComponent
   ],
   imports: [
     CommonModule,

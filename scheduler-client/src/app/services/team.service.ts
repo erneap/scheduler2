@@ -186,11 +186,12 @@ export class TeamService extends CacheService {
     return this.httpClient.get<TeamsResponse>(url);
   }
 
-  addContactType(team: string, name: string): Observable<SiteResponse> {
+  addContactType(team: string, id: number, name: string): 
+    Observable<SiteResponse> {
     const url = `/scheduler/api/v2/team/contact`;
     const data: AddTypeRequest = {
       teamid: team,
-      id: 0,
+      id: id,
       name: name,
     };
     return this.httpClient.post<SiteResponse>(url, data);
@@ -210,6 +211,34 @@ export class TeamService extends CacheService {
 
   deleteContactType(team: string, id: number): Observable<SiteResponse> {
     const url = `/scheduler/api/v2/team/contact/${team}/${id}`;
+    return this.httpClient.delete<SiteResponse>(url);
+  }
+
+  addSpecialtyType(team: string, id: number, name: string): 
+    Observable<SiteResponse> {
+    const url = `/scheduler/api/v2/team/specialty`;
+    const data: AddTypeRequest = {
+      teamid: team,
+      id: id,
+      name: name,
+    };
+    return this.httpClient.post<SiteResponse>(url, data);
+  }
+
+  updateSpecialtyType(team: string, id: number, field: string, 
+    value: string): Observable<SiteResponse> {
+    const url = `/scheduler/api/v2/team/specialty`;
+    const data: UpdateTypeRequest = {
+      teamid: team,
+      id: id,
+      field: field,
+      value: value,
+    }
+    return this.httpClient.put<SiteResponse>(url, data);
+  }
+
+  deleteSpecialtyType(team: string, id: number): Observable<SiteResponse> {
+    const url = `/scheduler/api/v2/team/specialty/${team}/${id}`;
     return this.httpClient.delete<SiteResponse>(url);
   }
 }

@@ -1542,3 +1542,82 @@ func DeleteEmployeeLaborCode(c *gin.Context) {
 			emp.Name.GetLastFirstMI(), chgNo, ext))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
+
+func UpdateContact(c *gin.Context) {
+	var data web.EmployeeContactUpdate
+	logmsg := "EmployeeController: UpdateContact:"
+	if err := c.ShouldBindJSON(&data); err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Request Data Binding, Trouble with request", logmsg))
+		c.JSON(http.StatusBadRequest,
+			web.EmployeeResponse{Employee: nil, Exception: "Trouble with request"})
+		return
+	}
+
+	emp, err := services.GetEmployee(data.EmployeeID)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s getEmployee Problem: Employee Not Found", logmsg))
+			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
+				Exception: "Employee Not Found"})
+		} else {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s getEmployee Problem: %s", logmsg, err.Error()))
+			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
+				Exception: err.Error()})
+		}
+		return
+	}
+
+	team, err := services.GetTeam(emp.TeamID.Hex())
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s getTeam Problem: Team Not Found", logmsg))
+			c.JSON(http.StatusNotFound, web.EmployeeResponse{Employee: nil,
+				Exception: "Team Not Found"})
+		} else {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s getTeam Problem: %s", logmsg, err.Error()))
+			c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
+				Exception: err.Error()})
+		}
+		return
+	}
+
+	action := ""
+	if data.ContactID == 0 {
+		sortid := 0
+		for _, ct := range team.ContactTypes {
+			if ct.Id == data.TypeID {
+				sortid = ct.SortID
+			}
+		}
+		emp.AddContactInfo(data.TypeID, data.Value, sortid)
+		action = "Add"
+	} else {
+		if data.Value != "" {
+			emp.AddContactInfo(data.TypeID, data.Value, 0)
+			action = "Update"
+		} else {
+			emp.DeleteContactInfo(data.ContactID)
+			action = "Delete"
+		}
+	}
+
+	err = services.UpdateEmployee(emp)
+	if err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s update employee problem: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.EmployeeResponse{Employee: nil,
+			Exception: err.Error()})
+		return
+	}
+
+	// return the corrected employee back to the client.
+	services.AddLogEntry(c, "scheduler", "SUCCESS", "ADDITION",
+		fmt.Sprintf("Updating contact: Employee: %s, ID: %d, Type: %d, Value: %s, Action: %s",
+			emp.Name.GetLastFirst(), data.ContactID, data.TypeID, data.Value, action))
+	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
+}

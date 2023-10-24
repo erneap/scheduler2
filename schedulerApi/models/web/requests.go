@@ -73,6 +73,20 @@ type EmployeeLeaveDayRequest struct {
 	Leave      employees.LeaveDay `json:"leave"`
 }
 
+type EmployeeContactUpdate struct {
+	EmployeeID string `json:"employee"`
+	TypeID     int    `json:"typeid"`
+	ContactID  int    `json:"contactid"`
+	Value      string `json:"value"`
+}
+
+type EmployeeSpecialtyUpdate struct {
+	EmployeeID string `json:"employee"`
+	TypeID     int    `json:"typeid"`
+	ContactID  int    `json:"contactid"`
+	Value      bool   `json:"value"`
+}
+
 type NewSiteRequest struct {
 	TeamID    string      `json:"team"`
 	SiteID    string      `json:"siteid"`

@@ -912,6 +912,22 @@ func ChangeContactType(c *gin.Context) {
 
 	if strings.EqualFold(data.Field, "sort") {
 		team.UpdateContactTypeSort(data.ID, data.Value)
+		contactMap := make(map[int]int)
+		for _, ct := range team.ContactTypes {
+			contactMap[ct.Id] = ct.SortID
+		}
+		emps, err := services.GetEmployeesForTeam(team.ID.Hex())
+		if err != nil {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetEmployeesForTeam: %s", logmsg, err.Error()))
+			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+				Exception: err.Error()})
+			return
+		}
+		for _, emp := range emps {
+			emp.ResortContactInfo(contactMap)
+			services.UpdateEmployee(&emp)
+		}
 	} else {
 		team.AddContactType(data.ID, data.Value)
 	}
@@ -968,6 +984,20 @@ func DeleteContactType(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
+	}
+
+	// delete contact info in all employees within the team
+	emps, err := services.GetEmployeesForTeam(team.ID.Hex())
+	if err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s GetEmployeesForTeam: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+			Exception: err.Error()})
+		return
+	}
+	for _, emp := range emps {
+		emp.DeleteContactInfoByType(id)
+		services.UpdateEmployee(&emp)
 	}
 
 	services.AddLogEntry(c, "scheduler", "SUCCESS", "Deleted",
@@ -1050,6 +1080,22 @@ func ChangeSpecialtyType(c *gin.Context) {
 
 	if strings.ToLower(data.Field) == "sort" {
 		team.UpdateSpecialtyTypeSort(data.ID, data.Value)
+		contactMap := make(map[int]int)
+		for _, ct := range team.SpecialtyTypes {
+			contactMap[ct.Id] = ct.SortID
+		}
+		emps, err := services.GetEmployeesForTeam(team.ID.Hex())
+		if err != nil {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s GetEmployeesForTeam: %s", logmsg, err.Error()))
+			c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+				Exception: err.Error()})
+			return
+		}
+		for _, emp := range emps {
+			emp.ResortSpecialties(contactMap)
+			services.UpdateEmployee(&emp)
+		}
 	} else {
 		team.AddSpecialtyType(data.ID, data.Value)
 	}
@@ -1106,6 +1152,20 @@ func DeleteSpecialtyType(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
 			Exception: err.Error()})
 		return
+	}
+
+	// delete specialty type in all employees within the team
+	emps, err := services.GetEmployeesForTeam(team.ID.Hex())
+	if err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s GetEmployeesForTeam: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+			Exception: err.Error()})
+		return
+	}
+	for _, emp := range emps {
+		emp.DeleteSpecialtyByType(id)
+		services.UpdateEmployee(&emp)
 	}
 
 	services.AddLogEntry(c, "scheduler", "SUCCESS", "Deleted",

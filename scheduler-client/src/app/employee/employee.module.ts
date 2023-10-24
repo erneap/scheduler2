@@ -26,6 +26,8 @@ import { LeaveRequestEditorComponent } from './leave-request/leave-request-edito
 import { NotificationsComponent } from './notifications/notifications.component';
 import { NotificationsMessageComponent } from './notifications/notifications-message/notifications-message.component';
 import { LeaveUnapproveDialogComponent } from './leave-request/leave-request-editor/leave-unapprove-dialog/leave-unapprove-dialog.component';
+import { EmployeeContactInfoComponent } from './employee-contact-info/employee-contact-info.component';
+import { EmployeeContactInfoItemComponent } from './employee-contact-info/employee-contact-info-item/employee-contact-info-item.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,9 @@ import { LeaveUnapproveDialogComponent } from './leave-request/leave-request-edi
     LeaveRequestEditorComponent,
     NotificationsComponent,
     NotificationsMessageComponent,
-    LeaveUnapproveDialogComponent
+    LeaveUnapproveDialogComponent,
+    EmployeeContactInfoComponent,
+    EmployeeContactInfoItemComponent
   ],
   imports: [
     CommonModule,

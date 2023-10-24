@@ -56,7 +56,7 @@ export class Team implements ITeam {
     this.specialties = [];
     if (team && team.specialties && team.specialties.length > 0) {
       team.specialties.forEach(sp => {
-        this.specialties?.push(new SpecialtyType(sp));
+        this.specialties.push(new SpecialtyType(sp));
       });
       this.specialties.sort((a,b) => a.compareTo(b));
     }

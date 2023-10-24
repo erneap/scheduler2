@@ -2,6 +2,7 @@ import { Workcenter } from "../sites/workcenter";
 import { IUser, User } from "../users/user";
 import { Assignment, IAssignment, IVariation, Variation, Workday } from "./assignments";
 import { CompanyInfo, ICompanyInfo } from "./company";
+import { Contact, IContact, ISpecialty, Specialty } from "./contact";
 import { AnnualLeave, IAnnualLeave, ILeaveDay, ILeaveRequest, LeaveDay, LeaveRequest } from "./leave";
 import { IWork, Work } from "./work";
 
@@ -78,6 +79,8 @@ export interface IEmployee {
   requests: ILeaveRequest[];
   user?: IUser;
   work?: IWork[];
+  contactinfo: IContact[];
+  specialties: ISpecialty[];
 }
 
 export class Employee implements IEmployee {
@@ -94,6 +97,8 @@ export class Employee implements IEmployee {
   requests: LeaveRequest[];
   user?: User;
   work?: Work[];
+  contactinfo: Contact[];
+  specialties: Specialty[];
 
   constructor(emp?: IEmployee) {
     this.id = (emp) ? emp.id : '';
@@ -143,6 +148,18 @@ export class Employee implements IEmployee {
         this.requests.push(new LeaveRequest(req));
       });
       this.requests.sort((a,b) => a.compareTo(b));
+    }
+    this.contactinfo = [];
+    if (emp && emp.contactinfo && emp.contactinfo.length > 0) {
+      emp.contactinfo.forEach(ci => {
+        this.contactinfo.push(new Contact(ci));
+      });
+    }
+    this.specialties = [];
+    if (emp && emp.specialties && emp.specialties.length > 0) {
+      emp.specialties.forEach(s => {
+        this.specialties.push(new Specialty(s));
+      });
     }
   }
 

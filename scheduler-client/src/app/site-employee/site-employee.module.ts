@@ -29,6 +29,9 @@ import { SiteEmployeeLeaveRequestAvailabilityPeriodComponent } from './site-empl
 import { SiteEmployeeLeaveRequestAvailabilityDayComponent } from './site-employee-leave-request-approver/site-employee-leave-request-availability-day/site-employee-leave-request-availability-day.component';
 import { SiteEmployeeLeaveRequestAvailabilityShiftComponent } from './site-employee-leave-request-approver/site-employee-leave-request-availability-shift/site-employee-leave-request-availability-shift.component';
 import { SiteEmployeeLeaveBalanceDialogComponent } from './site-employee-leave-balance/site-employee-leave-balance-dialog/site-employee-leave-balance-dialog.component';
+import { SiteEmployeeContactInfoComponent } from './site-employee-contact-info/site-employee-contact-info.component';
+import { EmployeeContactInfoItemComponent } from '../employee/employee-contact-info/employee-contact-info-item/employee-contact-info-item.component';
+import { SiteEmployeeSpecialtiesComponent } from './site-employee-specialties/site-employee-specialties.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +57,9 @@ import { SiteEmployeeLeaveBalanceDialogComponent } from './site-employee-leave-b
     SiteEmployeeLeaveRequestAvailabilityPeriodComponent,
     SiteEmployeeLeaveRequestAvailabilityDayComponent,
     SiteEmployeeLeaveRequestAvailabilityShiftComponent,
-    SiteEmployeeLeaveBalanceDialogComponent
+    SiteEmployeeLeaveBalanceDialogComponent,
+    SiteEmployeeContactInfoComponent,
+    SiteEmployeeSpecialtiesComponent
   ],
   imports: [
     CommonModule,

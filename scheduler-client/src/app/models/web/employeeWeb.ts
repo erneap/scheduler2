@@ -112,3 +112,23 @@ export interface EmployeeResponse {
 export interface Message {
   message: string;
 }
+
+export interface EmployeeContactUpdate {
+  employee: string;
+  typeid: number;
+  contactid: number;
+  value: string;
+}
+
+export interface EmployeeSpecialtyUpdate {
+  employee: string;
+  typeid: number;
+  specialtyid: number;
+  value: boolean;
+}
+
+export interface EmployeeSpecialtiesUpdate {
+  employee: string;
+  action: string;
+  specialties: number[];
+}

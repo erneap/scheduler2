@@ -7,7 +7,7 @@ import { LeaveDay } from '../models/employees/leave';
 import { ChangeAssignmentRequest, EmployeeLaborCodeRequest, 
   EmployeeLeaveDayRequest, EmployeeLeaveRequest, EmployeeResponse, 
   NewEmployeeAssignment, NewEmployeeRequest, NewEmployeeVariation, 
-  UpdateRequest, LeaveBalanceRequest, CreateUserAccount, Message } from '../models/web/employeeWeb';
+  UpdateRequest, LeaveBalanceRequest, CreateUserAccount, Message, EmployeeContactUpdate, EmployeeSpecialtyUpdate, EmployeeSpecialtiesUpdate } from '../models/web/employeeWeb';
 import { CreateSiteEmployeeLeaveBalances, SiteResponse } from '../models/web/siteWeb';
 import { CacheService } from './cache.service';
 import { TeamService } from './team.service';
@@ -288,5 +288,40 @@ export class EmployeeService extends CacheService {
       year: year
     };
     return this.httpClient.post<SiteResponse>(url, data);
+  }
+
+  updateEmployeeContact(empid: string, typeid: number, contact: number, 
+    value: string): Observable<EmployeeResponse> {
+    const url = '/scheduler/api/v2/employee/contact';
+    const data: EmployeeContactUpdate = {
+      employee: empid,
+      typeid: typeid,
+      contactid: contact,
+      value: value,
+    };
+    return this.httpClient.post<EmployeeResponse>(url, data);
+  }
+
+  updateEmployeeSpecialty(empid: string, typeid: number, specialty: number, 
+    value: boolean): Observable<EmployeeResponse> {
+      const url = '/scheduler/api/v2/employee/specialty';
+      const data: EmployeeSpecialtyUpdate = {
+        employee: empid,
+        typeid: typeid,
+        specialtyid: specialty,
+        value: value,
+      };
+      return this.httpClient.post<EmployeeResponse>(url, data);
+  }
+
+  updateEmployeeSpecialties(empid: string, action: string, 
+    specialties: number[]): Observable<EmployeeResponse> {
+      const url = '/scheduler/api/v2/employee/specialties';
+      const data: EmployeeSpecialtiesUpdate = {
+        employee: empid,
+        action: action,
+        specialties: specialties,
+      };
+      return this.httpClient.post<EmployeeResponse>(url, data);
   }
 }

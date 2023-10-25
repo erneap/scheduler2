@@ -252,10 +252,6 @@ export class SiteEmployeeVariationComponent {
       this.variation.mids = this.variationForm.value.mids;
       let sDate = new Date(this.variationForm.value.start);
       let eDate = new Date(this.variationForm.value.end);
-      if (site.utcOffset) {
-        sDate = new Date(sDate.getTime() + (site.utcOffset * 3600000));
-        eDate = new Date(eDate.getTime() + (site.utcOffset * 3600000));
-      }
       this.variation.startdate = sDate;
       this.variation.enddate = eDate;
       this.variation.schedule.showdates = this.variationForm.value.dates;
@@ -324,10 +320,10 @@ export class SiteEmployeeVariationComponent {
       };
       switch (field.toLowerCase()) {
         case "start":
-          data.value = this.getYearFirstDate(this.variationForm.value.start);
+          data.value = this.getYearFirstDate(new Date(this.variationForm.value.start));
           break;
         case "end":
-          data.value = this.getYearFirstDate(this.variationForm.value.end);
+          data.value = this.getYearFirstDate(new Date(this.variationForm.value.end));
           break;
         case "mids":
           data.value = (this.variationForm.value.mids) ? 'true' : 'false';

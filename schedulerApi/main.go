@@ -66,6 +66,9 @@ func main() {
 				lCode.POST("/", controllers.AddEmployeeLaborCode)
 				lCode.DELETE("/:empid/:asgmt/:chgno/:ext", controllers.DeleteEmployeeLaborCode)
 			}
+			emp.POST("/contact", controllers.UpdateContact)
+			emp.POST("/specialty", controllers.UpdateSpecialty)
+			emp.POST("/specialties", controllers.UpdateSpecialties)
 		}
 		site := api.Group("/site", svcs.CheckJWT("scheduler"),
 			svcs.CheckRoles("scheduler", roles))

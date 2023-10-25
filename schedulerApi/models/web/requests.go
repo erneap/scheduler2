@@ -81,10 +81,16 @@ type EmployeeContactUpdate struct {
 }
 
 type EmployeeSpecialtyUpdate struct {
-	EmployeeID string `json:"employee"`
-	TypeID     int    `json:"typeid"`
-	ContactID  int    `json:"contactid"`
-	Value      bool   `json:"value"`
+	EmployeeID  string `json:"employee"`
+	TypeID      int    `json:"typeid"`
+	SpecialtyID int    `json:"specialtyid"`
+	Value       bool   `json:"value"`
+}
+
+type EmployeeSpecialtiesUpdate struct {
+	EmployeeID  string `json:"employee"`
+	Action      string `json:"action"`
+	Specialties []int  `json:"specialties"`
 }
 
 type NewSiteRequest struct {

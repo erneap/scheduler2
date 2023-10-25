@@ -28,7 +28,7 @@ import { NotificationsMessageComponent } from './notifications/notifications-mes
 import { LeaveUnapproveDialogComponent } from './leave-request/leave-request-editor/leave-unapprove-dialog/leave-unapprove-dialog.component';
 import { EmployeeContactInfoComponent } from './employee-contact-info/employee-contact-info.component';
 import { EmployeeContactInfoItemComponent } from './employee-contact-info/employee-contact-info-item/employee-contact-info-item.component';
-
+import { EmployeeSpecialtiesComponent } from './employee-specialties/employee-specialties.component';
 @NgModule({
   declarations: [
     EmployeeScheduleComponent,
@@ -55,7 +55,8 @@ import { EmployeeContactInfoItemComponent } from './employee-contact-info/employ
     NotificationsMessageComponent,
     LeaveUnapproveDialogComponent,
     EmployeeContactInfoComponent,
-    EmployeeContactInfoItemComponent
+    EmployeeContactInfoItemComponent,
+    EmployeeSpecialtiesComponent
   ],
   imports: [
     CommonModule,
@@ -68,7 +69,8 @@ import { EmployeeContactInfoItemComponent } from './employee-contact-info/employ
     PtoHolidayChartComponent,
     EmployeeProfileFormComponent,
     LeaveRequestFormComponent,
-    LeaveRequestEditorComponent
+    LeaveRequestEditorComponent,
+    EmployeeContactInfoItemComponent
   ]
 })
 export class EmployeeModule { }

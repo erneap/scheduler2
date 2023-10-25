@@ -405,14 +405,6 @@ func (sr *ScheduleReport) AddMonth(monthID int) error {
 			}
 		}
 	}
-	printrange := "$A$1:$" + endColumn + "$" + strconv.Itoa(row)
-	if err := sr.Report.SetDefinedName(&excelize.DefinedName{
-		Name:     "_xlnm.Print_Area",
-		RefersTo: sheetLabel + "!" + printrange,
-		Scope:    sheetLabel,
-	}); err != nil {
-		return err
-	}
 	return nil
 }
 

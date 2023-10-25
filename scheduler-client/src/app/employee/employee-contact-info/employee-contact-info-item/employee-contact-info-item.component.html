@@ -1,1 +1,11 @@
-<p>employee-contact-info-item works!</p>
+<div class="flexlayout row center">
+  <div class="typeText">
+    {{contacttype.name}}
+  </div>
+  <div class="flexlayout row center">
+    <form [formGroup]="form">
+      <input class="typeInput" (blur)="updateContactType()"
+        formControlName="itemValue">
+    </form> 
+  </div>
+</div>

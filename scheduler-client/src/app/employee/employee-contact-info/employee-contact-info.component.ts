@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { ContactType } from 'src/app/models/teams/contacttype';
 import { ITeam, Team } from 'src/app/models/teams/team';
+import { EmployeeService } from 'src/app/services/employee.service';
 import { TeamService } from 'src/app/services/team.service';
 
 @Component({
@@ -10,32 +11,39 @@ import { TeamService } from 'src/app/services/team.service';
   styleUrls: ['./employee-contact-info.component.scss']
 })
 export class EmployeeContactInfoComponent {
-  private _team: Team | undefined;
+  private _team: Team = new Team();
   @Input()
   public set team(tm: ITeam) {
     this._team = new Team(tm);
     this.setContactTypes();
   }
-  get team(): Team | undefined {
+  get team(): Team {
     return this._team;
   }
-  private _employee: Employee | undefined;
+  private _employee: Employee = new Employee();
   @Input()
   public set employee(emp: IEmployee) {
     this._employee = new Employee(emp);
   }
-  get employee(): Employee | undefined {
+  get employee(): Employee {
     return this._employee;
   }
   contactTypes: ContactType[] = []
 
   constructor(
-    protected teamService: TeamService
+    protected teamService: TeamService,
+    protected empService: EmployeeService
   ) {
-    if (!this.team) {
+    if (this.team.id === '') {
       const tm = this.teamService.getTeam();
       if (tm) {
         this.team = tm;
+      }
+    }
+    if (this.employee.id === '') {
+      const emp = this.empService.getEmployee();
+      if (emp) {
+        this.employee = emp;
       }
     }
   }
@@ -48,5 +56,10 @@ export class EmployeeContactInfoComponent {
       });
     }
     this.contactTypes = this.contactTypes.sort((a,b) => a.compareTo(b))
+  }
+
+  updatedEmployee(emp: Employee) {
+    this.empService.setEmployee(emp);
+    this.employee = emp;
   }
 }

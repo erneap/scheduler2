@@ -31,9 +31,11 @@
         style="height: 20px;">Coverage</a>
       <a mat-list-item routerLink="/siteschedule/mids"
         style="height: 20px;">Mids Listing</a>
+      <a mat-list-item routerLink="/query"
+        style="height: 20px;">Who's Working (Query)</a>
     </mat-nav-list>
   </mat-expansion-panel>
-  <mat-expansion-panel expanded="true"
+  <mat-expansion-panel expanded="false"
     *ngIf="authService.isScheduler || authService.isSiteLeader || authService.isCompanyLead">
     <mat-expansion-panel-header>
       <mat-panel-title>Editing</mat-panel-title>
@@ -65,7 +67,7 @@
       style="height: 20px;">Data Purge</a>
     </mat-nav-list>
   </mat-expansion-panel>
-  <mat-expansion-panel expanded="true" 
+  <mat-expansion-panel expanded="false" 
     *ngIf="authService.isScheduler || authService.isSiteLeader || authService.isCompanyLead">
     <mat-expansion-panel-header>
       <mat-panel-title>Reports</mat-panel-title>
@@ -75,7 +77,7 @@
         style="height: 20px;">Report Creator</a>
     </mat-nav-list>
   </mat-expansion-panel>
-  <mat-expansion-panel expanded="true" 
+  <mat-expansion-panel expanded="false" 
     *ngIf="authService.isScheduler || authService.isSiteLeader || authService.isCompanyLead">
     <mat-expansion-panel-header>
       <mat-panel-title>Log Viewer</mat-panel-title>

@@ -39,6 +39,7 @@
                     <mat-label>Assignment Workcenter</mat-label>
                     <mat-select formControlName="workcenter" 
                       (selectionChange)="updateField('workcenter')">
+                      <mat-option value=""></mat-option>
                       <mat-option *ngFor="let wkctr of workcenters"
                         [value]="wkctr.id">{{wkctr.name.toUpperCase()}}</mat-option>
                     </mat-select>

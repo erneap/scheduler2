@@ -61,10 +61,8 @@ export class TeamSpecialtiesListComponent {
       }
     }
     if (this.team) {
-      console.log(this.team.specialties.length);
       this.team.specialties.sort((a,b)  => a.compareTo(b));
       this.team.specialties.forEach(ct => {
-        console.log(`${ct.id} - ${ct.name}`);
         this.specialties.push(new ListItem(`${ct.id}`, ct.name));
       });
     }

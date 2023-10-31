@@ -210,6 +210,12 @@ func main() {
 			logs.GET("/:portion/:year", controllers.GetLogEntries)
 			logs.POST("/", controllers.AddLogEntry)
 		}
+
+		query := api.Group("/query", svcs.CheckJWT("scheduler"))
+		{
+			query.GET("/:teamid", controllers.BasicQuery)
+			query.POST("/", controllers.ComplexQuery)
+		}
 	}
 
 	// listen on port 6002

@@ -33,6 +33,8 @@ import { PtoHolidayBelowDialogComponent } from './home/pto-holiday-below-dialog/
 import { interceptorProviders } from './services/spin-interceptor.interceptor';
 import { LogViewerModule } from './log-viewer/log-viewer.module';
 import { LogsService } from './services/logs.service';
+import { QueryComponent } from './query/query.component';
+import { QueryService } from './services/query.service';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,8 @@ import { LogsService } from './services/logs.service';
     DeletionConfirmationComponent,
     ForgotPasswordComponent,
     ForgotPasswordResetComponent,
-    PtoHolidayBelowDialogComponent
+    PtoHolidayBelowDialogComponent,
+    QueryComponent
   ],
   imports: [
     BrowserModule,
@@ -70,7 +73,7 @@ import { LogsService } from './services/logs.service';
     DeletionConfirmationComponent
   ],
   providers: [AuthService, DialogService, EmployeeService, SiteService, 
-    TeamService, LogsService, interceptorProviders,
+    TeamService, LogsService, QueryService, interceptorProviders,
   ],
   bootstrap: [AppComponent]
 })

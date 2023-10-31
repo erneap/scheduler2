@@ -69,3 +69,9 @@ export interface UpdateTypeRequest {
   field: string;
   value: string;
 }
+
+export interface QueryRequest {
+  teamid: string;
+  hours: number;
+  specialties: number[];
+}

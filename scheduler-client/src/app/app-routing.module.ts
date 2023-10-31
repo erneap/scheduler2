@@ -17,6 +17,7 @@ import { NotificationsComponent } from './employee/notifications/notifications.c
 import { ForgotPasswordComponent } from './home/forgot-password/forgot-password.component';
 import { ForgotPasswordResetComponent } from './home/forgot-password-reset/forgot-password-reset.component';
 import { LogViewerComponent } from './log-viewer/log-viewer.component';
+import { QueryComponent } from './query/query.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -44,6 +45,7 @@ const routes: Routes = [
   { path: 'reports', component: ReportsComponent },
   { path: 'notifications', component: NotificationsComponent },
   { path: 'logs', component: LogViewerComponent },
+  { path: 'query', component: QueryComponent },
   { path: '**', component: NotFoundComponent}
 ];
 

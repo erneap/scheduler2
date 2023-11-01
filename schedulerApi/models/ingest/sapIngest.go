@@ -7,11 +7,13 @@ import (
 	"time"
 
 	"github.com/erneap/go-models/converters"
+	"github.com/erneap/scheduler2/schedulerApi/services"
 	"github.com/xuri/excelize/v2"
 )
 
 type SAPIngest struct {
-	Files []*multipart.FileHeader
+	Files  []*multipart.FileHeader
+	TeamID string
 }
 
 func (s *SAPIngest) Process() ([]ExcelRow, time.Time,
@@ -41,6 +43,8 @@ func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ExcelRow, time.Ti
 	sheetName := f.GetSheetName(0)
 
 	columns := make(map[string]int)
+
+	team, _ := services.GetTeam(s.TeamID)
 
 	rows, err := f.GetRows(sheetName)
 	if err != nil {
@@ -73,36 +77,26 @@ func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ExcelRow, time.Ti
 				extension := strings.TrimSpace(row[columns["Ext."]])
 				hours := converters.ParseFloat(row[columns["Hours"]])
 				// check to see if ingest row is for a leave type record
-				if strings.Contains(strings.ToLower(description), "leave") ||
-					strings.EqualFold(description, "pto") ||
-					strings.Contains(strings.ToLower(description), "holiday") ||
-					strings.Contains(strings.ToLower(description), "bereavement") {
-					code := "V"
-					parts := strings.Split(description, " ")
-					switch strings.ToLower(parts[0]) {
-					case "pto":
-						code = "V"
-					case "absence":
-						code = "H"
-					case "parental":
-						code = "PL"
-					case "military":
-						code = "ML"
-					case "jury":
-						code = "J"
-					case "bereavement":
-						code = "BR"
+				bLeave := false
+				if team != nil {
+					for _, wc := range team.Workcodes {
+						if wc.IsLeave {
+							if strings.Contains(strings.ToLower(description),
+								strings.ToLower(wc.Search)) {
+								code := wc.Id
+								record := ExcelRow{
+									Date:      date,
+									CompanyID: companyID,
+									Code:      code,
+									Hours:     hours,
+								}
+								records = append(records, record)
+								bLeave = true
+							}
+						}
 					}
-					record := ExcelRow{
-						Date:      date,
-						CompanyID: companyID,
-						Code:      code,
-						Hours:     hours,
-					}
-					records = append(records, record)
-					// else if the work record isn't for modified time then add as a work
-					// record
-				} else if !strings.Contains(strings.ToLower(description), "modified") {
+				}
+				if !bLeave && !strings.Contains(strings.ToLower(description), "modified") {
 					found := false
 					for r, record := range records {
 						if record.Date.Equal(date) && companyID == record.CompanyID &&

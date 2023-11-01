@@ -22,6 +22,7 @@ export interface CreateTeamWorkcodeRequest {
   start: number;
   shiftCode: string;
   altcode: string;
+  search: string;
   isLeave: boolean;
   textcolor: string;
   backcolor: string;

@@ -41,9 +41,6 @@ func GetSite(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "GetSite",
-		fmt.Sprintf("Provided site with employees: Team: %s, Site: %s", teamID,
-			siteID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -178,8 +175,6 @@ func CreateSite(c *gin.Context) {
 	}
 	sort.Sort(employees.ByEmployees(site.Employees))
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "CreateSite",
-		fmt.Sprintf("Site Created: %s", site.ID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -224,8 +219,6 @@ func UpdateSite(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UpdateSite",
-		fmt.Sprintf("Site Updated: %s", site.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -243,8 +236,6 @@ func DeleteSite(c *gin.Context) {
 			Exception: err.Error()})
 		return
 	}
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "DeleteSite",
-		fmt.Sprintf("Site Deleted: %s", siteid))
 	c.Status(http.StatusOK)
 }
 
@@ -286,9 +277,6 @@ func AddSitesEmployeeLeaveBalances(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "LeaveBalances", fmt.Sprintf(
-		"Site %s Leave Balances for Year %d With Employee Provided after update",
-		data.SiteID, data.Year))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -349,8 +337,6 @@ func CreateWorkcenter(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
-		fmt.Sprintf("Site Workcenter created: %s", data.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -417,9 +403,6 @@ func UpdateWorkcenter(c *gin.Context) {
 			Exception: err.Error()})
 		return
 	}
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "Updated", fmt.Sprintf(
-		"Update Workcenter Complete: Site: %s, Workcenter: %s, Field: %s, Value: %s",
-		data.SiteID, data.WkctrID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -468,8 +451,6 @@ func DeleteSiteWorkcenter(c *gin.Context) {
 			Exception: err.Error()})
 		return
 	}
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "Deleted",
-		fmt.Sprintf("Workcenter deleted: Site: %s, Wkctr: %s", site.Name, wkctrID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -536,9 +517,6 @@ func CreateWorkcenterPosition(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED", fmt.Sprintf(
-		"Workcenter Position Created: Site: %s, Workcenter: %s, Position: %s",
-		site.Name, data.WkctrID, data.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -629,9 +607,6 @@ func UpdateWorkcenterPosition(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED", fmt.Sprintf(
-		"Workcenter Position Updated: Site: %s, Wkctr: %s, Pos: %s, Field: %s, Value: %s",
-		site.Name, data.WkctrID, data.PositionID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -681,9 +656,6 @@ func DeleteWorkcenterPosition(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETION", fmt.Sprintf(
-		"Workcenter Position Deleted: Site: %s, Wkctr: %s, Position: %s",
-		site.Name, wkctrID, positionID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -750,9 +722,6 @@ func CreateWorkcenterShift(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "CREATE", "PROBLEM", fmt.Sprintf(
-		"Workcenter Shift Created: Site: %s, Wkctr: %s, Shift: %s", site.Name,
-		data.WkctrID, data.PositionID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -849,9 +818,6 @@ func UpdateWorkcenterShift(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED", fmt.Sprintf(
-		"Workcenter Shift Updated: Site: %s, Wkcgtr: %s, Shift: %s, Field: %s, Value: %s",
-		site.Name, data.WkctrID, data.PositionID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -901,9 +867,6 @@ func DeleteWorkcenterShift(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETED",
-		fmt.Sprintf("Workcenter Shift Deleted: Site: %s, Wkctr: %s, Shift: %s",
-			site.Name, wkctrID, shiftID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -1032,9 +995,6 @@ func CreateSiteLaborCode(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
-		fmt.Sprintf("Created Site Labor Code: Site: %s, ChargeNumber: %s, Ext: %s",
-			site.Name, data.ChargeNumber, data.Extension))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -1118,10 +1078,6 @@ func UpdateSiteLaborCode(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED",
-		fmt.Sprintf("Site Labor Code Updated: Site: %s, ChargeNumber: %s, Ext: %s,"+
-			"Field: %s, Value: %s", site.Name, data.ChargeNumber, data.Extension,
-			data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -1173,9 +1129,6 @@ func DeleteSiteLaborCode(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "Deleted",
-		fmt.Sprintf("Site Labor Code Deleted: Site: %s, ChargeNumber: %s, Ext: %s",
-			site.Name, chgNo, ext))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -1239,9 +1192,6 @@ func CreateSiteForecastReport(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
-		fmt.Sprintf("Created Forecast Report: Site: %s, Name: %s",
-			site.Name, data.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -1336,9 +1286,6 @@ func UpdateSiteForecastReport(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED",
-		fmt.Sprintf("Forecast Report Updated: Site: %s, Rpt: %d, Field:%s, Value: %s",
-			site.Name, data.ReportID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -1396,8 +1343,6 @@ func DeleteSiteForecastReport(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETED",
-		fmt.Sprintf("Forecast Report Deleted: Site: %s, Rpt: %d", site.Name, rptID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: nil, Site: site, Exception: ""})
 }
 
@@ -1461,9 +1406,6 @@ func CreateSiteCofSReport(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
-		fmt.Sprintf("CofS Report Created: Site: %s, CofS Rpt: %s",
-			site.Name, data.Name))
 	c.JSON(http.StatusOK,
 		web.SiteResponse{
 			Team: nil, Site: site, Exception: "",
@@ -1669,9 +1611,6 @@ func UpdateSiteCofSReport(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDAtED",
-		fmt.Sprintf("CofS Updated: Site: %s, RptID: %d, Field: %s, Value: %s",
-			site.Name, data.ReportID, data.Field, data.Value))
 	c.JSON(http.StatusOK,
 		web.SiteResponse{
 			Team: nil, Site: site, Exception: "",
@@ -1726,8 +1665,6 @@ func DeleteCofSReport(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETED",
-		fmt.Sprintf("CofS Report Deleted: Site: %s, RptID: %d", site.Name, rptID))
 	c.JSON(http.StatusOK,
 		web.SiteResponse{
 			Team: nil, Site: site, Exception: "",

@@ -75,7 +75,8 @@ func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ExcelRow, time.Ti
 				// check to see if ingest row is for a leave type record
 				if strings.Contains(strings.ToLower(description), "leave") ||
 					strings.EqualFold(description, "pto") ||
-					strings.Contains(strings.ToLower(description), "holiday") {
+					strings.Contains(strings.ToLower(description), "holiday") ||
+					strings.Contains(strings.ToLower(description), "bereavement") {
 					code := "V"
 					parts := strings.Split(description, " ")
 					switch strings.ToLower(parts[0]) {
@@ -89,6 +90,8 @@ func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ExcelRow, time.Ti
 						code = "ML"
 					case "jury":
 						code = "J"
+					case "bereavement":
+						code = "BR"
 					}
 					record := ExcelRow{
 						Date:      date,

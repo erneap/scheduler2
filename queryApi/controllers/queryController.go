@@ -71,7 +71,6 @@ func BasicQuery(c *gin.Context) {
 				if !wc.IsLeave && strings.EqualFold(wc.Id, wd.Code) {
 					start := int(wc.StartTime)
 					end := start + int(wd.Hours)
-					fmt.Printf("Local: %d, Start: %d, End: %d\n", localHour, start, end)
 					if end > start {
 						if localHour >= start && localHour <= end {
 							answer.Employees = append(answer.Employees, emp)
@@ -158,7 +157,15 @@ func ComplexQuery(c *gin.Context) {
 							if (localHour+hr) >= start && (localHour+hr) <= end {
 								// look for specialties
 								if len(data.Specialties) == 0 {
-									answer.Employees = append(answer.Employees, emp)
+									found := false
+									for _, e := range answer.Employees {
+										if emp.ID == e.ID {
+											found = true
+										}
+									}
+									if !found {
+										answer.Employees = append(answer.Employees, emp)
+									}
 								} else {
 									found := false
 									for _, sp := range data.Specialties {

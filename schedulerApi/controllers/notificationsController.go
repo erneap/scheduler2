@@ -84,8 +84,6 @@ func GetMessage(c *gin.Context) {
 		Messages:  messages,
 		Exception: "",
 	}
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "GET",
-		"Message Retrieved: "+messageid)
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -106,8 +104,6 @@ func GetAllMessages(c *gin.Context) {
 		Messages:  msgs,
 		Exception: "",
 	}
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "GETALL",
-		"Provided all messages.")
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -136,21 +132,10 @@ func CreateMessage(c *gin.Context) {
 		return
 	}
 
-	empTo, _ := services.GetEmployee(data.To)
-	empFrom, _ := services.GetEmployee(data.From)
-
 	messages, _ := svcs.GetMessagesByEmployee(data.UserID)
 	resp := &web.NotificationResponse{
 		Messages:  messages,
 		Exception: "",
-	}
-	if empTo != nil && empFrom != nil {
-		services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
-			fmt.Sprintf("New Message Provided: TO: %s, FROM: %s, Message: %s",
-				empTo.Name.GetLastFirstMI(), empFrom.Name.GetLastFirstMI(), data.Message))
-	} else {
-		services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
-			fmt.Sprintf("New Message Provided: Message: %s", data.Message))
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -205,15 +190,6 @@ func AcknowledgeMessages(c *gin.Context) {
 			msgList += ","
 		}
 		msgList += msg
-	}
-	if userid == "" {
-		services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATE",
-			fmt.Sprintf("%s Message Acknowledged: Messages: %s", logmsg, msgList))
-	} else {
-		emp, _ := services.GetEmployee(userid)
-		services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATE",
-			fmt.Sprintf("%s Message Acknowledged: To: %s, Messages: %s", logmsg,
-				emp.Name.GetLastFirstMI(), msgList))
 	}
 	resp := &web.NotificationResponse{
 		Messages:  messages,

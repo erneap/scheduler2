@@ -4,6 +4,7 @@ export interface IWorkcode {
   start: number;
   shiftCode: number;
   altcode: string;
+  search: string;
   isLeave: boolean;
   textcolor: string;
   backcolor: string;
@@ -15,6 +16,7 @@ export class Workcode implements IWorkcode {
   start: number;
   shiftCode: number;
   altcode: string;
+  search: string;
   isLeave: boolean;
   textcolor: string;
   backcolor: string;
@@ -25,6 +27,7 @@ export class Workcode implements IWorkcode {
     this.start = (wc) ? wc.start : 0;
     this.shiftCode = (wc) ? wc.shiftCode : 1;
     this.altcode = (wc) ? wc.altcode : '';
+    this.search = (wc) ? wc.search : '';
     this.isLeave = (wc) ? wc.isLeave : false;
     this.textcolor = (wc) ? wc.textcolor : '000000';
     this.backcolor = (wc) ? wc.backcolor : 'ffffff';

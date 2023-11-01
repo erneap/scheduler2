@@ -47,6 +47,7 @@ export class TeamWorkcodesComponent {
     this.codeForm = this.fb.group({
       id: ['', [Validators.required]],
       altcode: '',
+      search: '',
       title: ['', [Validators.required]],
       start: '0',
       premimum: '',
@@ -80,6 +81,7 @@ export class TeamWorkcodesComponent {
       this.workcode = new Workcode();
       this.codeForm.controls['id'].setValue('');
       this.codeForm.controls['altcode'].setValue('');
+      this.codeForm.controls['search'].setValue('');
       this.codeForm.controls['title'].setValue('');
       this.codeForm.controls['start'].setValue('0');
       this.codeForm.controls['premimum'].setValue('');
@@ -92,6 +94,7 @@ export class TeamWorkcodesComponent {
             this.workcode = new Workcode(wc);
             this.codeForm.controls['id'].setValue(wc.id);
             this.codeForm.controls['altcode'].setValue(wc.altcode);
+            this.codeForm.controls['search'].setValue(wc.search);
             this.codeForm.controls['title'].setValue(wc.title);
             this.codeForm.controls['start'].setValue(`${wc.start}`);
             this.codeForm.controls['premimum'].setValue(`${wc.shiftCode}`);

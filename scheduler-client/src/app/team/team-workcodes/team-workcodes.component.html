@@ -31,6 +31,14 @@
         </mat-form-field>
       </div>
       <div class="flexlayout row center">
+        <mat-form-field class="formField" 
+          *ngIf="workcode.isLeave || selected === 'new'">
+          <mat-label>Search For</mat-label>
+          <input matInput formControlName="search"
+          (blur)="onUpdate('search')">
+        </mat-form-field>
+      </div>
+      <div class="flexlayout row center">
         <mat-form-field class="formFieldWide">
           <mat-label>Title</mat-label>
           <input matInput formControlName="title"

@@ -14,14 +14,14 @@ RUN go mod download
 COPY . .
 
 # compile the application
-RUN go build -o /schedulerApi
+RUN go build -o /queryApi
 
 # add directory for reports to be stored and mounted with compose
 ADD . /data/reports
 ADD . /data/logs
 
 # expose the network port for runtime access
-EXPOSE 6002
+EXPOSE 6003
 
 # command used to execute the api 
-CMD [ "/schedulerApi" ]
+CMD [ "/queryApi" ]

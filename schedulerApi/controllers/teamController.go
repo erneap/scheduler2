@@ -102,8 +102,6 @@ func CreateTeam(c *gin.Context) {
 			fmt.Sprintf("%s CreateLeader: %s", logmsg, err.Error()))
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "CreateTeam",
-		fmt.Sprintf("Team Created: %s", data.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -144,8 +142,6 @@ func UpdateTeam(c *gin.Context) {
 			Exception: err.Error()})
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED",
-		fmt.Sprintf("Team Updated: Name: %s", data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -200,8 +196,6 @@ func DeleteTeam(c *gin.Context) {
 			Exception: err.Error()})
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETED",
-		fmt.Sprintf("Team Deleted: %s", teamID))
 	c.JSON(http.StatusOK, web.TeamsResponse{Teams: teams, Exception: ""})
 }
 
@@ -242,6 +236,7 @@ func CreateWorkcode(c *gin.Context) {
 			wCode.IsLeave = data.IsLeave
 			wCode.ShiftCode = data.ShiftCode
 			wCode.AltCode = data.AltCode
+			wCode.Search = data.Search
 			wCode.StartTime = data.StartTime
 			found = true
 			team.Workcodes[w] = wCode
@@ -254,6 +249,7 @@ func CreateWorkcode(c *gin.Context) {
 			StartTime: data.StartTime,
 			ShiftCode: data.ShiftCode,
 			AltCode:   data.AltCode,
+			Search:    data.Search,
 			IsLeave:   data.IsLeave,
 			BackColor: data.BackColor,
 			TextColor: data.TextColor,
@@ -270,8 +266,6 @@ func CreateWorkcode(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
-		fmt.Sprintf("Created Team Workcode: %s, Title: %s", data.Id, data.Title))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -321,6 +315,8 @@ func UpdateTeamWorkcode(c *gin.Context) {
 				wCode.TextColor = data.Value
 			case "alt", "altcode":
 				wCode.AltCode = data.Value
+			case "search":
+				wCode.Search = data.Value
 			case "colors":
 				colors := strings.Split(data.Value, "-")
 				wCode.TextColor = colors[0]
@@ -339,9 +335,6 @@ func UpdateTeamWorkcode(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED",
-		fmt.Sprintf("Team Workcode Updated: Team: %s, ID: %s, Field: %s, Value: %s",
-			team.Name, data.AdditionalID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -385,9 +378,6 @@ func DeleteTeamWorkcode(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETED",
-		fmt.Sprintf("Team Workcode Deleted: Team: %s, Workcode: %s",
-			team.Name, wcID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -446,9 +436,6 @@ func CreateTeamCompany(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
-		fmt.Sprintf("Team Company Created: Team: %s, Company: %s-%s",
-			team.Name, data.ID, data.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -512,9 +499,6 @@ func UpdateTeamCompany(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED", fmt.Sprintf(
-		"Team Company Updated: Team: %s, Company: %s, Field: %s, Value: %s",
-		data.TeamID, data.AdditionalID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -558,8 +542,6 @@ func DeleteTeamCompany(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETED",
-		fmt.Sprintf("Team Company Deleted: Team: %s, Company: %s", teamID, companyID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -643,9 +625,6 @@ func CreateCompanyHoliday(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATED",
-		fmt.Sprintf("Team Company Holiday Created: Team: %s, Company: %s, Holiday: %s",
-			data.TeamID, data.CompanyID, data.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -756,10 +735,6 @@ func UpdateCompanyHoliday(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED",
-		fmt.Sprintf("Team Company Holiday Updated: Team: %s, Company: %s, "+
-			"Holiday: %s, Value: %s", data.TeamID, data.AdditionalID, data.HolidayID,
-			data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -832,9 +807,6 @@ func DeleteCompanyHoliday(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETE",
-		fmt.Sprintf("Team Company Holiday Deleted: Team: %s, Company: %s, Holiday: %s",
-			teamID, companyID, holidayID))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -866,7 +838,7 @@ func CreateContactType(c *gin.Context) {
 		return
 	}
 
-	newID := team.AddContactType(data.ID, data.Name)
+	team.AddContactType(data.ID, data.Name)
 
 	if err = services.UpdateTeam(team); err != nil {
 		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
@@ -876,9 +848,6 @@ func CreateContactType(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "Add/Update",
-		fmt.Sprintf("Team Contact Type Added/updated: Team: %s, ID: %d, Name: %s",
-			data.TeamID, newID, data.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -940,9 +909,6 @@ func ChangeContactType(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "Update",
-		fmt.Sprintf("Team Contact Type Added/updated: Team: %s, ID: %d, Field: %s, Value: %s",
-			data.TeamID, data.ID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -1000,9 +966,6 @@ func DeleteContactType(c *gin.Context) {
 		services.UpdateEmployee(&emp)
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "Deleted",
-		fmt.Sprintf("Team Contact Type Deleted: Team: %s, ID: %d",
-			teamid, id))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -1034,7 +997,7 @@ func CreateSpecialtyType(c *gin.Context) {
 		return
 	}
 
-	newID := team.AddSpecialtyType(data.ID, data.Name)
+	team.AddSpecialtyType(data.ID, data.Name)
 
 	if err = services.UpdateTeam(team); err != nil {
 		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
@@ -1044,9 +1007,6 @@ func CreateSpecialtyType(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "Add/Update",
-		fmt.Sprintf("Team Specialty Type Added/updated: Team: %s, ID: %d, Name: %s",
-			data.TeamID, newID, data.Name))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -1108,9 +1068,6 @@ func ChangeSpecialtyType(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "Update",
-		fmt.Sprintf("Team Specialty Type Added/updated: Team: %s, ID: %d, Field: %s, Value: %s",
-			data.TeamID, data.ID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
@@ -1168,8 +1125,5 @@ func DeleteSpecialtyType(c *gin.Context) {
 		services.UpdateEmployee(&emp)
 	}
 
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "Deleted",
-		fmt.Sprintf("Team Specialty Type Deleted: Team: %s, ID: %d",
-			teamid, id))
 	c.JSON(http.StatusOK, web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }

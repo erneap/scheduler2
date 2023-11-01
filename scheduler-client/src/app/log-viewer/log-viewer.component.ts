@@ -27,7 +27,7 @@ export class LogViewerComponent {
   ) {
     const now = new Date();
     this.logForm = this.fb.group({
-      portion: ['scheduler', [Validators.required]],
+      portion: ['leaverequest', [Validators.required]],
       year: [now.getFullYear(), [Validators.required]],
     });
     this.setLogEntries();
@@ -56,5 +56,13 @@ export class LogViewerComponent {
         this.authService.statusMessage = err.exception;
       }
     });
+  }
+  
+  getListStyle(): string {
+    const screenHeight = window.innerHeight;
+    const screenWidth = window.innerWidth
+    let listHeight = screenHeight - 350;
+    let listWidth = screenWidth - 500;
+    return `height: ${listHeight}px;width: ${listWidth}px;`;
   }
 }

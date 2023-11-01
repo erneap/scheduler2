@@ -102,8 +102,6 @@ func GetEmployee(c *gin.Context) {
 		}
 		return
 	}
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "Employee",
-		fmt.Sprintf("%s Retrieved Employee: %s", logmsg, emp.Name.GetLastFirstMI()))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -269,9 +267,6 @@ func UpdateEmployeeBasic(c *gin.Context) {
 	emp.User = user
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATE",
-		fmt.Sprintf("%s Update: Field: %s, Value %s for Employee: %s",
-			logmsg, data.Field, data.Value, emp.Name.GetLastFirstMI()))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -315,10 +310,6 @@ func CreateEmployeeAssignment(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATE",
-		fmt.Sprintf("%s Assignment Created: %s: Starting: %s for %s", logmsg,
-			emp.SiteID, newAsgmt.StartDate.Format("01/02/06"),
-			emp.Name.GetLastFirstMI()))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -413,10 +404,6 @@ func UpdateEmployeeAssignment(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS",
-		"UPDATE", fmt.Sprintf("%s Assignment Updated: %s: %d: %s = %s",
-			logmsg, emp.Name.GetLastFirstMI(),
-			data.AssignmentID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -500,10 +487,6 @@ func UpdateEmployeeAssignmentWorkday(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATE", fmt.Sprintf(
-		"%s Assignment Workday Updated: %s: Asgmt: %d: Schedule: %d, Day: %d, %s = %s",
-		logmsg, emp.Name.GetLastFirstMI(), data.AssignmentID, data.ScheduleID,
-		data.WorkdayID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -550,9 +533,6 @@ func DeleteEmployeeAssignment(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS",
-		"DELETION", fmt.Sprintf("%s Assignment Deleted: %s: Asgmt: %d",
-			logmsg, emp.Name.GetLastFirstMI(), asgmtID))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -641,10 +621,6 @@ func CreateEmployeeVariation(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "CREATE",
-		fmt.Sprintf("%s Employee %s: Variation Created: %s - %s, MIDS: %t", logmsg,
-			emp.Name.GetLastFirstMI(), data.Variation.StartDate.Format("01-02-06"),
-			data.Variation.EndDate.Format("01-02-06"), data.Variation.IsMids))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -779,9 +755,6 @@ func UpdateEmployeeVariation(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATE",
-		fmt.Sprintf("%s Variation for %s Updated: VariID: %d, Field: %s, Value: %s",
-			logmsg, emp.Name.GetLastFirstMI(), data.AssignmentID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -856,10 +829,6 @@ func UpdateEmployeeVariationWorkday(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED",
-		fmt.Sprintf("%s Variation for %s Updated: VariID: %d, Workday: %d, "+
-			"Field: %s, Value: %s", logmsg, emp.Name.GetLastFirstMI(),
-			data.AssignmentID, data.WorkdayID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -913,9 +882,6 @@ func DeleteEmployeeVariation(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETED",
-		fmt.Sprintf("%s Variation Deleted from %s: VariID: %d", logmsg,
-			emp.Name.GetLastFirstMI(), variID))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -959,9 +925,6 @@ func CreateEmployeeLeaveBalance(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "Error", "CreateEmployeeLeaveBalance",
-		fmt.Sprintf("Leave Balance Created: %s: %d", data.EmployeeID,
-			data.Year))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -1031,9 +994,6 @@ func UpdateEmployeeLeaveBalance(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "UPDATED",
-		fmt.Sprintf("%s LeaveBalance Updated for %s: Year: %d, Field: %s, Value: %3.1f",
-			logmsg, emp.Name.GetLastFirstMI(), year, data.Field, fvalue))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -1087,9 +1047,6 @@ func DeleteEmployeeLeaveBalance(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETED",
-		fmt.Sprintf("%s LeaveBalance Deleted for %s: Year: %d",
-			logmsg, emp.Name.GetLastFirstMI(), year))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -1139,7 +1096,7 @@ func CreateEmployeeLeaveRequest(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "leaverequest", "CREATED", "SUCCESS",
+	services.AddLogEntry(c, "scheduler", "CREATED", "SUCCESS",
 		fmt.Sprintf("Leave Request Created for %s: Base Code: %s Period: %s-%s",
 			emp.Name.GetLastFirstMI(), data.Code,
 			data.StartDate.Format("01/02/06"), data.EndDate.Format("01/02/06")))
@@ -1206,6 +1163,18 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 			if err != nil {
 				fmt.Println(err.Error())
 			}
+			if req.ApprovedBy != "" {
+				logentry := fmt.Sprintf("Leave Request for %s was approved.<br>",
+					emp.Name.GetLastFirstMI()) +
+					fmt.Sprintf("Dates: Start: %s, End: %s<br>",
+						req.StartDate.Format("01/02/06"), req.EndDate.Format("01/02/06"))
+				approver, err := services.GetEmployee(req.ApprovedBy)
+				if err == nil {
+					logentry += fmt.Sprintf("Approved By: %s",
+						approver.Name.GetLastFirstMI())
+				}
+				services.AddLogEntry(c, "leaverequest", "SUCCESS", "Approved", logentry)
+			}
 		} else {
 			siteEmps, _ := services.GetEmployees(emp.TeamID.Hex(), emp.SiteID)
 			var to []string
@@ -1238,9 +1207,6 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "leaverequest", "UPDATE", "SUCCESS",
-		fmt.Sprintf("Leave Request Updated for %s: RequestID: %s, Field: %s, Value: %s",
-			emp.Name.GetLastFirstMI(), req.ID, data.Field, data.Value))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -1265,6 +1231,13 @@ func DeleteEmployeeLeaveRequest(c *gin.Context) {
 		return
 	}
 
+	var req employees.LeaveRequest
+	for _, r := range emp.Requests {
+		if r.ID == reqID {
+			req = r
+		}
+	}
+
 	err = emp.DeleteLeaveRequest(reqID)
 	if err != nil {
 		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
@@ -1284,9 +1257,10 @@ func DeleteEmployeeLeaveRequest(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "leaverequest", "DELETE", "SUCCESS",
-		fmt.Sprintf("Leave Request Deleted for: %s, Leave Request ID: %s",
-			emp.Name.GetLastFirstMI(), reqID))
+	services.AddLogEntry(c, "leaverequest", "SUCCESS", "DELETED",
+		fmt.Sprintf("Leave Request Deleted for: %s, Dates: Start: %s, "+
+			"End: %s", emp.Name.GetLastFirstMI(),
+			req.StartDate.Format("01/02/06"), req.EndDate.Format("01/02/06")))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -1491,9 +1465,6 @@ func AddEmployeeLaborCode(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "ADDITION",
-		fmt.Sprintf("Added Employee Labor Code for %s: ChargeNumber: %s, Ext: %s",
-			emp.Name.GetLastFirstMI(), data.ChargeNumber, data.Extension))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -1537,9 +1508,6 @@ func DeleteEmployeeLaborCode(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "DELETION",
-		fmt.Sprintf("Labor Code deleted for %s: ChargeNumber: %s, Ext: %s",
-			emp.Name.GetLastFirstMI(), chgNo, ext))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -1586,7 +1554,6 @@ func UpdateContact(c *gin.Context) {
 		return
 	}
 
-	action := ""
 	if data.ContactID == 0 {
 		sortid := 0
 		for _, ct := range team.ContactTypes {
@@ -1595,14 +1562,11 @@ func UpdateContact(c *gin.Context) {
 			}
 		}
 		emp.AddContactInfo(data.TypeID, data.Value, sortid)
-		action = "Add"
 	} else {
 		if data.Value != "" {
 			emp.AddContactInfo(data.TypeID, data.Value, 0)
-			action = "Update"
 		} else {
 			emp.DeleteContactInfo(data.ContactID)
-			action = "Delete"
 		}
 	}
 
@@ -1616,9 +1580,6 @@ func UpdateContact(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "ADDITION",
-		fmt.Sprintf("Updating contact: Employee: %s, ID: %d, Type: %d, Value: %s, Action: %s",
-			emp.Name.GetLastFirst(), data.ContactID, data.TypeID, data.Value, action))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -1665,7 +1626,6 @@ func UpdateSpecialty(c *gin.Context) {
 		return
 	}
 
-	action := ""
 	if data.Value {
 		sortid := 0
 		for _, ct := range team.SpecialtyTypes {
@@ -1674,10 +1634,8 @@ func UpdateSpecialty(c *gin.Context) {
 			}
 		}
 		emp.AddSpecialty(data.TypeID, data.Value, sortid)
-		action = "Add"
 	} else {
 		emp.DeleteSpecialty(data.SpecialtyID)
-		action = "Delete"
 	}
 
 	err = services.UpdateEmployee(emp)
@@ -1690,9 +1648,6 @@ func UpdateSpecialty(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "ADDITION",
-		fmt.Sprintf("Updating specialty: Employee: %s, ID: %d, Type: %d, Value: %t, Action: %s",
-			emp.Name.GetLastFirst(), data.SpecialtyID, data.TypeID, data.Value, action))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 
@@ -1739,7 +1694,6 @@ func UpdateSpecialties(c *gin.Context) {
 		return
 	}
 
-	action := ""
 	if strings.EqualFold(data.Action, "add") {
 		for _, sid := range data.Specialties {
 			sortid := 0
@@ -1750,12 +1704,10 @@ func UpdateSpecialties(c *gin.Context) {
 			}
 			emp.AddSpecialty(sid, true, sortid)
 		}
-		action = "Add"
 	} else {
 		for _, sid := range data.Specialties {
 			emp.DeleteSpecialty(sid)
 		}
-		action = "Delete"
 	}
 
 	err = services.UpdateEmployee(emp)
@@ -1768,8 +1720,5 @@ func UpdateSpecialties(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "ADDITION",
-		fmt.Sprintf("Updating specialty: Employee: %s, Action: %s",
-			emp.Name.GetLastFirst(), action))
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }

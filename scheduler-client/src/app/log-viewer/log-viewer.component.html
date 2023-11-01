@@ -2,11 +2,11 @@
   <mat-card class="standardCard" style="background-color: #3f51b3;">
     <mat-card-header>
       <div class="fxLayout-row-topleft">
-        <h2>Employee Leave Request Editor</h2>
+        <h2>Log Viewer</h2>
       </div>
     </mat-card-header>
     <mat-card-content>
-      <div class="overall">
+      <div class="flexlayout column topleft">
         <form [formGroup]="logForm" class="formRow">
           <mat-form-field appearance="fill">
             <mat-label>View Log</mat-label>
@@ -27,7 +27,7 @@
             <mat-icon>refresh</mat-icon>
           </button>
         </form>
-        <div class="logViewer">
+        <div class="logViewer" [style]="getListStyle()">
           <app-log-entry *ngFor="let entry of logEntries" [entry]="entry">
           </app-log-entry>
         </div>

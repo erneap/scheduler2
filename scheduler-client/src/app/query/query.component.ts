@@ -69,15 +69,19 @@ export class QueryComponent {
   
   getListStyle(): string {
     const screenHeight = window.innerHeight;
-    let listHeight = (this.employees.length * 30) + 65;
-    if ((screenHeight - 130) < listHeight) {
-      listHeight = screenHeight - 130;
-    }
+    let listHeight = screenHeight - 130;
     return `height: ${listHeight}px;`;
+  }
+  
+  getQueryStyle(): string {
+    const screenHeight = window.innerHeight;
+    let listHeight = screenHeight - 130;
+    return `width: 300px;height: ${listHeight}px;`;
   }
 
   onStartSimple() {
     this.dialog.showSpinner();
+    this.selectedEmployee = new Employee();
     this.queryService.getBasic(this.teamid).subscribe({
       next: (resp: IngestResponse) => {
         this.employees = [];
@@ -85,6 +89,10 @@ export class QueryComponent {
           this.employees.push(new Employee(emp));
         });
         this.employees.sort((a,b) => a.compareTo(b));
+        if (this.employees.length > 0) {
+          this.selected = this.employees[0].id;
+          this.selectedEmployee = new Employee(this.employees[0]);
+        }
         this.dialog.closeSpinner();
       },
       error: (err: IngestResponse) => {
@@ -146,6 +154,8 @@ export class QueryComponent {
 
   onComplexStart() {
     this.dialog.showSpinner();
+    this.selected = '';
+    this.selectedEmployee = new Employee();
     this.queryService.getQuery(this.teamid, this.query.value.hours, 
     this.query.value.specialties).subscribe({
       next: (resp: IngestResponse) => {
@@ -154,6 +164,10 @@ export class QueryComponent {
           this.employees.push(new Employee(emp));
         });
         this.employees.sort((a,b) => a.compareTo(b));
+        if (this.employees.length > 0) {
+          this.selected = this.employees[0].id;
+          this.selectedEmployee = new Employee(this.employees[0]);
+        }
         this.dialog.closeSpinner();
       },
       error: (err: IngestResponse) => {

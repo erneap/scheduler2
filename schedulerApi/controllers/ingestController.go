@@ -54,8 +54,6 @@ func GetIngestEmployees(c *gin.Context) {
 		}
 	}
 
-	services.AddLogEntry(c, "scheduler", "Debug", "INFORMATION",
-		fmt.Sprintf("%s Provided employees: %d", logmsg, len(companyEmployees)))
 	c.JSON(http.StatusOK, web.IngestResponse{
 		Employees:  companyEmployees,
 		IngestType: ingestType,
@@ -440,8 +438,6 @@ func IngestFiles(c *gin.Context) {
 		return
 	}
 
-	services.AddLogEntry(c, "scheduler", "Debug", "SUCCESS",
-		fmt.Sprintf("%s Provided Employees for Company: %s", logmsg, companyid))
 	c.JSON(http.StatusOK, web.IngestResponse{
 		Employees:  companyEmployees,
 		IngestType: ingestType,
@@ -542,9 +538,6 @@ func ManualIngestActions(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, web.IngestResponse{Exception: err.Error()})
 	}
 
-	services.AddLogEntry(c, "scheduler", "Error", "ManualIngestActions",
-		fmt.Sprintf("%s Update Complete: Provided company employees: %s", logmsg,
-			data.CompanyID))
 	c.JSON(http.StatusOK, web.IngestResponse{
 		Employees:  companyEmployees,
 		IngestType: "",

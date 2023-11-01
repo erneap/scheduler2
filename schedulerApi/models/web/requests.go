@@ -208,6 +208,7 @@ type CreateTeamWorkcodeRequest struct {
 	StartTime uint64 `json:"start"`
 	ShiftCode string `json:"shiftCode"`
 	AltCode   string `json:"altcode"`
+	Search    string `json:"search,omitempty"`
 	IsLeave   bool   `json:"isLeave"`
 	TextColor string `json:"textcolor"`
 	BackColor string `json:"backcolor"`

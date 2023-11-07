@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmployeeScheduleComponent } from './employee-schedule/employee-schedule.component';
 import { MaterialModule } from '../material.module';
+import { EmployeeScheduleModule } from './employee-schedule/employee-schedule.module';
 
 
 
@@ -11,7 +12,8 @@ import { MaterialModule } from '../material.module';
   ],
   imports: [
     CommonModule,
-    MaterialModule
+    MaterialModule,
+    EmployeeScheduleModule
   ]
 })
 export class EmployeeModule { }

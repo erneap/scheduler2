@@ -133,6 +133,7 @@ func IngestFiles(c *gin.Context) {
 	case "sap":
 		sapIngest := ingest.SAPIngest{
 			Files: files,
+			TeamID: teamid,
 		}
 		records, start, end = sapIngest.Process()
 

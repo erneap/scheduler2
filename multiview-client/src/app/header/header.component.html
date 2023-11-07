@@ -1,0 +1,17 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <app-header-menu *ngIf="authService.isAuthenticated"></app-header-menu>
+  <mat-icon svgIcon="calendar" *ngIf="!appState.isMobile()"></mat-icon>
+  <span class="flex-spacer"></span>
+  <a mat-button routerLink="home"><h1>{{getLabel()}}</h1></a>
+  <span class="flex-spacer"></span>
+  <button mat-icon-button *ngIf="!authService.isAuthenticated"
+    matTooltip="Show Login Form" (click)="viewLogin()">
+    <mat-icon>lock_open</mat-icon>
+  </button>
+  <button mat-icon-button *ngIf="this.msgService.showAlerts"
+    matTooltip="Notifications Available"
+    routerLink="/notifications"
+    >
+    <mat-icon class="warning-icon">notification_important</mat-icon>
+  </button>
+</mat-toolbar>

@@ -4,6 +4,7 @@ import { SiteAvailabilityComponent } from './site-availability/site-availability
 import { SiteMidScheduleComponent } from './site-mid-schedule/site-mid-schedule.component';
 import { SiteScheduleComponent } from './site-schedule/site-schedule.component';
 import { SiteSchedulerComponent } from './site-scheduler.component';
+import { SiteScheduleAllComponent } from './site-schedule-all/site-schedule-all.component';
 
 const routes: Routes = [
   {
@@ -12,6 +13,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: '/siteschedule/schedule', pathMatch: 'full'},
       { path: 'schedule', component: SiteScheduleComponent },
+      { path: 'scheduleall', component: SiteScheduleAllComponent },
       { path: 'coverage', component: SiteAvailabilityComponent },
       { path: 'mids', component: SiteMidScheduleComponent },
       { path: '**', component: SiteScheduleComponent },

@@ -34,20 +34,6 @@ func GetMessagesForEmployee(c *gin.Context) {
 		return
 	}
 
-	emp, err := services.GetEmployee(userid)
-	if err != nil {
-		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
-			fmt.Sprintf("%s GetEmployee: %s", logmsg, err.Error()))
-		resp := &web.NotificationResponse{
-			Messages:  msgs,
-			Exception: err.Error(),
-		}
-		c.JSON(http.StatusBadRequest, resp)
-	}
-
-	services.AddLogEntry(c, "scheduler", "SUCCESS", "GET",
-		fmt.Sprintf("%s Provided notification messages for: %s", logmsg,
-			emp.Name.GetLastFirstMI()))
 	resp := &web.NotificationResponse{
 		Messages:  msgs,
 		Exception: "",

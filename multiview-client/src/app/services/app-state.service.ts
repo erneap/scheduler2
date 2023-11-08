@@ -8,13 +8,15 @@ export class AppStateService {
   private viewState: ViewState;
 
   constructor() { 
-    if (window.innerWidth < 430) {
+    console.log(`${window.innerHeight} x ${window.innerWidth}`);
+    if (window.innerWidth < 450 || window.innerHeight < 450) {
       this.viewState = ViewState.Mobile;
     } else if (window.innerWidth < 1040) {
       this.viewState = ViewState.Tablet;
     } else {
       this.viewState = ViewState.Desktop;
     }
+    console.log(this.viewState.toString());
   }
 
   isMobile(): boolean {

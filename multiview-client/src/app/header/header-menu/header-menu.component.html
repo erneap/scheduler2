@@ -3,6 +3,10 @@
 </button>
 
 <mat-menu #menu="matMenu">
-  <button mat-menu-item>Employee</button>
-  <button mat-menu-item (click)="logout()">Log Out</button>
+  <button mat-menu-item [matMenuTriggerFor]="employeemenu">Employee</button>
+</mat-menu>
+
+<mat-menu #employeemenu="matMenu">
+  <button mat-menu-item (click)="goToLink('/employee/schedule')">Schedule</button>
+  <button mat-menu-item (click)="goToLink('/employee/ptoholidays')">PTO/Holidays</button>
 </mat-menu>

@@ -47,7 +47,15 @@ export class HeaderComponent {
   }
 
   viewLogin(): void {
-    console.log("GoTo Login");
     this.router.navigateByUrl('/login');
+  }
+
+  logout() {
+    this.siteService.clearSite();
+    this.teamService.clearTeam();
+    this.authService.setWebLabel('','');
+    this.msgService.clearMessages();
+    this.siteService.stopAutoUpdate();
+    this.authService.logout();
   }
 }

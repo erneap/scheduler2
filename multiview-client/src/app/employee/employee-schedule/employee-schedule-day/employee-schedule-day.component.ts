@@ -1,24 +1,32 @@
-import { Workday } from "src/app/models/employees/assignments";
-import { Workcenter } from "src/app/models/sites/workcenter";
-import { Workcode } from "src/app/models/teams/workcode";
-import { TeamService } from "src/app/services/team.service";
+import { Component, Input } from '@angular/core';
+import { Workday } from 'src/app/models/employees/assignments';
+import { Workcenter } from 'src/app/models/sites/workcenter';
+import { Workcode } from 'src/app/models/teams/workcode';
+import { TeamService } from 'src/app/services/team.service';
 
-export abstract class EmployeeScheduleDay {
+@Component({
+  selector: 'app-employee-schedule-day',
+  templateUrl: './employee-schedule-day.component.html',
+  styleUrls: ['./employee-schedule-day.component.scss']
+})
+export class EmployeeScheduleDayComponent {
   private _workday: Workday = new Workday();
   private _month: Date = new Date();
-  private _workcenters: Workcenter[] = [];
-
-  dateClass: string = "dayOfMonth";
-  workdayStyle: string = "background-color: white;color: black;"
+  @Input() 
   public set workday(wd: Workday) {
     if (!wd) {
-      this._workday = new Workday();
-    } else {
-      this._workday = new Workday(wd);
+      wd = new Workday();
     }
+    this._workday = wd;
     this.setDateClass();
     this.setWorkdayStyle();
   }
+  get workday(): Workday {
+    return this._workday;
+  }
+  dateClass: string = "dayOfMonth";
+  workdayStyle: string = "background-color: white;color: black;"
+  @Input() 
   public set month(date: Date) {
     this._month = new Date(date);
     this.setWorkdayStyle();
@@ -26,15 +34,7 @@ export abstract class EmployeeScheduleDay {
   get month(): Date {
     return this._month;
   }
-  public set workcenters(wkctrs: Workcenter[]) {
-    this._workcenters = [];
-    wkctrs.forEach(wk => {
-      this._workcenters.push(new Workcenter(wk))
-    })
-  }
-  get workcenters(): Workcenter[] {
-    return this._workcenters;
-  }
+  @Input() workcenters: Workcenter[] = [];
 
   constructor(
     protected teamService: TeamService,

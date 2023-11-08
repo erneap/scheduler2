@@ -1,0 +1,26 @@
+<div class="flexlayout column center">
+  <div class="label">Holidays</div>
+  <div class="flexlayout row center">
+    <div class="code">&nbsp;</div>
+    <div class="referenceDate">Reference Date</div>
+    <div class="dates">
+      Date Taken <span style="color: #3399ff;">(Projected)</span>
+    </div>
+    <div class="actual">Hours</div>
+  </div>
+  <app-employee-ptoholidays-holiday-cell-desktop 
+  *ngFor="let hol of holidays" [year]="year" [holiday]="hol"
+   [activecell]="isActive(hol)"></app-employee-ptoholidays-holiday-cell-desktop>
+  <div class="flexlayout row center">
+    <div class="code">&nbsp;</div>
+    <div class="daysleft">Days Left</div>
+    <div class="hoursleft">Hours Left</div>
+    <div class="hourstaken">Hours Taken</div>
+  </div>
+  <div class="flexlayout row center">
+    <div class="code">&nbsp;</div>
+    <div class="daysleftData">{{getHolidaysRemaining()}}</div>
+    <div class="hoursleftData">{{getHolidaysHoursRemaining()}}</div>
+    <div class="hourstakenData">{{getHolidayHoursTaken()}}</div>
+  </div>
+</div>

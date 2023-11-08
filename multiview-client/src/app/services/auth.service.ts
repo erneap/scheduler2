@@ -108,7 +108,7 @@ export class AuthService extends CacheService {
           this.stopTokenInterval();
           this.isAuthenticated = false;
           this.setWebLabel("", "");
-          this.router.navigate(["/home"]);
+          this.router.navigate(["/login"]);
         },
         error: (err: ExceptionResponse) => {
           this.dialogService.closeSpinner();

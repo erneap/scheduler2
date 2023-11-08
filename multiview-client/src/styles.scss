@@ -7,11 +7,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .flex-spacer { flex: 1 1 auto; }
 
 .fxLayout {
-    margin-top: 2em;
+    margin-top: 2rem;
 }
 
 .flexlayout {
     display: flex;
+    padding: 0;
 }
 
 .column {

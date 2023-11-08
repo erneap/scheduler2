@@ -1,10 +1,20 @@
-import { Workday } from "src/app/models/employees/assignments";
-import { Workcenter } from "src/app/models/sites/workcenter";
-import { WorkWeek } from "src/app/models/web/internalWeb";
-import { EmployeeService } from "src/app/services/employee.service";
+import { Component, Input } from '@angular/core';
+import { Workday } from 'src/app/models/employees/assignments';
+import { Workcenter } from 'src/app/models/sites/workcenter';
+import { Workcode } from 'src/app/models/teams/workcode';
+import { EmployeeService } from 'src/app/services/employee.service';
+import { WorkWeek } from '../employee-schedule.model';
+import { SiteService } from 'src/app/services/site.service';
+import { TeamService } from 'src/app/services/team.service';
 
-export abstract class EmployeeScheduleMonth {
-  private workCtr: Workcenter[] = [];
+@Component({
+  selector: 'app-employee-schedule-month',
+  templateUrl: './employee-schedule-month.component.html',
+  styleUrls: ['./employee-schedule-month.component.scss']
+})
+export class EmployeeScheduleMonthComponent {
+  public workcenters: Workcenter[] = [];
+  public workcodes: Workcode[] = [];
   months: string[] = new Array("January", "Febuary", "March", "April", "May",
     "June", "July", "August", "September", "October", "November", "December");
 
@@ -19,22 +29,26 @@ export abstract class EmployeeScheduleMonth {
 
   constructor(
     protected employeeService: EmployeeService,
+    protected siteService: SiteService,
+    protected teamService: TeamService
   ) {
-    this.workCtr = [];
+    this.workcodes = [];
+    const team = this.teamService.getTeam();
+    if (team) {
+      team.workcodes.forEach(wc => {
+        this.workcodes.push(new Workcode(wc));
+      });
+    }
+    this.workcenters = [];
+    const site = this.siteService.getSite();
+    if (site) {
+      site.workcenters.forEach(wc => {
+        this.workcenters.push(new Workcenter(wc));
+      });
+    }
     this.month = new Date();
     this.month = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
     this.setMonth();
-  }
-
-  setWorkcenters(wkctr: Workcenter[]) {
-    this.workCtr = [];
-    wkctr.forEach(wk => {
-      this.workCtr.push(new Workcenter(wk));
-    });
-  }
-
-  getWorkcenters(): Workcenter[] {
-    return this.workCtr;
   }
 
   setMonth() {

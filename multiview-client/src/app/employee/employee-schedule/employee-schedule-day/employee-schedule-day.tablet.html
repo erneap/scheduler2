@@ -1,1 +1,7 @@
-<p>employee-schedule-day works!</p>
+<div class="cell" [style]="getCellStyle('')">
+  <div [class]="dateClass">{{workday.date?.getUTCDate()}}</div>
+  <div class="code">{{workday.code}}</div>
+  <div class="workcenter">
+    {{getWorkcenter()}}
+  </div>
+</div>

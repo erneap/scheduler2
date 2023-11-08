@@ -23,12 +23,7 @@ export class HeaderMenuComponent {
     
   }
 
-  logout() {
-    this.siteService.clearSite();
-    this.teamService.clearTeam();
-    this.authService.setWebLabel('','');
-    this.msgService.clearMessages();
-    this.siteService.stopAutoUpdate();
-    this.authService.logout();
+  goToLink(url: string) {
+    this.router.navigateByUrl(url);
   }
 }

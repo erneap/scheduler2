@@ -1,0 +1,63 @@
+.dayOfMonth {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-size: .8em;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  height: 1.1m;
+  width: 1.1em;
+  padding: 0px;
+  margin: 0px;
+}
+
+.weekend {
+  background-color: aqua;
+  color: black;
+  border: solid 1px aqua;
+}
+
+.today {
+  background-color: darkred;
+  color: white;
+  border: solid 1px darkred;
+}
+
+.weekday {
+  background-color: white;
+  color: black;
+  border: solid 1px white;
+}
+
+.cell {
+  margin: 0px;
+  padding: 0px;
+  height: 3.55rem;
+  width: 3.55rem;
+  position: relative;
+  border: solid 1px black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.code {
+  margin-top: .5rem;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.workcenter {
+  position: absolute;
+  top: 75px;
+  left: 0px;
+  right: 0px;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0px;
+  margin: 0px;
+  font-size: 1em;
+  font-weight: bold;
+  height: 25px;
+}

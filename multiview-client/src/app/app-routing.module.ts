@@ -12,6 +12,7 @@ import { EmployeePTOHolidaysChartTablet } from './employee/employee-ptoholidays/
 import { EmployeeProfileDesktop } from './employee/employee-profile/employee-profile.desktop';
 import { EmployeeProfileMobile } from './employee/employee-profile/employee-profile.mobile';
 import { EmployeeProfileTablet } from './employee/employee-profile/employee-profile.tablet';
+import { EmployeeLeaveRequestEditorDesktop } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.desktop';
 
 const desktop_routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -20,7 +21,8 @@ const desktop_routes: Routes = [
     children: [
       {path: 'schedule', component: EmployeeScheduleMonthDesktop},
       {path: 'ptoholidays', component: EmployeePTOHolidaysChartDesktop },
-      {path: 'profile', component: EmployeeProfileDesktop }
+      {path: 'profile', component: EmployeeProfileDesktop },
+      {path: 'leaverequest', component: EmployeeLeaveRequestEditorDesktop }
     ]
   },
   {path: '**', redirectTo: 'login'}

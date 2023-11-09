@@ -133,7 +133,7 @@ export class LeaveRequest implements ILeaveRequest {
     this.primarycode = (lr) ? lr.primarycode : 'V';
     this.startdate = (lr) ? new Date(lr.startdate) : new Date();
     this.enddate = (lr) ? new Date(lr.enddate) : new Date();
-    this.status = (lr) ? lr.status : 'REQUESTED';
+    this.status = (lr) ? lr.status : 'DRAFT';
     this.approvedby = (lr) ? lr.approvedby : '';
     this.approvalDate = (lr) ? new Date(lr.approvalDate) : new Date(0);
     this.requesteddays = [];

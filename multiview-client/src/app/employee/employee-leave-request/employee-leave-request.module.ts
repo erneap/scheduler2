@@ -14,6 +14,16 @@ import { EmployeeLeaveRequestEditorComponent } from './employee-leave-request-ed
 import { EmployeeLeaveRequestEditorDesktop } from './employee-leave-request-editor/employee-leave-request-editor.desktop';
 import { EmployeeLeaveRequestEditorMobile } from './employee-leave-request-editor/employee-leave-request-editor.mobile';
 import { EmployeeLeaveRequestEditorTablet } from './employee-leave-request-editor/employee-leave-request-editor.tablet';
+import { EmployeeLeaveRequestDeletionDialogComponent } from './employee-leave-request-deletion-dialog/employee-leave-request-deletion-dialog.component';
+import { EmployeeLeaveRequestUnapproveDialogComponent } from './employee-leave-request-unapprove-dialog/employee-leave-request-unapprove-dialog.component';
+import { EmployeeLeaveRequestAvailabilityDayComponent } from './employee-leave-request-availability-day/employee-leave-request-availability-day.component';
+import { EmployeeLeaveRequestAvailabilityDayDesktop } from './employee-leave-request-availability-day/employee-leave-request-availability-day.desktop';
+import { EmployeeLeaveRequestAvailabilityDayMobile } from './employee-leave-request-availability-day/employee-leave-request-availability-day.mobile';
+import { EmployeeLeaveRequestAvailabilityDayTablet } from './employee-leave-request-availability-day/employee-leave-request-availability-day.tablet';
+import { EmployeeLeaveRequestAvailabilityCalendarComponent } from './employee-leave-request-availability-calendar/employee-leave-request-availability-calendar.component';
+import { EmployeeLeaveRequestAvailabilityCalendarTablet } from './employee-leave-request-availability-calendar/employee-leave-request-availability-calendar.tablet';
+import { EmployeeLeaveRequestAvailabilityCalendarMobile } from './employee-leave-request-availability-calendar/employee-leave-request-availability-calendar.mobile';
+import { EmployeeLeaveRequestAvailabilityCalendarDesktop } from './employee-leave-request-availability-calendar/employee-leave-request-availability-calendar.desktop';
 
 
 
@@ -30,7 +40,17 @@ import { EmployeeLeaveRequestEditorTablet } from './employee-leave-request-edito
     EmployeeLeaveRequestEditorComponent,
     EmployeeLeaveRequestEditorDesktop,
     EmployeeLeaveRequestEditorMobile,
-    EmployeeLeaveRequestEditorTablet
+    EmployeeLeaveRequestEditorTablet,
+    EmployeeLeaveRequestDeletionDialogComponent,
+    EmployeeLeaveRequestUnapproveDialogComponent,
+    EmployeeLeaveRequestAvailabilityDayComponent,
+    EmployeeLeaveRequestAvailabilityDayDesktop,
+    EmployeeLeaveRequestAvailabilityDayMobile,
+    EmployeeLeaveRequestAvailabilityDayTablet,
+    EmployeeLeaveRequestAvailabilityCalendarComponent,
+    EmployeeLeaveRequestAvailabilityCalendarTablet,
+    EmployeeLeaveRequestAvailabilityCalendarMobile,
+    EmployeeLeaveRequestAvailabilityCalendarDesktop
   ],
   imports: [
     CommonModule,

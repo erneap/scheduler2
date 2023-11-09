@@ -56,7 +56,7 @@ export class EmployeeLeaveRequestDayComponent {
   }
 
   setLeave() {
-    if (this._leave && this._show && this._codes.length > 0) {
+    if (this._leave && this._codes.length > 0) {
       this.dayForm.controls["code"].setValue(this.leave.code);
       if (this.leave.code !== '') {
         this.dayForm.controls["hours"].setValue(this.leave.hours);

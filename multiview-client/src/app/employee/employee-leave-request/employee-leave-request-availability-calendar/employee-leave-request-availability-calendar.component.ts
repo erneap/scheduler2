@@ -1,18 +1,21 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { ILeaveDay, LeaveDay } from 'src/app/models/employees/leave';
-import { Workcode } from 'src/app/models/teams/workcode';
+import { ISite, Site } from 'src/app/models/sites/site';
 import { LeaveGroup, LeaveMonth } from '../../employee-ptoholidays/employee-ptoholidays.model';
 
 @Component({
-  selector: 'app-employee-leave-request-calendar',
-  templateUrl: './employee-leave-request-calendar.component.html',
-  styleUrls: ['./employee-leave-request-calendar.component.scss']
+  selector: 'app-employee-leave-request-availability-calendar',
+  templateUrl: './employee-leave-request-availability-calendar.component.html',
+  styleUrls: ['./employee-leave-request-availability-calendar.component.scss']
 })
-export class EmployeeLeaveRequestCalendarComponent {
+export class EmployeeLeaveRequestAvailabilityCalendarComponent {
+
   private _startDate: Date = new Date();
   private _endDate: Date = new Date();
   private _leaveDays: LeaveDay[] = [];
-  @Input() leaveCodes: Workcode[] = [];
+  private _employee: Employee = new Employee();
+  private _site: Site = new Site();
   @Input()
   public set startdate(date: Date) {
     this._startDate = new Date(date);
@@ -41,7 +44,22 @@ export class EmployeeLeaveRequestCalendarComponent {
   get leavedays(): LeaveDay[] {
     return this._leaveDays;
   }
-  @Output() changed = new EventEmitter<string>();
+  @Input()
+  public set employee(iEmp: IEmployee) {
+    this._employee = new Employee(iEmp);
+    this.setMonth();
+  }
+  get employee(): Employee {
+    return this._employee;
+  }
+  @Input()
+  public set site(isite: ISite) {
+    this._site = new Site(isite);
+    this.setMonth();
+  }
+  get site(): Site {
+    return this._site;
+  }
 
   calendar: LeaveMonth = new LeaveMonth();
 
@@ -78,13 +96,8 @@ export class EmployeeLeaveRequestCalendarComponent {
     }
   }
 
-  processChange(value: string) {
-    this.changed.emit(value);
-  }
-
   showDay(lv: LeaveDay): boolean {
-    const answer = (lv.leavedate.getTime() >= this.startdate.getTime() 
+    return (lv.leavedate.getTime() >= this.startdate.getTime() 
       && lv.leavedate.getTime() <= this.enddate.getTime());
-    return answer;
   }
 }

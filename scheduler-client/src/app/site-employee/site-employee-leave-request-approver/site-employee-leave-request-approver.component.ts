@@ -64,7 +64,8 @@ export class SiteEmployeeLeaveRequestApproverComponent {
 
   setRequests() {
     this.requests = [];
-    const now = new Date();
+    let now = new Date();
+    now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
     const iUser = this.authService.getUser();
     if (iUser && this.site.employees) {
       this.site.employees.forEach(emp => {
@@ -72,8 +73,7 @@ export class SiteEmployeeLeaveRequestApproverComponent {
           if (emp.requests && emp.requests.length > 0) {
             let reqs = emp.requests.sort((a,b) => b.compareTo(a));
             reqs.forEach(req => {
-              if (req.enddate.getTime() > now.getTime() 
-              && req.approvedby === '' 
+              if (req.approvedby === '' 
               && req.status.toLowerCase() === 'requested') {
                 let id = `${emp.id}|${req.id}`;
                 let label = `${emp.name.last}: `

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../material.module';
 import { EmployeeScheduleModule } from './employee-schedule/employee-schedule.module';
 import { EmployeePTOHolidaysModule } from './employee-ptoholidays/employee-ptoholidays.module';
+import { EmployeeProfileModule } from './employee-profile/employee-profile.module';
+import { LeaveRequestModule } from './leave-request/leave-request.module';
 
 
 
@@ -13,7 +15,9 @@ import { EmployeePTOHolidaysModule } from './employee-ptoholidays/employee-ptoho
     CommonModule,
     MaterialModule,
     EmployeeScheduleModule,
-    EmployeePTOHolidaysModule
+    EmployeePTOHolidaysModule,
+    EmployeeProfileModule,
+    LeaveRequestModule
   ]
 })
 export class EmployeeModule { }

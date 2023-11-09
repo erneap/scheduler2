@@ -17,7 +17,7 @@ export class EmployeePTOHolidaysChartDesktop extends EmployeePTOHolidayChartComp
   }
 
   chartWidthStyle(): string {
-    let width = 31.9;
+    let width = 33.3;
     if (this.showHolidays) {
       width += 33.3;
     }

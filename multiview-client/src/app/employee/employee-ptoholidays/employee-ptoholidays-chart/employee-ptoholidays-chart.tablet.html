@@ -1,1 +1,22 @@
-<p>employee-ptoholidays-chart works!</p>
+<div class="fxLayout flexlayout column center">
+  <div class="flexlayout column center chart">
+    <div class="flexlayout row center year">
+      <button mat-raised-button color="accent" (click)="updateYear('down')">
+        &lt;&lt;
+      </button>
+      <span class="flex-spacer"></span>
+      {{year}}
+      <span class="flex-spacer"></span>
+      <button mat-raised-button color="accent" (click)="updateYear('up')">
+        &gt;&gt;
+      </button>
+    </div>
+    <div [class]="displayStyle()">
+      <app-employee-ptoholidays-holiday-tablet *ngIf="showHolidays" 
+        [employee]="employee" [year]="year">
+      </app-employee-ptoholidays-holiday-tablet>
+      <app-employee-ptoholidays-pto-tablet [year]="year" [employee]="employee">
+      </app-employee-ptoholidays-pto-tablet>
+    </div>
+  </div>
+</div>

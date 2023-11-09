@@ -7,6 +7,11 @@ import { EmployeeScheduleMonthTablet } from './employee/employee-schedule/employ
 import { AppStateService } from './services/app-state.service';
 import { EmployeeScheduleMonthMobile } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.mobile';
 import { EmployeePTOHolidaysChartDesktop } from './employee/employee-ptoholidays/employee-ptoholidays-chart/employee-ptoholidays-chart.desktop';
+import { EmployeePTOHolidaysChartMobile } from './employee/employee-ptoholidays/employee-ptoholidays-chart/employee-ptoholidays-chart.mobile';
+import { EmployeePTOHolidaysChartTablet } from './employee/employee-ptoholidays/employee-ptoholidays-chart/employee-ptoholidays-chart.tablet';
+import { EmployeeProfileDesktop } from './employee/employee-profile/employee-profile.desktop';
+import { EmployeeProfileMobile } from './employee/employee-profile/employee-profile.mobile';
+import { EmployeeProfileTablet } from './employee/employee-profile/employee-profile.tablet';
 
 const desktop_routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -14,7 +19,8 @@ const desktop_routes: Routes = [
   {path: 'employee',
     children: [
       {path: 'schedule', component: EmployeeScheduleMonthDesktop},
-      {path: 'ptoholidays', component: EmployeePTOHolidaysChartDesktop }
+      {path: 'ptoholidays', component: EmployeePTOHolidaysChartDesktop },
+      {path: 'profile', component: EmployeeProfileDesktop }
     ]
   },
   {path: '**', redirectTo: 'login'}
@@ -26,6 +32,8 @@ const mobile_routes: Routes = [
   {path: 'employee',
     children: [
       {path: 'schedule', component: EmployeeScheduleMonthMobile},
+      {path: 'ptoholidays', component: EmployeePTOHolidaysChartMobile },
+      {path: 'profile', component: EmployeeProfileMobile }
     ]
   },
   {path: '**', redirectTo: 'login'}
@@ -37,6 +45,8 @@ const tablet_routes: Routes = [
   {path: 'employee',
     children: [
       {path: 'schedule', component: EmployeeScheduleMonthTablet},
+      {path: 'ptoholidays', component: EmployeePTOHolidaysChartTablet },
+      {path: 'profile', component: EmployeeProfileTablet }
     ]
   },
   {path: '**', redirectTo: 'login'}

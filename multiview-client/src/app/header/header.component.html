@@ -1,5 +1,7 @@
 <mat-toolbar color="primary" class="app-toolbar">
-  <app-header-menu *ngIf="authService.isAuthenticated"></app-header-menu>
+  <button mat-icon-button (click)="toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
   <mat-icon svgIcon="calendar" *ngIf="!appState.isMobile()"></mat-icon>
   <span class="flex-spacer"></span>
   <a mat-button routerLink="home"><h1>{{getLabel()}}</h1></a>

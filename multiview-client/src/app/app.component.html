@@ -1,5 +1,15 @@
 <div class="app-container">
-  <app-header></app-header>
-  <router-outlet></router-outlet>
+  <app-header (sidenav)="sidenav.toggle()"></app-header>
+  <mat-sidenav-container class="app-sidenav-container"
+    [class.marginTop.px]="appState.isMobile() ? 56 : 0">
+    <mat-sidenav #sidenav [mode]="appState.isMobile() ? 'over' : 'side'"
+      [fixedInViewport]="appState.isMobile()" fixedTopGap="56" 
+      [opened]="this.authService.isAuthenticated && appState.isDesktop()">
+      <app-side-menu (sidenav)="sidenav.toggle()"></app-side-menu>
+    </mat-sidenav>
+    <mat-sidenav-content [style]="getHeight()">
+      <router-outlet class="app-container"></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
   <div class="statusbar"></div>
 </div>

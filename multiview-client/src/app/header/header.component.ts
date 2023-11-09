@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AppStateService } from '../services/app-state.service';
@@ -14,6 +14,7 @@ import { MessageService } from '../services/message.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
+  @Output() sidenav = new EventEmitter<any>();
   constructor(
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
@@ -57,5 +58,9 @@ export class HeaderComponent {
     this.msgService.clearMessages();
     this.siteService.stopAutoUpdate();
     this.authService.logout();
+  }
+
+  toggle() {
+    this.sidenav.emit();
   }
 }

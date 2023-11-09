@@ -4,23 +4,23 @@ import { PtoHolidayBelowDialogComponent } from './pto-holiday-below-dialog/pto-h
 import { MaterialModule } from '../material.module';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ForgotPasswordResetComponent } from './forgot-password-reset/forgot-password-reset.component';
-import { HeaderMenuComponent } from './header-menu/header-menu.component';
 import { LoginComponent } from './login/login.component';
 import { PasswordExpireDialogComponent } from './password-expire-dialog/password-expire-dialog.component';
 import { HeaderComponent } from './header.component';
 import { WaitDialogComponent } from './wait-dialog/wait-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SideMenuComponent } from './side-menu/side-menu.component';
 
 @NgModule({
   declarations: [
     PtoHolidayBelowDialogComponent,
     ForgotPasswordComponent,
     ForgotPasswordResetComponent,
-    HeaderMenuComponent,
     LoginComponent,
     PasswordExpireDialogComponent,
     HeaderComponent,
-    WaitDialogComponent
+    WaitDialogComponent,
+    SideMenuComponent
   ],
   imports: [
     CommonModule,
@@ -29,7 +29,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule
   ],
   exports: [
-    HeaderComponent
+    HeaderComponent,
+    SideMenuComponent
   ]
 })
 export class HeaderModule { }

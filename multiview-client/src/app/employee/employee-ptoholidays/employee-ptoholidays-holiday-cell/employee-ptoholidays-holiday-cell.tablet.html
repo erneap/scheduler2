@@ -1,1 +1,10 @@
-<p>employee-ptoholidays-holiday-cell works!</p>
+<div class="flexlayout row center" [style]="cellBackground">
+  <div class="code" [style]="getWidthStyle('code')">{{getHolidayID()}}</div>
+  <div class="referenceDate" [style]="getWidthStyle('reference')">{{referenceDate}}</div>
+  <div class="dates" [style]="getWidthStyle('dates')">
+    <app-employee-ptoholidays-holiday-cell-display 
+      *ngFor="let day of holiday.leaveDays" 
+      [holiday]="day"></app-employee-ptoholidays-holiday-cell-display>
+  </div>
+  <div class="actual" [style]="getWidthStyle('actual')">{{getTotalActual()}}</div>
+</div>

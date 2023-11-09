@@ -15,4 +15,19 @@ export class EmployeePTOHolidaysChartTablet extends EmployeePTOHolidayChartCompo
   ) {
     super(es, ts);
   }
+
+  chartWidthStyle(): string {
+    let width = window.innerWidth - 1 
+    return `width: ${width}px;`
+  }
+
+  displayStyle(): string {
+    let answer = "flexlayout center";
+    if (window.innerWidth < window.innerHeight) {
+      answer += " column";
+    } else {
+      answer += " row";
+    }
+    return answer;
+  }
 }

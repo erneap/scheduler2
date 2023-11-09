@@ -4,8 +4,7 @@ import { MaterialModule } from '../material.module';
 import { EmployeeScheduleModule } from './employee-schedule/employee-schedule.module';
 import { EmployeePTOHolidaysModule } from './employee-ptoholidays/employee-ptoholidays.module';
 import { EmployeeProfileModule } from './employee-profile/employee-profile.module';
-import { LeaveRequestModule } from './leave-request/leave-request.module';
-
+import { EmployeeLeaveRequestModule } from './employee-leave-request/employee-leave-request.module';
 
 
 @NgModule({
@@ -17,7 +16,7 @@ import { LeaveRequestModule } from './leave-request/leave-request.module';
     EmployeeScheduleModule,
     EmployeePTOHolidaysModule,
     EmployeeProfileModule,
-    LeaveRequestModule
+    EmployeeLeaveRequestModule
   ]
 })
 export class EmployeeModule { }

@@ -1,0 +1,20 @@
+<div class="cell" [style]="dayStyle">
+  <form [formGroup]="dayForm">
+    <div class="dayOfMonth weekday">{{leave.leavedate.getUTCDate()}}</div>
+    <div class="code">
+      <select class="day-form-field" formControlName="code"
+      [style]="fontStyle"
+        (change)="changeCode()">
+        <option value=""></option>
+        <ng-container *ngFor="let opt of leaveCodes">
+          <option [value]="opt.id" class="options">{{opt.title.toUpperCase()}}</option>
+        </ng-container>
+      </select>
+    </div>
+    <div class="hours">
+      <input class="day-form-field" formControlName="hours"
+        [style]="fontStyle"
+        (blur)="changeCode()">
+    </div>
+  </form>
+</div>

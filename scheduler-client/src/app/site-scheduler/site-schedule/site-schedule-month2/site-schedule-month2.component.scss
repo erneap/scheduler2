@@ -60,6 +60,12 @@
 }
 
 .mat-expansion-panel,
+.mat-expansion-panel-header,
+mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
+.mat-expansion-panel,
 .mat-expansion-panel.mat-extended {
   background-color: gray;
   border-bottom: solid 1px black;
@@ -69,4 +75,5 @@ mat-panel-description {
   font-size: 1.25em;
   font-weight: bold;
   color: white;
+  padding-left: 5px;
 }

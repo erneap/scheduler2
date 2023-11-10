@@ -60,6 +60,7 @@ export class EmployeeLeaveRequestEditorComponent {
   holidayhours: number = 0;
   workcodes: Workcode[] = [];
   approver: boolean = false;
+  stdHours: number = 10.0;
 
   constructor(
     protected authService: AuthService,
@@ -72,7 +73,7 @@ export class EmployeeLeaveRequestEditorComponent {
     protected dialog: MatDialog
   ) { 
     this.selectionForm = this.fb.group({
-      leaverequest: '',
+      leaverequest: ['', [Validators.required]],
     });
     this.editorForm = this.fb.group({
       start: [new Date(), [Validators.required]],
@@ -94,6 +95,7 @@ export class EmployeeLeaveRequestEditorComponent {
       this.site = site;
     }
     this.setRequests();
+    this.setCurrent();
     const tEmp = this.authService.getUser();
     if (tEmp) {
       if (this.employee.id !== tEmp.id 
@@ -120,6 +122,8 @@ export class EmployeeLeaveRequestEditorComponent {
       }
     });
     this.requests.sort((a,b) => a.compareTo(b));
+
+    this.stdHours = this.employee.getStandardWorkday(this.site.id, now);
   }
 
   setCurrent() {
@@ -131,6 +135,7 @@ export class EmployeeLeaveRequestEditorComponent {
       this.selected = new LeaveRequest();
     } else if (reqID === '0') {
       this.selected = new LeaveRequest();
+      this.selected.id = 'new';
     } else {
       this.selected = new LeaveRequest();
       this.requests.forEach(req => {
@@ -499,6 +504,10 @@ export class EmployeeLeaveRequestEditorComponent {
         }
       });
     }
-
   }
-}
+
+  selectorWidth(): string {
+    let width = (window.innerWidth - 100 > 400) ? 400 : window.innerWidth - 100;
+    return `width: ${width}px;`
+  }
+ }

@@ -29,6 +29,7 @@ constructor(
   protected siteService: SiteService,
   protected dialogService: DialogService
 ) {
+  this.expanded = this.siteService.getExpanded();
   this.month = new Date();
   this.month = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
   this.setMonth();
@@ -56,7 +57,7 @@ setMonth() {
   }
 
   this.daysInMonth = this.dates.length;
-  let width = ((27 * this.daysInMonth) + 246) - 2;
+  let width = ((27 * this.daysInMonth) + 204) - 2;
   let monthWidth = width - 408;
   this.wkctrStyle = `width: ${width}px;`;
   this.monthStyle = `width: ${monthWidth}px;`;
@@ -132,6 +133,7 @@ openPanel(id: string) {
   if (!found) {
     this.expanded.push(id);
   }
+  this.siteService.setExpanded(this.expanded);
 }
 
 closePanel(id: string) {
@@ -144,6 +146,7 @@ closePanel(id: string) {
   if (pos >= 0) {
     this.expanded.splice(pos, 1);
   }
+  this.siteService.setExpanded(this.expanded);
 }
 
 isExpanded(id: string): boolean {

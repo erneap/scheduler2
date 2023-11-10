@@ -39,6 +39,7 @@ export class EmployeeLeaveRequestDayComponent {
   get showdate(): boolean {
     return this._show;
   }
+  @Input() hours: number = 10;
   @Output() changed = new EventEmitter<string>();
 
   dayForm: FormGroup;
@@ -80,11 +81,16 @@ export class EmployeeLeaveRequestDayComponent {
         this.fontStyle = `color: #000000 !important;`;
       }
     }
+    this.dayStyle += this.getDayWidth();
   }
 
   changeCode() {
     this.leave.code = this.dayForm.value.code;
-    this.leave.hours = Number(this.dayForm.value.hours);
+    if (this.leave.code.toLowerCase() === 'h') {
+      this.leave.hours = 8;
+    } else {
+      this.leave.hours = this.hours;
+    }
     let data: string = `${this.leave.leavedate.getFullYear()}-`
       + ((this.leave.leavedate.getMonth() < 9) ? '0' : '') 
       + `${this.leave.leavedate.getMonth() + 1}-`
@@ -93,5 +99,25 @@ export class EmployeeLeaveRequestDayComponent {
       + `|${this.leave.code}|${this.leave.hours}`;
     this.changed.emit(data);
     this.setLeave();
+  }
+
+  getDayWidth(): string {
+    let width = window.innerWidth - 70;
+    width = Math.floor(width / 7);
+    if (width > 100) {
+      width = 100;
+    }
+    return `width: ${width}px;height: ${width}px;`;
+  }
+
+  dayOfMonthStyle(): string {
+    let width = window.innerWidth - 70;
+    let percent = width / 700;
+    width = Math.floor(width / 28);
+    if (width > 25) {
+      width = 25;
+    }
+    let fontSize = 1.2 * percent;
+    return `width: ${width}px;height: ${width}px;font-size: ${fontSize}em;`;
   }
 }

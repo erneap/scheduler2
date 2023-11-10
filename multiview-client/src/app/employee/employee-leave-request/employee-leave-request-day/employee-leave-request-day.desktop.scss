@@ -1,6 +1,7 @@
 .day-form-field {
   font-size: 1.2em;
   width: 99% !important;
+  height: 99% !important;
   background-color: transparent;
   text-align: center;
   border: none;
@@ -35,16 +36,19 @@
 .cell {
   margin: 0px;
   padding: 0px;
-  height: 100px;
-  width: 100px;
   position: relative;
   border: solid 1px black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  flex-grow: 1;
 }
 
 .code {
-  position: absolute;
-  top: 26px;
-  width: 99px;
+  font-size: 1.2em;
+  display: flex;
+  flex-grow: 1;
 }
 
 .hours {

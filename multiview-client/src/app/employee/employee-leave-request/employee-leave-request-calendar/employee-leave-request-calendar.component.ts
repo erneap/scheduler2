@@ -41,6 +41,7 @@ export class EmployeeLeaveRequestCalendarComponent {
   get leavedays(): LeaveDay[] {
     return this._leaveDays;
   }
+  @Input() hours: number = 10;
   @Output() changed = new EventEmitter<string>();
 
   calendar: LeaveMonth = new LeaveMonth();
@@ -86,5 +87,11 @@ export class EmployeeLeaveRequestCalendarComponent {
     const answer = (lv.leavedate.getTime() >= this.startdate.getTime() 
       && lv.leavedate.getTime() <= this.enddate.getTime());
     return answer;
+  }
+
+  getDayWidth(): string {
+    let width = window.innerWidth - 70;
+    width = Math.floor(width / 7);
+    return `width: ${width}px;`;
   }
 }

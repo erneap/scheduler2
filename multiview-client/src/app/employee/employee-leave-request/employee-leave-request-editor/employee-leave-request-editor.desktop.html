@@ -11,9 +11,6 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <div>
-        <button mat-raised-button matStepperNext>Next</button>
-      </div>
     </form>
   </mat-step>
   <mat-step [stepControl]="editorForm" errorMessage="Leave request incomplete">
@@ -90,10 +87,11 @@
       </div>
     </div>
   </mat-step>
-  <mat-step>
+  <mat-step *ngIf="selected.id !== ''">
     <ng-template matStepLabel>Leave Request Calendar</ng-template>
     <app-employee-leave-request-calendar-desktop [startdate]="selected.startdate"
       [enddate]="selected.enddate" [leaveCodes]="workcodes"
+      [hours]="stdHours"
       [leavedays]="selected.requesteddays">
     </app-employee-leave-request-calendar-desktop>
     <div>
@@ -102,7 +100,7 @@
         *ngIf="selected.id !== ''">Next</button>
     </div>
   </mat-step>
-  <mat-step>
+  <mat-step *ngIf="selected.id !== ''">
     <ng-template matStepLabel>Comments</ng-template>
     <div class="comments">
       <ng-container *ngIf="selected.comments.length === 0">
@@ -142,7 +140,7 @@
       <button mat-raised-button matStepperNext *ngIf="approver">Next</button>
     </div>
   </mat-step>
-  <mat-step>
+  <mat-step *ngIf="selected.id !== ''">
     <ng-template matStepLabel>Shift Coverage</ng-template>
     <app-employee-leave-request-availability-calendar-desktop
       [employee]="employee" [site]="site" [leavedays]="selected.requesteddays"
@@ -150,3 +148,5 @@
     </app-employee-leave-request-availability-calendar-desktop>
   </mat-step>
 </mat-vertical-stepper>
+<app-employee-leave-request-legend-desktop [leavecodes]="workcodes">
+</app-employee-leave-request-legend-desktop>

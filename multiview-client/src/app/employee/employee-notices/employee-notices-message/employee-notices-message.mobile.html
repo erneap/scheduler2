@@ -1,0 +1,13 @@
+<div [class]="getStyle()" [style]="getWidthStyle('notification')">
+  <div class="checkbox" [style]="getWidthStyle('checkbox')">
+    <mat-checkbox [checked]="message.checked"
+      color="primary"
+      (change)="onCheck()"></mat-checkbox>
+  </div>
+  <div class="date" [style]="getWidthStyle('date')">
+    {{msgDate()}}
+  </div>
+  <div class="message" [style]="getWidthStyle('message')">
+    {{message.message}}
+  </div>
+</div>

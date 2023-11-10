@@ -1,1 +1,6 @@
-<p>employee-leave-request-availability-day works!</p>
+<div [class]="displayClass" [style]="getDayWidth()">
+  <div class="dayOfMonth weekday" [style]="dayOfMonthStyle()">
+    {{leaveday.leavedate.getUTCDate()}}
+  </div>
+  {{displaySize}}
+</div>

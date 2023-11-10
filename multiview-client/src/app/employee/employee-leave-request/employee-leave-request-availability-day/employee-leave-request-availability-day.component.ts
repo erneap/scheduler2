@@ -117,4 +117,24 @@ export class EmployeeLeaveRequestAvailabilityDayComponent {
     }
     return "cell above";
   }
+
+  getDayWidth(): string {
+    let width = window.innerWidth - 70;
+    width = Math.floor(width / 7);
+    if (width > 100) {
+      width = 100;
+    }
+    return `width: ${width}px;height: ${width}px;`;
+  }
+
+  dayOfMonthStyle(): string {
+    let width = window.innerWidth - 70;
+    let percent = width / 700;
+    width = Math.floor(width / 28);
+    if (width > 25) {
+      width = 25;
+    }
+    let fontSize = 1.2 * percent;
+    return `width: ${width}px;height: ${width}px;font-size: ${fontSize}rem;`;
+  }
 }

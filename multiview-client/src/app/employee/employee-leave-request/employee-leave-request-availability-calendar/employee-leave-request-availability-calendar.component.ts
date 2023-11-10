@@ -100,4 +100,10 @@ export class EmployeeLeaveRequestAvailabilityCalendarComponent {
     return (lv.leavedate.getTime() >= this.startdate.getTime() 
       && lv.leavedate.getTime() <= this.enddate.getTime());
   }
+
+  getDayWidth(): string {
+    let width = window.innerWidth - 70;
+    width = Math.floor(width / 7);
+    return `width: ${width}px;`;
+  }
 }

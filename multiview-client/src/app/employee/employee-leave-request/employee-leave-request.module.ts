@@ -24,6 +24,10 @@ import { EmployeeLeaveRequestAvailabilityCalendarComponent } from './employee-le
 import { EmployeeLeaveRequestAvailabilityCalendarTablet } from './employee-leave-request-availability-calendar/employee-leave-request-availability-calendar.tablet';
 import { EmployeeLeaveRequestAvailabilityCalendarMobile } from './employee-leave-request-availability-calendar/employee-leave-request-availability-calendar.mobile';
 import { EmployeeLeaveRequestAvailabilityCalendarDesktop } from './employee-leave-request-availability-calendar/employee-leave-request-availability-calendar.desktop';
+import { EmployeeLeaveRequestLegendComponent } from './employee-leave-request-legend/employee-leave-request-legend.component';
+import { EmployeeLeaveRequestLegendDesktop } from './employee-leave-request-legend/employee-leave-request-legend.desktop';
+import { EmployeeLeaveRequestLegendMobile } from './employee-leave-request-legend/employee-leave-request-legend.mobile';
+import { EmployeeLeaveRequestLegendTablet } from './employee-leave-request-legend/employee-leave-request-legend.tablet';
 
 
 
@@ -50,7 +54,11 @@ import { EmployeeLeaveRequestAvailabilityCalendarDesktop } from './employee-leav
     EmployeeLeaveRequestAvailabilityCalendarComponent,
     EmployeeLeaveRequestAvailabilityCalendarTablet,
     EmployeeLeaveRequestAvailabilityCalendarMobile,
-    EmployeeLeaveRequestAvailabilityCalendarDesktop
+    EmployeeLeaveRequestAvailabilityCalendarDesktop,
+    EmployeeLeaveRequestLegendComponent,
+    EmployeeLeaveRequestLegendDesktop,
+    EmployeeLeaveRequestLegendMobile,
+    EmployeeLeaveRequestLegendTablet
   ],
   imports: [
     CommonModule,

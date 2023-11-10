@@ -1,0 +1,22 @@
+<div class="fxLayout flexlayout column center" style="gap: 5px;" >
+  <div class="flexlayout row center" style="margin-bottom: 5px;">
+    <div class="typeText">Contact Info Type/Value</div>
+  </div>
+  <mat-stepper>
+    <mat-step *ngFor="let ct of contactTypes;let i = index">
+      <ng-template matStepLabel>
+        {{ct.name.toUpperCase()}}
+      </ng-template>
+      <div class="flexlayout row left" style="gap: 5px;">
+        <app-employee-contact-info-item-desktop
+          [contacttype]="ct" [employee]="employee"
+          (changed)="updatedEmployee($event)">
+        </app-employee-contact-info-item-desktop>
+        <button mat-raised-button matStepperPrevious
+          *ngIf="i > 0">Back</button>
+        <button mat-raised-button matStepperNext
+          *ngIf="i < (contactTypes.length - 1)">Next</button>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>

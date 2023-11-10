@@ -3,7 +3,7 @@ import { IVariation, Variation } from "../employees/assignments";
 import { Employee, IEmployee } from "../employees/employee";
 import { HttpErrorResponse } from "@angular/common/http";
 import { throwError } from "rxjs";
-import { INotification } from "../employees/notification";
+import { INotification } from "../../employee/employee-notices/employee-notices.model";
 import { ILogEntry, LogEntry } from "../logs/logentry";
 
 export class WebEmployeeVariation {

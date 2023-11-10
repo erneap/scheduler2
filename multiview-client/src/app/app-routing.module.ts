@@ -13,16 +13,26 @@ import { EmployeeProfileDesktop } from './employee/employee-profile/employee-pro
 import { EmployeeProfileMobile } from './employee/employee-profile/employee-profile.mobile';
 import { EmployeeProfileTablet } from './employee/employee-profile/employee-profile.tablet';
 import { EmployeeLeaveRequestEditorDesktop } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.desktop';
+import { EmployeeNoticesDesktop } from './employee/employee-notices/employee-notices.desktop';
+import { EmployeeNoticesMobile } from './employee/employee-notices/employee-notices.mobile';
+import { EmployeeNoticesTablet } from './employee/employee-notices/employee-notices.tablet';
+import { EmployeeLeaveRequestEditorTablet } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.tablet';
+import { EmployeeLeaveRequestEditorMobile } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.mobile';
+import { EmployeeContactInfoDesktop } from './employee/employee-contact-info/employee-contact-info.desktop';
+import { EmployeeContactInfoMobile } from './employee/employee-contact-info/employee-contact-info.mobile';
+import { EmployeeContactInfoTablet } from './employee/employee-contact-info/employee-contact-info.tablet';
 
 const desktop_routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'notifications', component: EmployeeNoticesDesktop },
   {path: 'employee',
     children: [
       {path: 'schedule', component: EmployeeScheduleMonthDesktop},
       {path: 'ptoholidays', component: EmployeePTOHolidaysChartDesktop },
       {path: 'profile', component: EmployeeProfileDesktop },
-      {path: 'leaverequest', component: EmployeeLeaveRequestEditorDesktop }
+      {path: 'leaverequest', component: EmployeeLeaveRequestEditorDesktop },
+      {path: 'contacts', component: EmployeeContactInfoDesktop }
     ]
   },
   {path: '**', redirectTo: 'login'}
@@ -31,11 +41,14 @@ const desktop_routes: Routes = [
 const mobile_routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'notifications', component: EmployeeNoticesMobile },
   {path: 'employee',
     children: [
       {path: 'schedule', component: EmployeeScheduleMonthMobile},
       {path: 'ptoholidays', component: EmployeePTOHolidaysChartMobile },
-      {path: 'profile', component: EmployeeProfileMobile }
+      {path: 'profile', component: EmployeeProfileMobile },
+      {path: 'leaverequest', component: EmployeeLeaveRequestEditorMobile },
+      {path: 'contacts', component: EmployeeContactInfoMobile }
     ]
   },
   {path: '**', redirectTo: 'login'}
@@ -44,11 +57,14 @@ const mobile_routes: Routes = [
 const tablet_routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'notifications', component: EmployeeNoticesTablet },
   {path: 'employee',
     children: [
       {path: 'schedule', component: EmployeeScheduleMonthTablet},
       {path: 'ptoholidays', component: EmployeePTOHolidaysChartTablet },
-      {path: 'profile', component: EmployeeProfileTablet }
+      {path: 'profile', component: EmployeeProfileTablet },
+      {path: 'leaverequest', component: EmployeeLeaveRequestEditorTablet },
+      {path: 'contacts', component: EmployeeContactInfoTablet }
     ]
   },
   {path: '**', redirectTo: 'login'}

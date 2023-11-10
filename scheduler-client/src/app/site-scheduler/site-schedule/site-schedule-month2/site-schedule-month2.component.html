@@ -9,8 +9,9 @@
   <mat-accordion displayMode="flat" multi>
     <ng-container *ngFor="let wkctr of workcenters">
       <mat-expansion-panel [expanded]="isExpanded(wkctr.id)"
-        (opened)="openPanel(wkctr.id)" (closed)="closePanel(wkctr.id)">
-        <mat-expansion-panel-header>
+        (opened)="openPanel(wkctr.id)" (closed)="closePanel(wkctr.id)"
+        class="remove-mat-expansion-panel-padding">
+        <mat-expansion-panel-header [collapsedHeight]="'25px'" [expandedHeight]="'25px'">
           <mat-panel-description>
             {{wkctr.name.toUpperCase()}}
           </mat-panel-description>

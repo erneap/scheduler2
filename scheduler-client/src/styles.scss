@@ -193,3 +193,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     background-color: white;
 }
 
+.remove-mat-expansion-panel-padding {
+    .mat-expansion-panel-content .mat-expansion-panel-body {
+        padding: 0 !important;
+    }
+    .mat-expansion-panel-content .mat-expansion-panel-header {
+        padding: 2px !important;
+    }
+}
+
+

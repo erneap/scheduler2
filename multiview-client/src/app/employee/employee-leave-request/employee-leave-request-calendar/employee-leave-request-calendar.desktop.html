@@ -12,6 +12,7 @@
     <div class="flexlayout row center">
       <app-employee-leave-request-day-desktop *ngFor="let lv of week.leaves"
         [leave]="lv" [leaveCodes]="leaveCodes" [showdate]="showDay(lv)" 
+        [hours]="hours"
         (changed)="processChange($event)">
       </app-employee-leave-request-day-desktop>
     </div>

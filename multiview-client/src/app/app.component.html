@@ -11,5 +11,7 @@
       <router-outlet class="app-container"></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
-  <div class="statusbar"></div>
+  <div class="statusbar">
+    {{authService.statusMessage}}
+  </div>
 </div>

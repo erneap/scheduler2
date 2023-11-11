@@ -3,6 +3,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { AppStateService } from 'src/app/services/app-state.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { SiteService } from 'src/app/services/site.service';
 
 @Component({
   selector: 'app-side-menu',
@@ -14,6 +15,7 @@ export class SideMenuComponent {
   constructor(
     protected appState: AppStateService,
     protected authService: AuthService,
+    protected siteService: SiteService,
     private router: Router
   ) { }
 
@@ -27,5 +29,13 @@ export class SideMenuComponent {
   getHeight(): string {
     let height = window.innerHeight - 82;
     return `min-height: ${height}px;max-height: ${height}px;`;
+  }
+
+  hasMidShift(): boolean {
+    const site = this.siteService.getSite();
+    if (site) {
+      return site.showMids;
+    }
+    return false;
   }
 }

@@ -32,6 +32,7 @@
         (click)="goToLink('/site/schedule/coverage')"
         style="height: 20px;">Coverage</a>
       <a mat-list-item (click)="goToLink('/site/schedule/mids')"
+        *ngIf="hasMidShift()"
         style="height: 20px;">Mids Listing</a>
       <a mat-list-item (click)="goToLink('/query')"
         style="height: 20px;">Who's Working (Query)</a>

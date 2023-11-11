@@ -30,6 +30,7 @@ import { SiteScheduleMobile } from './site/site-schedule/site-schedule/site-sche
 import { SiteCoverageComponent } from './site/site-schedule/site-coverage/site-coverage.component';
 import { SiteCoverageMobile } from './site/site-schedule/site-coverage/site-coverage.mobile';
 import { SiteMidScheduleComponent } from './site/site-schedule/site-mid-schedule/site-mid-schedule.component';
+import { SiteMidScheduleMobile } from './site/site-schedule/site-mid-schedule/site-mid-schedule.mobile';
 
 const desktop_routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -79,7 +80,7 @@ const mobile_routes: Routes = [
         children: [
           {path: 'schedule', component: SiteScheduleMobile },
           {path: 'coverage', component: SiteCoverageMobile },
-          {path: 'mids', component: SiteMidScheduleComponent }
+          {path: 'mids', component: SiteMidScheduleMobile }
         ]
       },
     ]

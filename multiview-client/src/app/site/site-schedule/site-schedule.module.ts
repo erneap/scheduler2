@@ -23,6 +23,7 @@ import { SiteCoverageMobile } from './site-coverage/site-coverage.mobile';
 import { SiteMidScheduleComponent } from './site-mid-schedule/site-mid-schedule.component';
 import { SiteMidScheduleMobile } from './site-mid-schedule/site-mid-schedule.mobile';
 import { SiteMidScheduleYearComponent } from './site-mid-schedule/site-mid-schedule-year/site-mid-schedule-year.component';
+import { SiteMidScheduleYearMobile } from './site-mid-schedule/site-mid-schedule-year/site-mid-schedule-year.mobile';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { SiteMidScheduleYearComponent } from './site-mid-schedule/site-mid-sched
     SiteCoverageMobile,
     SiteMidScheduleComponent,
     SiteMidScheduleMobile,
-    SiteMidScheduleYearComponent
+    SiteMidScheduleYearComponent,
+    SiteMidScheduleYearMobile
   ],
   imports: [
     CommonModule,

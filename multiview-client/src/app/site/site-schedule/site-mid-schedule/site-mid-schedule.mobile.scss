@@ -1,0 +1,79 @@
+.main {
+  background-color: #3f51b5;
+  padding: 5px;
+}
+.movement {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 35px;
+  height: 25px;
+  background-color: #e60000;
+  color: white;
+  border: solid 1px white;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.datelabel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  font-size: 1em;
+  font-weight: bold;
+  border: solid 1px white;
+}
+
+.year {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  background-color: #3f51b5;
+  color: white;
+  font-size: 16pt;
+  font-weight: bold;
+  border: solid 1px white;
+}
+
+.namelabel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  font-size: 1em;
+  font-weight: bold;
+  border: solid 1px white;
+}
+
+.name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  font-size: 1em;
+  font-weight: bold;
+  border: solid 1px black;
+}
+
+.row:nth-child(even) {
+  background-color: #c0c0c0;
+  color: black;
+}
+
+.row:nth-child(odd) {
+  background-color: white;
+  color: black;
+}
+
+.date {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  font-size: 1em;
+  font-weight: bold;
+  border: solid 1px black;
+}

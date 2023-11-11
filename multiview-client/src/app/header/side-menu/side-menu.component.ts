@@ -34,7 +34,7 @@ export class SideMenuComponent {
   hasMidShift(): boolean {
     const site = this.siteService.getSite();
     if (site) {
-      return site.showMids;
+      return !site.showMids;
     }
     return false;
   }

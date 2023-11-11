@@ -1,7 +1,8 @@
 <mat-accordion multi displayMode="flat" [style]="getHeight()">
-  <mat-expansion-panel expanded="true">
-    <mat-expansion-panel-header>
-      <mat-panel-title>Employee</mat-panel-title>
+  <mat-expansion-panel expanded="true"
+  class="remove-mat-expansion-panel-padding">
+    <mat-expansion-panel-header [collapsedHeight]="'25px'" [expandedHeight]="'25px'">
+      <mat-panel-description>Employee</mat-panel-description>
     </mat-expansion-panel-header>
     <mat-nav-list>
       <a mat-list-item (click)="goToLink('/employee/schedule')"
@@ -18,17 +19,14 @@
       style="height: 20px;">Specialties</a>
     </mat-nav-list>
   </mat-expansion-panel>
-  <mat-expansion-panel expanded="true">
-    <mat-expansion-panel-header>
+  <mat-expansion-panel expanded="true"
+  class="remove-mat-expansion-panel-padding">
+    <mat-expansion-panel-header [collapsedHeight]="'25px'" [expandedHeight]="'25px'">
       <mat-panel-title>Site Schedule</mat-panel-title>
     </mat-expansion-panel-header>
     <mat-nav-list>
       <a mat-list-item (click)="goToLink('/site/schedule/schedule')"
-      style="height: 20px;">Schedule (Expandable)</a>
-      <a mat-list-item 
-        *ngIf="this.authService.isScheduler || this.authService.isSiteLeader"
-        (click)="goToLink('/site/schedule/scheduleall')"
-        style="height: 20px;">Schedule (All)</a>
+      style="height: 20px;">Schedule</a>
       <a mat-list-item 
         *ngIf="(this.authService.isScheduler || this.authService.isSiteLeader) && appState.isDesktop()"
         (click)="goToLink('/site/schedule/coverage')"
@@ -40,8 +38,9 @@
     </mat-nav-list>
   </mat-expansion-panel>
   <mat-expansion-panel expanded="true"
+  class="remove-mat-expansion-panel-padding"
     *ngIf="authService.isScheduler || authService.isSiteLeader || authService.isCompanyLead">
-    <mat-expansion-panel-header>
+    <mat-expansion-panel-header [collapsedHeight]="'25px'" [expandedHeight]="'25px'">
       <mat-panel-title>Editing</mat-panel-title>
     </mat-expansion-panel-header>
     <mat-nav-list>
@@ -72,8 +71,9 @@
     </mat-nav-list>
   </mat-expansion-panel>
   <mat-expansion-panel expanded="true" 
+  class="remove-mat-expansion-panel-padding"
     *ngIf="(authService.isScheduler || authService.isSiteLeader || authService.isCompanyLead) && appState.isDesktop()">
-    <mat-expansion-panel-header>
+    <mat-expansion-panel-header [collapsedHeight]="'25px'" [expandedHeight]="'25px'">
       <mat-panel-title>Reports</mat-panel-title>
     </mat-expansion-panel-header>
     <mat-nav-list>
@@ -82,8 +82,9 @@
     </mat-nav-list>
   </mat-expansion-panel>
   <mat-expansion-panel expanded="true" 
+  class="remove-mat-expansion-panel-padding"
     *ngIf="(authService.isScheduler || authService.isSiteLeader || authService.isCompanyLead) && appState.isDesktop()">
-    <mat-expansion-panel-header>
+    <mat-expansion-panel-header [collapsedHeight]="'25px'" [expandedHeight]="'25px'">
       <mat-panel-title>Log Viewer</mat-panel-title>
     </mat-expansion-panel-header>
     <mat-nav-list>

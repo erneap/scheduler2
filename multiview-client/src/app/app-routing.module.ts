@@ -27,6 +27,8 @@ import { EmployeeSpecialtiesComponent } from './employee/employee-specialties/em
 import { SiteScheduleDesktop } from './site/site-schedule/site-schedule/site-schedule.desktop';
 import { SiteScheduleTablet } from './site/site-schedule/site-schedule/site-schedule.tablet';
 import { SiteScheduleMobile } from './site/site-schedule/site-schedule/site-schedule.mobile';
+import { SiteCoverageComponent } from './site/site-schedule/site-coverage/site-coverage.component';
+import { SiteCoverageMobile } from './site/site-schedule/site-coverage/site-coverage.mobile';
 
 const desktop_routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -47,6 +49,7 @@ const desktop_routes: Routes = [
       {path: 'schedule',
         children: [
           {path: 'schedule', component: SiteScheduleDesktop },
+          {path: 'coverage', component: SiteCoverageComponent }
         ]
       },
     ]
@@ -73,6 +76,7 @@ const mobile_routes: Routes = [
       {path: 'schedule',
         children: [
           {path: 'schedule', component: SiteScheduleMobile },
+          {path: 'coverage', component: SiteCoverageMobile }
         ]
       },
     ]
@@ -99,6 +103,7 @@ const tablet_routes: Routes = [
       {path: 'schedule',
         children: [
           {path: 'schedule', component: SiteScheduleTablet },
+          {path: 'coverage', component: SiteCoverageMobile }
         ]
       },
     ]

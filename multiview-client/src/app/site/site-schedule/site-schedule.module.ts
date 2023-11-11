@@ -12,6 +12,14 @@ import { EmployeeLeaveRequestModule } from 'src/app/employee/employee-leave-requ
 import { SiteSchedulePeriodMobile } from './site-schedule/site-schedule-period/site-schedule-period.mobile';
 import { SiteScheduleRowMobile } from './site-schedule/site-schedule-row/site-schedule-row.mobile';
 import { SiteScheduleDayMobile } from './site-schedule/site-schedule-day/site-schedule-day.mobile';
+import { SiteCoverageComponent } from './site-coverage/site-coverage.component';
+import { SiteCoverageDayComponent } from './site-coverage/site-coverage-day/site-coverage-day.component';
+import { SiteCoverageDayMobile } from './site-coverage/site-coverage-day/site-coverage-day.mobile';
+import { SiteCoverageShiftComponent } from './site-coverage/site-coverage-shift/site-coverage-shift.component';
+import { SiteCoverageShiftMobile } from './site-coverage/site-coverage-shift/site-coverage-shift.mobile';
+import { SiteCoveragePeriodComponent } from './site-coverage/site-coverage-period/site-coverage-period.component';
+import { SiteCoveragePeriodMobile } from './site-coverage/site-coverage-period/site-coverage-period.mobile';
+import { SiteCoverageMobile } from './site-coverage/site-coverage.mobile';
 
 @NgModule({
   declarations: [
@@ -24,7 +32,15 @@ import { SiteScheduleDayMobile } from './site-schedule/site-schedule-day/site-sc
     SiteScheduleRowComponent,
     SiteSchedulePeriodMobile,
     SiteScheduleRowMobile,
-    SiteScheduleDayMobile
+    SiteScheduleDayMobile,
+    SiteCoverageComponent,
+    SiteCoverageDayComponent,
+    SiteCoverageDayMobile,
+    SiteCoverageShiftComponent,
+    SiteCoverageShiftMobile,
+    SiteCoveragePeriodComponent,
+    SiteCoveragePeriodMobile,
+    SiteCoverageMobile
   ],
   imports: [
     CommonModule,

@@ -7,6 +7,7 @@ import { SiteService } from '../services/site.service';
 import { TeamService } from '../services/team.service';
 import { Router } from '@angular/router';
 import { MessageService } from '../services/message.service';
+import packageJson from '../../../package.json';
 
 @Component({
   selector: 'app-header',
@@ -14,7 +15,9 @@ import { MessageService } from '../services/message.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
+  appVersion: string;
   @Output() sidenav = new EventEmitter<any>();
+
   constructor(
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
@@ -25,6 +28,7 @@ export class HeaderComponent {
     protected msgService: MessageService,
     private router: Router
   ) {
+    this.appVersion = packageJson.version;
     iconRegistry.addSvgIcon('calendar',
       sanitizer.bypassSecurityTrustResourceUrl(
         'assets/images/icons/calendar.svg'));

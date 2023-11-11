@@ -7,6 +7,7 @@ import { EmployeeProfileModule } from './employee-profile/employee-profile.modul
 import { EmployeeLeaveRequestModule } from './employee-leave-request/employee-leave-request.module';
 import { EmployeeNoticesModule } from './employee-notices/employee-notices.module';
 import { EmployeeContactInfoModule } from './employee-contact-info/employee-contact-info.module';
+import { EmployeeSpecialtiesModule } from './employee-specialties/employee-specialties.module';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { EmployeeContactInfoModule } from './employee-contact-info/employee-cont
     EmployeeProfileModule,
     EmployeeLeaveRequestModule,
     EmployeeNoticesModule,
-    EmployeeContactInfoModule
+    EmployeeContactInfoModule,
+    EmployeeSpecialtiesModule
   ]
 })
 export class EmployeeModule { }

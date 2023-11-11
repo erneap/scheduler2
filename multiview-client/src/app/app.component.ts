@@ -18,8 +18,7 @@ export class AppComponent {
   }
 
   getHeight(): string {
-    let height = window.innerHeight;
-    height -= 82;
-    return `height: ${height}px;`;
+    let height = window.innerHeight - 82;
+    return `min-height: ${height}px;max-height: ${height}px;`;
   }
 }

@@ -60,6 +60,20 @@ export class SiteService extends CacheService {
     this.setItem('selected-employee', emp);
   }
 
+  getExpanded(): string[] {
+    const expanded = this.getItem<string>('expanded')
+    if (expanded) {
+      let exArray: string[] = JSON.parse(expanded);
+      return exArray;
+    }
+    return [];
+  }
+
+  setExpanded(exArray: string[]): void {
+    let expanded = JSON.stringify(exArray);
+    this.setItem('expanded', expanded);
+  }
+
   startAutoUpdates() {
     if (this.interval && this.interval !== null) {
       clearInterval(this.interval);

@@ -4,3 +4,4 @@ multiview-client/node_modules/**/*
 DatabaseExport.zip
 schedulerXfer/.env
 schedulerApi/.env
+queryApi/.env

@@ -7,15 +7,17 @@
       <ng-template matStepLabel>
         {{ct.name.toUpperCase()}}
       </ng-template>
-      <div class="flexlayout row left" style="gap: 5px;">
+      <div class="flexlayout column left" style="gap: 5px;">
         <app-employee-contact-info-item-desktop
           [contacttype]="ct" [employee]="employee"
           (changed)="updatedEmployee($event)">
         </app-employee-contact-info-item-desktop>
-        <button mat-raised-button matStepperPrevious
-          *ngIf="i > 0">Back</button>
-        <button mat-raised-button matStepperNext
-          *ngIf="i < (contactTypes.length - 1)">Next</button>
+        <div class="flexlayout row center">
+          <button mat-raised-button matStepperPrevious
+            *ngIf="i > 0">Back</button>
+          <button mat-raised-button matStepperNext
+            *ngIf="i < (contactTypes.length - 1)">Next</button>
+        </div>
       </div>
     </mat-step>
   </mat-stepper>

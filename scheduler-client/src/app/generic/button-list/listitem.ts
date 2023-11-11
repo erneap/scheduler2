@@ -5,10 +5,14 @@ export class ListItem {
 
   constructor(
     id: string,
-    label: string
+    label: string,
+    sort?: number
   ) {
     this.id = id;
     this.label = label;
+    if (sort) {
+      this.sortid = sort;
+    }
   }
 
   compareTo(other?: ListItem): number {

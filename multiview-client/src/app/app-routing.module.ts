@@ -21,6 +21,12 @@ import { EmployeeLeaveRequestEditorMobile } from './employee/employee-leave-requ
 import { EmployeeContactInfoDesktop } from './employee/employee-contact-info/employee-contact-info.desktop';
 import { EmployeeContactInfoMobile } from './employee/employee-contact-info/employee-contact-info.mobile';
 import { EmployeeContactInfoTablet } from './employee/employee-contact-info/employee-contact-info.tablet';
+import { EmployeeSpecialtiesMobile } from './employee/employee-specialties/employee-specialties.mobile';
+import { EmployeeSpecialtiesDesktop } from './employee/employee-specialties/employee-specialties.desktop';
+import { EmployeeSpecialtiesComponent } from './employee/employee-specialties/employee-specialties.component';
+import { SiteScheduleDesktop } from './site/site-schedule/site-schedule/site-schedule.desktop';
+import { SiteScheduleTablet } from './site/site-schedule/site-schedule/site-schedule.tablet';
+import { SiteScheduleMobile } from './site/site-schedule/site-schedule/site-schedule.mobile';
 
 const desktop_routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -32,7 +38,17 @@ const desktop_routes: Routes = [
       {path: 'ptoholidays', component: EmployeePTOHolidaysChartDesktop },
       {path: 'profile', component: EmployeeProfileDesktop },
       {path: 'leaverequest', component: EmployeeLeaveRequestEditorDesktop },
-      {path: 'contacts', component: EmployeeContactInfoDesktop }
+      {path: 'contacts', component: EmployeeContactInfoDesktop },
+      {path: 'specialties', component: EmployeeSpecialtiesDesktop }
+    ]
+  },
+  {path: 'site', 
+    children: [
+      {path: 'schedule',
+        children: [
+          {path: 'schedule', component: SiteScheduleDesktop },
+        ]
+      },
     ]
   },
   {path: '**', redirectTo: 'login'}
@@ -48,7 +64,17 @@ const mobile_routes: Routes = [
       {path: 'ptoholidays', component: EmployeePTOHolidaysChartMobile },
       {path: 'profile', component: EmployeeProfileMobile },
       {path: 'leaverequest', component: EmployeeLeaveRequestEditorMobile },
-      {path: 'contacts', component: EmployeeContactInfoMobile }
+      {path: 'contacts', component: EmployeeContactInfoMobile },
+      {path: 'specialties', component: EmployeeSpecialtiesMobile }
+    ]
+  },
+  {path: 'site', 
+    children: [
+      {path: 'schedule',
+        children: [
+          {path: 'schedule', component: SiteScheduleMobile },
+        ]
+      },
     ]
   },
   {path: '**', redirectTo: 'login'}
@@ -64,7 +90,17 @@ const tablet_routes: Routes = [
       {path: 'ptoholidays', component: EmployeePTOHolidaysChartTablet },
       {path: 'profile', component: EmployeeProfileTablet },
       {path: 'leaverequest', component: EmployeeLeaveRequestEditorTablet },
-      {path: 'contacts', component: EmployeeContactInfoTablet }
+      {path: 'contacts', component: EmployeeContactInfoTablet },
+      {path: 'specialties', component: EmployeeSpecialtiesDesktop }
+    ]
+  },
+  {path: 'site', 
+    children: [
+      {path: 'schedule',
+        children: [
+          {path: 'schedule', component: SiteScheduleTablet },
+        ]
+      },
     ]
   },
   {path: '**', redirectTo: 'login'}

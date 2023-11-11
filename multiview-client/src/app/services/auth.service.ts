@@ -45,6 +45,7 @@ export class AuthService extends CacheService {
     this.authStatus.subscribe(authStatus => this.setItem('authStatus', 
       authStatus));
     this.authProvider = this.apiAuthProvider;
+    this.getUser();
   }
 
   startTokenRenewal() {

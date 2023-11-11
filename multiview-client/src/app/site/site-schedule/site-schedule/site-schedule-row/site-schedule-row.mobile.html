@@ -1,0 +1,8 @@
+<div class="flexlayout row topleft">
+  <div class="name" [style]="baseClass">
+    {{employee.name.last}}
+  </div>
+  <app-site-schedule-day-mobile *ngFor="let date of dates;let i = index"
+    [day]="workdays[i]" [date]="date" [baseClass]="baseClass">
+  </app-site-schedule-day-mobile>
+</div>

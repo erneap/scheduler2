@@ -15,14 +15,17 @@ export class SideMenuComponent {
     protected appState: AppStateService,
     protected authService: AuthService,
     private router: Router
-  ) {
-
-  }
+  ) { }
 
   goToLink(url: string) {
     this.router.navigateByUrl(url);
     if (!this.appState.isDesktop()) {
       this.sidenav.emit();
     }
+  }
+
+  getHeight(): string {
+    let height = window.innerHeight - 82;
+    return `min-height: ${height}px;max-height: ${height}px;`;
   }
 }

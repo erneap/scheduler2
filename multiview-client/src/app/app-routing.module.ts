@@ -31,6 +31,8 @@ import { SiteCoverageComponent } from './site/site-schedule/site-coverage/site-c
 import { SiteCoverageMobile } from './site/site-schedule/site-coverage/site-coverage.mobile';
 import { SiteMidScheduleComponent } from './site/site-schedule/site-mid-schedule/site-mid-schedule.component';
 import { SiteMidScheduleMobile } from './site/site-schedule/site-mid-schedule/site-mid-schedule.mobile';
+import { QueryComponent } from './query/query.component';
+import { QueryMobile } from './query/query.mobile';
 
 const desktop_routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -57,6 +59,7 @@ const desktop_routes: Routes = [
       },
     ]
   },
+  {path: 'query', component: QueryComponent},
   {path: '**', redirectTo: 'login'}
 ];
 
@@ -85,6 +88,7 @@ const mobile_routes: Routes = [
       },
     ]
   },
+  {path: 'query', component: QueryMobile},
   {path: '**', redirectTo: 'login'}
 ];
 
@@ -107,11 +111,13 @@ const tablet_routes: Routes = [
       {path: 'schedule',
         children: [
           {path: 'schedule', component: SiteScheduleTablet },
-          {path: 'coverage', component: SiteCoverageMobile }
+          {path: 'coverage', component: SiteCoverageMobile },
+          {path: 'mids', component: SiteMidScheduleMobile }
         ]
       },
     ]
   },
+  {path: 'query', component: QueryMobile},
   {path: '**', redirectTo: 'login'}
 ];
 

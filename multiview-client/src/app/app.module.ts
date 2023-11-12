@@ -20,6 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { EmployeeModule } from './employee/employee.module';
 import { SiteModule } from './site/site.module';
+import { QueryModule } from './query/query.module';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { SiteModule } from './site/site.module';
     ReactiveFormsModule,
     HttpClientModule,
     EmployeeModule,
-    SiteModule
+    SiteModule,
+    QueryModule
   ],
   providers: [
     AppStateService,

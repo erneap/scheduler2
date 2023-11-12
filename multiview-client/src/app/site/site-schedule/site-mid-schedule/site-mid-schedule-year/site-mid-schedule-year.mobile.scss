@@ -54,12 +54,11 @@
 .name {
   display: flex;
   justify-content: center;
-  align-items: center;
-  width: 100px;
+  align-items: stretch;
+  width: 102px;
   min-height: 20px;
   font-size: .8em;
   font-weight: bold;
-  border: solid 1px black;
 }
 
 .row:nth-child(even) {
@@ -77,10 +76,9 @@
 .date {
   display: flex;
   justify-content: center;
-  align-items: center;
-  width: 100px;
+  align-items: stretch;
+  width: 102px;
   min-height: 20px;
   font-size: .8em;
   font-weight: bold;
-  border: solid 1px black;
 }

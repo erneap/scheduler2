@@ -1,0 +1,15 @@
+<div class="fxLayout flexlayout row topleft">
+  <div class="flexlayout column center main">
+    <div class="label title">Contact Information</div>
+    <div class="flexlayout row center">
+      <div class="label coltype">Contact Type</div>
+      <div class="label colvalue">Use</div>
+    </div>
+    <div *ngFor="let ctype of contacttypes" class="row">
+      <div class="cttype">{{ctype.name}}</div>
+      <div class="ctvalue">
+        {{contactValue(ctype.id)}}
+      </div>
+    </div>
+  </div>
+</div>

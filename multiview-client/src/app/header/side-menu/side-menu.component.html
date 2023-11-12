@@ -28,7 +28,7 @@
       <a mat-list-item (click)="goToLink('/site/schedule/schedule')"
       style="height: 20px;">Schedule</a>
       <a mat-list-item 
-        *ngIf="(this.authService.isScheduler || this.authService.isSiteLeader) && appState.isDesktop()"
+        *ngIf="(this.authService.isScheduler || this.authService.isSiteLeader)"
         (click)="goToLink('/site/schedule/coverage')"
         style="height: 20px;">Coverage</a>
       <a mat-list-item (click)="goToLink('/site/schedule/mids')"

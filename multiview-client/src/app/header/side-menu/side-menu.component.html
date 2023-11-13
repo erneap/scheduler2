@@ -45,7 +45,7 @@
       <mat-panel-title>Editing</mat-panel-title>
     </mat-expansion-panel-header>
     <mat-nav-list>
-      <a mat-list-item (click)="goToLink('/siteemployees')"
+      <a mat-list-item (click)="goToLink('/site/editor/employees')"
         *ngIf="(this.authService.isScheduler || this.authService.isSiteLeader) && appState.isDesktop()"
       style="height: 20px;">Employee Editor</a>
       <a mat-list-item (click)="goToLink('/siteleaveapprover')"

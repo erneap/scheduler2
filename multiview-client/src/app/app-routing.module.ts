@@ -33,6 +33,7 @@ import { SiteMidScheduleComponent } from './site/site-schedule/site-mid-schedule
 import { SiteMidScheduleMobile } from './site/site-schedule/site-mid-schedule/site-mid-schedule.mobile';
 import { QueryComponent } from './query/query.component';
 import { QueryMobile } from './query/query.mobile';
+import { SiteEmployeesComponent } from './site/site-employees/site-employees.component';
 
 const desktop_routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -57,6 +58,11 @@ const desktop_routes: Routes = [
           {path: 'mids', component: SiteMidScheduleComponent }
         ]
       },
+      {path: 'editor',
+        children: [
+          {path: 'employees', component: SiteEmployeesComponent }
+        ]
+      }
     ]
   },
   {path: 'query', component: QueryComponent},
@@ -114,7 +120,7 @@ const tablet_routes: Routes = [
           {path: 'coverage', component: SiteCoverageMobile },
           {path: 'mids', component: SiteMidScheduleMobile }
         ]
-      },
+      }
     ]
   },
   {path: 'query', component: QueryMobile},

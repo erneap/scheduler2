@@ -1,0 +1,15 @@
+<div class="toplevel">
+  <form [formGroup]="employeeSelectionForm" class="flexlayout row topcenter">
+    <mat-form-field appearance="fill" style="width: 250px;">
+      <mat-label>Employee To Edit</mat-label>
+      <mat-select formControlName="employee"
+        (selectionChange)="selectEmployee()">
+        <mat-option value="new">Add New Employee</mat-option>
+        <mat-option *ngFor="let emp of siteEmployees" [value]="emp.id">
+          {{emp.name.getFullName()}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+  <app-new-employee *ngIf="selectedEmployee.id === 'new'"></app-new-employee>
+</div>

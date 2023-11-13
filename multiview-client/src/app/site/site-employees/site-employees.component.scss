@@ -12,3 +12,15 @@
   justify-content: flex-start;
   align-items: flex-start;
 }
+
+.locked {
+  background-color: #ff9999;
+  color: black;
+  border: solid 1px black;
+}
+
+.expired {
+  background-color: #ff9900;
+  color: black;
+  border: solid 1px black;
+}

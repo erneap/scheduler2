@@ -31,6 +31,8 @@
       </div>
       <div class="flexlayout row center">
         <button mat-button matStepperNext>Next</button>
+        <button mat-raised-button color="warn" (click)="stepper.reset()">
+          Reset</button>
       </div>
     </form>
   </mat-step>
@@ -58,6 +60,8 @@
       <div class="flexlayout row center">
         <button mat-button matStepperPrevious>Back</button>
         <button mat-button matStepperNext>Next</button>
+        <button mat-raised-button color="warn" (click)="stepper.reset()">
+          Reset</button>
       </div>
     </form>
   </mat-step>
@@ -113,10 +117,13 @@
       <div class="flexlayout row center">
         <button mat-button matStepperPrevious>Back</button>
         <button mat-button matStepperNext>Next</button>
+        <button mat-raised-button color="warn" (click)="stepper.reset()">
+          Reset</button>
       </div>
     </form>
   </mat-step>
-  <mat-step [stepControl]="laborForm" errorMessage="Labor Code is required">
+  <mat-step [stepControl]="laborForm" errorMessage="Labor Code is required"
+    label="Initial Labor Code">
     <form [formGroup]="laborForm" class="flexlayout column topleft">
       <div class="flexlayout row center">
         <mat-form-field>
@@ -133,12 +140,47 @@
       <div class="flexlayout row center">
         <button mat-button matStepperPrevious>Back</button>
         <button mat-button matStepperNext>Next</button>
+        <button mat-raised-button color="warn" (click)="stepper.reset()">
+          Reset</button>
       </div>
     </form>
   </mat-step>
-  <mat-step [stepControl]="assignmentForm" 
+  <mat-step [stepControl]="assignmentForm" label="Initial Assignment"
     errorMessage="Assignment information is required">
     <form [formGroup]="assignmentForm" class="flexlayout column topleft">
+      <div class="flexlayout row center" style="gap: 5px;">
+        <mat-form-field class="fieldWidth">
+          <mat-label>Assignment Workcenter</mat-label>
+          <mat-select formControlName="workcenter">
+            <mat-option *ngFor="let wkctr of workcenters"
+              [value]="wkctr.id">{{wkctr.name.toUpperCase()}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="fieldWidth">
+          <mat-label>Assignment Start</mat-label>
+          <input matInput [matDatepicker]="startpicker"
+            formControlName="startdate">
+          <mat-datepicker-toggle matIconSuffix [for]="startpicker"></mat-datepicker-toggle>
+          <mat-datepicker #startpicker></mat-datepicker>
+        </mat-form-field>
+      </div>
     </form>
+    <app-site-employee-assignment-schedule [site]="site" [schedule]="schedule">
+    </app-site-employee-assignment-schedule>
+    <div class="flexlayout row center">
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button matStepperNext>Next</button>
+      <button mat-raised-button color="warn" (click)="stepper.reset()">
+        Reset</button>
+    </div>
+  </mat-step>
+  <mat-step label="Submit New Employee">
+    <div class="flexlayout row topleft">
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-raised-button color="primary" (click)="addEmployee()">
+        Submit</button>
+      <button mat-raised-button color="warn" (click)="stepper.reset()">
+        Reset</button>
+    </div>
   </mat-step>
 </mat-stepper>

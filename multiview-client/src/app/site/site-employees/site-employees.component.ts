@@ -12,7 +12,8 @@ import { SiteService } from 'src/app/services/site.service';
 export class SiteEmployeesComponent {
   employeeSelectionForm: FormGroup;
   selectedEmployee: Employee = new Employee();
-  siteEmployees: Employee[] = []
+  siteEmployees: Employee[] = [];
+  activeOnly: boolean = true;
 
   constructor(
     protected empService: EmployeeService,
@@ -26,6 +27,7 @@ export class SiteEmployeesComponent {
     }
     this.employeeSelectionForm = this.fb.group({
       employee: empID,
+      activeOnly: true,
     });
     this.setEmployees();
     this.selectEmployee();
@@ -34,9 +36,13 @@ export class SiteEmployeesComponent {
   setEmployees(): void {
     const site = this.siteService.getSite();
     this.siteEmployees = [];
+    const active = this.employeeSelectionForm.value.activeOnly;
     if (site && site.employees) {
-      site.employees.forEach(emp => {
-        this.siteEmployees.push(new Employee(emp));
+      site.employees.forEach(iEmp => {
+        const emp = new Employee(iEmp);
+        if ((active && emp.isActive()) || !active) {
+          this.siteEmployees.push(emp);
+        }
       });
       this.siteEmployees.sort((a,b) => a.compareTo(b));
     }
@@ -76,5 +82,20 @@ export class SiteEmployeesComponent {
       this.siteService.setSite(site);
     }
     this.setEmployees();
+  }
+
+  optionClass(id: string): string {
+    let answer = '';
+    const now = new Date();
+    this.siteEmployees.forEach(emp => {
+      if (emp.id === id) {
+        if (emp.user && emp.user.passwordExpires.getTime() < now.getTime()) {
+          answer = 'expired';
+        } else if (emp.user && emp.user.badAttempts > 2) {
+          answer = 'locked';
+        }
+      }
+    });
+    return answer;
   }
 }

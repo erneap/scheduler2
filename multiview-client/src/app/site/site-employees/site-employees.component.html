@@ -5,11 +5,16 @@
       <mat-select formControlName="employee"
         (selectionChange)="selectEmployee()">
         <mat-option value="new">Add New Employee</mat-option>
-        <mat-option *ngFor="let emp of siteEmployees" [value]="emp.id">
+        <mat-option *ngFor="let emp of siteEmployees" [value]="emp.id"
+          [class]="optionClass(emp.id)">
           {{emp.name.getFullName()}}
         </mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-checkbox formControlName="activeOnly"
+      (change)="setEmployees()">
+      <span style="color: white;">Show Active Only</span>
+    </mat-checkbox>
   </form>
   <app-new-employee *ngIf="selectedEmployee.id === 'new'"></app-new-employee>
 </div>

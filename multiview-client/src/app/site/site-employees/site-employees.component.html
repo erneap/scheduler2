@@ -15,6 +15,10 @@
       (change)="setEmployees()">
       <span style="color: white;">Show Active Only</span>
     </mat-checkbox>
+    <button mat-icon-button color="warn"
+      *ngIf="selectedEmployee.id !== 'new'">
+      <mat-icon>delete</mat-icon>
+    </button>
   </form>
   <app-new-employee *ngIf="selectedEmployee.id === 'new'"
     (changed)="updateEmployee($event)">

@@ -16,7 +16,9 @@
         </app-site-employee-leave-editor>
       </mat-step>
       <mat-step label="Annual Leave Balance Editor">
-
+        <app-site-employee-leave-balance [employee]="employee"
+          (changed)="updateEmployee($event)">
+        </app-site-employee-leave-balance>
       </mat-step>
     </mat-stepper>
   </mat-step>

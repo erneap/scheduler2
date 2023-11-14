@@ -67,6 +67,7 @@ import { EmployeeLeaveRequestLegendTablet } from './employee-leave-request-legen
     ReactiveFormsModule
   ],
   exports: [
+    EmployeeLeaveRequestEditorDesktop,
     EmployeeLeaveRequestLegendDesktop,
     EmployeeLeaveRequestLegendMobile,
     EmployeeLeaveRequestLegendTablet

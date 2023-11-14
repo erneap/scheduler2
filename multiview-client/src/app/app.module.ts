@@ -21,6 +21,7 @@ import { HomeComponent } from './home/home.component';
 import { EmployeeModule } from './employee/employee.module';
 import { SiteModule } from './site/site.module';
 import { QueryModule } from './query/query.module';
+import { GenericModule } from './generic/generic.module';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { QueryModule } from './query/query.module';
     HttpClientModule,
     EmployeeModule,
     SiteModule,
-    QueryModule
+    QueryModule,
+    GenericModule
   ],
   providers: [
     AppStateService,

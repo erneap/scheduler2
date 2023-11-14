@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { WorkWeek } from 'src/app/employee/employee-schedule/employee-schedule.model';
-import { DeletionConfirmationComponent } from 'src/app/header/deletion-confirmation/deletion-confirmation.component';
+import { DeletionConfirmationComponent } from 'src/app/generic/deletion-confirmation/deletion-confirmation.component';
 import { ISchedule, Schedule } from 'src/app/models/employees/assignments';
 import { ISite, Site } from 'src/app/models/sites/site';
 

@@ -4,7 +4,7 @@ import { EmployeeService } from 'src/app/services/employee.service';
 import { TeamService } from 'src/app/services/team.service';
 
 @Component({
-  selector: 'app-employee-ptoholidays-chart',
+  selector: 'app-employee-ptoholidays-chart-desktop',
   templateUrl: './employee-ptoholidays-chart.desktop.html',
   styleUrls: ['./employee-ptoholidays-chart.desktop.scss']
 })
@@ -14,13 +14,5 @@ export class EmployeePTOHolidaysChartDesktop extends EmployeePTOHolidayChartComp
     protected ts: TeamService
   ) {
     super(es, ts);
-  }
-
-  chartWidthStyle(): string {
-    let width = 33.3;
-    if (this.showHolidays) {
-      width += 33.3;
-    }
-    return `width: ${width}rem;`
   }
 }

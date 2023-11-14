@@ -4,7 +4,7 @@ import { TeamService } from 'src/app/services/team.service';
 import { EmployeePTOHolidayChartComponent } from '../employee-ptoholiday-chart/employee-ptoholiday-chart.component';
 
 @Component({
-  selector: 'app-employee-ptoholidays-chart',
+  selector: 'app-employee-ptoholidays-chart-mobile',
   templateUrl: './employee-ptoholidays-chart.mobile.html',
   styleUrls: ['./employee-ptoholidays-chart.mobile.scss']
 })

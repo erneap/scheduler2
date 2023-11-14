@@ -10,7 +10,6 @@ import { HeaderComponent } from './header.component';
 import { WaitDialogComponent } from './wait-dialog/wait-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SideMenuComponent } from './side-menu/side-menu.component';
-import { DeletionConfirmationComponent } from './deletion-confirmation/deletion-confirmation.component';
 
 @NgModule({
   declarations: [
@@ -21,8 +20,7 @@ import { DeletionConfirmationComponent } from './deletion-confirmation/deletion-
     PasswordExpireDialogComponent,
     HeaderComponent,
     WaitDialogComponent,
-    SideMenuComponent,
-    DeletionConfirmationComponent
+    SideMenuComponent
   ],
   imports: [
     CommonModule,
@@ -32,8 +30,7 @@ import { DeletionConfirmationComponent } from './deletion-confirmation/deletion-
   ],
   exports: [
     HeaderComponent,
-    SideMenuComponent,
-    DeletionConfirmationComponent
+    SideMenuComponent
   ]
 })
 export class HeaderModule { }

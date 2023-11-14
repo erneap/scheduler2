@@ -16,5 +16,10 @@
       <span style="color: white;">Show Active Only</span>
     </mat-checkbox>
   </form>
-  <app-new-employee *ngIf="selectedEmployee.id === 'new'"></app-new-employee>
+  <app-new-employee *ngIf="selectedEmployee.id === 'new'"
+    (changed)="updateEmployee($event)">
+  </app-new-employee>
+  <app-site-employee *ngIf="selectedEmployee.id !== 'new'"
+    [employee]="selectedEmployee" (changed)="updateEmployee($event)">
+  </app-site-employee>
 </div>

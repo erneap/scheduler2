@@ -10,4 +10,18 @@ export class EmployeePTOHolidaysPTOMonthDesktop extends EmployeePTOHolidaysPTOMo
   constructor() {
     super();
   }
+
+  getWidthStyle(column: string): string {
+    let width = window.innerWidth;
+    if (width > 1000) {
+      width = 1000;
+    }
+    width = Math.floor(width/2);
+    if (column.toLowerCase() === 'dates') {
+      width = Math.floor(width * 0.52);
+    } else {
+      width = Math.floor(width * 0.16) - 3;
+    }
+    return `width: ${width}px;`;
+  }
 }

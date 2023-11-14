@@ -1,9 +1,8 @@
-.label {
+.title {
   margin: 0;
   padding: 0;
   text-align: center;
   vertical-align: middle;
-  width: 33.3rem;
   height: 1.6rem;
   border-left: solid 2px black;
   border-top: solid 2px black;
@@ -14,11 +13,10 @@
   color: white;
 }
 
-.code {
+.label {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 4.4rem;
   height: 1.6rem;
   border-left: solid 2px black;
   border-top: solid 1px black;
@@ -28,109 +26,24 @@
   color: white;
 }
 
-.dates {
+.data {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 19.6rem;
   height: 1.6rem;
-  border-left: solid 1px black;
+  border-left: solid 2px black;
   border-top: solid 1px black;
   border-bottom: solid 2px black;
   font-size: 1em;
   font-weight: bold;
-  color: white;
 }
 
-.actual {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 4.4rem;
-  height: 1.6rem;
-  border-left: solid 1px black;
-  border-top: solid 1px black;
-  border-bottom: solid 2px black;
-  border-right: solid 2px black;
-  font-size: 1em;
-  font-weight: bold;
-  color: white;
-}
-
-.requested {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 4.4rem;
-  height: 1.6rem;
-  border-left: solid 1px black;
-  border-top: solid 1px black;
-  border-bottom: solid 2px black;
-  border-right: solid 2px black;
-  font-size: 1em;
-  font-weight: bold;
-  color: white;
-}
-
-.bottomlabel {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 6.5rem;
-  height: 1.6rem;
-  border-left: solid 1px black;
-  border-top: solid 1px black;
-  border-right: solid 1px black;
-  border-bottom: solid 2px black;
-  font-size: 1em;
-  font-weight: bold;
-  color: white;
-}
-
-.bottomdata {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 6.5rem;
-  height: 1.6rem;
-  border-left: solid 1px black;
-  border-top: solid 1px black;
-  border-bottom: solid 2px black;
-  border-right: solid 1px black;
-  font-size: 12pt;
-  font-weight: bold;
+.positive {
   background-color: white;
   color: black;
 }
 
-.balancepos {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 6.5rem;
-  height: 1.6rem;
-  border-left: solid 1px black;
-  border-top: solid 1px black;
-  border-bottom: solid 2px black;
-  border-right: solid 2px black;
-  font-size: 1em;
-  font-weight: bold;
-  background-color: white;
-  color: black;
-}
-
-.balanceneg {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 6.5rem;
-  height: 1.6rem;
-  border-left: solid 1px black;
-  border-top: solid 1px black;
-  border-bottom: solid 2px black;
-  border-right: solid 2px black;
-  font-size: 1em;
-  font-weight: bold;
+.negative {
   background-color: yellow;
-  color: red;
+  color: red
 }

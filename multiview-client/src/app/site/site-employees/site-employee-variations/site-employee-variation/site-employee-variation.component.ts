@@ -257,31 +257,32 @@ export class SiteEmployeeVariationComponent {
           break;
         case "mids":
           this.variation.mids = this.variationForm.value.mids;
+          for (let i=1; i < this.variation.schedule.workdays.length; i++) {
+            this.variation.schedule.workdays[i].code = 'M';
+            this.variation.schedule.workdays[i].hours = 8.0;
+          }
           break;
         case "dates":
           this.variation.schedule.showdates = this.variationForm.value.dates;
+          let start = new Date(this.variationForm.value.start);
+          while (start.getDay() !== 0) {
+            start = new Date(start.getTime() - (24 * 3600000));
+          }
+          let end = new Date(this.variationForm.value.end);
+          while (end.getDay() !== 6) {
+            end = new Date(end.getTime() + (24 * 3600000));
+          }
+          const days = Math.floor((end.getTime() - start.getTime()) / (24 * 3600000)) + 1;
+          this.variation.schedule.setScheduleDays(days);
           break;
       }
-      this.schedule = this.variation.schedule;
+      this.schedule = new Schedule(this.variation.schedule);
     }
     if (field.toLowerCase() === 'mids') {
-      for (let i=1; i < this.variation.schedule.workdays.length; i++) {
-        this.variation.schedule.workdays[i].code = 'M';
-        this.variation.schedule.workdays[i].hours = 8.0;
-      }
-      this.schedule = new Schedule(this.variation.schedule);
+      
     } else if (field.toLowerCase() === 'dates') {
       if (this.variationForm.value.dates) {
-        let start = new Date(this.variationForm.value.start);
-        while (start.getDay() !== 0) {
-          start = new Date(start.getTime() - (24 * 3600000));
-        }
-        let end = new Date(this.variationForm.value.end);
-        while (end.getDay() !== 6) {
-          end = new Date(end.getTime() + (24 * 3600000));
-        }
-        const days = Math.floor((end.getTime() - start.getTime()) / (24 * 3600000)) + 1;
-        this.variation.schedule.setScheduleDays(days);
+        
         this.schedule = new Schedule(this.variation.schedule);
       }
     }

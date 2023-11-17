@@ -25,6 +25,9 @@ import { EmployeeContactInfoTablet } from './employee-contact-info.tablet';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule
+  ],
+  exports: [
+    EmployeeContactInfoDesktop,
   ]
 })
 export class EmployeeContactInfoModule { }

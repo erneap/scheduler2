@@ -19,6 +19,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule
+  ],
+  exports: [
+    EmployeeSpecialtiesDesktop,
   ]
 })
 export class EmployeeSpecialtiesModule { }

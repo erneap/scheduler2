@@ -1,8 +1,10 @@
-<mat-stepper>
+<div class="flexlayout column center">
+<mat-stepper [style]="setWidth()">
   <mat-step label="Leave Information">
     <mat-stepper backgroundColor="accent">
       <mat-step label="PTO/Holiday Listing">
-        <app-employee-ptoholidays-chart-desktop [employee]="employee">
+        <app-employee-ptoholidays-chart-desktop [employee]="employee"
+          [width]="setMaxChildWidth()">
         </app-employee-ptoholidays-chart-desktop>
       </mat-step>
       <mat-step label="Leave Request Editor">
@@ -23,9 +25,32 @@
     </mat-stepper>
   </mat-step>
   <mat-step label="Personal/Company Information">
-    
+    <mat-stepper>
+      <mat-step label="Personal Information">
+        <app-employee-profile-desktop [employee]="employee" 
+          (changed)="updateEmployee($event)"></app-employee-profile-desktop>
+      </mat-step>
+      <mat-step label="Contact Information">
+        <app-employee-contact-info-desktop [employee]="employee"
+          (changed)="updateEmployee($event)"></app-employee-contact-info-desktop>
+      </mat-step>
+      <mat-step label="Employee Specialties">
+        <app-employee-specialties-desktop [employee]="employee"
+          (changed)="updateEmployee($event)"></app-employee-specialties-desktop>
+      </mat-step>
+    </mat-stepper>
   </mat-step>
   <mat-step label="Assignments/Variations">
-    
+    <mat-stepper>
+      <mat-step label="Employee's Assignment Editor">
+        <app-site-employee-assignment [employee]="employee" [site]="site"
+          (changed)="updateEmployee($event)"></app-site-employee-assignment>
+      </mat-step>
+      <mat-step label="Employee's Variation Editor">
+        <app-site-employee-variations [employee]="employee" [site]="site"
+          (changed)="updateEmployee($event)"></app-site-employee-variations>
+      </mat-step>
+    </mat-stepper>
   </mat-step>
 </mat-stepper>
+</div>

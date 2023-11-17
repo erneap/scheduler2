@@ -1,6 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { DeletionConfirmationComponent } from 'src/app/generic/deletion-confirmation/deletion-confirmation.component';
 import { Employee } from 'src/app/models/employees/employee';
+import { ISite, Site } from 'src/app/models/sites/site';
+import { Message } from 'src/app/models/web/employeeWeb';
+import { SiteResponse } from 'src/app/models/web/siteWeb';
+import { AuthService } from 'src/app/services/auth.service';
+import { DialogService } from 'src/app/services/dialog-service.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { SiteService } from 'src/app/services/site.service';
 
@@ -10,6 +17,15 @@ import { SiteService } from 'src/app/services/site.service';
   styleUrls: ['./site-employees.component.scss']
 })
 export class SiteEmployeesComponent {
+  private _site: Site = new Site();
+  @Input()
+  public set site(site: ISite) {
+    this._site = new Site(site);
+    this.setEmployees();
+  }
+  get site(): Site {
+    return this._site;
+  }
   employeeSelectionForm: FormGroup;
   selectedEmployee: Employee = new Employee();
   siteEmployees: Employee[] = [];
@@ -18,7 +34,10 @@ export class SiteEmployeesComponent {
   constructor(
     protected empService: EmployeeService,
     protected siteService: SiteService,
-    private fb: FormBuilder
+    protected dialogService: DialogService,
+    protected authService: AuthService,
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
     const emp = this.empService.getEmployee();
     let empID = '';
@@ -29,16 +48,18 @@ export class SiteEmployeesComponent {
       employee: empID,
       activeOnly: true,
     });
-    this.setEmployees();
+    const site = this.siteService.getSite();
+    if (site) {
+      this.site = site;
+    }
     this.selectEmployee();
   }
 
   setEmployees(): void {
-    const site = this.siteService.getSite();
     this.siteEmployees = [];
     const active = this.employeeSelectionForm.value.activeOnly;
-    if (site && site.employees) {
-      site.employees.forEach(iEmp => {
+    if (this.site && this.site.employees) {
+      this.site.employees.forEach(iEmp => {
         const emp = new Employee(iEmp);
         if ((active && emp.isActive()) || !active) {
           this.siteEmployees.push(emp);
@@ -54,9 +75,8 @@ export class SiteEmployeesComponent {
       this.selectedEmployee = new Employee();
       this.selectedEmployee.id = 'new';
     } else {
-      const site = this.siteService.getSite();
-      if (site && site.employees) {
-        site.employees.forEach(emp => {
+      if (this.site && this.site.employees) {
+        this.site.employees.forEach(emp => {
           if (empID.toLowerCase() === emp.id.toLowerCase()) {
             this.selectedEmployee = new Employee(emp);
           }
@@ -71,17 +91,56 @@ export class SiteEmployeesComponent {
     if (employee && employee.id === emp.id) {
       this.empService.setEmployee(emp);
     }
-    if (site && site.employees) {
+    if (this.site && this.site.employees) {
       let found = false;
-      for (let i=0; i < site.employees.length && !found; i++) {
-        if (site.employees[i].id === emp.id) {
-          site.employees[i] = new Employee(emp);
+      for (let i=0; i < this.site.employees.length && !found; i++) {
+        if (this.site.employees[i].id === emp.id) {
+          this.site.employees[i] = new Employee(emp);
           found = true;
         }
       }
-      this.siteService.setSite(site);
+      if (site && site.id === this.site.id) {
+        this.siteService.setSite(this.site);
+      }
     }
+    this.selectedEmployee = new Employee(emp);
     this.setEmployees();
+  }
+
+  deleteEmployee() {
+    const dialogRef = this.dialog.open(DeletionConfirmationComponent, {
+      data: {title: 'Confirm Employee Deletion',
+      message:  'Are you sure you want to delete this employee?'},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'yes') {
+        this.dialogService.showSpinner();
+        this.empService.deleteEmployee(this.selectedEmployee.id).subscribe({
+          next: (data: Message) => {
+            if (data.message.toLowerCase().indexOf('delete') > 0) {
+              let pos = -1;
+              if (this.site && this.site.employees) {
+                for (let i=0; i < this.site.employees.length && pos < 0; i++) {
+                  if (this.site.employees[i].id === this.selectedEmployee.id) {
+                    pos = i;
+                  }
+                }
+                if (pos >= 0) {
+                  this.site.employees.splice(pos, 1);
+                }
+              }
+              this.siteService.setSite(this.site);
+              this.setEmployees();
+            }
+          },
+          error: (err: Message) => {
+            this.dialogService.closeSpinner();
+            this.authService.statusMessage = err.message;
+          }
+        });
+      }
+    })
   }
 
   optionClass(id: string): string {

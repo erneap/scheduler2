@@ -1,1 +1,22 @@
-<p>site-employee-assignment works!</p>
+<div class="flexlayout column topleft">
+  <form [formGroup]="asgmtForm" class="flexlayout row center" style="gap: 10px;">
+    <mat-form-field appearance="fill" style="width: 300px;">
+      <mat-label>Assignment to Edit</mat-label>
+      <mat-select formControlName="assignment" (selectionChange)="onSelect()">
+        <mat-option value="0">Add New Assignment</mat-option>
+        <mat-option *ngFor="let asgmt of assignments" [value]="asgmt.id">
+          {{assignmentDates(asgmt)}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-icon-button color="warn" matTooltip="Delete assignment"
+      (click)="deleteAssignment()"
+      *ngIf="selectedAssignment && selectedAssignment.id > 0">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </form>
+  <app-site-employee-assignment-edit [employee]="employee"
+    [assignment]="selectedAssignment" [site]="site"
+    (changed)="updateEmployee($event)">
+  </app-site-employee-assignment-edit>
+</div>

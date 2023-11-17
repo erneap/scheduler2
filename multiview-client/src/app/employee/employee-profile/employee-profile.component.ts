@@ -128,15 +128,6 @@ export class EmployeeProfileComponent {
                 if (iEmp && iEmp.id === data.employee.id) {
                   this.empService.setEmployee(new Employee(data.employee));
                 }
-                const site = this.siteService.getSite();
-                if (site && site.employees && site.employees.length && data.employee) {
-                  let found = false;
-                  for (let i=0; i < site.employees.length && !found; i++) {
-                    if (site.employees[i].id === data.employee.id) {
-                      site.employees[i] = new Employee(data.employee);
-                    }
-                  }
-                }
                 this.changed.emit(new Employee(data.employee));
               }
             }
@@ -185,15 +176,6 @@ export class EmployeeProfileComponent {
               const emp = this.empService.getEmployee();
               if (emp && emp.id === data.employee.id) {
                 this.empService.setEmployee(data.employee);
-              }
-              const site = this.siteService.getSite();
-              if (site && site.employees && site.employees.length && data.employee) {
-                let found = false;
-                for (let i=0; i < site.employees.length && !found; i++) {
-                  if (site.employees[i].id === data.employee.id) {
-                    site.employees[i] = new Employee(data.employee);
-                  }
-                }
               }
             }
           }

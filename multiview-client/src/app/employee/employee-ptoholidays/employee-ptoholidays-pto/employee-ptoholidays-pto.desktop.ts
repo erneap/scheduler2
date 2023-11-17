@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { EmployeePTOHolidaysPTOComponent } from './employee-ptoholidays-pto.component';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { SiteService } from 'src/app/services/site.service';
@@ -9,6 +9,7 @@ import { SiteService } from 'src/app/services/site.service';
   styleUrls: ['./employee-ptoholidays-pto.desktop.scss']
 })
 export class EmployeePTOHolidaysPTODesktop extends EmployeePTOHolidaysPTOComponent {
+  @Input() width: number = 0;
   constructor(
     protected es: EmployeeService,
     protected ss: SiteService
@@ -17,7 +18,10 @@ export class EmployeePTOHolidaysPTODesktop extends EmployeePTOHolidaysPTOCompone
   }
 
   getWidthStyle(column: string): string {
-    let width = window.innerWidth;
+    let width = this.width;
+    if (width === 0) {
+      width = window.innerWidth;
+    }
     if (width > 1000) {
       width = 1000;
     }

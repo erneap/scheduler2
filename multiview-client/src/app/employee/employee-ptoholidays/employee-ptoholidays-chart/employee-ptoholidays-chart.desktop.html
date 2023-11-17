@@ -13,9 +13,10 @@
     </div>
     <div class="flexlayout row topcenter">
       <app-employee-ptoholidays-holiday-desktop *ngIf="showHolidays" 
-      [employee]="employee" [year]="year">
+      [employee]="employee" [year]="year" [width]="width">
       </app-employee-ptoholidays-holiday-desktop>
-      <app-employee-ptoholidays-pto-desktop [year]="year" [employee]="employee">
+      <app-employee-ptoholidays-pto-desktop [year]="year" [employee]="employee"
+        [width]="width">
       </app-employee-ptoholidays-pto-desktop>
     </div>
   </div>

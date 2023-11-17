@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { EmployeePTOHolidaysHolidayCellComponent } from './employee-ptoholidays-holiday-cell.component';
 
 @Component({
@@ -6,13 +6,18 @@ import { EmployeePTOHolidaysHolidayCellComponent } from './employee-ptoholidays-
   templateUrl: './employee-ptoholidays-holiday-cell.desktop.html',
   styleUrls: ['./employee-ptoholidays-holiday-cell.desktop.scss']
 })
-export class EmployeePTOHolidaysHolidayCellDesktop extends EmployeePTOHolidaysHolidayCellComponent {
+export class EmployeePTOHolidaysHolidayCellDesktop 
+  extends EmployeePTOHolidaysHolidayCellComponent {
+    @Input() width: number = 0;
   constructor() {
     super();
   }
 
   getWidthStyle(column: string): string {
-    let width = window.innerWidth;
+    let width = this.width;
+    if (width === 0) {
+      width = window.innerWidth;
+    }
     if (width > 1000) {
       width = 1000;
     }

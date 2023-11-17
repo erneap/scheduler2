@@ -16,8 +16,12 @@ import { SiteEmployeeLeaveEditorRowComponent } from './site-employee/site-employ
 import { SiteEmployeeLeaveBalanceComponent } from './site-employee/site-employee-leave-balance/site-employee-leave-balance.component';
 import { SiteEmployeeLeaveBalanceYearComponent } from './site-employee/site-employee-leave-balance/site-employee-leave-balance-year/site-employee-leave-balance-year.component';
 import { SiteEmployeeLeaveBalanceDialogComponent } from './site-employee/site-employee-leave-balance/site-employee-leave-balance-dialog/site-employee-leave-balance-dialog.component';
-
-
+import { EmployeeProfileModule } from 'src/app/employee/employee-profile/employee-profile.module';
+import { EmployeeContactInfoModule } from 'src/app/employee/employee-contact-info/employee-contact-info.module';
+import { EmployeeSpecialtiesModule } from 'src/app/employee/employee-specialties/employee-specialties.module';
+import { SiteEmployeeAssignmentEditComponent } from './site-employee-assignment/site-employee-assignment-edit/site-employee-assignment-edit.component';
+import { SiteEmployeeVariationsComponent } from './site-employee-variations/site-employee-variations.component';
+import { SiteEmployeeVariationComponent } from './site-employee-variations/site-employee-variation/site-employee-variation.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +35,10 @@ import { SiteEmployeeLeaveBalanceDialogComponent } from './site-employee/site-em
     SiteEmployeeLeaveEditorRowComponent,
     SiteEmployeeLeaveBalanceComponent,
     SiteEmployeeLeaveBalanceYearComponent,
-    SiteEmployeeLeaveBalanceDialogComponent
+    SiteEmployeeLeaveBalanceDialogComponent,
+    SiteEmployeeAssignmentEditComponent,
+    SiteEmployeeVariationsComponent,
+    SiteEmployeeVariationComponent
   ],
   imports: [
     CommonModule,
@@ -39,7 +46,10 @@ import { SiteEmployeeLeaveBalanceDialogComponent } from './site-employee/site-em
     FormsModule,
     ReactiveFormsModule,
     EmployeePTOHolidaysModule,
-    EmployeeLeaveRequestModule
+    EmployeeLeaveRequestModule,
+    EmployeeProfileModule,
+    EmployeeContactInfoModule,
+    EmployeeSpecialtiesModule
   ]
 })
 export class SiteEmployeesModule { }

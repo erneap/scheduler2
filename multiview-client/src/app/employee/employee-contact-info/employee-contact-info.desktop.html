@@ -2,7 +2,7 @@
   <div class="flexlayout row center" style="margin-bottom: 5px;">
     <div class="typeText">Contact Info Type/Value</div>
   </div>
-  <mat-stepper>
+  <mat-vertical-stepper>
     <mat-step *ngFor="let ct of contactTypes;let i = index">
       <ng-template matStepLabel>
         {{ct.name.toUpperCase()}}
@@ -20,5 +20,5 @@
         </div>
       </div>
     </mat-step>
-  </mat-stepper>
+  </mat-vertical-stepper>
 </div>

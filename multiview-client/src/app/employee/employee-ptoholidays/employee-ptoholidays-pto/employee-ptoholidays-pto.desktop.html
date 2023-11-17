@@ -9,7 +9,7 @@
     <div class="label" [style]="getWidthStyle('requested')">Project</div>
   </div>
   <app-employee-ptoholidays-ptomonth-desktop
-    *ngFor="let lm of leaveMonths" [leaveMonth]="lm">
+    *ngFor="let lm of leaveMonths" [leaveMonth]="lm" [width]="width">
   </app-employee-ptoholidays-ptomonth-desktop>
   <ng-container *ngIf="annual > 0.0">
     <div class="flexlayout row center">

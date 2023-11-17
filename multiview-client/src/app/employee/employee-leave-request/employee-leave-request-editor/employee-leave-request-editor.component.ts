@@ -279,7 +279,6 @@ export class EmployeeLeaveRequestEditorComponent {
               this.selectionForm.controls['leaverequest'].setValue(this.selected.id);
             }
             this.setCurrent();
-            const site = this.siteService.getSite()
           }
           this.authService.statusMessage = "Leave Request processing complete";
           this.changed.emit(new Employee(this.employee));

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { ListItem } from 'src/app/models/generic/listitem';
@@ -33,6 +33,7 @@ export class EmployeeSpecialtiesComponent {
   get employee(): Employee {
     return this._employee;
   }
+  @Output() changed = new EventEmitter<Employee>();
   available: ListItem[] = [];
   specialties: ListItem[] = [];
   form: FormGroup;
@@ -81,8 +82,8 @@ export class EmployeeSpecialtiesComponent {
   }
 
   updatedEmployee(emp: Employee) {
-    this.empService.setEmployee(emp);
     this.employee = emp;
+    this.changed.emit(this.employee);
   }
 
   getButtonClass(id: string, list: string) {
@@ -133,8 +134,12 @@ export class EmployeeSpecialtiesComponent {
         next: (resp: EmployeeResponse) => {
           this.dialogService.closeSpinner();
           if (resp.employee) {
-            this.empService.setEmployee(resp.employee);
-            this.employee = resp.employee;
+            this.employee = new Employee(resp.employee);
+            const iEmp = this.empService.getEmployee();
+            if (iEmp && iEmp.id === this.employee.id) {
+              this.empService.setEmployee(this.employee);
+            }
+            this.changed.emit(this.employee);
           }
         },
         error: (err: EmployeeResponse) => {

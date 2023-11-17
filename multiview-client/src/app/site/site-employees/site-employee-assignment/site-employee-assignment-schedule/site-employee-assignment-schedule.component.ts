@@ -140,7 +140,12 @@ export class SiteEmployeeAssignmentScheduleComponent {
   }
 
   isDisabled(id: number): boolean {
-    const answer =  (id < this.startid || id > this.endid);
+    const tDate = this.getScheduleDate(id);
+    let answer = true;
+    if (tDate && this.startdate && this.enddate) {
+      answer = (tDate.getTime() < this.startdate.getTime() 
+        || tDate.getTime() > this.enddate.getTime());
+    } 
     return answer;
   }
 

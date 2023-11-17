@@ -247,8 +247,25 @@ export class SiteEmployeeVariationComponent {
             this.authService.statusMessage = err.exception;
           }
         });
-    } else if (field.toLowerCase() === 'mids') {
-      for (let i=1; i < 6; i++) {
+    } else {
+      switch (field.toLowerCase()) {
+        case "start":
+          this.variation.startdate = new Date(this.variationForm.value.start);
+          break;
+        case "end":
+          this.variation.enddate = new Date(this.variationForm.value.end);
+          break;
+        case "mids":
+          this.variation.mids = this.variationForm.value.mids;
+          break;
+        case "dates":
+          this.variation.schedule.showdates = this.variationForm.value.dates;
+          break;
+      }
+      this.schedule = this.variation.schedule;
+    }
+    if (field.toLowerCase() === 'mids') {
+      for (let i=1; i < this.variation.schedule.workdays.length; i++) {
         this.variation.schedule.workdays[i].code = 'M';
         this.variation.schedule.workdays[i].hours = 8.0;
       }

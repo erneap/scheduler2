@@ -1,0 +1,92 @@
+<div class="flexlayout column topleft">
+  <mat-stepper #stepper>
+    <mat-step label="Workcenter ID/Name" class="flexlayout column topleft">
+      <form [formGroup]="basicForm" class="flexlayout row topleft" 
+        style="gap: 10px;">
+        <mat-form-field appearance="fill" 
+          *ngIf="workcenter.id === '' || workcenter.id === 'new'">
+          <mat-label>Workcenter ID</mat-label>
+          <input matInput formControlName="id">
+          <mat-error class="error" *ngIf="basicForm.controls['id'].invalid">
+            Required
+          </mat-error>
+          <mat-hint>Lower-case, numbers and - only</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Workcenter Name/Title</mat-label>
+          <input matInput formControlName="name">
+          <mat-error class="error" *ngIf="basicForm.controls['id'].invalid">
+            Required
+          </mat-error>
+        </mat-form-field>
+      </form>
+      <div class="flexlayout row topleft" 
+        *ngIf="workcenter.id === '' || workcenter.id === 'new'">
+        <button mat-raised-button color="primary">Add</button>
+        <button mat-raised-button color="warn">Reset</button>
+      </div>
+    </mat-step>
+    <mat-step label="Workcenter Positions"
+      *ngIf="workcenter.id !== '' && workcenter.id !== 'new'">
+      <div class="flexlayout row topleft">
+        <form [formGroup]="positionForm" class="flexlayout row topleft" 
+          style="gap: 10px;">
+          <mat-form-field appearance="fill">
+            <mat-label>Workcenter Position to Edit</mat-label>
+            <mat-select formControlName="position"
+              (selectionChange)="selectPosition()">
+              <mat-option value="new">Add New Position</mat-option>
+              <mat-option *ngFor="let pos of workcenter.positions"
+                [value]="pos.id">{{pos.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="flexlayout column topcenter">
+            <button mat-icon-button [disabled]="showPosSortUp" 
+              (click)="onChangeSort('position', 'up')" 
+              matTooltip="Move Position Up">
+              <mat-icon>arrow_drop_up</mat-icon>
+            </button>
+            <button mat-icon-button [disabled]="showPosSortDown" 
+              (click)="onChangeSort('position', 'down')" 
+              matTooltip="Move Position Down">
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+          </div>
+        </form>
+        <app-site-editor-workcenter-position>
+        </app-site-editor-workcenter-position>
+      </div>
+    </mat-step>
+    <mat-step label="Workcenter Shifts"
+      *ngIf="workcenter.id !== '' && workcenter.id !== 'new'">
+      <div class="flexlayout row topleft">
+        <form [formGroup]="shiftForm" class="flexlayout row topleft" 
+          style="gap: 10px;">
+          <mat-form-field appearance="fill">
+            <mat-label>Workcenter Shift to Edit</mat-label>
+            <mat-select formControlName="shift"
+              (selectionChange)="selectShift()">
+              <mat-option value="new">Add New Shift</mat-option>
+              <mat-option *ngFor="let pos of workcenter.shifts"
+                [value]="pos.id">{{pos.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="flexlayout column topcenter">
+            <button mat-icon-button [disabled]="showSftSortUp" 
+              (click)="onChangeSort('shift', 'up')" 
+              matTooltip="Move Shift Up">
+              <mat-icon>arrow_drop_up</mat-icon>
+            </button>
+            <button mat-icon-button [disabled]="showSftSortDown" 
+              (click)="onChangeSort('shift', 'down')" 
+              matTooltip="Move Shift Down">
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+          </div>
+        </form>
+        <app-site-editor-workcenter-shift>
+        </app-site-editor-workcenter-shift>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>

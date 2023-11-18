@@ -141,7 +141,7 @@ export class SiteEmployeeAssignmentScheduleComponent {
 
   isDisabled(id: number): boolean {
     const tDate = this.getScheduleDate(id);
-    let answer = true;
+    let answer = false;
     if (tDate && this.startdate && this.enddate) {
       answer = (tDate.getTime() < this.startdate.getTime() 
         || tDate.getTime() > this.enddate.getTime());
@@ -150,13 +150,15 @@ export class SiteEmployeeAssignmentScheduleComponent {
   }
 
   getScheduleDate(id: number): Date | undefined {
-    if (this._startDate) {
-      let tDate = new Date(this._startDate);
-      while (tDate.getDay() !== 0) {
-        tDate = new Date(tDate.getTime() - (24 * 3600000));
+    if (this.schedule.showdates) {
+      if (this._startDate) {
+        let tDate = new Date(this._startDate);
+        while (tDate.getDay() !== 0) {
+          tDate = new Date(tDate.getTime() - (24 * 3600000));
+        }
+        tDate.setTime(tDate.getTime() + (id * 24 * 3600000));
+        return tDate;
       }
-      tDate.setTime(tDate.getTime() + (id * 24 * 3600000));
-      return tDate;
     }
     return undefined;
   }

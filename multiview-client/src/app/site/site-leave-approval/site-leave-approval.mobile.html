@@ -1,0 +1,146 @@
+<mat-vertical-stepper #stepper>
+  <mat-step [stepControl]="selectionForm" errorMessage="Leave Request must be selected">
+    <form [formGroup]="selectionForm">
+      <ng-template matStepLabel>Choose Leave Request</ng-template>
+      <mat-form-field appearance="fill" [style]="selectorWidth()">
+        <mat-select formControlName="leaverequest" required
+          (selectionChange)="setCurrent();stepper.next()">
+          <mat-option *ngFor="let req of leaveList" [value]="req.id">
+            {{getRequestLabel(req)}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="editorForm" errorMessage="Leave request incomplete">
+    <ng-template matStepLabel>Create/Edit Request</ng-template>
+    <div class="flexlayout column left" style="gap: 25px;">
+      <form [formGroup]="editorForm">
+        <div class="flexlayout column left" style="gap: 5px;flex-wrap: wrap;">
+          <div class="formFieldWide">
+          <mat-form-field class="fieldWidthWide">
+              <mat-label>Request Dates</mat-label>
+              <mat-date-range-input
+                [rangePicker]="picker">
+                <input matStartDate placeholder="Start Date"
+                  formControlName="start" (dateChange)="processChange('start')">
+                <input matEndDate placeholder="End Date"
+                  formControlName="end" (dateChange)="processChange('end')">
+              </mat-date-range-input>
+              <mat-hint>Include Time Off</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+          <div class="formFieldWide">
+            <mat-form-field class="fieldWidthWide">
+              <mat-label>Primary Leave Code</mat-label>
+              <mat-select formControlName="primarycode"
+                (selectionChange)="processChange('code')">
+                <mat-option *ngFor="let wc of workcodes" [value]="wc.id">
+                  {{wc.title}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div> 
+        </div>
+        <div>
+          <button mat-raised-button matStepperPrevious>Back</button>
+          <button mat-raised-button matStepperNext>Next</button>
+          <button mat-raised-button color="warn"
+            (click)="deleteRequest()"
+            *ngIf="selected.id > 0">
+            Delete
+          </button>
+        </div>
+      </form>
+      <div class="flexlayout column center">
+        <div class="flexlayout row center">
+          <div class="label">Created On:</div>
+          <div class="label">{{getCurrentLeaveRequestDate()}}</div>
+        </div>
+        <div class="flexlayout row center">
+          <div class="label">Current Status:</div>
+          <div class="label">{{selected.leaveRequest.status.toUpperCase()}}</div>
+        </div>
+        <div class="flexlayout row center">
+          <div class="label">Approved By:</div>
+          <div class="label">{{getApprovedBy()}}</div>
+        </div>
+        <div class="flexlayout row center">
+          <div class="label">Approval Date:</div>
+          <div class="label">{{getApprovedDate()}}</div>
+        </div>
+        <div class="flexlayout row center">
+          <div class="label">PTO Hours</div>
+          <div class="label">{{ptohours}}</div>
+        </div>
+        <div class="flexlayout row center">
+          <div class="label">Holiday Hours</div>
+          <div class="label">{{holidayhours}}</div>
+        </div>
+      </div>
+    </div>
+  </mat-step>
+  <mat-step *ngIf="selected.id > 0">
+    <ng-template matStepLabel>Leave Request Calendar</ng-template>
+    <app-employee-leave-request-calendar-mobile 
+      [startdate]="selected.leaveRequest.startdate"
+      [enddate]="selected.leaveRequest.enddate" [leaveCodes]="workcodes"
+      [hours]="stdHours"
+      [leavedays]="selected.leaveRequest.requesteddays">
+    </app-employee-leave-request-calendar-mobile>
+    <div>
+      <button mat-raised-button matStepperPrevious>Back</button>
+      <button mat-raised-button matStepperNext
+        *ngIf="selected.id > 0">Next</button>
+    </div>
+  </mat-step>
+  <mat-step *ngIf="selected.id > 0">
+    <ng-template matStepLabel>Comments</ng-template>
+    <div class="comments">
+      <ng-container *ngIf="selected.leaveRequest.comments.length === 0">
+        <div>No Comments</div>
+      </ng-container>
+      <ng-container *ngIf="selected.leaveRequest.comments.length > 0">
+        <div *ngFor="let cmt of selected.leaveRequest.comments">
+          <div>{{cmt.getDate()}} - {{cmt.comment}}</div>
+        </div>
+      </ng-container>
+    </div>
+    <div>
+      <button mat-raised-button matStepperPrevious>Back</button>
+      <button mat-raised-button matStepperNext
+        *ngIf="selected.id > 0">Next</button>
+    </div>
+  </mat-step>
+  <mat-step *ngIf="selected.leaveRequest.status.toLowerCase() !== 'approved' && selected.id > 0">
+    <ng-template matStepLabel>Submission/Approval</ng-template>
+    <div>
+      <button mat-raised-button matStepperPrevious>Back</button>
+      <button mat-raised-button color="accent" 
+        (click)="approveLeaveRequest();stepper.steps.first"
+        *ngIf="selected.leaveRequest.status.toLowerCase() === 'requested' && approver">
+        Approve
+      </button>
+      <button mat-raised-button color="warn" 
+        (click)="unapproveLeaveRequest();stepper.steps.first"
+        *ngIf="selected.leaveRequest.status.toLowerCase() === 'requested' && approver">
+        Unapprove
+      </button>
+      <button mat-raised-button matStepperNext *ngIf="approver">Next</button>
+    </div>
+  </mat-step>
+  <mat-step *ngIf="selected.id > 0">
+    <ng-template matStepLabel>Shift Coverage</ng-template>
+    <app-employee-leave-request-availability-calendar-mobile
+      [employee]="employee" 
+      [site]="site" 
+      [leavedays]="selected.leaveRequest.requesteddays"
+      [startdate]="selected.leaveRequest.startdate" 
+      [enddate]="selected.leaveRequest.enddate">
+    </app-employee-leave-request-availability-calendar-mobile>
+  </mat-step>
+</mat-vertical-stepper>
+<app-employee-leave-request-legend-mobile [leavecodes]="workcodes">
+</app-employee-leave-request-legend-mobile>

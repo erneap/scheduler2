@@ -1,0 +1,12 @@
+<div class="flexlayout column topleft">
+  <mat-stepper #stepper>
+    <mat-step label="Basic Information">
+      <app-site-editor-basic [site]="site" [team]="team">
+      </app-site-editor-basic>
+    </mat-step>
+    <mat-step label="Edit Workcenter(s)">
+      <app-site-editor-workcenters [site]="site" [team]="team">
+      </app-site-editor-workcenters>
+    </mat-step>
+  </mat-stepper>
+</div>

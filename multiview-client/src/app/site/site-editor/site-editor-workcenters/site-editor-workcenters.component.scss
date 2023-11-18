@@ -1,0 +1,32 @@
+.sortdiv {
+  width: 25px;
+  border: solid 1px #3f51b5;
+}
+
+.movement {
+  display: flex;
+  justify-content: center;
+  color: #3f51b5;
+  font-size: 12pt;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.layout-top {
+  align-items: flex-start;
+}
+
+.layout-bottom {
+  align-items: flex-end;
+}
+
+.layout-stretch {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+}

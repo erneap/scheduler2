@@ -48,10 +48,10 @@
       <a mat-list-item (click)="goToLink('/site/editor/employees')"
         *ngIf="(this.authService.isScheduler || this.authService.isSiteLeader) && appState.isDesktop()"
       style="height: 20px;">Employee Editor</a>
-      <a mat-list-item (click)="goToLink('/siteleaveapprover')"
+      <a mat-list-item (click)="goToLink('/site/editor/leaveapprover')"
       *ngIf="this.authService.isScheduler || this.authService.isSiteLeader"
       style="height: 20px;">Leave Approval</a>
-      <a mat-list-item (click)="goToLink('/siteeditor')"
+      <a mat-list-item (click)="goToLink('/site/editor/siteeditor')"
       *ngIf="(this.authService.isScheduler || this.authService.isSiteLeader) && appState.isDesktop()"
       style="height: 20px;">Site Editor</a>
       <a mat-list-item (click)="goToLink('ingest/files')"

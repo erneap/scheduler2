@@ -1,0 +1,30 @@
+<div class="flexlayout column topleft">
+  <form [formGroup]="wkctrForm" class="flexlayout row center" 
+    style="align-items: stretch;">
+    <mat-form-field appearance="fill">
+      <mat-label>Workcenter to Edit</mat-label>
+      <mat-select formControlName="workcenter" (selectionChange)="onSelect()">
+        <mat-option value="new">Add New Workcenter</mat-option>
+        <mat-option *ngFor="let wk of site.workcenters" [value]="wk.id">
+          {{wk.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="flexlayout column center">
+      <button mat-icon-button [disabled]="showSortUp" 
+        (click)="onChangeSort('up')" matTooltip="Move Workcenter Up">
+        <mat-icon>arrow_drop_up</mat-icon>
+      </button>
+      <button mat-icon-button [disabled]="showSortDown" 
+        (click)="onChangeSort('down')" matTooltip="Move Workcenter Down">
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+    </div>
+    <button mat-icon-button color="warn" (click)="onDeleteWorkcenter()"
+      *ngIf="this.selectedWorkcenter.id !== 'new' && this.selectedWorkcenter.id !== ''">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </form>
+  <app-site-editor-workcenter [workcenter]="selectedWorkcenter"
+    [site]="site" [team]="team"></app-site-editor-workcenter>
+</div>

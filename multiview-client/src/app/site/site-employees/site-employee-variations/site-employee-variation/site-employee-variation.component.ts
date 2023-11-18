@@ -51,6 +51,7 @@ export class SiteEmployeeVariationComponent {
     return this._site;
   }
   @Output() changed = new EventEmitter<Employee>();
+  @Output() changeType = new EventEmitter<string>();
   variationForm: FormGroup;
   schedule: Schedule;
   showDates: boolean = true;
@@ -93,6 +94,7 @@ export class SiteEmployeeVariationComponent {
       const chgParts = data.split("|");
       let bWorkdays = false;
       let variationID = this.variation.id;
+      console.log(data);
 
       if (this.variation.id > 0) {
         const change: ChangeAssignmentRequest = {
@@ -136,6 +138,7 @@ export class SiteEmployeeVariationComponent {
           // the only schedule action available is to increase or decrease the
           // number of days in the variation's schedule
           this.variation.schedule.setScheduleDays(Number(chgParts[4]));
+          this.schedule = new Schedule(this.variation.schedule);
         } else {
           // this indicates a change in a workday value.  
           const day = Number(chgParts[2]);
@@ -177,7 +180,8 @@ export class SiteEmployeeVariationComponent {
         if (data && data !== null) {
           if (data.employee) {
             this.employee = new Employee(data.employee);
-            this.changed.emit(this.employee)
+            this.changed.emit(this.employee);
+            this.changeType.emit('add');
           }
         }
         this.authService.statusMessage = "Add complete";

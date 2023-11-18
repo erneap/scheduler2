@@ -102,6 +102,19 @@ export class SiteEmployeeVariationsComponent {
     this.changed.emit(emp);
   }
 
+  updateChangeType(action: string) {
+    if (action === 'add') {
+      let vari = new Variation();
+      this.employee.variations.forEach(v => {
+        if (v.id > vari.id) {
+          vari = new Variation(v);
+        }
+      });
+      this.selectedVariation = vari;
+      this.variationForm.controls['variation'].setValue(vari.id);
+    }
+  }
+
   deleteVariation() {
     const dialogRef = this.dialog.open(DeletionConfirmationComponent, {
       data: {title: 'Confirm Variation Deletion', 
@@ -122,6 +135,9 @@ export class SiteEmployeeVariationsComponent {
                   this.employee = new Employee(data.employee);
                   this.employee.variations.sort((a,b) => a.compareTo(b));
                   this.variationForm.controls["variation"].setValue(0);
+                  const vari = new Variation();
+                  vari.schedule.setScheduleDays(7);
+                  this.selectedVariation = vari;
                 }
                 const emp = this.empService.getEmployee();
                 if (data.employee && emp && emp.id === data.employee.id) {

@@ -29,10 +29,12 @@
         </form>
         <div class="flexlayout row center" style="gap: 5px;" 
           *ngIf="variation.id === 0">
-          <button mat-raised-button color="primary">
+          <button mat-raised-button color="primary"
+            (click)="addVariation()">
             Add New
           </button>
-          <button mat-raised-button color="warn">
+          <button mat-raised-button color="warn"
+            (click)="variationForm.reset()">
             Reset
           </button>
         </div>
@@ -43,7 +45,8 @@
         [startdate]="variation.startdate"
         [enddate]="variation.enddate"
         [schedule]="schedule"
-        [site]="site">
+        [site]="site"
+        (change)="updateSchedule($event)">
       </app-site-employee-assignment-schedule>
     </mat-step>
   </mat-stepper>

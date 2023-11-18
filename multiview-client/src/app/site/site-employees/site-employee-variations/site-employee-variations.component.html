@@ -12,11 +12,13 @@
       </mat-select>
     </mat-form-field>
     <button mat-icon-button color="warn" matTooltip="Delete variation"
-      *ngIf="selectedVariation && selectedVariation.id > 0">
+      *ngIf="selectedVariation && selectedVariation.id > 0" 
+      (click)="deleteVariation()">
       <mat-icon>delete</mat-icon>
     </button>
   </form>
   <app-site-employee-variation [variation]="selectedVariation"
-    [employee]="employee" [site]="site" (changed)="updateEmployee($event)">
+    [employee]="employee" [site]="site" (changed)="updateEmployee($event)"
+    (changeType)="updateChangeType($event)">
   </app-site-employee-variation>
 </div>

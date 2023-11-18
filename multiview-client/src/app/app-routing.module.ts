@@ -34,6 +34,9 @@ import { SiteMidScheduleMobile } from './site/site-schedule/site-mid-schedule/si
 import { QueryComponent } from './query/query.component';
 import { QueryMobile } from './query/query.mobile';
 import { SiteEmployeesComponent } from './site/site-employees/site-employees.component';
+import { SiteLeaveApprovalComponent } from './site/site-leave-approval/site-leave-approval.component';
+import { SiteLeaveApprovalMobile } from './site/site-leave-approval/site-leave-approval.mobile';
+import { SiteEditorComponent } from './site/site-editor/site-editor.component';
 
 const desktop_routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -60,7 +63,9 @@ const desktop_routes: Routes = [
       },
       {path: 'editor',
         children: [
-          {path: 'employees', component: SiteEmployeesComponent }
+          {path: 'employees', component: SiteEmployeesComponent },
+          {path: 'leaveapprover', component: SiteLeaveApprovalComponent },
+          {path: 'siteeditor', component: SiteEditorComponent }
         ]
       }
     ]
@@ -92,6 +97,11 @@ const mobile_routes: Routes = [
           {path: 'mids', component: SiteMidScheduleMobile }
         ]
       },
+      {path: 'editor',
+        children: [
+          {path: 'leaveapprover', component: SiteLeaveApprovalMobile }
+        ]
+      }
     ]
   },
   {path: 'query', component: QueryMobile},
@@ -119,6 +129,11 @@ const tablet_routes: Routes = [
           {path: 'schedule', component: SiteScheduleTablet },
           {path: 'coverage', component: SiteCoverageMobile },
           {path: 'mids', component: SiteMidScheduleMobile }
+        ]
+      },
+      {path: 'editor',
+        children: [
+          {path: 'leaveapprover', component: SiteLeaveApprovalComponent }
         ]
       }
     ]

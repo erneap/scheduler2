@@ -67,10 +67,15 @@ import { EmployeeLeaveRequestLegendTablet } from './employee-leave-request-legen
     ReactiveFormsModule
   ],
   exports: [
+    EmployeeLeaveRequestAvailabilityCalendarDesktop,
+    EmployeeLeaveRequestAvailabilityCalendarMobile,
+    EmployeeLeaveRequestCalendarDesktop,
+    EmployeeLeaveRequestCalendarMobile,
     EmployeeLeaveRequestEditorDesktop,
     EmployeeLeaveRequestLegendDesktop,
     EmployeeLeaveRequestLegendMobile,
-    EmployeeLeaveRequestLegendTablet
+    EmployeeLeaveRequestLegendTablet,
+    EmployeeLeaveRequestUnapproveDialogComponent
   ]
 })
 export class EmployeeLeaveRequestModule { }

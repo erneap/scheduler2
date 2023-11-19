@@ -53,7 +53,8 @@
             </button>
           </div>
         </form>
-        <app-site-editor-workcenter-position>
+        <app-site-editor-workcenter-position [site]="site" [team]="team"
+          [workcenter]="workcenter" [position]="selectedPosition">
         </app-site-editor-workcenter-position>
       </div>
     </mat-step>
@@ -84,7 +85,8 @@
             </button>
           </div>
         </form>
-        <app-site-editor-workcenter-shift>
+        <app-site-editor-workcenter-shift [site]="site" [team]="team"
+          [workcenter]="workcenter" [shift]="selectedShift">
         </app-site-editor-workcenter-shift>
       </div>
     </mat-step>

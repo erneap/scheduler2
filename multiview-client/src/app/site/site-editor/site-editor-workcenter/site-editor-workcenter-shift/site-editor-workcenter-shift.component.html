@@ -1,1 +1,52 @@
-<p>site-editor-workcenter-shift works!</p>
+<div class="flexlayout column topleft">
+  <form [formGroup]="shiftForm" class="flexlayout column center outline">
+    <mat-form-field appearance="fill" *ngIf="showAdd" class="formfield">
+      <mat-label>Position ID</mat-label>
+      <input matInput formControlName="id">
+      <mat-error class="error" *ngIf="shiftForm.controls['id'].invalid">
+        Required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="formfield">
+      <mat-label>Position Name (Title)</mat-label>
+      <input matInput formControlName="name">
+      <mat-error class="error" *ngIf="shiftForm.controls['name'].invalid">
+        Required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" *ngIf="!showAdd" class="formfield">
+      <mat-label>Associated Work Codes</mat-label>
+      <mat-select formControlName="associated" multiple>
+        <ng-container *ngFor="let code of team.workcodes">
+          <mat-option *ngIf="!code.isLeave"
+            [value]="code.id">{{code.id.toUpperCase()}}</mat-option>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+    <div class="flexlayout row center" style="gap: 5px;">
+      <mat-form-field appearance="fill" *ngIf="!showAdd">
+        <mat-label>Shift's Pay/Premium Code</mat-label>
+        <input matInput formControlName="paycode">
+      </mat-form-field>
+      <mat-form-field appearance="fill" *ngIf="!showAdd">
+        <mat-label>Minimum Working</mat-label>
+        <input matInput type="number" formControlName="minimums"
+          min="0">
+        <mat-error class="error" *ngIf="shiftForm.controls['minimums'].invalid">
+          Required
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="flexlayout row center formfield" style="gap: 5px;">
+      <button mat-raised-button color="primary" *ngIf="showAdd">
+        Add
+      </button>
+      <button mat-raised-button color="warn" *ngIf="showAdd">
+        Reset
+      </button>
+      <button mat-raised-button color="warn" *ngIf="!showAdd">
+        Delete
+      </button>
+    </div>
+  </form>
+</div>

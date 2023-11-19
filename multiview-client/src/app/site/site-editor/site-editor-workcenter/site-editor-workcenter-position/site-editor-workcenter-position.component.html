@@ -1,1 +1,38 @@
-<p>site-editor-workcenter-position works!</p>
+<div class="flexlayout column topleft">
+  <form [formGroup]="positionForm" class="flexlayout column topleft outline">
+    <mat-form-field appearance="fill" *ngIf="showAdd" class="formfield">
+      <mat-label>Position ID</mat-label>
+      <input matInput formControlName="id">
+      <mat-error class="error" *ngIf="positionForm.controls['id'].invalid">
+        Required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="formfield">
+      <mat-label>Position Name (Title)</mat-label>
+      <input matInput formControlName="name">
+      <mat-error class="error" *ngIf="positionForm.controls['name'].invalid">
+        Required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" *ngIf="!showAdd" class="formfield">
+      <mat-label>Workcenter Position to Edit</mat-label>
+      <mat-select formControlName="assigned" multiple>
+        <ng-container *ngFor="let emp of site.employees">
+          <mat-option *ngIf="emp.isActive()"
+            [value]="emp.id">{{emp.name.getFullName()}}</mat-option>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+    <div class="flexlayout row center formfield" style="gap: 5px;">
+      <button mat-raised-button color="primary" *ngIf="showAdd">
+        Add
+      </button>
+      <button mat-raised-button color="warn" *ngIf="showAdd">
+        Reset
+      </button>
+      <button mat-raised-button color="warn" *ngIf="!showAdd">
+        Delete
+      </button>
+    </div>
+  </form>
+</div>

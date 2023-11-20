@@ -22,8 +22,10 @@
       </form>
       <div class="flexlayout row topleft" 
         *ngIf="workcenter.id === '' || workcenter.id === 'new'">
-        <button mat-raised-button color="primary">Add</button>
-        <button mat-raised-button color="warn">Reset</button>
+        <button mat-raised-button color="primary" (click)="addNew()">Add</button>
+        <button mat-raised-button color="warn" (click)="basicForm.reset()">
+          Reset
+        </button>
       </div>
     </mat-step>
     <mat-step label="Workcenter Positions"
@@ -54,7 +56,8 @@
           </div>
         </form>
         <app-site-editor-workcenter-position [site]="site" [team]="team"
-          [workcenter]="workcenter" [position]="selectedPosition">
+          [workcenter]="workcenter" [position]="selectedPosition"
+          (changed)="updateSite($event)">
         </app-site-editor-workcenter-position>
       </div>
     </mat-step>
@@ -86,7 +89,8 @@
           </div>
         </form>
         <app-site-editor-workcenter-shift [site]="site" [team]="team"
-          [workcenter]="workcenter" [shift]="selectedShift">
+          [workcenter]="workcenter" [shift]="selectedShift"
+          (changed)="updateSite($event)">
         </app-site-editor-workcenter-shift>
       </div>
     </mat-step>

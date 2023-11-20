@@ -18,6 +18,7 @@ import { AnnualLeave } from 'src/app/models/employees/leave';
 import { EmployeeResponse } from 'src/app/models/web/employeeWeb';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { ITeam, Team } from 'src/app/models/teams/team';
 
 @Component({
   selector: 'app-new-employee',
@@ -51,13 +52,20 @@ export class NewEmployeeComponent {
   get site(): Site {
     return this._site;
   }
+  private _team: Team = new Team();
+  @Input()
+  public set team(iteam: ITeam) {
+    this._team = new Team(iteam);
+  }
+  get team(): Team {
+    return this._team;
+  }
 
   @Output() changed = new EventEmitter<Employee>();
   companies: Company[] = [];
   laborcodes: EmployeeLaborCode[] = [];
   workcenters: Workcenter[] = [];
   schedule: Schedule;
-  teamid: string = '';
   employee: Employee;
 
   constructor(
@@ -94,7 +102,6 @@ export class NewEmployeeComponent {
       workcenter: '',
       startdate: new Date(),
     });
-    this.setup();
     this.employee = new Employee();
     const asgmt = new Assignment();
     asgmt.id = 1;
@@ -109,22 +116,24 @@ export class NewEmployeeComponent {
     }
     this.employee.assignments.push(asgmt);
     this.schedule = this.employee.assignments[0].schedules[0];
+    const site = this.siteService.getSite();
+    const team = this.teamService.getTeam();
+    if (site) {
+      this.site = site;
+    }
+    if (team) {
+      this.team = team;
+    }
+    this.setup();
   }
 
   setup() {
-    if (this.site.id === '') {
-      const site = this.siteService.getSite();
-      if (site) {
-        this.site = site;
-      }
-    }
     this.workcenters = [];
     this.laborcodes = [];
     this.companies = [];
     const now = new Date();
-    const team = this.teamService.getTeam();
-    if (team && team.companies) {
-      team.companies.forEach(co => {
+    if (this.team && this.team.companies) {
+      this.team.companies.forEach(co => {
         this.companies.push(new Company(co));
       })
     }
@@ -227,7 +236,7 @@ export class NewEmployeeComponent {
   addEmployee() {
     if (this.userForm.valid && this.passwordForm.valid && this.companyForm.valid
       && this.laborForm.valid && this.assignmentForm.valid) {
-      this.employee.team = this.teamid;
+      this.employee.team = this.team.id;
       this.employee.site = this.site.id;
       this.employee.name.first = this.userForm.value.first;
       this.employee.name.middle = this.userForm.value.middle;
@@ -270,7 +279,7 @@ export class NewEmployeeComponent {
 
       this.dialogService.showSpinner();
       this.authService.statusMessage = "Creating New Employee";
-      this.empService.addEmployee(this.employee, passwd, this.teamid, 
+      this.empService.addEmployee(this.employee, passwd, this.team.id, 
         this.site.id).subscribe({
         next: (data: EmployeeResponse) => {
           this.dialogService.closeSpinner();

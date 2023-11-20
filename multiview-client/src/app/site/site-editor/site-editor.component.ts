@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ISite, Site } from 'src/app/models/sites/site';
-import { Team } from 'src/app/models/teams/team';
+import { ITeam, Team } from 'src/app/models/teams/team';
 import { SiteService } from 'src/app/services/site.service';
 import { TeamService } from 'src/app/services/team.service';
 
@@ -18,7 +18,14 @@ export class SiteEditorComponent {
   get site(): Site {
     return this._site;
   }
-  team: Team = new Team();
+  private _team: Team = new Team();
+  @Input()
+  public set team(iteam: ITeam) {
+    this._team = new Team(iteam);
+  }
+  get team(): Team {
+    return this._team;
+  }
 
   constructor(
     protected siteService: SiteService,
@@ -31,6 +38,28 @@ export class SiteEditorComponent {
     const team = this.teamService.getTeam();
     if (team) {
       this.team = new Team(team);
+    }
+  }
+
+  updateSite(site: Site) {
+    this.site = new Site(site);
+    const isite = this.siteService.getSite();
+    if (isite && isite.id === this.site.id) {
+      this.siteService.setSite(this.site);
+    }
+    const team = this.teamService.getTeam();
+    if (team) {
+      let found = false;
+      for (let i=0; i < team.sites.length && !found; i++) {
+        if (team.sites[i].id === this.site.id) {
+          team.sites[i] = new Site(this.site);
+          found = true;
+        }
+      }
+      if (!found) {
+        team.sites.push(new Site(this.site));
+      }
+      this.teamService.setTeam(team);
     }
   }
 }

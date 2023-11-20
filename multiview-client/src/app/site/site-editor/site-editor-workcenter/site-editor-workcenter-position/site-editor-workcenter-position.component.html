@@ -9,14 +9,15 @@
     </mat-form-field>
     <mat-form-field appearance="fill" class="formfield">
       <mat-label>Position Name (Title)</mat-label>
-      <input matInput formControlName="name">
+      <input matInput formControlName="name" (blur)="updatePosition('name')">
       <mat-error class="error" *ngIf="positionForm.controls['name'].invalid">
         Required
       </mat-error>
     </mat-form-field>
     <mat-form-field appearance="fill" *ngIf="!showAdd" class="formfield">
       <mat-label>Workcenter Position to Edit</mat-label>
-      <mat-select formControlName="assigned" multiple>
+      <mat-select formControlName="assigned" multiple 
+        (selectionChange)="updatePosition('assigned')">
         <ng-container *ngFor="let emp of site.employees">
           <mat-option *ngIf="emp.isActive()"
             [value]="emp.id">{{emp.name.getFullName()}}</mat-option>
@@ -24,13 +25,16 @@
       </mat-select>
     </mat-form-field>
     <div class="flexlayout row center formfield" style="gap: 5px;">
-      <button mat-raised-button color="primary" *ngIf="showAdd">
+      <button mat-raised-button color="primary" *ngIf="showAdd"
+        (click)="addPosition()">
         Add
       </button>
-      <button mat-raised-button color="warn" *ngIf="showAdd">
+      <button mat-raised-button color="warn" *ngIf="showAdd"
+        (click)="positionForm.reset()">
         Reset
       </button>
-      <button mat-raised-button color="warn" *ngIf="!showAdd">
+      <button mat-raised-button color="warn" *ngIf="!showAdd"
+        (click)="deletePosition()">
         Delete
       </button>
     </div>

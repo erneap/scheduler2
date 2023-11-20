@@ -26,5 +26,6 @@
     </button>
   </form>
   <app-site-editor-workcenter [workcenter]="selectedWorkcenter"
-    [site]="site" [team]="team"></app-site-editor-workcenter>
+    [site]="site" [team]="team" (changed)="updateSite($event)">
+  </app-site-editor-workcenter>
 </div>

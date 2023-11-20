@@ -8,6 +8,9 @@ import { SiteEditorWorkcenterComponent } from './site-editor-workcenter/site-edi
 import { SiteEditorWorkcenterShiftComponent } from './site-editor-workcenter/site-editor-workcenter-shift/site-editor-workcenter-shift.component';
 import { SiteEditorWorkcenterPositionComponent } from './site-editor-workcenter/site-editor-workcenter-position/site-editor-workcenter-position.component';
 import { SiteEditorWorkcentersComponent } from './site-editor-workcenters/site-editor-workcenters.component';
+import { SiteEditorReportsComponent } from './site-editor-reports/site-editor-reports.component';
+import { SiteEditorReportForecastComponent } from './site-editor-reports/site-editor-report-forecast/site-editor-report-forecast.component';
+import { SiteEditorReportCOFSComponent } from './site-editor-reports/site-editor-report-cofs/site-editor-report-cofs.component';
 
 @NgModule({
   declarations: [
@@ -16,13 +19,19 @@ import { SiteEditorWorkcentersComponent } from './site-editor-workcenters/site-e
     SiteEditorWorkcenterComponent,
     SiteEditorWorkcenterShiftComponent,
     SiteEditorWorkcenterPositionComponent,
-    SiteEditorWorkcentersComponent
+    SiteEditorWorkcentersComponent,
+    SiteEditorReportsComponent,
+    SiteEditorReportForecastComponent,
+    SiteEditorReportCOFSComponent
   ],
   imports: [
     CommonModule,
     MaterialModule,
     FormsModule,
     ReactiveFormsModule
+  ],
+  exports: [
+    SiteEditorComponent,
   ]
 })
 export class SiteEditorModule { }

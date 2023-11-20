@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ISite, Site } from 'src/app/models/sites/site';
 import { IWorkcenter, Position, Shift, Workcenter } from 'src/app/models/sites/workcenter';
 import { Team } from 'src/app/models/teams/team';
+import { SiteResponse } from 'src/app/models/web/siteWeb';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { SiteService } from 'src/app/services/site.service';
@@ -63,6 +64,22 @@ export class SiteEditorWorkcenterComponent {
   setWorkcenter() {
     this.basicForm.controls['id'].setValue(this.workcenter.id);
     this.basicForm.controls['name'].setValue(this.workcenter.name);
+    if (this.selectedPosition.id !== 'new' && this.selectedPosition.id !== '') {
+      const posID = this.selectedPosition.id;
+      this.workcenter.positions?.forEach(pos => {
+        if (pos.id === posID) {
+          this.selectedPosition = new Position(pos);
+        }
+      });
+    }
+    if (this.selectedShift.id !== 'new' && this.selectedShift.id !== '') {
+      const shftID = this.selectedShift.id;
+      this.workcenter.shifts?.forEach(shft => {
+        if (shft.id === shftID) {
+          this.selectedShift = new Shift(shft);
+        }
+      });
+    }
   }
 
   selectPosition() {
@@ -111,15 +128,64 @@ export class SiteEditorWorkcenterComponent {
     }
   }
 
+  updateSite(site: Site) {
+    this.site = new Site(site);
+    this.changed.emit(this.site);
+  }
+
   onChangeSort(control: string, direction: string) {
     if (control.toLowerCase() === 'position') {
-
+      this.dialogService.showSpinner();
+      this.siteService.updateWorkcenterPosition(this.team.id, this.site.id, 
+        this.workcenter.id, this.selectedPosition.id, 'move', direction).subscribe({
+        next: (data: SiteResponse) => {
+          this.dialogService.closeSpinner();
+          if (data && data !== null && data.site) {
+            this.site = new Site(data.site);
+            this.changed.emit(this.site);
+          }
+        },
+        error: (err: SiteResponse) => {
+          this.dialogService.closeSpinner();
+          this.authService.statusMessage = err.exception;
+        }
+      });
     } else {
-
+      this.dialogService.showSpinner();
+      this.siteService.updateWorkcenterShift(this.team.id, this.site.id, 
+        this.workcenter.id, this.selectedShift.id, 'move', direction).subscribe({
+        next: (data: SiteResponse) => {
+          this.dialogService.closeSpinner();
+          if (data && data !== null && data.site) {
+            this.site = new Site(data.site);
+            this.changed.emit(this.site);
+          }
+        },
+        error: (err: SiteResponse) => {
+          this.dialogService.closeSpinner();
+          this.authService.statusMessage = err.exception;
+        }
+      });
     }
   }
 
   addNew() {
-
+    if (this.basicForm.valid) {
+      this.dialogService.showSpinner();
+      this.siteService.addWorkcenter(this.team.id, this.site.id, 
+        this.basicForm.value.id, this.basicForm.value.name).subscribe({
+        next: (data: SiteResponse) => {
+          this.dialogService.closeSpinner();
+          if (data && data != null && data.site) {
+            this.site = new Site(data.site);
+            this.changed.emit(this.site);
+          }
+        },
+        error: (err: SiteResponse) => {
+          this.dialogService.closeSpinner();
+          this.authService.statusMessage = err.exception;
+        }
+      });
+    }
   }
 }

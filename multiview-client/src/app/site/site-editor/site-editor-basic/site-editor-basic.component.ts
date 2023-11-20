@@ -57,7 +57,6 @@ export class SiteEditorBasicComponent {
             this.site = new Site(data.site);
             this.changed.emit(new Site(data.site));
           }
-          this.authService.statusMessage = "Update complete"
         },
         error: (err: SiteResponse) => {
           this.dialogService.closeSpinner();

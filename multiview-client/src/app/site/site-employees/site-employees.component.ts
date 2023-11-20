@@ -1,15 +1,17 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DeletionConfirmationComponent } from 'src/app/generic/deletion-confirmation/deletion-confirmation.component';
 import { Employee } from 'src/app/models/employees/employee';
 import { ISite, Site } from 'src/app/models/sites/site';
+import { ITeam, Team } from 'src/app/models/teams/team';
 import { Message } from 'src/app/models/web/employeeWeb';
 import { SiteResponse } from 'src/app/models/web/siteWeb';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { SiteService } from 'src/app/services/site.service';
+import { TeamService } from 'src/app/services/team.service';
 
 @Component({
   selector: 'app-site-employees',
@@ -26,6 +28,15 @@ export class SiteEmployeesComponent {
   get site(): Site {
     return this._site;
   }
+  private _team: Team = new Team();
+  @Input()
+  public set team(iteam: ITeam) {
+    this._team = new Team(iteam);
+  }
+  get team(): Team {
+    return this._team;
+  }
+  @Output() changed = new EventEmitter<Site>();
   employeeSelectionForm: FormGroup;
   selectedEmployee: Employee = new Employee();
   siteEmployees: Employee[] = [];
@@ -34,6 +45,7 @@ export class SiteEmployeesComponent {
   constructor(
     protected empService: EmployeeService,
     protected siteService: SiteService,
+    protected teamService: TeamService,
     protected dialogService: DialogService,
     protected authService: AuthService,
     private fb: FormBuilder,
@@ -88,6 +100,7 @@ export class SiteEmployeesComponent {
   updateEmployee(emp: Employee) {
     const employee = this.empService.getEmployee();
     const site = this.siteService.getSite();
+    const team = this.teamService.getTeam();
     if (employee && employee.id === emp.id) {
       this.empService.setEmployee(emp);
     }
@@ -102,6 +115,16 @@ export class SiteEmployeesComponent {
       if (site && site.id === this.site.id) {
         this.siteService.setSite(this.site);
       }
+      if (team && team.id === this.team.id) {
+        let found = false;
+        for (let i=0; i < this.team.sites.length && !found; i++) {
+          if (this.team.sites[i].id === this.site.id) {
+            this.team.sites[i] = new Site(this.site);
+            found = true;
+          }
+        }
+      }
+      this.changed.emit(this.site);
     }
     this.selectedEmployee = new Employee(emp);
     this.setEmployees();

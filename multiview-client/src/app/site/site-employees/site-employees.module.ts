@@ -50,6 +50,9 @@ import { SiteEmployeeVariationComponent } from './site-employee-variations/site-
     EmployeeProfileModule,
     EmployeeContactInfoModule,
     EmployeeSpecialtiesModule
+  ],
+  exports: [
+    SiteEmployeesComponent,
   ]
 })
 export class SiteEmployeesModule { }

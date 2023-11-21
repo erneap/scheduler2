@@ -11,6 +11,7 @@ import { SiteEditorWorkcentersComponent } from './site-editor-workcenters/site-e
 import { SiteEditorReportsComponent } from './site-editor-reports/site-editor-reports.component';
 import { SiteEditorReportForecastComponent } from './site-editor-reports/site-editor-report-forecast/site-editor-report-forecast.component';
 import { SiteEditorReportCOFSComponent } from './site-editor-reports/site-editor-report-cofs/site-editor-report-cofs.component';
+import { SiteEditorReportForecastLaborComponent } from './site-editor-reports/site-editor-report-forecast/site-editor-report-forecast-labor/site-editor-report-forecast-labor.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { SiteEditorReportCOFSComponent } from './site-editor-reports/site-editor
     SiteEditorWorkcentersComponent,
     SiteEditorReportsComponent,
     SiteEditorReportForecastComponent,
-    SiteEditorReportCOFSComponent
+    SiteEditorReportCOFSComponent,
+    SiteEditorReportForecastLaborComponent
   ],
   imports: [
     CommonModule,

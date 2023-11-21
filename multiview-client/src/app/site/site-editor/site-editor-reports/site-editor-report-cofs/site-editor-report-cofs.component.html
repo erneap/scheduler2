@@ -1,1 +1,25 @@
-<p>site-editor-report-cofs works!</p>
+<div class="flexlayout column topleft">
+  <form [formGroup]="reportsForm" class="flexlayout row center flexgap">
+    <mat-form-field appearance="fill" style="width: 500px;">
+      <mat-label>Current CofS Reports</mat-label>
+      <mat-select formControlName="report" (selectionChange)="onSelect()">
+        <mat-option value=0>Add New CofS Report</mat-option>
+        <mat-option *ngFor="let rpt of reports" [value]="rpt.id">
+          {{reportLabel(rpt)}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+  <mat-stepper>
+    <mat-step label="Report Basic Information">
+      <form [formGroup]="basicForm" class="flexlayout column topleft flexgap">
+      </form>
+    </mat-step>
+    <mat-step label="Assigned Companies">
+
+    </mat-step>
+    <mat-step label="Company/Labor Code Assignment">
+
+    </mat-step>
+  </mat-stepper>
+</div>

@@ -18,21 +18,24 @@
     <div class="flexlayout row left" style="gap: 25px;flex-wrap: wrap;">
       <form [formGroup]="editorForm">
         <div class="flexlayout row left" style="gap: 5px;flex-wrap: wrap;">
-          <div class="formFieldWide">
-          <mat-form-field class="fieldWidthWide">
-              <mat-label>Request Dates</mat-label>
-              <mat-date-range-input
-                [rangePicker]="picker">
-                <input matStartDate placeholder="Start Date"
-                  formControlName="start" (dateChange)="processChange('start')">
-                <input matEndDate placeholder="End Date"
-                  formControlName="end" (dateChange)="processChange('end')">
-              </mat-date-range-input>
-              <mat-hint>Include Time Off</mat-hint>
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-date-range-picker #picker></mat-date-range-picker>
-            </mat-form-field>
-          </div>
+          <mat-form-field appearance="fill">
+            <mat-label>Start Date</mat-label>
+            <input matInput placeholder="Start Date"
+              [matDatepicker]="startpicker"                  
+              formControlName="start" (dateChange)="processChange('start')">
+            <mat-hint>Include Time Off</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="startpicker"></mat-datepicker-toggle>
+            <mat-datepicker #startpicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>End Date</mat-label>
+            <input matInput placeholder="Start Date"
+              [matDatepicker]="endpicker"                  
+              formControlName="end" (dateChange)="processChange('end')">
+            <mat-hint>Include Time Off</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
+            <mat-datepicker #endpicker></mat-datepicker>
+          </mat-form-field>
           <div class="formFieldWide">
             <mat-form-field class="fieldWidthWide">
               <mat-label>Primary Leave Code</mat-label>

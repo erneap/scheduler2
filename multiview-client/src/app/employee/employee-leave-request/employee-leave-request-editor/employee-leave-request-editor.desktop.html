@@ -18,39 +18,39 @@
     <div class="flexlayout row left" style="gap: 25px;">
       <form [formGroup]="editorForm">
         <div class="flexlayout row left" style="gap: 5px;">
-          <div class="formFieldWide">
-            <mat-form-field class="fieldWidthWide">
-              <mat-label>Request Dates</mat-label>
-              <mat-date-range-input
-                [rangePicker]="picker">
-                <input matStartDate placeholder="Start Date"
-                  formControlName="start" (dateChange)="processChange('start')">
-                <input matEndDate placeholder="End Date"
-                  formControlName="end" (dateChange)="processChange('end')">
-              </mat-date-range-input>
-              <mat-hint>Include Time Off</mat-hint>
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-date-range-picker #picker></mat-date-range-picker>
-            </mat-form-field>
-          </div>
-          <div class="formFieldWide">
-            <mat-form-field class="fieldWidthWide">
-              <mat-label>Primary Leave Code</mat-label>
-              <mat-select formControlName="primarycode"
-                (selectionChange)="processChange('code')">
-                <mat-option *ngFor="let wc of workcodes" [value]="wc.id">
-                  {{wc.title}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div> 
+          <mat-form-field appearance="fill">
+            <mat-label>Start Date</mat-label>
+            <input matInput placeholder="Start Date"
+              [matDatepicker]="startpicker"                  
+              formControlName="start" (dateChange)="processChange('start')">
+            <mat-hint>Include Time Off</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="startpicker"></mat-datepicker-toggle>
+            <mat-datepicker #startpicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>End Date</mat-label>
+            <input matInput placeholder="Start Date"
+              [matDatepicker]="endpicker"                  
+              formControlName="end" (dateChange)="processChange('end')">
+            <mat-hint>Include Time Off</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
+            <mat-datepicker #endpicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Primary Leave Code</mat-label>
+            <mat-select formControlName="primarycode"
+              (selectionChange)="processChange('code')">
+              <mat-option *ngFor="let wc of workcodes" [value]="wc.id">
+                {{wc.title}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
         <div>
-          <button mat-raised-button matStepperPrevious>Back</button>
-          <button mat-raised-button matStepperNext 
-            (click)="processNewRequest()">Next</button>
+          <button mat-raised-button matStepperNext color="primary"
+            (click)="processNewRequest()">Add/Next</button>
           <button mat-raised-button color="warn"
-            (click)="deleteRequest()"
+            (click)="deleteRequest();stepper.previous()"
             *ngIf="selected.id !== '' && !approver">
             Delete
           </button>

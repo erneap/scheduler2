@@ -110,6 +110,7 @@ export class EmployeeLeaveRequestEditorComponent {
   }
 
   setRequests() {
+    console.log('requests');
     this.requests = [];
     let now = new Date();
     now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
@@ -374,11 +375,11 @@ export class EmployeeLeaveRequestEditorComponent {
                 if (data && data !== null) {
                   if (data.employee) {
                     this.employee = data.employee;
-                    this.employee.requests.forEach(req => {
-                      if (this.selected.id === req.id) {
-                        this.selected = new LeaveRequest(req)
-                      }
-                    });
+                    this.selected = new LeaveRequest();
+                    const iEmp = this.empService.getEmployee();
+                    if (iEmp && iEmp.id === this.employee.id) {
+                      this.empService.setEmployee(this.employee);
+                    }
                   }
                   this.setCurrent();
                 }

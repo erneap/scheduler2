@@ -16,20 +16,13 @@ import { SiteService } from 'src/app/services/site.service';
   styleUrls: ['./employee-profile.component.scss']
 })
 export class EmployeeProfileComponent {
-  private _employee: Employee | undefined;
+  private _employee: Employee = new Employee();
   @Input()
   public set employee(iEmp: IEmployee) {
     this._employee = new Employee(iEmp);
     this.setForm();
   }
   get employee(): Employee {
-    if (!this._employee) {
-      const iEmp = this.empService.getEmployee();
-      if (iEmp) {
-        return new Employee(iEmp);
-      }
-      return new Employee();
-    }
     return this._employee;
   }
   @Output() changed = new EventEmitter<Employee>();
@@ -54,6 +47,10 @@ export class EmployeeProfileComponent {
       password: ['', [new PasswordStrengthValidator()]],
       password2: ['', [new MustMatchValidator()]],
     });
+    const iEmp = this.empService.getEmployee();
+    if (iEmp) {
+      this.employee = iEmp;
+    }
     this.setForm();
   }
 

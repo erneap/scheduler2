@@ -76,14 +76,18 @@ export class SiteEditorReportForecastComponent {
     });
     this.periodForm = this.fb.group({
       period: 0,
-    })
+    });
+    this.onSelect();
+    this.onSelectPeriod();
   }
 
   setReports() {
+    const reportID = Number(this.selectedReport.id);
     this.currentReports = [];
     let now = new Date();
     now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
     let monthPrior = new Date(now.getTime() - (30 * 24 * 3600000));  // up to one month prior
+    let found = false;
     this.site.forecasts.forEach(rpt => {
       if ((rpt.startDate.getTime() <= now.getTime() 
         && rpt.endDate.getTime() >= now.getTime())
@@ -93,6 +97,8 @@ export class SiteEditorReportForecastComponent {
       }
     });
     this.currentReports.sort((a,b) => a.compareTo(b));
+    this.reportsForm.controls['report'].setValue(reportID);
+    this.onSelect();
   }
 
   reportLabel(rpt: ForecastReport): string {
@@ -181,7 +187,7 @@ export class SiteEditorReportForecastComponent {
       const name = this.basicForm.value.name;
       const start = this.basicForm.value.start;
       const end = this.basicForm.value.end;
-      const company = this.basicForm.value.company;
+      const company = this.basicForm.value.companyid;
       this.dialogService.showSpinner();
       this.siteService.addForecastReport(this.team.id, this.site.id, 
         company, name, start, end, Number(this.basicForm.value.startday))
@@ -193,8 +199,13 @@ export class SiteEditorReportForecastComponent {
             this.changed.emit(this.site);
             if (this.site.forecasts) {
               this.site.forecasts.sort((a,b) => a.compareTo(b));
-              this.selectedReport = new ForecastReport(
-                this.site.forecasts[this.site.forecasts.length - 1]);
+              let crpt = new ForecastReport();
+              this.site.forecasts.forEach(rpt => {
+                if (crpt.id < rpt.id) {
+                  crpt = new ForecastReport(rpt);
+                }
+              });
+              this.selectedReport = new ForecastReport(crpt);
             }
           }
         },
@@ -278,6 +289,7 @@ export class SiteEditorReportForecastComponent {
               this.dialogService.closeSpinner();
               if (data && data != null && data.site) {
                 this.site = new Site(data.site);
+                this.selectedReport = new ForecastReport();
                 this.changed.emit(this.site);
               }
             },

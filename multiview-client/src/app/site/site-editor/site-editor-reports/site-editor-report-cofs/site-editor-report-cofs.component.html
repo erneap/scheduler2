@@ -13,10 +13,32 @@
   <mat-stepper>
     <mat-step label="Report Basic Information">
       <form [formGroup]="basicForm" class="flexlayout column topleft flexgap">
+        <div class="flexlayout row topleft flexgap">
+          <mat-form-field appearance="fill" style="width: 250px">
+            <mat-label>CofS Report Name</mat-label>
+            <input matInput formControlName="name">
+            <mat-error class="error" *ngIf="basicForm.controls['name'].invalid">
+              Required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="fill" style="width: 250px">
+            <mat-label>Short Name</mat-label>
+            <input matInput formControlName="short">
+            <mat-error class="error" *ngIf="basicForm.controls['short'].invalid">
+              Required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Associated Unit</mat-label>
+            <input matInput formControlName="unit">
+            <mat-error class="error" *ngIf="basicForm.controls['unit'].invalid">
+              Required
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flexlayout row topleft flexgap">
+        </div>
       </form>
-    </mat-step>
-    <mat-step label="Assigned Companies">
-
     </mat-step>
     <mat-step label="Company/Labor Code Assignment">
 

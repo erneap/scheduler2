@@ -45,6 +45,8 @@ export class SiteLeaveApprovalComponent {
   workcodes: Workcode[] = [];
   approver: boolean = false;
   stdHours: number = 10.0;
+  coverageStatus: string = 'OK';
+  coverageClass: string = 'label';
 
   constructor(
     protected empService: EmployeeService,
@@ -141,6 +143,87 @@ export class SiteLeaveApprovalComponent {
           this.holidayhours += day.hours;
         }
       });
+      this.coverage();
+    }
+  }
+
+  coverage(): void {
+    this.coverageStatus = 'OK';
+    this.coverageClass = 'label';
+    // determine the shift/workcenter the employee would be 
+    // working on the dates
+    let start = new Date(this.selected.leaveRequest.startdate);
+    let displaySize = 0;
+    let days = 0;
+    let coverageDays = 0;
+    while (start.getTime() <= this.selected.leaveRequest.enddate.getTime()) {
+      let wd = this.employee.getWorkdayWOLeaves(this.site.id, start);
+      if (!wd || wd.code === '') {
+        for (let i = 1; i < 8 && (!wd || wd.code === ''); i++) {
+          let newdate = new Date(Date.UTC(start.getFullYear(),
+            start.getMonth(), start.getDate() - i));
+          wd = this.employee.getWorkdayWOLeaves(this.site.id, newdate);
+        }
+      }
+
+      // count the number of employees
+      const wkctr = wd.workcenter;
+      let coverage: number = 0;
+      let codes: string[] = [];
+      this.site.workcenters.forEach(wk => {
+        if (wk.id === wkctr) {
+          if (wk.shifts) {
+            wk.shifts.forEach(s => {
+              if (s.associatedCodes) {
+                let found = false;
+                s.associatedCodes.forEach(cd => {
+                  if (cd.toLowerCase() === wd.code.toLowerCase()) {
+                    found = true;
+                  }
+                });
+                if (found) {
+                  s.associatedCodes.forEach(cd => {
+                    codes.push(cd);
+                  });
+                  coverage = s.minimums;
+                }
+              }
+            });
+          }
+        }
+      });
+      displaySize = 0;
+      if (this.site.employees) {
+        this.site.employees.forEach(emp => {
+          wd = emp.getWorkday(this.site.id, start);
+          codes.forEach(cd => {
+            if (wd.workcenter === wkctr && cd.toLowerCase() === wd.code.toLowerCase()) {
+              displaySize++;
+            }
+          });
+        });
+      }
+      wd = this.employee.getWorkday(this.site.id, start);
+      codes.forEach(cd => {
+        if (wd.workcenter === wkctr && cd.toLowerCase() === wd.code.toLowerCase()) {
+          displaySize--;
+        }
+      });
+      if (displaySize >= coverage) {
+        coverageDays++
+      }
+      days++;
+      start = new Date(start.getTime() + (24 * 3600000));
+    }
+    if (days === coverageDays) {
+      this.coverageStatus = 'OK';
+      this.coverageClass = 'label green';
+    } else if (coverageDays > 0) {
+      this.coverageStatus = 'PROBLEM';
+      this.coverageClass = 'label amber';
+    } else {
+      this.coverageStatus = 'FAIL';
+      this.coverageClass = 'label red'
     }
   }
 
@@ -158,7 +241,8 @@ export class SiteLeaveApprovalComponent {
   }
 
   processChange(field: string) {
-    if (this.employee && this.selected && this.selected.leaveRequest.id !== '') {
+    if (this.employee && this.selected && this.selected.leaveRequest.id !== ''
+      && this.selected.leaveRequest.id !== 'new') {
       let value = '';
       switch (field.toLowerCase()) {
         case "start":
@@ -221,7 +305,8 @@ export class SiteLeaveApprovalComponent {
   }
   
   processDayChange(value: string) {
-    if (value !== '' && this.selected.leaveRequest.id !== '') {
+    if (value !== '' && this.selected.leaveRequest.id !== '' 
+      && this.selected.leaveRequest.id !== 'new') {
       this.authService.statusMessage = "Updating Leave Request Date change";
       this.empService.updateLeaveRequest(this.employee.id, 
         this.selected.leaveRequest.id, 'day', value)

@@ -225,7 +225,7 @@ export class SiteEditorReportForecastLaborComponent {
 
   onDelete() {
     if (this.laborForm.value.id !== 'new|new') {
-      const chgNo = this.laborForm.value.chargeNumber;
+      const chgNo = this.laborForm.value.chargenumber;
       const ext = this.laborForm.value.extension;
       const dialogRef = this.dialog.open(DeletionConfirmationComponent, {
         data: {title: 'Confirm Labor Code Deletion', 

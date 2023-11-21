@@ -94,7 +94,10 @@ export class EmployeeLeaveRequestEditorComponent {
     if (site) {
       this.site = site;
     }
-    this.setRequests();
+    const iEmp = this.empService.getEmployee();
+    if (iEmp) {
+      this.employee = iEmp;
+    }
     this.setCurrent();
     const tEmp = this.authService.getUser();
     if (tEmp) {
@@ -107,12 +110,6 @@ export class EmployeeLeaveRequestEditorComponent {
   }
 
   setRequests() {
-    if (this.employee.id === '') {
-      const emp = this.empService.getEmployee();
-      if (emp) {
-        this.employee = emp;
-      }
-    }
     this.requests = [];
     let now = new Date();
     now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
@@ -183,7 +180,8 @@ export class EmployeeLeaveRequestEditorComponent {
   }
 
   processChange(field: string) {
-    if (this._employee && this.selected && this.selected.id !== '') {
+    if (this.employee && this.selected && this.selected.id !== ''
+      && this.selected.id !== 'new') {
       let value = '';
       switch (field.toLowerCase()) {
         case "start":
@@ -243,8 +241,8 @@ export class EmployeeLeaveRequestEditorComponent {
   }
   
   processNewRequest() {
-    if (this.selected && this.selected.id === '' && this.editorForm.valid 
-      && this.employee) {
+    if (this.selected && (this.selected.id === '' || this.selected.id === 'new') 
+      && this.editorForm.valid && this.employee) {
       let start = new Date(this.editorForm.value.start);
       let end = new Date(this.editorForm.value.end);
       const code = this.editorForm.value.primarycode;

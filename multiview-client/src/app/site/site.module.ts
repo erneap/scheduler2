@@ -5,17 +5,27 @@ import { MaterialModule } from '../material.module';
 import { SiteEmployeesModule } from './site-employees/site-employees.module';
 import { SiteLeaveApprovalModule } from './site-leave-approval/site-leave-approval.module';
 import { SiteEditorModule } from './site-editor/site-editor.module';
+import { AddSiteComponent } from './add-site/add-site.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    AddSiteComponent
+  ],
   imports: [
     CommonModule,
     MaterialModule,
     SiteScheduleModule,
     SiteEmployeesModule,
     SiteEditorModule,
+    SiteLeaveApprovalModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  exports: [
+    AddSiteComponent,
   ]
 })
 export class SiteModule { }

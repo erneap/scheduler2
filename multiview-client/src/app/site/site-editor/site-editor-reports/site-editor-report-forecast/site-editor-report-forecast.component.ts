@@ -152,15 +152,24 @@ export class SiteEditorReportForecastComponent {
     this.changed.emit(this.site);
   }
 
+  onSetEndDate() {
+    const value = this.basicForm.value.start;
+    this.basicForm.controls['end'].setValue(new Date(value));
+  }
+
   onChange(field: string): void {
     if (this.selectedReport.id > 0) {
       const value = this.basicForm.controls[field].value;
       if (value !== null) {
         let outputValue = '';
-        if (field === 'start' || field === 'end') {
-          outputValue = this.getDateString(value);
-        } else {
-          outputValue = value;
+        switch (field.toLowerCase()) {
+          case 'start':
+          case 'end':
+            outputValue = this.getDateString(value);
+            break;
+          default:
+            outputValue = value;
+            break;
         }
         this.authService.statusMessage = "Updating Forecast Report";
         this.dialogService.showSpinner();

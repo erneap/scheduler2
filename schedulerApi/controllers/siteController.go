@@ -1499,6 +1499,49 @@ func UpdateSiteCofSReport(c *gin.Context) {
 					}
 					rpt.EndDate = dt
 				}
+			case "companies":
+				coparts := strings.Split(data.Value, "|")
+				sortid := -1
+				for _, co := range rpt.Companies {
+					if co.SortID > sortid {
+						sortid = co.SortID
+					}
+				}
+				// add new companies
+				for _, coid := range coparts {
+					found := false
+					for _, co := range rpt.Companies {
+						if co.ID == coid {
+							found = true
+						}
+					}
+					if !found {
+						co := sites.CofSCompany{
+							ID:             coid,
+							SignatureBlock: "",
+							SortID:         sortid + 1,
+						}
+						sortid += 1
+						rpt.Companies = append(rpt.Companies, co)
+					}
+				}
+				// remove companies not in list
+				for i, co := range rpt.Companies {
+					found := false
+					for _, coid := range coparts {
+						if co.ID == coid {
+							found = true
+						}
+					}
+					if !found {
+						rpt.Companies = append(rpt.Companies[:i], rpt.Companies[i+1:]...)
+					}
+				}
+				sort.Sort(sites.ByCofSCompany(rpt.Companies))
+				for i, co := range rpt.Companies {
+					co.SortID = i + 1
+					rpt.Companies[i] = co
+				}
 			case "addcompany":
 				found := false
 				sort := -1
@@ -1538,6 +1581,23 @@ func UpdateSiteCofSReport(c *gin.Context) {
 					if strings.EqualFold(co.ID, data.CompanyID) {
 						val, _ := strconv.ParseBool(data.Value)
 						co.AddExercises = val
+						rpt.Companies[c] = co
+					}
+				}
+			case "laborcodes":
+				laborcodes := strings.Split(data.Value, ",")
+				for c, co := range rpt.Companies {
+					if strings.EqualFold(co.ID, data.CompanyID) {
+						co.LaborCodes = co.LaborCodes[:0]
+						for _, lc := range laborcodes {
+							lparts := strings.Split(lc, "|")
+							labor := &labor.LaborCode{
+								ChargeNumber: lparts[0],
+								Extension:    lparts[1],
+							}
+							co.LaborCodes = append(co.LaborCodes, *labor)
+						}
+						sort.Sort(labor.ByLaborCode(co.LaborCodes))
 						rpt.Companies[c] = co
 					}
 				}

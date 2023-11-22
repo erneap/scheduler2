@@ -16,32 +16,113 @@
         <div class="flexlayout row topleft flexgap">
           <mat-form-field appearance="fill" style="width: 250px">
             <mat-label>CofS Report Name</mat-label>
-            <input matInput formControlName="name">
+            <input matInput formControlName="name" (blur)="onChange('name')">
             <mat-error class="error" *ngIf="basicForm.controls['name'].invalid">
               Required
             </mat-error>
           </mat-form-field>
           <mat-form-field appearance="fill" style="width: 250px">
             <mat-label>Short Name</mat-label>
-            <input matInput formControlName="short">
+            <input matInput formControlName="short" (blur)="onChange('short')">
             <mat-error class="error" *ngIf="basicForm.controls['short'].invalid">
               Required
             </mat-error>
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Associated Unit</mat-label>
-            <input matInput formControlName="unit">
+            <input matInput formControlName="unit" (blur)="onChange('unit')">
             <mat-error class="error" *ngIf="basicForm.controls['unit'].invalid">
               Required
             </mat-error>
           </mat-form-field>
         </div>
         <div class="flexlayout row topleft flexgap">
+          <mat-form-field appearance="fill">
+            <mat-label>Start Date</mat-label>
+            <input matInput placeholder="Start Date"
+              [matDatepicker]="startpicker"                  
+              formControlName="start" (dateChange)="onChange('start')">
+            <mat-datepicker-toggle matIconSuffix [for]="startpicker"></mat-datepicker-toggle>
+            <mat-datepicker #startpicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>End Date</mat-label>
+            <input matInput placeholder="End Date"
+              [matDatepicker]="endpicker"                  
+              formControlName="end" (dateChange)="onChange('end')">
+            <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
+            <mat-datepicker #endpicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="fill" *ngIf="this.selected.id > 0">
+            <mat-label>Assigned Companies</mat-label>
+            <mat-select formControlName="companies" multiple="true"
+              (selectionChange)="onChange('companies')">
+              <mat-option *ngFor="let co of team.companies" [value]="co.id">
+                {{co.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="flexlayout row center flexgap" *ngIf="selected.id === 0">
+          <button mat-raised-button color="primary" (click)="onAdd()">
+            Add
+          </button>
+          <button mat-raised-button color="warn" (click)="basicForm.reset()">
+            Reset
+          </button>
+        </div> 
+        <div class="flexlayout row center flexgap" *ngIf="selected.id > 0">
+           <button mat-raised-button color="warn" (click)="onDelete()">
+            Delete
+          </button>
         </div>
       </form>
     </mat-step>
-    <mat-step label="Company/Labor Code Assignment">
-
+    <mat-step label="Company/Labor Code Assignment"
+      *ngIf="selected.companies.length > 0">
+      <form [formGroup]="companyForm" class="flexlayout column topleft flexgap">
+        <div class="flexlayout row center flexgap">
+          <mat-radio-group formControlName="company" (change)="onSelectCompany()">
+            <mat-radio-button *ngFor="let co of selected.companies"
+              [value]="co.id">
+              {{companyLabel(co)}}
+            </mat-radio-button>
+          </mat-radio-group>
+          <div class="flexlayout column center">
+            <button mat-icon-button [disabled]="disableCompanyUpSort"
+              (click)="onChangeSort('up')">
+              <mat-icon>arrow_drop_up</mat-icon>
+            </button>
+            <button mat-icon-button [disabled]="disableCompanyDownSort"
+              (click)="onChangeSort('down')">
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div class="flexlayout row center flexgap">
+          <mat-form-field appearance="fill" style="width: 250px;">
+            <mat-label>Company Signature Block</mat-label>
+            <input matInput formControlName="signature" 
+              (blur)="onChange('signature')">
+            <mat-error class="error" *ngIf="companyForm.controls['signature'].invalid">
+              Required
+            </mat-error>
+          </mat-form-field>
+          <mat-checkbox formControlName="exercise" (change)="onChange('exercise')">
+            Show Exercises
+          </mat-checkbox>
+          <mat-form-field appearance="fill">
+            <mat-label>Associated Labor Codes</mat-label>
+            <mat-select formControlName="laborcodes" multiple="true"
+              (selectionChange)="onChange('laborcodes')">
+              <mat-option *ngFor="let lc of companyLaborCodes" 
+                [value]="laborID(lc)">
+                {{lc.chargeNumber}} - {{lc.extension}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </form>
     </mat-step>
   </mat-stepper>
 </div>

@@ -34,24 +34,30 @@
             </mat-error>
           </mat-form-field>
         </div>
-        <mat-form-field appearance="fill">
-          <mat-label>Report date range</mat-label>
-          <mat-date-range-input [rangePicker]="picker">
-            <input matStartDate formControlName="start" 
-              placeholder="Start date" (dateChange)="onChange('start')">
-            <input matEndDate formControlName="end" 
-              placeholder="End date" (dateChange)="onChange('end')">
-          </mat-date-range-input>
-          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
-          <mat-error *ngIf="basicForm.controls['start'].hasError('required')">
-            Invalid start date
-          </mat-error>
-          <mat-error *ngIf="basicForm.controls['end'].hasError('required')">
-            Invalid end date
-          </mat-error>
-        </mat-form-field>
+        <div class="flexlayout row center flexgap">
+          <mat-form-field appearance="fill">
+            <mat-label>Report Start Date</mat-label>
+            <input matInput formControlName="start" [matDatepicker]="startpicker"
+                placeholder="Start date" (dateChange)="onSetEndDate();onChange('start')">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="startpicker"></mat-datepicker-toggle>
+            <mat-datepicker #startpicker></mat-datepicker>
+            <mat-error *ngIf="basicForm.controls['start'].hasError('required')">
+              Invalid start date
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Report End Date</mat-label>
+            <input matInput formControlName="end" [matDatepicker]="endpicker"
+                placeholder="End date" (dateChange)="onChange('end')">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
+            <mat-datepicker #endpicker></mat-datepicker>
+            <mat-error *ngIf="basicForm.controls['end'].hasError('required')">
+              Invalid end date
+            </mat-error>
+          </mat-form-field>
+        </div>
         <div class="flexlayout column topleft" style="padding-top: 10px;">
           <div>Select Reporting Period End Day:</div>
           <mat-radio-group formControlName="startday" 

@@ -63,19 +63,24 @@
       </mat-form-field>
     </div>
     <mat-checkbox formControlName="exercise">Exercise Code</mat-checkbox>
-    <mat-form-field appearance="fill" style="width: 350px;">
-      <mat-label>Usable Period</mat-label>
-      <mat-date-range-input [rangePicker]="picker">
-        <input matStartDate placeholder="Start Date" 
-          formControlName="start" 
-          (dateChange)="onChange('start')">
-        <input matEndDate placeholder="End Date" formControlName="end"
-          (dateChange)="onChange('end')">
-      </mat-date-range-input>
-      <mat-hint>MM/DD/YYYY - MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-date-range-picker #picker></mat-date-range-picker>
-    </mat-form-field>
+    <div class="flexlayout row center flexgap">
+      <mat-form-field appearance="fill">
+        <mat-label>Start Date</mat-label>
+        <input matInput placeholder="Start Date"
+          [matDatepicker]="startpicker"                  
+          formControlName="start" (dateChange)="onChange('start')">
+        <mat-datepicker-toggle matIconSuffix [for]="startpicker"></mat-datepicker-toggle>
+        <mat-datepicker #startpicker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>End Date</mat-label>
+        <input matInput placeholder="End Date"
+          [matDatepicker]="endpicker"                  
+          formControlName="end" (dateChange)="onChange('end')">
+        <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
+        <mat-datepicker #endpicker></mat-datepicker>
+      </mat-form-field>
+    </div>
     <div class="flexlayout row center flexgap">
       <button mat-raised-button color="primary" (click)="onAdd()"
         *ngIf="this.laborForm.value.id==='new|new'">

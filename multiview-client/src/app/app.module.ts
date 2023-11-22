@@ -22,6 +22,7 @@ import { EmployeeModule } from './employee/employee.module';
 import { SiteModule } from './site/site.module';
 import { QueryModule } from './query/query.module';
 import { GenericModule } from './generic/generic.module';
+import { TeamModule } from './team/team.module';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { GenericModule } from './generic/generic.module';
     EmployeeModule,
     SiteModule,
     QueryModule,
-    GenericModule
+    GenericModule,
+    TeamModule
   ],
   providers: [
     AppStateService,

@@ -45,9 +45,17 @@
             </mat-form-field>
           </div> 
         </div>
-        <div>
-          <button mat-raised-button matStepperPrevious>Back</button>
-          <button mat-raised-button matStepperNext>Next</button>
+        <div class="flexlayout row center flexgap">
+          <button mat-raised-button color="primary" 
+            (click)="approveLeaveRequest()"
+            *ngIf="selected.leaveRequest.status.toLowerCase() === 'requested' && approver">
+            Approve
+          </button>
+          <button mat-raised-button 
+            (click)="unapproveLeaveRequest()"
+            *ngIf="selected.leaveRequest.status.toLowerCase() === 'requested' && approver">
+            Disapprove
+          </button>
           <button mat-raised-button color="warn"
             (click)="deleteRequest()"
             *ngIf="selected.id > 0">
@@ -117,23 +125,6 @@
       <button mat-raised-button matStepperPrevious>Back</button>
       <button mat-raised-button matStepperNext
         *ngIf="selected.id > 0">Next</button>
-    </div>
-  </mat-step>
-  <mat-step *ngIf="selected.leaveRequest.status.toLowerCase() !== 'approved' && selected.id > 0">
-    <ng-template matStepLabel>Submission/Approval</ng-template>
-    <div>
-      <button mat-raised-button matStepperPrevious>Back</button>
-      <button mat-raised-button color="accent" 
-        (click)="approveLeaveRequest();stepper.steps.first"
-        *ngIf="selected.leaveRequest.status.toLowerCase() === 'requested' && approver">
-        Approve
-      </button>
-      <button mat-raised-button color="warn" 
-        (click)="unapproveLeaveRequest();stepper.steps.first"
-        *ngIf="selected.leaveRequest.status.toLowerCase() === 'requested' && approver">
-        Unapprove
-      </button>
-      <button mat-raised-button matStepperNext *ngIf="approver">Next</button>
     </div>
   </mat-step>
   <mat-step *ngIf="selected.id > 0">

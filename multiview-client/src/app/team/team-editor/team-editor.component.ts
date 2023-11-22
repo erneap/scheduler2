@@ -22,4 +22,11 @@ export class TeamEditorComponent {
       this.team = new Team(team);
     }
   }
+
+  updateTeam(team: Team) {
+    if (team.id === this.team.id) {
+      this.team = new Team(team);
+      this.teamService.setTeam(this.team);
+    }
+  }
 }

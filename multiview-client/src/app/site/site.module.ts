@@ -7,6 +7,7 @@ import { SiteLeaveApprovalModule } from './site-leave-approval/site-leave-approv
 import { SiteEditorModule } from './site-editor/site-editor.module';
 import { AddSiteComponent } from './add-site/add-site.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SiteIngestModule } from './site-ingest/site-ingest.module';
 
 
 
@@ -22,7 +23,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     SiteEditorModule,
     SiteLeaveApprovalModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SiteIngestModule
   ],
   exports: [
     AddSiteComponent,

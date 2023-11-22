@@ -1,1 +1,12 @@
-<p>team-editor works!</p>
+<div class="fxLayout flexlayout column topleft flexgap">
+  <mat-stepper #stepper>
+    <mat-step label="Edit Team">
+      <app-team-editor-edit (team)="team" (changed)="updateTeam($event)">
+      </app-team-editor-edit>
+    </mat-step>
+    <mat-step label="Edit Team's Sites">
+      <app-team-editor-sites (team)="team" (changed)="updateTeam($event)">
+      </app-team-editor-sites>
+    </mat-step>
+  </mat-stepper>
+</div>

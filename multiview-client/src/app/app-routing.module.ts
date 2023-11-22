@@ -37,6 +37,9 @@ import { SiteEmployeesComponent } from './site/site-employees/site-employees.com
 import { SiteLeaveApprovalComponent } from './site/site-leave-approval/site-leave-approval.component';
 import { SiteLeaveApprovalMobile } from './site/site-leave-approval/site-leave-approval.mobile';
 import { SiteEditorComponent } from './site/site-editor/site-editor.component';
+import { TeamEditorComponent } from './team/team-editor/team-editor.component';
+import { AddTeamComponent } from './team/add-team/add-team.component';
+import { SiteFileIngestComponent } from './site/site-ingest/site-file-ingest/site-file-ingest.component';
 
 const desktop_routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -67,7 +70,14 @@ const desktop_routes: Routes = [
           {path: 'leaveapprover', component: SiteLeaveApprovalComponent },
           {path: 'siteeditor', component: SiteEditorComponent }
         ]
-      }
+      },
+      {path: 'ingest', component: SiteFileIngestComponent }
+    ]
+  },
+  {path: 'team',
+    children: [
+      {path: 'editor', component: TeamEditorComponent },
+      {path: 'add', component: AddTeamComponent }
     ]
   },
   {path: 'query', component: QueryComponent},

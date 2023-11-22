@@ -49,7 +49,7 @@ export class AuthService extends CacheService {
   }
 
   startTokenRenewal() {
-    const minutes = 358;
+    const minutes = 60;
     if (!this.isTokenExpired()) {
       this.interval = setInterval(() => {
         this.processToken()

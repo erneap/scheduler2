@@ -8,6 +8,7 @@ import { TeamService } from '../services/team.service';
 import { Router } from '@angular/router';
 import { MessageService } from '../services/message.service';
 import packageJson from '../../../package.json';
+import { EmployeeService } from '../services/employee.service';
 
 @Component({
   selector: 'app-header',
@@ -23,6 +24,7 @@ export class HeaderComponent {
     private sanitizer: DomSanitizer,
     protected appState: AppStateService,
     protected authService: AuthService,
+    protected empService: EmployeeService,
     protected siteService: SiteService,
     protected teamService: TeamService,
     protected msgService: MessageService,
@@ -60,6 +62,7 @@ export class HeaderComponent {
     this.teamService.clearTeam();
     this.authService.setWebLabel('','');
     this.msgService.clearMessages();
+    this.empService.clearRenewal();
     this.siteService.stopAutoUpdate();
     this.authService.logout();
   }

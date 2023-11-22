@@ -87,7 +87,6 @@ export class SiteService extends CacheService {
         minutes = 3;
       }
     }
-    console.log("Starting Site Update Process");
     this.interval = setInterval(() => {
       this.processAutoUpdate()
     }, minutes * 60 * 1000);

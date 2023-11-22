@@ -17,6 +17,7 @@ import { TeamService } from './team.service';
 })
 export class EmployeeService extends CacheService {
   showHolidays: boolean = true;
+  interval: any;
 
   constructor(
     protected teamService: TeamService,
@@ -58,12 +59,46 @@ export class EmployeeService extends CacheService {
     this.setItem('current-employee', emp);
   }
 
+  startRenewal() {
+    const minutes = 60;
+    this.interval = setInterval(() => {
+      this.processEmployee()
+    }, minutes * 60 * 1000);
+  }
+
+  processEmployee() {
+    const emp = this.getEmployee();
+    if (emp) {
+      this.retrieveEmployee(emp.id).subscribe({
+        next: resp => {
+          if (resp.employee) {
+            this.setEmployee(resp.employee);
+          }
+        },
+        error: err => {
+          console.log(err.exception);
+        }
+      })
+    }
+  }
+
+  clearRenewal() {
+    if (this.interval && this.interval !== null) {
+      clearInterval(this.interval);
+    }
+  }
+
   getEmployeeID(): string {
     const emp = this.getEmployee();
     if (emp) {
       return emp.id;
     }
     return '';
+  }
+
+  retrieveEmployee(id: string): Observable<EmployeeResponse> {
+    const url = `/scheduler/api/v2/employee/${id}`;
+    return this.httpClient.get<EmployeeResponse>(url);
   }
 
   updateEmployee(empID: string, field: string, value: string): 

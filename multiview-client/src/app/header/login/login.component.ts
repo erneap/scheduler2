@@ -194,6 +194,7 @@ export class LoginComponent {
             });
         }
         this.authService.setWebLabel(team, site);
+        this.employeeService.startRenewal();
         this.siteService.startAutoUpdates();
         this.getInitialNotifications(id);
       },

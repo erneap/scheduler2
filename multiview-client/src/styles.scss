@@ -7,7 +7,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .flex-spacer { flex: 1 1 auto; }
 
 .fxLayout {
-    margin-top: 2rem;
+    margin: 2rem 1rem;
 }
 
 .flexlayout {
@@ -48,12 +48,22 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     align-items: flex-start;
 }
 
+.left {
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.right {
+    justify-content: flex-end;
+    align-items: center;
+}
+
 ::ng-deep .spinner-dialog > mat-dialog-container {
     background-color: var(--background);
 }
 
 .error {
-    color: pink;
+    color: red;
 }
 
 .flexgap {
@@ -62,4 +72,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .flexwrap {
     flex-wrap: wrap;
+}
+
+.stdcolors {
+    background-color: #3f51b5;
+    color: white;
 }

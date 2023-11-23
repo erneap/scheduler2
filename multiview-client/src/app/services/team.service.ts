@@ -107,6 +107,7 @@ export class TeamService extends CacheService {
   updateTeamWorkcode(team: string, workcode: string, field: string, 
   value: string): Observable<SiteResponse> {
     const url = '/scheduler/api/v2/team/workcode/';
+    value = `${value}`;
     const data: UpdateTeamRequest = {
       teamid: team,
       additionalid: workcode,

@@ -1,1 +1,29 @@
-<p>team-editor-edit works!</p>
+<mat-stepper #stepper>
+  <mat-step label="Basic Information">
+    <form [formGroup]="basicForm" class="flexlayout row topleft">
+      <mat-form-field style="width: 350px;">
+        <mat-label>Team's Name</mat-label>
+        <input matInput formControlName="name">
+        <mat-error class="error" *ngIf="basicForm.controls['name'].invalid">
+          Required
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </mat-step>
+  <mat-step label="Team's Work/Leave Codes">
+    <app-team-editor-edit-workcodes [team]="team" (changed)="updateTeam($event)">
+    </app-team-editor-edit-workcodes>
+  </mat-step>
+  <mat-step label="Team's Companies">
+    <app-team-editor-edit-companies [team]="team" (changed)="updateTeam($event)">
+    </app-team-editor-edit-companies>
+  </mat-step>
+  <mat-step label="Team's Standard Contact Information Types">
+    <app-team-editor-edit-contact-types [team]="team"
+      (changed)="updateTeam($event)"></app-team-editor-edit-contact-types>
+  </mat-step>
+  <mat-step label="Team's Specialty Types">
+    <app-team-editor-edit-specialty-types [team]="team"
+      (changed)="updateTeam($event)"></app-team-editor-edit-specialty-types>
+  </mat-step>
+</mat-stepper>

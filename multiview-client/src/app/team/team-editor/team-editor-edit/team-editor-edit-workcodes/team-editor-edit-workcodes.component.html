@@ -1,0 +1,16 @@
+<div class="flexlayout column topleft">
+  <form [formGroup]="codesForm" class="flexlayout row left">
+    <mat-form-field style="width: 350px;">
+      <mat-label>Select Work/Leave Code to Edit</mat-label>
+      <mat-select formControlName="workcode" (selectionChange)="onSelect()">
+        <mat-option value="">Add New Work/Leave Code</mat-option>
+        <mat-option *ngFor="let wc of team.workcodes" [value]="wc.id"
+          [style]="codeStyle(wc)">
+          {{wc.id.toUpperCase()}} - {{wc.title}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+  <app-team-editor-edit-workcode [team]="team" [workcode]="selectedWorkcode"
+    (changed)="updateTeam($event)"></app-team-editor-edit-workcode>
+</div>

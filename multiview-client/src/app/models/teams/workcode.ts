@@ -2,7 +2,7 @@ export interface IWorkcode {
   id: string;
   title: string;
   start: number;
-  shiftCode: number;
+  shiftCode: string;
   altcode: string;
   search: string;
   isLeave: boolean;
@@ -14,7 +14,7 @@ export class Workcode implements IWorkcode {
   id: string;
   title: string;
   start: number;
-  shiftCode: number;
+  shiftCode: string;
   altcode: string;
   search: string;
   isLeave: boolean;
@@ -25,7 +25,7 @@ export class Workcode implements IWorkcode {
     this.id = (wc) ? wc.id : '';
     this.title = (wc) ? wc.title : '';
     this.start = (wc) ? wc.start : 0;
-    this.shiftCode = (wc) ? wc.shiftCode : 1;
+    this.shiftCode = (wc) ? wc.shiftCode : '';
     this.altcode = (wc) ? wc.altcode : '';
     this.search = (wc) ? wc.search : '';
     this.isLeave = (wc) ? wc.isLeave : false;

@@ -5,6 +5,13 @@ import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TeamEditorEditComponent } from './team-editor-edit/team-editor-edit.component';
 import { TeamEditorSitesComponent } from './team-editor-sites/team-editor-sites.component';
+import { TeamEditorEditWorkcodesComponent } from './team-editor-edit/team-editor-edit-workcodes/team-editor-edit-workcodes.component';
+import { TeamEditorEditCompaniesComponent } from './team-editor-edit/team-editor-edit-companies/team-editor-edit-companies.component';
+import { TeamEditorEditContactTypesComponent } from './team-editor-edit/team-editor-edit-contact-types/team-editor-edit-contact-types.component';
+import { TeamEditorEditSpecialtyTypesComponent } from './team-editor-edit/team-editor-edit-specialty-types/team-editor-edit-specialty-types.component';
+import { TeamEditorEditWorkcodeComponent } from './team-editor-edit/team-editor-edit-workcode/team-editor-edit-workcode.component';
+import { TeamEditorEditCompaniesCompanyComponent } from './team-editor-edit/team-editor-edit-companies/team-editor-edit-companies-company/team-editor-edit-companies-company.component';
+import { TeamEditorEditCompaniesCompanyHolidaysComponent } from './team-editor-edit/team-editor-edit-companies/team-editor-edit-companies-company-holidays/team-editor-edit-companies-company-holidays.component';
 
 
 
@@ -12,7 +19,14 @@ import { TeamEditorSitesComponent } from './team-editor-sites/team-editor-sites.
   declarations: [
     TeamEditorComponent,
     TeamEditorEditComponent,
-    TeamEditorSitesComponent
+    TeamEditorSitesComponent,
+    TeamEditorEditWorkcodesComponent,
+    TeamEditorEditCompaniesComponent,
+    TeamEditorEditContactTypesComponent,
+    TeamEditorEditSpecialtyTypesComponent,
+    TeamEditorEditWorkcodeComponent,
+    TeamEditorEditCompaniesCompanyComponent,
+    TeamEditorEditCompaniesCompanyHolidaysComponent
   ],
   imports: [
     CommonModule,

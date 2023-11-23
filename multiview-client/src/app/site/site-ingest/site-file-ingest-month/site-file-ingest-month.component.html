@@ -1,8 +1,16 @@
 <div class="flexlayout column center">
   <div class="flexlayout row center">
-    <div class="movement" (click)="changeMonth('down')">&lt;</div>
+    <div class="flexlayout row left movement" >
+      <button mat-raised-button color="accent" (click)="changeMonth('down')">
+        &lt;
+      </button>
+    </div>
     <div class="month" [style]="getMonthWidthStyle()">{{dateLabel}}</div>
-    <div class="movement" (click)="changeMonth('up')">&gt;</div>
+    <div class="flexlayout row right movement">
+      <button mat-raised-button color="accent" (click)="changeMonth('up')">
+        &gt;
+      </button>
+    </div>
   </div>
   <div class="flexlayout row center">
     <div class="name">Employee</div>

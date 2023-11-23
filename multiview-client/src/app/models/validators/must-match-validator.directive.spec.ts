@@ -1,8 +1,8 @@
-import { MustMatchValidatorDirective } from './must-match-validator.directive';
+import { MustMatchValidator } from './must-match-validator.directive';
 
-describe('MustMatchValidatorDirective', () => {
+describe('MustMatchValidator', () => {
   it('should create an instance', () => {
-    const directive = new MustMatchValidatorDirective();
+    const directive = new MustMatchValidator();
     expect(directive).toBeTruthy();
   });
 });

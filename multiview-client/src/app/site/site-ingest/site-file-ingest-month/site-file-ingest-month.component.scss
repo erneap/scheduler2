@@ -40,29 +40,20 @@
 }
 
 .movement {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100px;
-  height: 25px;
-  font-size: 14pt;
-  font-weight: bold;
-  border: solid 1px white;
-  color: white;
+  height: 37px;
   background-color: #3f51b5;
   margin: 0;
   padding: 0;
-  cursor: pointer;
 }
 
 .month {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 25px;
+  height: 37px;
   font-size: 16pt;
   font-weight: bold;
-  border: solid 1px white;
   color: white;
   background-color: #3f51b5;
   margin: 0;

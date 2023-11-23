@@ -27,7 +27,7 @@ export class TeamEditorEditCompaniesComponent {
     return this._team;
   }
   @Output() changed = new EventEmitter<Team>();
-  selectedCompany: Company = new Company();
+  selectedCompany: Company;
   companiesForm: FormGroup
 
   constructor(
@@ -39,6 +39,7 @@ export class TeamEditorEditCompaniesComponent {
     this.companiesForm = this.fb.group({
       company: '',
     });
+    this.selectedCompany = new Company();
   }
 
   onSelect() {

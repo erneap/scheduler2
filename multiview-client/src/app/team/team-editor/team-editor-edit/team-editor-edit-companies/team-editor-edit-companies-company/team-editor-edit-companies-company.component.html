@@ -29,7 +29,8 @@
           <mat-option value="mexcel">Manual Excel Files</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-checkbox formControlName="holidays" (change)="onChange('holidays')">
+      <mat-checkbox formControlName="holidays" (change)="onChange('holidays')"
+        *ngIf="company.id !== ''">
         Has Holidays
       </mat-checkbox>
     </div>

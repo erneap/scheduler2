@@ -44,6 +44,7 @@ export class TeamEditorEditCompaniesComponent {
 
   onSelect() {
     const coID = this.companiesForm.value.company;
+    this.selectedCompany = new Company();
     this.team.companies.forEach(co => {
       if (co.id.toLowerCase() === coID.toLowerCase()) {
         this.selectedCompany = new Company(co);

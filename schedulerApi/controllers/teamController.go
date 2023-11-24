@@ -668,8 +668,11 @@ func UpdateCompanyHoliday(c *gin.Context) {
 	for c, company := range team.Companies {
 		if strings.EqualFold(company.ID, data.AdditionalID) {
 			sort.Sort(teams.ByCompanyHoliday(company.Holidays))
-			for h, holiday := range company.Holidays {
+			found := false
+			for h := 0; h < len(company.Holidays) && !found; h++ {
+				holiday := company.Holidays[h]
 				if holiday.ID == holID && holiday.SortID == uint(holSortID) {
+					found = true
 					switch strings.ToLower(data.Field) {
 					case "name":
 						holiday.Name = data.Value
@@ -705,6 +708,17 @@ func UpdateCompanyHoliday(c *gin.Context) {
 						}
 						if !found {
 							holiday.ActualDates = append(holiday.ActualDates, tDate)
+						}
+					case "replaceactual", "replaceactualdate", "replacedate":
+						parts := strings.Split(data.Value, "|")
+						if len(parts) > 1 {
+							oldDate, _ := time.Parse("2006-01-02", parts[0])
+							newDate, _ := time.Parse("2006-01-02", parts[1])
+							for d := 0; d < len(holiday.ActualDates); d++ {
+								if holiday.ActualDates[d].Equal(oldDate) {
+									holiday.ActualDates[d] = newDate
+								}
+							}
 						}
 					case "removeactual", "removeactualdate":
 						tDate, _ := time.Parse("2006-01-02", data.Value)
@@ -896,6 +910,13 @@ func ChangeContactType(c *gin.Context) {
 		for _, emp := range emps {
 			emp.ResortContactInfo(contactMap)
 			services.UpdateEmployee(&emp)
+		}
+	} else if strings.EqualFold(data.Field, "title") {
+		for c, ct := range team.ContactTypes {
+			if ct.Id == data.ID {
+				ct.Name = data.Value
+				team.ContactTypes[c] = ct
+			}
 		}
 	} else {
 		team.AddContactType(data.ID, data.Value)

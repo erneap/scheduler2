@@ -12,6 +12,8 @@ import { TeamEditorEditSpecialtyTypesComponent } from './team-editor-edit/team-e
 import { TeamEditorEditWorkcodeComponent } from './team-editor-edit/team-editor-edit-workcode/team-editor-edit-workcode.component';
 import { TeamEditorEditCompaniesCompanyComponent } from './team-editor-edit/team-editor-edit-companies/team-editor-edit-companies-company/team-editor-edit-companies-company.component';
 import { TeamEditorEditCompaniesCompanyHolidaysComponent } from './team-editor-edit/team-editor-edit-companies/team-editor-edit-companies-company-holidays/team-editor-edit-companies-company-holidays.component';
+import { TeamEditorEditContactTypeComponent } from './team-editor-edit/team-editor-edit-contact-types/team-editor-edit-contact-type/team-editor-edit-contact-type.component';
+import { TeamEditorEditSpecialtyTypeComponent } from './team-editor-edit/team-editor-edit-specialty-types/team-editor-edit-specialty-type/team-editor-edit-specialty-type.component';
 
 
 
@@ -26,7 +28,9 @@ import { TeamEditorEditCompaniesCompanyHolidaysComponent } from './team-editor-e
     TeamEditorEditSpecialtyTypesComponent,
     TeamEditorEditWorkcodeComponent,
     TeamEditorEditCompaniesCompanyComponent,
-    TeamEditorEditCompaniesCompanyHolidaysComponent
+    TeamEditorEditCompaniesCompanyHolidaysComponent,
+    TeamEditorEditContactTypeComponent,
+    TeamEditorEditSpecialtyTypeComponent
   ],
   imports: [
     CommonModule,

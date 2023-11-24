@@ -1,0 +1,29 @@
+<form [formGroup]="contactForm" class="flexlayout row topleft">
+  <ng-container *ngIf="contacttype.id === 0">
+    <mat-form-field appearance="fill" style="width: 350px;"
+      *ngIf="contacttype.id === 0">
+      <mat-label *ngIf="contacttype.name === ''">Name/Title</mat-label>
+      <input matInput formControlName="title" (blur)="onChange()">
+      <mat-error *ngIf="contactForm.controls['title'].hasError('required')" 
+        class="error">Required</mat-error>
+    </mat-form-field>
+    <div class="flexlayout column center cell" *ngIf="contacttype.id === 0">
+      <button mat-raised-button [disabled]="contactForm.invalid"
+        (click)="onAdd()">
+        Add
+      </button>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="contacttype.id > 0">
+    <mat-form-field appearance="fill" style="width: 350px;">
+      <input matInput formControlName="title" >
+      <mat-error *ngIf="contactForm.controls['title'].hasError('required')" 
+        class="error">Required</mat-error>
+    </mat-form-field>
+    <div class="flexlayout row center cell">
+      <button mat-raised-button (click)="onSelect()" [color]="buttonColor()">
+        {{buttonText()}}
+      </button>
+    </div>
+  </ng-container>
+</form>

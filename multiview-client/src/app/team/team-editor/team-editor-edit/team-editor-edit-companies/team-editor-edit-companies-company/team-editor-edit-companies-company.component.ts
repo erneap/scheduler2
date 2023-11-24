@@ -78,6 +78,11 @@ export class TeamEditorEditCompaniesCompanyComponent {
 
   setCompany() {
     this.companyForm.controls['id'].setValue(this.company.id);
+    if (this.company.id === '') {
+      this.companyForm.controls['id'].enable();
+    } else {
+      this.companyForm.controls['id'].disable();
+    }
     this.companyForm.controls['name'].setValue(this.company.name);
     this.companyForm.controls['ingest'].setValue(this.company.ingest);
     if (this.company.ingestPeriod) {

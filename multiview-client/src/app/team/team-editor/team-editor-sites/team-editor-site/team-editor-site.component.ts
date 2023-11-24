@@ -25,4 +25,13 @@ export class TeamEditorSiteComponent {
     return this._team;
   }
   @Output() changed = new EventEmitter<Team>()
+
+  updateTeam(team: Team) {
+    this.team = team;
+    this.team.sites.forEach(s => {
+      if (this.site.id === s.id) {
+        this.site = s;
+      }
+    });
+  }
 }

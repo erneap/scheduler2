@@ -17,6 +17,7 @@ import { TeamEditorEditSpecialtyTypeComponent } from './team-editor-edit/team-ed
 import { SiteModule } from 'src/app/site/site.module';
 import { SiteEditorModule } from 'src/app/site/site-editor/site-editor.module';
 import { TeamEditorSiteComponent } from './team-editor-sites/team-editor-site/team-editor-site.component';
+import { SiteEmployeesModule } from 'src/app/site/site-employees/site-employees.module';
 
 
 
@@ -42,7 +43,8 @@ import { TeamEditorSiteComponent } from './team-editor-sites/team-editor-site/te
     FormsModule,
     ReactiveFormsModule,
     SiteModule,
-    SiteEditorModule
+    SiteEditorModule,
+    SiteEmployeesModule
   ]
 })
 export class TeamEditorModule { }

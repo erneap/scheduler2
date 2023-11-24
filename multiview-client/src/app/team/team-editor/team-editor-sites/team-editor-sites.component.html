@@ -15,4 +15,6 @@
   </form>
   <app-add-site *ngIf="this.selectedSite.id === ''" [team]="team">
   </app-add-site>
+  <app-team-editor-site *ngIf="this.selectedSite.id !== ''" [team]="team"
+    [site]="selectedSite"></app-team-editor-site>
 </div>

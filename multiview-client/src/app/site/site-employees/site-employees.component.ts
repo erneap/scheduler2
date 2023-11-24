@@ -37,6 +37,7 @@ export class SiteEmployeesComponent {
     return this._team;
   }
   @Output() changed = new EventEmitter<Site>();
+  @Output() teamChanged = new EventEmitter<Team>();
   employeeSelectionForm: FormGroup;
   selectedEmployee: Employee = new Employee();
   siteEmployees: Employee[] = [];
@@ -123,6 +124,8 @@ export class SiteEmployeesComponent {
             found = true;
           }
         }
+        this.teamChanged.emit(this.team);
+        this.teamService.setTeam(this.team);
       }
       this.changed.emit(this.site);
     }

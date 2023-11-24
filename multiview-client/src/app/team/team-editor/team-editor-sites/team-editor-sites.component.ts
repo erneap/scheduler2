@@ -42,4 +42,9 @@ export class TeamEditorSitesComponent {
       }
     });
   }
+
+  updateTeam(team: Team) {
+    this.team = team;
+    this.changed.emit(this.team);
+  }
 }

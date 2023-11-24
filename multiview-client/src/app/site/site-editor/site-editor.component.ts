@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ISite, Site } from 'src/app/models/sites/site';
 import { ITeam, Team } from 'src/app/models/teams/team';
 import { SiteService } from 'src/app/services/site.service';
@@ -26,6 +26,7 @@ export class SiteEditorComponent {
   get team(): Team {
     return this._team;
   }
+  @Output() changed = new EventEmitter<Team>()
 
   constructor(
     protected siteService: SiteService,
@@ -59,6 +60,7 @@ export class SiteEditorComponent {
       if (!found) {
         team.sites.push(new Site(this.site));
       }
+      this.changed.emit(team);
       this.teamService.setTeam(team);
     }
   }

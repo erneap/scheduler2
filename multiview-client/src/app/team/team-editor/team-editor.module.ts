@@ -14,6 +14,9 @@ import { TeamEditorEditCompaniesCompanyComponent } from './team-editor-edit/team
 import { TeamEditorEditCompaniesCompanyHolidaysComponent } from './team-editor-edit/team-editor-edit-companies/team-editor-edit-companies-company-holidays/team-editor-edit-companies-company-holidays.component';
 import { TeamEditorEditContactTypeComponent } from './team-editor-edit/team-editor-edit-contact-types/team-editor-edit-contact-type/team-editor-edit-contact-type.component';
 import { TeamEditorEditSpecialtyTypeComponent } from './team-editor-edit/team-editor-edit-specialty-types/team-editor-edit-specialty-type/team-editor-edit-specialty-type.component';
+import { SiteModule } from 'src/app/site/site.module';
+import { SiteEditorModule } from 'src/app/site/site-editor/site-editor.module';
+import { TeamEditorSiteComponent } from './team-editor-sites/team-editor-site/team-editor-site.component';
 
 
 
@@ -30,13 +33,16 @@ import { TeamEditorEditSpecialtyTypeComponent } from './team-editor-edit/team-ed
     TeamEditorEditCompaniesCompanyComponent,
     TeamEditorEditCompaniesCompanyHolidaysComponent,
     TeamEditorEditContactTypeComponent,
-    TeamEditorEditSpecialtyTypeComponent
+    TeamEditorEditSpecialtyTypeComponent,
+    TeamEditorSiteComponent
   ],
   imports: [
     CommonModule,
     MaterialModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SiteModule,
+    SiteEditorModule
   ]
 })
 export class TeamEditorModule { }

@@ -32,12 +32,12 @@ export class SiteEmployeesComponent {
   @Input()
   public set team(iteam: ITeam) {
     this._team = new Team(iteam);
+    this.setEmployees();
   }
   get team(): Team {
     return this._team;
   }
   @Output() changed = new EventEmitter<Site>();
-  @Output() teamChanged = new EventEmitter<Team>();
   employeeSelectionForm: FormGroup;
   selectedEmployee: Employee = new Employee();
   siteEmployees: Employee[] = [];
@@ -71,15 +71,36 @@ export class SiteEmployeesComponent {
   setEmployees(): void {
     this.siteEmployees = [];
     const active = this.employeeSelectionForm.value.activeOnly;
-    if (this.site && this.site.employees) {
-      this.site.employees.forEach(iEmp => {
-        const emp = new Employee(iEmp);
-        if ((active && emp.isActive()) || !active) {
-          this.siteEmployees.push(emp);
+    if (this.site) {
+      if (this.site.employees && this.site.employees.length > 0) {
+        this.site.employees.forEach(iEmp => {
+          const emp = new Employee(iEmp);
+          if ((active && emp.isActive()) || !active) {
+            this.siteEmployees.push(emp);
+          }
+        });
+        this.siteEmployees.sort((a,b) => a.compareTo(b));
+      } else {
+        if (this.team.id !== '') {
+          // get the site again because the employees weren't loaded 
+          this.dialogService.showSpinner();
+          this.siteService.retrieveSite(this.team.id, this.site.id, true)
+          .subscribe({
+            next: (data: SiteResponse) => {
+              this.dialogService.closeSpinner();
+              if (data && data.site) {
+                this.site = new Site(data.site);
+                this.changed.emit(this.site);
+              }
+            },
+            error: (err: SiteResponse) => {
+              this.dialogService.closeSpinner();
+              this.authService.statusMessage = err.exception;
+            }
+          });
         }
-      });
-      this.siteEmployees.sort((a,b) => a.compareTo(b));
-    }
+      }
+    } 
   }
 
   selectEmployee(): void {
@@ -99,13 +120,16 @@ export class SiteEmployeesComponent {
   }
 
   updateEmployee(emp: Employee) {
-    const employee = this.empService.getEmployee();
-    const site = this.siteService.getSite();
-    const team = this.teamService.getTeam();
-    if (employee && employee.id === emp.id) {
+    const oEmp = this.empService.getEmployee();
+    const oSite = this.siteService.getSite();
+    const oTeam = this.teamService.getTeam();
+    if (emp.id === this.selectedEmployee.id) {
+      this.selectedEmployee = new Employee(emp);
+    }
+    if (oEmp && oEmp.id === emp.id) {
       this.empService.setEmployee(emp);
     }
-    if (this.site && this.site.employees) {
+    if (this.site.employees) {
       let found = false;
       for (let i=0; i < this.site.employees.length && !found; i++) {
         if (this.site.employees[i].id === emp.id) {
@@ -113,24 +137,23 @@ export class SiteEmployeesComponent {
           found = true;
         }
       }
-      if (site && site.id === this.site.id) {
-        this.siteService.setSite(this.site);
-      }
-      if (team && team.id === this.team.id) {
-        let found = false;
-        for (let i=0; i < this.team.sites.length && !found; i++) {
-          if (this.team.sites[i].id === this.site.id) {
-            this.team.sites[i] = new Site(this.site);
-            found = true;
-          }
-        }
-        this.teamChanged.emit(this.team);
-        this.teamService.setTeam(this.team);
-      }
       this.changed.emit(this.site);
     }
-    this.selectedEmployee = new Employee(emp);
-    this.setEmployees();
+    if (oSite && oSite.id === this.site.id) {
+      this.siteService.setSite(this.site);
+    }
+    if (this.team.sites) {
+      let found = false;
+      for (let i=0; i < this.team.sites.length && !found; i++) {
+        if (this.team.sites[i].id === this.site.id) {
+          this.team.sites[i] = new Site(this.site);
+          found = true;
+        }
+      }
+    }
+    if (oTeam && oTeam.id === this.team.id) {
+      this.teamService.setTeam(this.team);
+    }
   }
 
   deleteEmployee() {
@@ -182,5 +205,10 @@ export class SiteEmployeesComponent {
       }
     });
     return answer;
+  }
+
+  maxWidth(): string {
+    let width = window.innerWidth - 500;
+    return `max-width: ${width}px;`;
   }
 }

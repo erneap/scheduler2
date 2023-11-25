@@ -1,0 +1,112 @@
+<div class="fxLayout flexlayout column center">
+  <div class="flexlayout column center chart">
+    <h2 class="title">User's Profile Editor</h2>
+    <form [formGroup]="profileForm" class="flexlayout column center">
+      <ng-container *ngIf="showPassword">
+        <div class="flexlayout row center">
+          <mat-form-field>
+            <mat-label>E-mail Address</mat-label>
+            <input matInput formControlName="email"
+              (blur)="updateUserField('email')">
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <div class="flexlayout row center" style="gap: 3px;">
+        <div class="formField">
+          <mat-form-field class="fieldWidth">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="first"
+              (blur)="updateUserField('first')">
+          </mat-form-field>
+        </div>
+        <div class="formField">
+          <mat-form-field class="fieldWidth">
+            <mat-label>Middle Name</mat-label>
+            <input matInput formControlName="middle"
+              (blur)="updateUserField('middle')">
+          </mat-form-field>
+        </div>
+        <div class="formField">
+          <mat-form-field class="fieldWidth">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="last"
+              (blur)="updateUserField('last')">
+          </mat-form-field>
+        </div>
+      </div>
+      <ng-container *ngIf="showPassword">
+        <div class="flexlayout row center">
+          <h3>Reset Password</h3>
+        </div>
+        <div class="flexlayout row center" style="gap: 3px;">
+          <div class="formFieldWide">
+            <mat-form-field style="width: 225px;">
+              <mat-label>New Password</mat-label>
+              <input matInput type="password" formControlName="password">
+              <mat-error *ngIf="this.profileForm.get('password')?.invalid"
+                class="error">
+                {{getPasswordError()}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="formFieldWide">
+            <mat-form-field style="width: 225px;">
+              <mat-label>Verify New Password</mat-label>
+              <input matInput type="password" formControlName="password2">
+              <mat-error *ngIf="this.profileForm.get('password2')?.invalid"
+                class="error">
+                {{getVerifyError()}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="formField" style="vertical-align: top; width: 75px;">
+            <button mat-raised-button color="accent" 
+              [disabled]="!profileForm.valid"
+              (click)="setPassword()">Change</button>
+          </div>
+        </div>
+      </ng-container>
+      <div class="flexlayout row center" *ngIf="formError !== ''">
+        <span class="error">{{formError}}</span>
+      </div>
+    </form>
+  </div>
+  <div class="flexlayout row center">
+    User Authentication/Permissions
+  </div>
+  <div class="flexlayout row center">
+    <button mat-raised-button color="accent" style="margin: 5px;"
+      *ngIf="employee.user && employee.user.isLocked()"
+      (click)="unlockUser()">
+      Unlock Account</button>
+    <button mat-raised-button color="warn" style="margin: 5px;"
+      *ngIf="!employee.user" (click)="addUserAccount()">
+      Create Authentication Account</button>
+  </div>
+  <div *ngIf="authService.isAdmin || authService.isTeamLeader || authService.isSiteLeader || authService.isScheduler">
+    <h3 class="perms">User Permissions</h3>
+    <div class="flexlayout row topleft" style="flex-wrap: wrap;">
+      <div class="flexlayout row left" style="width: 300px;"
+        *ngFor="let perm of permissions;let i = index">
+        <mat-checkbox [checked]="hasPermission(perm)"
+          (change)="updatePermission(perm)" [disabled]="perm === 'employee'">
+          {{permNames[i]}}
+        </mat-checkbox>
+      </div>
+      <div class="flexlayout row left" style="width: 300px;"
+        *ngIf="authService.isAdmin || authService.isTeamLeader">
+        <mat-checkbox [checked]="hasPermission('teamleader')"
+          (change)="updatePermission('teamleadedr')">
+          Team Leadership
+        </mat-checkbox>
+      </div>
+      <div class="flexlayout row left" style="width: 300px;"
+        *ngIf="authService.isAdmin">
+        <mat-checkbox [checked]="hasPermission('admin')"
+          (change)="updatePermission('admin')">
+          Application Adminster
+        </mat-checkbox>
+      </div>
+    </div>
+  </div>
+</div>

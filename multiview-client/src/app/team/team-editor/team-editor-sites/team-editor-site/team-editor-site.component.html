@@ -5,7 +5,7 @@
   </mat-step>
   <mat-step label="Site Employees Editor">
     <app-site-employees [site]="site" [team]="team" 
-      (teamChanged)="updateTeam($event)">
+      (changed)="updateTeam($event)">
     </app-site-employees>
   </mat-step>
 </mat-stepper>

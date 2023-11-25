@@ -110,7 +110,6 @@ export class EmployeeLeaveRequestEditorComponent {
   }
 
   setRequests() {
-    console.log('requests');
     this.requests = [];
     let now = new Date();
     now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));

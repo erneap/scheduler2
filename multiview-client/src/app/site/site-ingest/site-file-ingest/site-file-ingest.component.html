@@ -24,8 +24,11 @@
   </app-site-file-ingest-month>
   <form [formGroup]="ingestForm" *ngIf="ingestType !== 'manual'"
     style="padding-top: 25px;">
-    <input formControlName="file" id="file" type="file" multiple
-        (change)="onFileChange($event)">
+    <button mat-raised-button (click)="fileInput.click()">
+      Choose Ingest Files
+    </button>
+    <input hidden formControlName="file" id="file" type="file" multiple
+      #fileInput (change)="onFileChange($event)">
     <div class="flexlayout column center" style="padding-top: 10px;">
       <div *ngFor="let file of myFiles">
         {{file.name}}

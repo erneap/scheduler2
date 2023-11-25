@@ -9,13 +9,15 @@ import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { SiteService } from 'src/app/services/site.service';
+import { SiteEmployeeProfileUserAccountDialogComponent } from './site-employee-profile-user-account-dialog/site-employee-profile-user-account-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-employee-profile',
-  templateUrl: './employee-profile.component.html',
-  styleUrls: ['./employee-profile.component.scss']
+  selector: 'app-site-employee-profile',
+  templateUrl: './site-employee-profile.component.html',
+  styleUrls: ['./site-employee-profile.component.scss']
 })
-export class EmployeeProfileComponent {
+export class SiteEmployeeProfileComponent {
   private _employee: Employee = new Employee();
   @Input()
   public set employee(iEmp: IEmployee) {
@@ -26,7 +28,9 @@ export class EmployeeProfileComponent {
     return this._employee;
   }
   @Output() changed = new EventEmitter<Employee>();
-
+  permissions: string[] = ['employee', 'scheduler', 'company', 'siteleader'];
+  permNames: string[] = ['Employee', 'Site Scheduler', 'Site Company Leader',
+    'Site Leader']
   profileForm: FormGroup;
   formError: string = '';
   showPassword: boolean = true;
@@ -36,6 +40,7 @@ export class EmployeeProfileComponent {
     protected empService: EmployeeService,
     protected siteService: SiteService,
     protected dialogService: DialogService,
+    private dialog: MatDialog,
     private httpClient: HttpClient,
     private fb: FormBuilder
   ) {
@@ -198,5 +203,75 @@ export class EmployeeProfileComponent {
       return answer;
     }
     return false;
+  }
+
+  updatePermission(perm: string) {
+    let field = '';
+    if (!this.hasPermission(perm)) {
+      field = 'addperm';
+    } else {
+      field = 'removeperm';
+    }
+    this.dialogService.showSpinner();
+    this.empService.updateEmployee(this.employee.id, field, perm)
+    .subscribe({
+      next: (data: EmployeeResponse) => {
+        this.dialogService.closeSpinner();
+        if (data && data !== null && data.employee) {
+          this.employee = data.employee;
+          this.changed.emit(this.employee);
+        }
+      },
+      error: (err: EmployeeResponse) => {
+        this.dialogService.closeSpinner();
+        this.authService.statusMessage = err.exception;
+      }
+    });
+  }
+
+  unlockUser() {
+    this.dialogService.showSpinner();
+    this.empService.updateEmployee(this.employee.id, 'unlock', '0')
+    .subscribe({
+      next: (data: EmployeeResponse) => {
+        this.dialogService.closeSpinner();
+        if (data && data !== null && data.employee) {
+          this.employee = data.employee;
+          this.changed.emit(this.employee);
+        }
+      },
+      error: (err: EmployeeResponse) => {
+        this.dialogService.closeSpinner();
+        this.authService.statusMessage = err.exception;
+      }
+    });
+  }
+
+  addUserAccount(): void {
+    const dialogRef = this.dialog.open(SiteEmployeeProfileUserAccountDialogComponent, {
+      data: {emailAddress: '', password: ''},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.data) {
+        if (result.emailAddress !== '') {
+          this.dialogService.showSpinner();
+          this.empService.addUserAccount(this.employee.id, 
+          result.emailAddress, result.password).subscribe({
+            next: (data: EmployeeResponse) => {
+              this.dialogService.closeSpinner();
+              if (data && data !== null && data.employee) {
+                this.employee = data.employee;
+                this.changed.emit(this.employee);
+              }
+            },
+            error: (err: EmployeeResponse) => {
+              this.dialogService.closeSpinner();
+              this.authService.statusMessage = err.exception;
+            }
+          });
+        }
+      }
+    })
   }
 }

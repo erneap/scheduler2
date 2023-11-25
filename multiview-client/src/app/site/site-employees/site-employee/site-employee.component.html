@@ -27,8 +27,8 @@
   <mat-step label="Personal/Company Information">
     <mat-stepper>
       <mat-step label="Personal Information">
-        <app-employee-profile-desktop [employee]="employee" 
-          (changed)="updateEmployee($event)"></app-employee-profile-desktop>
+        <app-site-employee-profile [employee]="employee" 
+          (changed)="updateEmployee($event)"></app-site-employee-profile>
       </mat-step>
       <mat-step label="Contact Information">
         <app-employee-contact-info-desktop [employee]="employee"

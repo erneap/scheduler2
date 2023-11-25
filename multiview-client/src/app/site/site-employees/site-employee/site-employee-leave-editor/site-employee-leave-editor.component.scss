@@ -1,8 +1,8 @@
 .leavebox {
-  min-height: 350px;
-  max-height: 350px;
-  min-width: 728px;
-  max-width: 728px;
+  display: flex;
+  flex-direction: column;
+  width: 728px;
+  height: 350px;
   overflow-y: scroll;
 }
 

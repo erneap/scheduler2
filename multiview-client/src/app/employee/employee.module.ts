@@ -9,7 +9,6 @@ import { EmployeeNoticesModule } from './employee-notices/employee-notices.modul
 import { EmployeeContactInfoModule } from './employee-contact-info/employee-contact-info.module';
 import { EmployeeSpecialtiesModule } from './employee-specialties/employee-specialties.module';
 
-
 @NgModule({
   declarations: [
   ],

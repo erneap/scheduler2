@@ -29,11 +29,11 @@ export class SiteEmployeeComponent {
   }
 
   setWidth(): string {
-    let width = window.innerWidth - 320;
+    let width = window.innerWidth - 525;
     return `width: ${width}px;`;
   }
 
   setMaxChildWidth(): number {
-    return (window.innerWidth - 375);
+    return (window.innerWidth - 550);
   }
 }

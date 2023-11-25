@@ -26,7 +26,7 @@ export class SiteEditorComponent {
   get team(): Team {
     return this._team;
   }
-  @Output() changed = new EventEmitter<Team>()
+  @Output() changed = new EventEmitter<Site>()
 
   constructor(
     protected siteService: SiteService,
@@ -47,6 +47,7 @@ export class SiteEditorComponent {
     const isite = this.siteService.getSite();
     if (isite && isite.id === this.site.id) {
       this.siteService.setSite(this.site);
+      this.changed.emit(this.site);
     }
     const team = this.teamService.getTeam();
     if (team) {
@@ -60,7 +61,6 @@ export class SiteEditorComponent {
       if (!found) {
         team.sites.push(new Site(this.site));
       }
-      this.changed.emit(team);
       this.teamService.setTeam(team);
     }
   }

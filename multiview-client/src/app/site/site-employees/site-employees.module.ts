@@ -22,6 +22,8 @@ import { EmployeeSpecialtiesModule } from 'src/app/employee/employee-specialties
 import { SiteEmployeeAssignmentEditComponent } from './site-employee-assignment/site-employee-assignment-edit/site-employee-assignment-edit.component';
 import { SiteEmployeeVariationsComponent } from './site-employee-variations/site-employee-variations.component';
 import { SiteEmployeeVariationComponent } from './site-employee-variations/site-employee-variation/site-employee-variation.component';
+import { SiteEmployeeProfileComponent } from './site-employee/site-employee-profile/site-employee-profile.component';
+import { SiteEmployeeProfileUserAccountDialogComponent } from './site-employee/site-employee-profile/site-employee-profile-user-account-dialog/site-employee-profile-user-account-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { SiteEmployeeVariationComponent } from './site-employee-variations/site-
     SiteEmployeeLeaveBalanceDialogComponent,
     SiteEmployeeAssignmentEditComponent,
     SiteEmployeeVariationsComponent,
-    SiteEmployeeVariationComponent
+    SiteEmployeeVariationComponent,
+    SiteEmployeeProfileComponent,
+    SiteEmployeeProfileUserAccountDialogComponent
   ],
   imports: [
     CommonModule,

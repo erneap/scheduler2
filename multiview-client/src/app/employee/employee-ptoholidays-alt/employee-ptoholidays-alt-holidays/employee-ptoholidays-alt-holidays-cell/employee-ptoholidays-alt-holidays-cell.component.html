@@ -1,0 +1,22 @@
+<ng-container *ngIf="holiday.id == ''">
+  <div class="cell">
+    <div [class]="getStyle('code')">&nbsp;</div>
+    <div [class]="getStyle('reference')">Reference</div>
+    <div [class]="getStyle('dates')">
+      Date Taken <span style="color: #3399ff;">(Projected)</span>
+    </div>
+    <div [class]="getStyle('actual')">Hours</div>
+  </div>
+</ng-container>
+<ng-container *ngIf="holiday.id !== ''">
+  <div class="cell">
+    <div [class]="getStyle('code')">{{getHolidayID()}}</div>
+    <div [class]="getStyle('reference')">{{referenceDate}}</div>
+    <div [class]="getStyle('dates')">
+      <app-employee-ptoholidays-alt-holidays-cell-display
+        *ngFor="let day of holiday.leaveDays" 
+        [holiday]="day"></app-employee-ptoholidays-alt-holidays-cell-display>
+    </div>
+    <div [class]="getStyle('actual')">{{getTotalActual()}}</div>
+  </div>
+</ng-container>

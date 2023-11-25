@@ -3,9 +3,11 @@
   <mat-step label="Leave Information">
     <mat-stepper backgroundColor="accent">
       <mat-step label="PTO/Holiday Listing">
-        <app-employee-ptoholidays-chart-desktop [employee]="employee"
+        <!--<app-employee-ptoholidays-chart-desktop [employee]="employee"
           [width]="setMaxChildWidth()">
-        </app-employee-ptoholidays-chart-desktop>
+        </app-employee-ptoholidays-chart-desktop>-->
+        <app-employee-ptoholidays-alt [employee]="employee">
+        </app-employee-ptoholidays-alt>
       </mat-step>
       <mat-step label="Leave Request Editor">
         <app-employee-leave-request-editor-desktop [employee]="employee"

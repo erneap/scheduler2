@@ -8,6 +8,7 @@ import { EmployeeLeaveRequestModule } from './employee-leave-request/employee-le
 import { EmployeeNoticesModule } from './employee-notices/employee-notices.module';
 import { EmployeeContactInfoModule } from './employee-contact-info/employee-contact-info.module';
 import { EmployeeSpecialtiesModule } from './employee-specialties/employee-specialties.module';
+import { EmployeePtoholidaysAltModule } from './employee-ptoholidays-alt/employee-ptoholidays-alt.module';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { EmployeeSpecialtiesModule } from './employee-specialties/employee-speci
     EmployeeLeaveRequestModule,
     EmployeeNoticesModule,
     EmployeeContactInfoModule,
-    EmployeeSpecialtiesModule
+    EmployeeSpecialtiesModule,
+    EmployeePtoholidaysAltModule
   ]
 })
 export class EmployeeModule { }

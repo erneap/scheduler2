@@ -59,7 +59,7 @@ export class LeaveMonth {
   leaveGroups: LeaveGroup[];
 
   constructor(lm?: LeaveMonth) {
-    this.month = (lm) ? new Date(lm.month) : new Date();
+    this.month = (lm) ? new Date(lm.month) : new Date(0);
     this.active = (lm) ? lm.active : true;
     this.leaveGroups = [];
     if (lm && lm.leaveGroups.length > 0) {

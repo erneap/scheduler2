@@ -40,6 +40,8 @@ import { SiteEditorComponent } from './site/site-editor/site-editor.component';
 import { TeamEditorComponent } from './team/team-editor/team-editor.component';
 import { AddTeamComponent } from './team/add-team/add-team.component';
 import { SiteFileIngestComponent } from './site/site-ingest/site-file-ingest/site-file-ingest.component';
+import { EmployeePtoholidaysAltComponent } from './employee/employee-ptoholidays-alt/employee-ptoholidays-alt.component';
+import { EmployeePtoholidaysAltMobile } from './employee/employee-ptoholidays-alt/employee-ptoholidays-alt.mobile';
 
 const desktop_routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -48,7 +50,7 @@ const desktop_routes: Routes = [
   {path: 'employee',
     children: [
       {path: 'schedule', component: EmployeeScheduleMonthDesktop},
-      {path: 'ptoholidays', component: EmployeePTOHolidaysChartDesktop },
+      {path: 'ptoholidays', component: EmployeePtoholidaysAltComponent },
       {path: 'profile', component: EmployeeProfileDesktop },
       {path: 'leaverequest', component: EmployeeLeaveRequestEditorDesktop },
       {path: 'contacts', component: EmployeeContactInfoDesktop },
@@ -91,7 +93,7 @@ const mobile_routes: Routes = [
   {path: 'employee',
     children: [
       {path: 'schedule', component: EmployeeScheduleMonthMobile},
-      {path: 'ptoholidays', component: EmployeePTOHolidaysChartMobile },
+      {path: 'ptoholidays', component: EmployeePtoholidaysAltMobile },
       {path: 'profile', component: EmployeeProfileMobile },
       {path: 'leaverequest', component: EmployeeLeaveRequestEditorMobile },
       {path: 'contacts', component: EmployeeContactInfoMobile },
@@ -125,7 +127,7 @@ const tablet_routes: Routes = [
   {path: 'employee',
     children: [
       {path: 'schedule', component: EmployeeScheduleMonthTablet},
-      {path: 'ptoholidays', component: EmployeePTOHolidaysChartTablet },
+      {path: 'ptoholidays', component: EmployeePtoholidaysAltMobile },
       {path: 'profile', component: EmployeeProfileTablet },
       {path: 'leaverequest', component: EmployeeLeaveRequestEditorTablet },
       {path: 'contacts', component: EmployeeContactInfoTablet },

@@ -1,0 +1,18 @@
+<div class="chart" [style]="widthStyle()">
+  <div class="title">Holidays</div>
+  <app-employee-ptoholidays-alt-holidays-cell>
+  </app-employee-ptoholidays-alt-holidays-cell>
+  <app-employee-ptoholidays-alt-holidays-cell *ngFor="let hol of holidays"
+    [holiday]="hol" [year]="year" [activecell]="isActive(hol)">
+  </app-employee-ptoholidays-alt-holidays-cell>
+  <div class="cell">
+    <div class="label">Days Left</div>
+    <div class="label">Hours Left</div>
+    <div class="label">Hours Taken</div>
+  </div>
+  <div class="cell">
+    <div class="data">{{getHolidaysRemaining()}}</div>
+    <div class="data">{{getHolidaysHoursRemaining()}}</div>
+    <div class="data">{{getHolidayHoursTaken()}}</div>
+  </div>
+</div>

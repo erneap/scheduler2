@@ -24,6 +24,7 @@ import { SiteEmployeeVariationsComponent } from './site-employee-variations/site
 import { SiteEmployeeVariationComponent } from './site-employee-variations/site-employee-variation/site-employee-variation.component';
 import { SiteEmployeeProfileComponent } from './site-employee/site-employee-profile/site-employee-profile.component';
 import { SiteEmployeeProfileUserAccountDialogComponent } from './site-employee/site-employee-profile/site-employee-profile-user-account-dialog/site-employee-profile-user-account-dialog.component';
+import { EmployeePtoholidaysAltModule } from 'src/app/employee/employee-ptoholidays-alt/employee-ptoholidays-alt.module';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { SiteEmployeeProfileUserAccountDialogComponent } from './site-employee/s
     EmployeeLeaveRequestModule,
     EmployeeProfileModule,
     EmployeeContactInfoModule,
-    EmployeeSpecialtiesModule
+    EmployeeSpecialtiesModule,
+    EmployeePtoholidaysAltModule
   ],
   exports: [
     SiteEmployeesComponent,

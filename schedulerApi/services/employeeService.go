@@ -243,6 +243,23 @@ func GetEmployeesForTeam(teamid string) ([]employees.Employee, error) {
 	return employees, nil
 }
 
+func GetAllEmployees() ([]employees.Employee, error) {
+	empCol := config.GetCollection(config.DB, "scheduler", "employees")
+
+	var emps []employees.Employee
+
+	cursor, err := empCol.Find(context.TODO(), bson.M{})
+	if err != nil {
+		return emps[:0], err
+	}
+
+	if err = cursor.All(context.TODO(), &emps); err != nil {
+		log.Println(err)
+	}
+
+	return emps, nil
+}
+
 func UpdateEmployee(emp *employees.Employee) error {
 	empCol := config.GetCollection(config.DB, "scheduler", "employees")
 

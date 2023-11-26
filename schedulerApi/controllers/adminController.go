@@ -19,7 +19,7 @@ func Purge(c *gin.Context) {
 		services.AddLogEntry(c, "scheduler", "ERROR", "PROBLEM",
 			fmt.Sprintf("Purge Date Parsing Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
-			web.SiteResponse{Team: nil, Site: nil, Exception: err.Error()})
+			web.TeamsResponse{Teams: nil, Exception: err.Error()})
 		return
 	}
 
@@ -29,7 +29,7 @@ func Purge(c *gin.Context) {
 		services.AddLogEntry(c, "scheduler", "ERROR", "PROBLEM",
 			fmt.Sprintf("Get Work Records Problem: %s", err.Error()))
 		c.JSON(http.StatusBadRequest,
-			web.SiteResponse{Team: nil, Site: nil, Exception: err.Error()})
+			web.TeamsResponse{Teams: nil, Exception: err.Error()})
 		return
 	}
 
@@ -44,6 +44,23 @@ func Purge(c *gin.Context) {
 
 	// purge employee's leave balance records,variations and leave before purge
 	// date, plus check to see if employee quit before the purge date.
+	employees, _ := services.GetAllEmployees()
+	for _, emp := range employees {
+		bQuit := emp.PurgeOldData(purgeDate)
+		if bQuit {
+			services.DeleteEmployee(emp.ID.Hex())
+		} else {
+			services.UpdateEmployee(&emp)
+		}
+	}
 
 	// update teams of holiday dates before the purge date.
+	teams, _ := services.GetTeams()
+	for t, tm := range teams {
+		tm.PurgeOldData(purgeDate)
+		teams[t] = tm
+		services.UpdateTeam(&tm)
+	}
+
+	c.JSON(http.StatusOK, web.TeamsResponse{Teams: teams, Exception: ""})
 }

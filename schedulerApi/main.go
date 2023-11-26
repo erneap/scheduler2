@@ -188,6 +188,7 @@ func main() {
 		{
 			admin.GET("/teams", controllers.GetTeams)
 			admin.DELETE("/teams/:teamid", controllers.DeleteTeam)
+			admin.DELETE("/purge/:purge", controllers.Purge)
 		}
 
 		reports := api.Group("/reports", svcs.CheckJWT("scheduler"))

@@ -2,6 +2,8 @@ package services
 
 import (
 	"context"
+	"log"
+	"time"
 
 	"github.com/erneap/go-models/config"
 	"github.com/erneap/go-models/employees"
@@ -82,4 +84,22 @@ func DeleteEmployeeWork(id string, year uint) error {
 
 	_, err := empWCol.DeleteOne(context.TODO(), filter)
 	return err
+}
+
+func GetEmployeeWorkForPurge(purgeDate time.Time) ([]employees.EmployeeWorkRecord, error) {
+	empWCol := config.GetCollection(config.DB, "scheduler", "employeework")
+
+	filter := bson.M{"year": bson.M{"$lte": purgeDate.Year()}}
+
+	var empWork []employees.EmployeeWorkRecord
+
+	cursor, err := empWCol.Find(context.TODO(), filter)
+	if err != nil {
+		return empWork[:0], err
+	}
+
+	if err = cursor.All(context.TODO(), &empWork); err != nil {
+		log.Println(err)
+	}
+	return empWork, err
 }

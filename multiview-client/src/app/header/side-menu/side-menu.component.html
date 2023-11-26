@@ -60,12 +60,9 @@
       <a mat-list-item (click)="goToLink('/team/editor')"
       *ngIf="(this.authService.isAdmin || this.authService.isTeamLeader) && appState.isDesktop()"
       style="height: 20px;">Team Editor</a>
-      <a mat-list-item (click)="goToLink('/team/add')"
+      <a mat-list-item (click)="goToLink('/admin')"
       *ngIf="this.authService.isAdmin && appState.isDesktop()"
-      style="height: 20px;">Add New Team</a>
-      <a mat-list-item (click)="goToLink('admin/purge')"
-      *ngIf="this.authService.isAdmin && appState.isDesktop()"
-      style="height: 20px;">Data Purge</a>
+      style="height: 20px;">Administration Tools</a>
     </mat-nav-list>
   </mat-expansion-panel>
   <mat-expansion-panel expanded="true" 

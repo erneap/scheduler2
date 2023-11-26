@@ -14,6 +14,9 @@ import { AddTeamComponent } from './add-team/add-team.component';
     CommonModule,
     MaterialModule,
     TeamEditorModule
+  ],
+  exports: [
+    AddTeamComponent,
   ]
 })
 export class TeamModule { }

@@ -45,6 +45,9 @@ import { SiteEmployeesModule } from 'src/app/site/site-employees/site-employees.
     SiteModule,
     SiteEditorModule,
     SiteEmployeesModule
+  ],
+  exports: [
+    TeamEditorComponent,
   ]
 })
 export class TeamEditorModule { }

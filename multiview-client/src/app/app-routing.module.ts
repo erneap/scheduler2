@@ -42,6 +42,7 @@ import { AddTeamComponent } from './team/add-team/add-team.component';
 import { SiteFileIngestComponent } from './site/site-ingest/site-file-ingest/site-file-ingest.component';
 import { EmployeePtoholidaysAltComponent } from './employee/employee-ptoholidays-alt/employee-ptoholidays-alt.component';
 import { EmployeePtoholidaysAltMobile } from './employee/employee-ptoholidays-alt/employee-ptoholidays-alt.mobile';
+import { AdminComponent } from './admin/admin.component';
 
 const desktop_routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -82,6 +83,7 @@ const desktop_routes: Routes = [
       {path: 'add', component: AddTeamComponent }
     ]
   },
+  {path: 'admin', component: AdminComponent },
   {path: 'query', component: QueryComponent},
   {path: '**', redirectTo: 'login'}
 ];

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Team } from 'src/app/models/teams/team';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ITeam, Team } from 'src/app/models/teams/team';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { TeamService } from 'src/app/services/team.service';
@@ -10,7 +10,15 @@ import { TeamService } from 'src/app/services/team.service';
   styleUrls: ['./team-editor.component.scss']
 })
 export class TeamEditorComponent {
-  team: Team = new Team();
+  private _team: Team = new Team();
+  @Input()
+  public set team(team: ITeam) {
+    this._team = new Team(team);
+  }
+  get team(): Team {
+    return this._team;
+  }
+  @Output() changed = new EventEmitter<Team>();
 
   constructor(
     protected teamService: TeamService,
@@ -24,9 +32,13 @@ export class TeamEditorComponent {
   }
 
   updateTeam(team: Team) {
+    const cteam = this.teamService.getTeam();
     if (team.id === this.team.id) {
       this.team = new Team(team);
-      this.teamService.setTeam(this.team);
+      if (cteam && cteam.id === this.team.id) {
+        this.teamService.setTeam(this.team);
+      }
+      this.changed.emit(this.team);
     }
   }
 }

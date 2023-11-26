@@ -135,15 +135,13 @@ export class SiteFileIngestMonthComponent {
       });
       this.setDates();
     }
-    if (!workFound) {
-      this.authService.statusMessage = "Pulling Work for Month";
+    if (!workFound && teamid !== '' && siteid !== '' && company !== '') {
       this.dialogService.showSpinner();
       this.ingestService.getIngestEmployees(teamid, siteid, company, 
         this.month.getUTCFullYear()).subscribe({
           next: (data: IngestResponse) => {
             this.dialogService.closeSpinner();
             if (data && data !== null) {
-              this.authService.statusMessage = "Retrieval complete";
               this.ingestType = data.ingest;
               let site: Site | undefined = undefined;
               const iSite = this.siteService.getSite();

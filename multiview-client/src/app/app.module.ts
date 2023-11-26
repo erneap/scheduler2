@@ -23,6 +23,7 @@ import { SiteModule } from './site/site.module';
 import { QueryModule } from './query/query.module';
 import { GenericModule } from './generic/generic.module';
 import { TeamModule } from './team/team.module';
+import { AdminModule } from './admin/admin.module';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { TeamModule } from './team/team.module';
     SiteModule,
     QueryModule,
     GenericModule,
-    TeamModule
+    TeamModule,
+    AdminModule
   ],
   providers: [
     AppStateService,

@@ -76,15 +76,23 @@ export class SiteFileIngestComponent {
   getEmployees() {
     this.leavecodes = [];
     this.employees = [];
+    this.ingestType = 'manual';
+    let teamid = '';
     const iTeam = this.teamService.getTeam();
     if (iTeam) {
       const team = new Team(iTeam);
+      teamid = team.id;
       team.workcodes.forEach(wc => {
         if (wc.isLeave) {
           this.leavecodes.push(new Workcode(wc))
         }
       });
-      this.leavecodes.sort((a,b) => a.compareTo(b))
+      this.leavecodes.sort((a,b) => a.compareTo(b));
+      iTeam.companies.forEach(co => {
+        if (co.id === this.company) {
+          this.ingestType = co.ingest;
+        }
+      });
     }
     let siteid = "";
     const iSite = this.siteService.getSite();
@@ -99,19 +107,9 @@ export class SiteFileIngestComponent {
         });
       }
     }
-    let teamid = "";
-    if (iTeam) {
-      teamid = iTeam.id;
-      this.ingestType = 'manual';
-      iTeam.companies.forEach(co => {
-        if (co.id === this.company) {
-          this.ingestType = co.ingest;
-        }
-      })
-    }
-    if (this.employees.length <= 0) {
+    if (this.employees.length <= 0 && teamid !== '' && siteid !== '' 
+      && this.company !== '') {
       const now = new Date();
-      this.authService.statusMessage = "Retrieving site's employees and ingest type";
       this.dialogService.showSpinner();
       this.ingestService.getIngestEmployees(teamid, siteid, 
         this.company, now.getFullYear()).subscribe({

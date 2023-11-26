@@ -71,5 +71,6 @@ export class TeamEditorEditCompaniesComponent {
         }
       })
     }
+    this.changed.emit(this.team);
   }
 }

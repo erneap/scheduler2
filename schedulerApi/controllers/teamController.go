@@ -83,6 +83,17 @@ func CreateTeam(c *gin.Context) {
 
 	team := services.CreateTeam(data.Name, data.UseStdWorkcodes)
 
+	site, err := services.CreateSite(team.ID.Hex(), "leads", "Leads")
+	if err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s CreateSite: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+			Exception: err.Error()})
+		return
+	}
+
+	team.Sites = append(team.Sites, *site)
+
 	// add team leader from data provided
 	emp := employees.Employee{
 		TeamID: team.ID,

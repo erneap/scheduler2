@@ -236,7 +236,17 @@ func DeleteSite(c *gin.Context) {
 			Exception: err.Error()})
 		return
 	}
-	c.Status(http.StatusOK)
+
+	team, err := services.GetTeam(teamid)
+	if err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM", fmt.Sprintf(
+			"%s Delete Error: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteResponse{Team: nil, Site: nil,
+			Exception: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK,
+		web.SiteResponse{Team: team, Site: nil, Exception: ""})
 }
 
 // mass create for site's employee leave balances

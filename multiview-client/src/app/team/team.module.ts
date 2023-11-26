@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TeamEditorModule } from './team-editor/team-editor.module';
 import { MaterialModule } from '../material.module';
 import { AddTeamComponent } from './add-team/add-team.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -13,7 +14,10 @@ import { AddTeamComponent } from './add-team/add-team.component';
   imports: [
     CommonModule,
     MaterialModule,
-    TeamEditorModule
+    TeamEditorModule,
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   exports: [
     AddTeamComponent,

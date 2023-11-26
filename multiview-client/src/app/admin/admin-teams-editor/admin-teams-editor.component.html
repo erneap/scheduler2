@@ -1,5 +1,5 @@
 <div class="flexlayout column topleft">
-  <form [formGroup]="teamsForm" class="flexlayout row topleft">
+  <form [formGroup]="teamsForm" class="flexlayout row topleft flexgap">
     <mat-form-field appearance="fill" style="width: 350px;">
       <mat-label>Choose Team to Edit</mat-label>
       <mat-select formControlName="team" (selectionChange)="onSelect()">
@@ -9,8 +9,14 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+    <button mat-icon-button *ngIf="selectedTeam.id !== ''"
+      class="delete" matTooltip="Delete selected team" (click)="onDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
   </form>
-  <app-add-team *ngIf="selectedTeam.id === ''"></app-add-team>
-  <app-team-editor *ngIf="selectedTeam.id !== ''" [team]="selectedTeam">
+  <app-add-team *ngIf="selectedTeam.id === ''" (changed)="updateTeam($event)">
+  </app-add-team>
+  <app-team-editor *ngIf="selectedTeam.id !== ''" [team]="selectedTeam"
+    (changed)="updateTeam($event)">
   </app-team-editor>
 </div>

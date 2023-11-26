@@ -100,6 +100,17 @@ export class SiteEmployeesComponent {
           });
         }
       }
+      const empID = this.selectedEmployee.id;
+      let eFound = false;
+      this.siteEmployees.forEach(emp => {
+        if (emp.id === empID) {
+          eFound = true;
+        }
+      });
+      if (!eFound) {
+        this.selectedEmployee = new Employee();
+        this.employeeSelectionForm.controls['employee'].setValue('');
+      }
     } 
   }
 

@@ -9,7 +9,8 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-icon-button color="warn" [disabled]="disableDeleteButton">
+    <button mat-icon-button color="warn" [disabled]="disableDeleteButton"
+      (click)="onDelete()">
       <mat-icon>delete</mat-icon>
     </button>
   </form>

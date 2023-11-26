@@ -158,21 +158,12 @@ export class SiteService extends CacheService {
   retrieveSite(teamID: string, siteID: string, allemployees: boolean): 
     Observable<SiteResponse> {
     const url = `/scheduler/api/v2/site/${teamID}/${siteID}/${allemployees}`;
-    return this.httpClient.get<SiteResponse>(url).pipe(
-      map((data: SiteResponse) => {
-        if (data && data !== null && data.exception === '') {
-          if (data.site) {
-            const site = new Site(data.site);
-            this.authService.siteID = site.id;
-            this.setSite(site);
-          }
-          if (data.team) {
-            this.authService.teamID = data.team.id;
-          }
-        }
-        return data;
-      })
-    );
+    return this.httpClient.get<SiteResponse>(url);
+  }
+
+  deleteSite(teamID: string, siteID: string): Observable<SiteResponse> {
+    const url = `/scheduler/api/v2/site/${teamID}/${siteID}`;
+    return this.httpClient.delete<SiteResponse>(url);
   }
 
   //////////////////////////////////////////////////////////////////////////////

@@ -25,6 +25,8 @@ import { GenericModule } from './generic/generic.module';
 import { TeamModule } from './team/team.module';
 import { AdminModule } from './admin/admin.module';
 import { AdminService } from './services/admin.service';
+import { ReportsModule } from './reports/reports.module';
+import { LogsModule } from './logs/logs.module';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { AdminService } from './services/admin.service';
     QueryModule,
     GenericModule,
     TeamModule,
-    AdminModule
+    AdminModule,
+    ReportsModule,
+    LogsModule
   ],
   providers: [
     AdminService,

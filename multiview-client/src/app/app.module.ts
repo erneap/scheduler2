@@ -24,6 +24,7 @@ import { QueryModule } from './query/query.module';
 import { GenericModule } from './generic/generic.module';
 import { TeamModule } from './team/team.module';
 import { AdminModule } from './admin/admin.module';
+import { AdminService } from './services/admin.service';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { AdminModule } from './admin/admin.module';
     AdminModule
   ],
   providers: [
+    AdminService,
     AppStateService,
     AuthService,
     DialogService,

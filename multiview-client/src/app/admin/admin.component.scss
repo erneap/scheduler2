@@ -34,19 +34,6 @@
   border-right: solid 3px white;
 }
 
-.purge-editor-title {
-  position: absolute;
-  top: 48px;
-  height: 25px;
-  width: 400px;
-  right: 0px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  border-bottom: solid 1px white;
-}
-
 .teams-editor {
   position: absolute;
   top: 74px;
@@ -62,11 +49,51 @@
   border-right: solid 3px white;
 }
 
-.purge-editor {
+.users-editor-title {
+  position: absolute;
+  top: 48px;
+  height: 25px;
+  right: 0px;
+  width: 400px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-bottom: solid 1px white;
+}
+
+.users-editor {
   position: absolute;
   top: 74px;
-  bottom: 0px;
+  bottom: 90px;
+  right: 0px;
   width: 392px;
+  display: flex;
+  padding: 5px;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-bottom: solid 1px white;
+}
+
+.purge-editor-title {
+  position: absolute;
+  bottom: 151px;
+  height: 25px;
+  width: 400px;
+  right: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-bottom: solid 1px white;
+}
+
+.purge-editor {
+  position: absolute;
+  height: 79px;
+  bottom: 0px;
+  width: 390px;
   right: 0px;
   padding: 5px;
   overflow: auto;
@@ -74,4 +101,5 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
+  background-color: pink;
 }

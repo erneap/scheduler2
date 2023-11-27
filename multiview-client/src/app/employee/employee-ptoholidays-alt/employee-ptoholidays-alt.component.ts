@@ -63,7 +63,7 @@ export class EmployeePtoholidaysAltComponent {
     let width = window.innerWidth - 1;
     if (width > 1000) {
       width = 1000;
-    } else if ((window.innerWidth < window.innerHeight || this.showHolidays) 
+    } else if ((window.innerWidth < window.innerHeight || !this.showHolidays) 
       && width > 498) {
       width = 498;
     }

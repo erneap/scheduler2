@@ -228,7 +228,7 @@ export class AuthService extends CacheService {
 
   changeUser(id: string, field: string, value: string): 
     Observable<AuthenticationResponse> {
-    const url = '/authentication/api/v2/user/changes';
+    const url = '/authentication/api/v2/user';
     const data: UpdateRequest = {
       id: id,
       field: field,
@@ -269,9 +269,9 @@ export class AuthService extends CacheService {
     return this.httpClient.put<AuthenticationResponse>(url, data)
   }
 
-  getAllUsers(): Observable<HttpResponse<UsersResponse>> {
-    const url = '/authentication/api/v2/user';
-    return this.httpClient.get<UsersResponse>(url, {observe: 'response'});
+  getAllUsers(): Observable<UsersResponse> {
+    const url = '/authentication/api/v2/users';
+    return this.httpClient.get<UsersResponse>(url);
   }
 
   addUser(user: User): Observable<HttpResponse<UsersResponse>> {

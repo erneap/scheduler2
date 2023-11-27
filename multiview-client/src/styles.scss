@@ -58,6 +58,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     align-items: center;
 }
 
+.bottomleft {
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.bottomright {
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
 ::ng-deep .spinner-dialog > mat-dialog-container {
     background-color: var(--background);
 }

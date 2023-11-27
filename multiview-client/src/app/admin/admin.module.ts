@@ -7,6 +7,7 @@ import { MaterialModule } from '../material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TeamModule } from '../team/team.module';
 import { TeamEditorModule } from '../team/team-editor/team-editor.module';
+import { AdminUsersToolComponent } from './admin-users-tool/admin-users-tool.component';
 
 
 
@@ -14,7 +15,8 @@ import { TeamEditorModule } from '../team/team-editor/team-editor.module';
   declarations: [
     AdminComponent,
     AdminTeamsEditorComponent,
-    AdminDataPurgeToolComponent
+    AdminDataPurgeToolComponent,
+    AdminUsersToolComponent
   ],
   imports: [
     CommonModule,

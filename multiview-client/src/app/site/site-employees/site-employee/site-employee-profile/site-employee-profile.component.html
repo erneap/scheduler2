@@ -96,7 +96,7 @@
       <div class="flexlayout row left" style="width: 300px;"
         *ngIf="authService.isAdmin || authService.isTeamLeader">
         <mat-checkbox [checked]="hasPermission('teamleader')"
-          (change)="updatePermission('teamleadedr')">
+          (change)="updatePermission('teamleader')">
           Team Leadership
         </mat-checkbox>
       </div>

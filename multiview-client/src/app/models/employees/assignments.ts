@@ -157,6 +157,30 @@ export class Assignment implements IAssignment {
     return 8.0;
   }
 
+  getStandardWorkCode(site: string, date: Date): string {
+    let wd = this.getWorkday(site, date);
+    let start = new Date(date);
+    let count = 0;
+    while ((!wd || wd.code === '') && count < 7) {
+      start = new Date(start.getTime() - (24 * 3600000));
+      count++;
+      wd = this.getWorkday(site, start);
+    }
+    return (wd) ? wd.code : 'D';
+  }
+
+  getStandardWorkcenter(site: string, date: Date): string {
+    let wd = this.getWorkday(site, date);
+    let start = new Date(date);
+    let count = 0;
+    while ((!wd || wd.workcenter === '') && count < 7) {
+      start = new Date(start.getTime() - (24 * 3600000));
+      count++;
+      wd = this.getWorkday(site, start);
+    }
+    return (wd) ? wd.workcenter : '';
+  }
+
   getWorkday(site: string, date: Date): Workday | undefined {
     if (date.getTime() <= this.endDate.getTime() 
       && date.getTime() >= this.startDate.getTime()

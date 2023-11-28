@@ -1,6 +1,7 @@
 import { Variation } from "../employees/assignments";
 import { IEmployee } from "../employees/employee";
 import { LeaveDay } from "../employees/leave";
+import { Work } from "../employees/work";
 import { ISite } from "../sites/site";
 import { ITeam } from "../teams/team";
 import { IUser } from "../users/user";
@@ -131,4 +132,11 @@ export interface EmployeeSpecialtiesUpdate {
   employee: string;
   action: string;
   specialties: number[];
+}
+
+export interface EmployeeWorkResponse {
+  id?: string;
+  year?: number;
+  work?: Work[];
+  exception: string;
 }

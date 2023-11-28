@@ -1740,3 +1740,47 @@ func DeleteCofSReport(c *gin.Context) {
 			Team: nil, Site: site, Exception: "",
 		})
 }
+
+func GetSiteEmployeesWork(c *gin.Context) {
+	teamid := c.Param("teamid")
+	siteid := c.Param("siteid")
+	sYear := c.Param("year")
+
+	logmsg := "SiteController: GetSiteEmployeesWork:"
+	year, err := strconv.Atoi(sYear)
+	if err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Year Convert: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteWorkResponse{TeamID: "", SiteID: "",
+			Exception: err.Error()})
+		return
+	}
+
+	site, err := services.GetSite(teamid, siteid)
+	if err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Retrieving Site: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest, web.SiteWorkResponse{TeamID: "", SiteID: "",
+			Exception: err.Error()})
+		return
+	}
+
+	resp := web.SiteWorkResponse{
+		TeamID:    teamid,
+		SiteID:    siteid,
+		Year:      year,
+		Exception: "",
+	}
+	for _, emp := range site.Employees {
+		rec, err := services.GetEmployeeWork(emp.ID.Hex(), uint(year))
+		if err == nil {
+			resp.Work = append(resp.Work, web.EmployeeWorkResponse{
+				EmployeeID:   emp.ID.Hex(),
+				Year:         year,
+				EmployeeWork: rec.Work,
+			})
+		}
+	}
+
+	c.JSON(http.StatusOK, resp)
+}

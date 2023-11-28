@@ -66,6 +66,7 @@ func main() {
 				lCode.POST("/", controllers.AddEmployeeLaborCode)
 				lCode.DELETE("/:empid/:asgmt/:chgno/:ext", controllers.DeleteEmployeeLaborCode)
 			}
+			emp.GET("/work/:employee/:year", controllers.GetEmployeeWork)
 			emp.POST("/contact", controllers.UpdateContact)
 			emp.POST("/specialty", controllers.UpdateSpecialty)
 			emp.POST("/specialties", controllers.UpdateSpecialties)
@@ -127,6 +128,7 @@ func main() {
 				cofs.DELETE("/:teamid/:siteid/:rptid",
 					controllers.DeleteCofSReport)
 			}
+			site.GET("/work/:teamid/:siteid/:year", controllers.GetSiteEmployeesWork)
 		}
 
 		team := api.Group("/team", svcs.CheckJWT("scheduler"))

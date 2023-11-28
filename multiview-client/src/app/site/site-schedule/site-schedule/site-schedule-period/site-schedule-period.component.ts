@@ -1,8 +1,13 @@
 import { Component, Input } from '@angular/core';
+import { Work } from 'src/app/models/employees/work';
+import { Site } from 'src/app/models/sites/site';
 import { Workcenter } from 'src/app/models/sites/workcenter';
+import { SiteWorkResponse } from 'src/app/models/web/siteWeb';
 import { AppStateService } from 'src/app/services/app-state.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { SiteService } from 'src/app/services/site.service';
+import { TeamService } from 'src/app/services/team.service';
 
 @Component({
   selector: 'app-site-schedule-period',
@@ -50,7 +55,9 @@ export class SiteSchedulePeriodComponent {
 
   constructor(
     protected siteService: SiteService,
+    protected teamService: TeamService,
     protected dialogService: DialogService,
+    protected authService: AuthService,
     protected appState: AppStateService
   ) {
     this.expanded = this.siteService.getExpanded();
@@ -111,15 +118,50 @@ export class SiteSchedulePeriodComponent {
     }
     this.wkctrStyle = `width: ${width}px;`;
     this.monthStyle = `width: ${monthWidth}px;`;
-
-    this.setWorkcenters();
+    const site = this.siteService.getSite();
+    if (site) {
+      if (!site.hasEmployeeWork(start.getFullYear())) {
+        const team = this.teamService.getTeam();
+        let teamid = '';
+        if (team) { teamid = team.id; }
+        this.dialogService.showSpinner();
+        this.siteService.retrieveSiteWork(teamid, site.id, start.getFullYear())
+        .subscribe({
+          next: resp => {
+            this.dialogService.closeSpinner();
+            if (resp && resp.employees) {
+              resp.employees.forEach(remp => {
+                if (site.employees) {
+                  site.employees.forEach(emp => {
+                    if (remp.work) {
+                      remp.work.forEach(wk => {
+                        if (emp.work) {
+                          emp.work.push(new Work(wk));
+                        }
+                      })
+                    }
+                  });
+                }
+              });
+              this.siteService.setSite(site);
+            }
+            this.setWorkcenters(site);
+          },
+          error: (err: SiteWorkResponse) => {
+            this.dialogService.closeSpinner();
+            this.authService.statusMessage = err.exception;
+          }
+        });
+      } else {
+        this.setWorkcenters(site);
+      }
+    }
   }
 
-  setWorkcenters() {
+  setWorkcenters(site: Site) {
     this.dialogService.showSpinner();
     this.workcenters = [];
     const wkctrMap = new Map<string, number>();
-    const site = this.siteService.getSite();
     let addAll = this.expanded.length === 0;
     if (site && site.workcenters && site.workcenters.length > 0) {
       site.workcenters.forEach(wc => {

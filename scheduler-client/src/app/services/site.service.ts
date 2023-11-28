@@ -9,7 +9,8 @@ import { NewSiteRequest, NewSiteWorkcenter, SiteResponse, SiteWorkcenterUpdate,
   UpdateSiteForecast, 
   UpdateSiteLaborCode,
   NewCofSReport,
-  UpdateCofSReport} 
+  UpdateCofSReport,
+  SiteWorkResponse} 
   from '../models/web/siteWeb';
 import { CacheService } from './cache.service';
 import { NewSiteLaborCode } from '../models/web/siteWeb';
@@ -87,7 +88,6 @@ export class SiteService extends CacheService {
         minutes = 3;
       }
     }
-    console.log("Starting Site Update Process");
     this.interval = setInterval(() => {
       this.processAutoUpdate()
     }, minutes * 60 * 1000);
@@ -159,21 +159,18 @@ export class SiteService extends CacheService {
   retrieveSite(teamID: string, siteID: string, allemployees: boolean): 
     Observable<SiteResponse> {
     const url = `/scheduler/api/v2/site/${teamID}/${siteID}/${allemployees}`;
-    return this.httpClient.get<SiteResponse>(url).pipe(
-      map((data: SiteResponse) => {
-        if (data && data !== null && data.exception === '') {
-          if (data.site) {
-            const site = new Site(data.site);
-            this.authService.siteID = site.id;
-            this.setSite(site);
-          }
-          if (data.team) {
-            this.authService.teamID = data.team.id;
-          }
-        }
-        return data;
-      })
-    );
+    return this.httpClient.get<SiteResponse>(url);
+  }
+
+  retrieveSiteWork(teamID: string, siteID: string, year: number):
+    Observable<SiteWorkResponse> {
+      const url = `/scheduler/api/v2/site/work/${teamID}/${siteID}/${year}`;
+      return this.httpClient.get<SiteWorkResponse>(url);
+    }
+
+  deleteSite(teamID: string, siteID: string): Observable<SiteResponse> {
+    const url = `/scheduler/api/v2/site/${teamID}/${siteID}`;
+    return this.httpClient.delete<SiteResponse>(url);
   }
 
   //////////////////////////////////////////////////////////////////////////////

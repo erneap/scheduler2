@@ -7,7 +7,7 @@ import { LeaveDay } from '../models/employees/leave';
 import { ChangeAssignmentRequest, EmployeeLaborCodeRequest, 
   EmployeeLeaveDayRequest, EmployeeLeaveRequest, EmployeeResponse, 
   NewEmployeeAssignment, NewEmployeeRequest, NewEmployeeVariation, 
-  UpdateRequest, LeaveBalanceRequest, CreateUserAccount, Message, EmployeeContactUpdate, EmployeeSpecialtyUpdate, EmployeeSpecialtiesUpdate } from '../models/web/employeeWeb';
+  UpdateRequest, LeaveBalanceRequest, CreateUserAccount, Message, EmployeeContactUpdate, EmployeeSpecialtyUpdate, EmployeeSpecialtiesUpdate, EmployeeWorkResponse } from '../models/web/employeeWeb';
 import { CreateSiteEmployeeLeaveBalances, SiteResponse } from '../models/web/siteWeb';
 import { CacheService } from './cache.service';
 import { TeamService } from './team.service';
@@ -99,6 +99,11 @@ export class EmployeeService extends CacheService {
   retrieveEmployee(id: string): Observable<EmployeeResponse> {
     const url = `/scheduler/api/v2/employee/${id}`;
     return this.httpClient.get<EmployeeResponse>(url);
+  }
+
+  retrieveEmployeeWork(id: string, year: number): Observable<EmployeeWorkResponse> {
+    const url = `/scheduler/api/v2/employee/work/${id}/${year}`;
+    return this.httpClient.get<EmployeeWorkResponse>(url);
   }
 
   updateEmployee(empID: string, field: string, value: string): 

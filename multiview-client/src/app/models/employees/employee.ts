@@ -250,6 +250,8 @@ export class Employee implements IEmployee {
   getWorkday(site: string, date: Date): Workday {
     let answer: Workday = new Workday();
     let stdHours: number = 8.0;
+    let stdCode: string = '';
+    let stdWorkCtr: string = '';
     let actualHours: number = 0.0;
     let lastWork: Date = new Date(0);
     this.assignments.sort((a,b) => a.compareTo(b));
@@ -266,6 +268,12 @@ export class Employee implements IEmployee {
         }
       });
     }
+    this.leaves.forEach(lv => {
+      if (lv.status.toLowerCase() === 'actual' 
+        && lastWork.getTime() < lv.leavedate.getTime()) {
+        lastWork = new Date(lv.leavedate);
+      }
+    });
     this.assignments.forEach(asgmt => {
       let wd = asgmt.getWorkday(site, date);
       if (wd) {
@@ -273,6 +281,8 @@ export class Employee implements IEmployee {
       }
       if (asgmt.useAssignment(site, date)) {
         stdHours = asgmt.getStandardWorkHours();
+        stdCode = asgmt.getStandardWorkCode(site, date);
+        stdWorkCtr = asgmt.getStandardWorkcenter(site, date);
       }
     });
     this.variations.forEach(vari => {
@@ -282,17 +292,23 @@ export class Employee implements IEmployee {
       }
     });
     if (actualHours > 0.0) {
+      if (answer.code === '') {
+        answer.code = stdCode;
+        answer.hours = actualHours;
+        answer.workcenter = stdWorkCtr;
+      }
       return answer;
     }
     this.leaves.forEach(lv => {
       if (lv.leavedate.getFullYear() === date.getFullYear()
         && lv.leavedate.getMonth() === date.getMonth()
-        && lv.leavedate.getDate() === date.getDate()
-        && (lv.hours > (stdHours/2) || 
-        date.getTime() <= lastWork.getTime())) {
-        answer.code = lv.code;
-        answer.hours = lv.hours;
-        answer.workcenter = '';
+        && lv.leavedate.getDate() === date.getDate()) {
+          if (lv.hours > (stdHours/2) || 
+          (actualHours === 0.0 && date.getTime() <= lastWork.getTime())) {
+          answer.code = lv.code;
+          answer.hours = lv.hours;
+          answer.workcenter = '';
+        }
       }
     });
     return answer;
@@ -329,5 +345,17 @@ export class Employee implements IEmployee {
       }
     });
     return answer;
+  }
+
+  hasWorkForYear(year: number): boolean {
+    let found = false;
+    if (this.work) {
+      for (let i=0; i < this.work.length && !found; i++) {
+        if (this.work[i].dateWorked.getFullYear() === year) {
+          found = true;
+        }
+      }
+    }
+    return found;
   }
 }

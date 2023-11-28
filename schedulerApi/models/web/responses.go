@@ -52,3 +52,18 @@ type LogResponse struct {
 	Entries   []logs.LogEntry2 `json:"entries"`
 	Exception string           `json:"exception"`
 }
+
+type EmployeeWorkResponse struct {
+	EmployeeID   string           `json:"id,omitempty"`
+	Year         int              `json:"year,omitempty"`
+	EmployeeWork []employees.Work `json:"work,omitempty"`
+	Exception    string           `json:"exception"`
+}
+
+type SiteWorkResponse struct {
+	TeamID    string                 `json:"team,omitempty"`
+	SiteID    string                 `json:"site,omitempty"`
+	Year      int                    `json:"year,omitempty"`
+	Work      []EmployeeWorkResponse `json:"employees,omitempty"`
+	Exception string                 `json:"exception"`
+}

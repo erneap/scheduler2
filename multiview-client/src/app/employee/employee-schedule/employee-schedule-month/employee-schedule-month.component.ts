@@ -6,6 +6,11 @@ import { EmployeeService } from 'src/app/services/employee.service';
 import { WorkWeek } from '../employee-schedule.model';
 import { SiteService } from 'src/app/services/site.service';
 import { TeamService } from 'src/app/services/team.service';
+import { EmployeeWorkResponse } from 'src/app/models/web/employeeWeb';
+import { DialogService } from 'src/app/services/dialog-service.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { Work } from 'src/app/models/employees/work';
+import { Employee } from 'src/app/models/employees/employee';
 
 @Component({
   selector: 'app-employee-schedule-month',
@@ -30,7 +35,9 @@ export class EmployeeScheduleMonthComponent {
   constructor(
     protected employeeService: EmployeeService,
     protected siteService: SiteService,
-    protected teamService: TeamService
+    protected teamService: TeamService,
+    protected dialogService: DialogService,
+    protected authService: AuthService
   ) {
     this.workcodes = [];
     const team = this.teamService.getTeam();
@@ -70,9 +77,38 @@ export class EmployeeScheduleMonthComponent {
       this.endDate = new Date(this.endDate.getTime() + (24 * 3600000));
     }
     
+    const emp = this.employeeService.getEmployee();
+    if (emp) {
+      if (!emp.hasWorkForYear(this.startDate.getFullYear())) {
+        this.dialogService.showSpinner();
+        this.employeeService.retrieveEmployeeWork(emp.id, 
+          this.startDate.getFullYear()).subscribe({
+          next: resp => {
+            this.dialogService.closeSpinner();
+            if (resp && resp.id !== '') {
+              if (emp.id === resp.id) {
+                resp.work?.forEach(wk => {
+                  emp.work?.push(new Work(wk))
+                });
+                this.employeeService.setEmployee(emp);
+              }
+            }
+            this.setWorkweeks(emp);
+          },
+          error: (err: EmployeeWorkResponse) => {
+            this.dialogService.closeSpinner();
+            this.authService.statusMessage = err.exception;
+          }
+        });
+      } else {
+        this.setWorkweeks(emp);
+      }
+    }
+  }
+
+  setWorkweeks(emp: Employee) {
     let count = -1;
     let start = new Date(this.startDate);
-    const emp = this.employeeService.getEmployee();
     var workweek: WorkWeek | undefined;
     while (start.getTime() < this.endDate.getTime()) {
       if (!workweek || start.getUTCDay() === 0) {
@@ -89,7 +125,7 @@ export class EmployeeScheduleMonthComponent {
           wd.id = start.getUTCDay();
         }
         wd.date = new Date(start.getTime());
-        workweek.setWorkday(wd, start)
+        workweek.setWorkday(wd, start);
       } else {
         const wd = new Workday();
         workweek.setWorkday(wd, start);

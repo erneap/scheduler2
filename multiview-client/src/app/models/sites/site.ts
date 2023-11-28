@@ -77,4 +77,20 @@ export class Site implements ISite {
     }
     return -1;
   }
+
+  hasEmployeeWork(year: number): boolean {
+    let found = false;
+    if (this.employees) {
+      this.employees.forEach(emp => {
+        if (emp.work) {
+          emp.work.forEach(wk => {
+            if (wk.dateWorked.getFullYear() === year) {
+              found = true;
+            }
+          });
+        }
+      });
+    }
+    return found;
+  }
 }

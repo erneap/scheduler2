@@ -7,7 +7,9 @@ import { LeaveDay } from '../models/employees/leave';
 import { ChangeAssignmentRequest, EmployeeLaborCodeRequest, 
   EmployeeLeaveDayRequest, EmployeeLeaveRequest, EmployeeResponse, 
   NewEmployeeAssignment, NewEmployeeRequest, NewEmployeeVariation, 
-  UpdateRequest, LeaveBalanceRequest, CreateUserAccount, Message, EmployeeContactUpdate, EmployeeSpecialtyUpdate, EmployeeSpecialtiesUpdate } from '../models/web/employeeWeb';
+  UpdateRequest, LeaveBalanceRequest, CreateUserAccount, Message, 
+  EmployeeContactUpdate, EmployeeSpecialtyUpdate, EmployeeSpecialtiesUpdate, 
+  EmployeeWorkResponse } from '../models/web/employeeWeb';
 import { CreateSiteEmployeeLeaveBalances, SiteResponse } from '../models/web/siteWeb';
 import { CacheService } from './cache.service';
 import { TeamService } from './team.service';
@@ -17,6 +19,7 @@ import { TeamService } from './team.service';
 })
 export class EmployeeService extends CacheService {
   showHolidays: boolean = true;
+  interval: any;
 
   constructor(
     protected teamService: TeamService,
@@ -58,12 +61,51 @@ export class EmployeeService extends CacheService {
     this.setItem('current-employee', emp);
   }
 
+  startRenewal() {
+    const minutes = 60;
+    this.interval = setInterval(() => {
+      this.processEmployee()
+    }, minutes * 60 * 1000);
+  }
+
+  processEmployee() {
+    const emp = this.getEmployee();
+    if (emp) {
+      this.retrieveEmployee(emp.id).subscribe({
+        next: resp => {
+          if (resp.employee) {
+            this.setEmployee(resp.employee);
+          }
+        },
+        error: err => {
+          console.log(err.exception);
+        }
+      })
+    }
+  }
+
+  clearRenewal() {
+    if (this.interval && this.interval !== null) {
+      clearInterval(this.interval);
+    }
+  }
+
   getEmployeeID(): string {
     const emp = this.getEmployee();
     if (emp) {
       return emp.id;
     }
     return '';
+  }
+
+  retrieveEmployee(id: string): Observable<EmployeeResponse> {
+    const url = `/scheduler/api/v2/employee/${id}`;
+    return this.httpClient.get<EmployeeResponse>(url);
+  }
+
+  retrieveEmployeeWork(id: string, year: number): Observable<EmployeeWorkResponse> {
+    const url = `/scheduler/api/v2/employee/work/${id}/${year}`;
+    return this.httpClient.get<EmployeeWorkResponse>(url);
   }
 
   updateEmployee(empID: string, field: string, value: string): 

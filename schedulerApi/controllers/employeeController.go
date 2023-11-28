@@ -1722,3 +1722,35 @@ func UpdateSpecialties(c *gin.Context) {
 	// return the corrected employee back to the client.
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
+
+func GetEmployeeWork(c *gin.Context) {
+	employeeID := c.Param("employee")
+	sYear := c.Param("year")
+	logmsg := "EmployeeController: GetEmployeeWork:"
+
+	year, err := strconv.Atoi(sYear)
+	if err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Year conversion from string", logmsg))
+		c.JSON(http.StatusBadRequest,
+			web.EmployeeResponse{Employee: nil, Exception: err.Error()})
+		return
+	}
+
+	rec, err := services.GetEmployeeWork(employeeID, uint(year))
+	if err != nil {
+		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+			fmt.Sprintf("%s Getting Work Record: %s", logmsg, err.Error()))
+		c.JSON(http.StatusBadRequest,
+			web.EmployeeResponse{Employee: nil, Exception: err.Error()})
+		return
+	}
+
+	response := web.EmployeeWorkResponse{
+		EmployeeID:   employeeID,
+		Year:         year,
+		EmployeeWork: rec.Work,
+	}
+
+	c.JSON(http.StatusOK, response)
+}

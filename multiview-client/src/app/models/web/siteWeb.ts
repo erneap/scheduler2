@@ -4,6 +4,7 @@ import { Work } from "../employees/work";
 import { ISite } from "../sites/site";
 import { ITeam } from "../teams/team";
 import { IUser, User } from "../users/user";
+import { EmployeeWorkResponse } from "./employeeWeb";
 
 export interface NewSiteRequest {
   team: string;
@@ -153,6 +154,14 @@ export interface UpdateCofSReport {
   companyid?: string;
   field: string;
   value: string;
+}
+
+export interface SiteWorkResponse {
+  team?: string;
+  site?: string;
+  year?: number;
+  employees?: EmployeeWorkResponse[];
+  exception: string;
 }
 
 export class EmployeeLeaveRequestItem {

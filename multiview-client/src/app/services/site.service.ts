@@ -9,7 +9,8 @@ import { NewSiteRequest, NewSiteWorkcenter, SiteResponse, SiteWorkcenterUpdate,
   UpdateSiteForecast, 
   UpdateSiteLaborCode,
   NewCofSReport,
-  UpdateCofSReport} 
+  UpdateCofSReport,
+  SiteWorkResponse} 
   from '../models/web/siteWeb';
 import { CacheService } from './cache.service';
 import { NewSiteLaborCode } from '../models/web/siteWeb';
@@ -160,6 +161,12 @@ export class SiteService extends CacheService {
     const url = `/scheduler/api/v2/site/${teamID}/${siteID}/${allemployees}`;
     return this.httpClient.get<SiteResponse>(url);
   }
+
+  retrieveSiteWork(teamID: string, siteID: string, year: number):
+    Observable<SiteWorkResponse> {
+      const url = `/scheduler/api/v2/site/work/${teamID}/${siteID}/${year}`;
+      return this.httpClient.get<SiteWorkResponse>(url);
+    }
 
   deleteSite(teamID: string, siteID: string): Observable<SiteResponse> {
     const url = `/scheduler/api/v2/site/${teamID}/${siteID}`;

@@ -1,9 +1,10 @@
 import { Employee, IEmployee } from "../employees/employee";
-import { LeaveDay } from "../employees/leave";
+import { ILeaveRequest, LeaveDay, LeaveRequest } from "../employees/leave";
 import { Work } from "../employees/work";
 import { ISite } from "../sites/site";
 import { ITeam } from "../teams/team";
 import { IUser, User } from "../users/user";
+import { EmployeeWorkResponse } from "./employeeWeb";
 
 export interface NewSiteRequest {
   team: string;
@@ -153,4 +154,45 @@ export interface UpdateCofSReport {
   companyid?: string;
   field: string;
   value: string;
+}
+
+export interface SiteWorkResponse {
+  team?: string;
+  site?: string;
+  year?: number;
+  employees?: EmployeeWorkResponse[];
+  exception: string;
+}
+
+export class EmployeeLeaveRequestItem {
+  id: number;
+  employeeid: string;
+  lastName: string;
+  leaveRequest: LeaveRequest;
+
+  constructor(
+    id: number,
+    empID: string,
+    last: string,
+    lvRequest: ILeaveRequest
+  ) {
+    this.id = id;
+    this.employeeid = empID;
+    this.lastName = last;
+    this.leaveRequest = new LeaveRequest(lvRequest);
+  }
+
+  compareTo(other: EmployeeLeaveRequestItem): number {
+    if (this.leaveRequest.startdate.getTime() 
+      === other.leaveRequest.startdate.getTime()) {
+      if (this.leaveRequest.enddate.getTime() 
+        === other.leaveRequest.enddate.getTime()) {
+        return (this.lastName < other.lastName) ? -1 : 1;
+      }
+      return (this.leaveRequest.enddate.getTime() 
+        < other.leaveRequest.enddate.getTime()) ? -1 : 1
+    }
+    return (this.leaveRequest.startdate.getTime() 
+      < other.leaveRequest.startdate.getTime()) ? -1 : 1;
+  }
 }

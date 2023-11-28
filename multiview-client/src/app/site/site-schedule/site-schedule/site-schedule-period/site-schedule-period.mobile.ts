@@ -3,6 +3,10 @@ import { SiteSchedulePeriodComponent } from './site-schedule-period.component';
 import { SiteService } from 'src/app/services/site.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { AppStateService } from 'src/app/services/app-state.service';
+import { TeamService } from 'src/app/services/team.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { SiteWorkResponse } from 'src/app/models/web/siteWeb';
+import { Work } from 'src/app/models/employees/work';
 
 @Component({
   selector: 'app-site-schedule-period-mobile',
@@ -12,9 +16,11 @@ import { AppStateService } from 'src/app/services/app-state.service';
 export class SiteSchedulePeriodMobile extends SiteSchedulePeriodComponent {
   constructor(
     protected ss: SiteService,
+    protected ts: TeamService,
     protected ds: DialogService,
+    protected au: AuthService,
     protected as: AppStateService
-  ) { super(ss, ds, as); }
+  ) { super(ss, ts, ds, au, as); }
 
   override setMonth() {
     this.monthLabel = `${this.months[this.month.getMonth()]} `
@@ -52,7 +58,44 @@ export class SiteSchedulePeriodMobile extends SiteSchedulePeriodComponent {
     this.wkctrStyle = `width: ${width}px;`;
     this.monthStyle = `width: ${monthWidth}px;`;
     this.directionStyle = 'width: 35px;';
+    const site = this.siteService.getSite();
 
-    this.setWorkcenters();
+    if (site) {
+      if (!site.hasEmployeeWork(start.getFullYear())) {
+        const team = this.teamService.getTeam();
+        let teamid = '';
+        if (team) { teamid = team.id; }
+        this.dialogService.showSpinner();
+        this.siteService.retrieveSiteWork(teamid, site.id, start.getFullYear())
+        .subscribe({
+          next: resp => {
+            this.dialogService.closeSpinner();
+            if (resp && resp.employees) {
+              resp.employees.forEach(remp => {
+                if (site.employees) {
+                  site.employees.forEach(emp => {
+                    if (remp.work) {
+                      remp.work.forEach(wk => {
+                        if (emp.work) {
+                          emp.work.push(new Work(wk));
+                        }
+                      })
+                    }
+                  });
+                }
+              });
+              this.siteService.setSite(site);
+            }
+            this.setWorkcenters(site);
+          },
+          error: (err: SiteWorkResponse) => {
+            this.dialogService.closeSpinner();
+            this.authService.statusMessage = err.exception;
+          }
+        });
+      } else {
+        this.setWorkcenters(site);
+      }
+    }
   }
 }

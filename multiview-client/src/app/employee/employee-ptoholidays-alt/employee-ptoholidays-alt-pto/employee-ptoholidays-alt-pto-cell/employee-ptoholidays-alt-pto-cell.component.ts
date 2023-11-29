@@ -24,35 +24,35 @@ export class EmployeePtoholidaysAltPtoCellComponent {
     let answer = '';
     switch (field.toLowerCase()) {
       case "month":
-        answer = "month ";
+        answer = "month";
         break;
       case "code":
-        answer = "code ";
+        answer = "code";
         break;
       case "dates":
-        answer = "dates ";
+        answer = "dates";
         break;
       case "reference":
-        answer = "reference ";
+        answer = "reference";
         break;
       default:
-        answer = "hours ";
+        answer = "hours";
         break;
-    }
-    if (field.toLowerCase() === 'requested') {
-      answer += 'requested ';
     }
 
     if (this.leaveMonth.month.getTime() === 0) {
-      answer += 'titles';
+      answer += ' titles';
     } else if (field.toLowerCase() === 'month' || field.toLowerCase() === 'code') {
-      answer += "red";
+      answer += " red";
     } else {
       if (this.leaveMonth.active) {
-        answer += 'normal';
+        answer += ' normal';
       } else {
-        answer += 'disabled';
+        answer += ' disabled';
       }
+    }
+    if (field.toLowerCase() === 'requested') {
+      answer += ' projected ';
     }
     return answer;
   }

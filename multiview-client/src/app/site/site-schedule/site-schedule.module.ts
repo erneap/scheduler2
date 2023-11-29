@@ -48,7 +48,7 @@ import { SiteMidScheduleYearMobile } from './site-mid-schedule/site-mid-schedule
     SiteMidScheduleComponent,
     SiteMidScheduleMobile,
     SiteMidScheduleYearComponent,
-    SiteMidScheduleYearMobile
+    SiteMidScheduleYearMobile,
   ],
   imports: [
     CommonModule,

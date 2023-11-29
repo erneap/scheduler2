@@ -112,6 +112,16 @@ export class SiteEmployeesComponent {
         this.employeeSelectionForm.controls['employee'].setValue('');
       }
     } 
+    if (this.siteEmployees.length > 0) {
+      if (this.selectedEmployee.id !== '') {
+        this.employeeSelectionForm.controls['employee']
+          .setValue(this.selectedEmployee.id);
+      } else {
+        this.selectedEmployee = new Employee(this.siteEmployees[0])
+        this.employeeSelectionForm.controls['employee']
+          .setValue(this.selectedEmployee.id);
+      }
+    }
   }
 
   selectEmployee(): void {

@@ -24,7 +24,7 @@ import { SiteIngestModule } from './site-ingest/site-ingest.module';
     SiteLeaveApprovalModule,
     FormsModule,
     ReactiveFormsModule,
-    SiteIngestModule
+    SiteIngestModule,
   ],
   exports: [
     AddSiteComponent,

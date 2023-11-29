@@ -1,4 +1,5 @@
 import { Workcenter } from "../sites/workcenter";
+import { Workcode } from "../teams/workcode";
 import { IUser, User } from "../users/user";
 import { Assignment, IAssignment, IVariation, Variation, Workday } from "./assignments";
 import { CompanyInfo, ICompanyInfo } from "./company";
@@ -299,18 +300,35 @@ export class Employee implements IEmployee {
       }
       return answer;
     }
-    this.leaves.forEach(lv => {
-      if (lv.leavedate.getFullYear() === date.getFullYear()
+    if (date.getTime() <= lastWork.getTime()) {
+      answer.code = '';
+      answer.hours = 0;
+      answer.workcenter = '';
+      this.leaves.forEach(lv => {
+        if (lv.leavedate.getFullYear() === date.getFullYear()
         && lv.leavedate.getMonth() === date.getMonth()
-        && lv.leavedate.getDate() === date.getDate()) {
-          if (lv.hours > (stdHours/2) || 
-          (actualHours === 0.0 && date.getTime() <= lastWork.getTime())) {
+        && lv.leavedate.getDate() === date.getDate()
+        && lv.hours > answer.hours
+        && lv.status.toLowerCase() === 'actual') {
           answer.code = lv.code;
           answer.hours = lv.hours;
           answer.workcenter = '';
         }
-      }
-    });
+      });
+    } else {
+      this.leaves.forEach(lv => {
+        if (lv.leavedate.getFullYear() === date.getFullYear()
+          && lv.leavedate.getMonth() === date.getMonth()
+          && lv.leavedate.getDate() === date.getDate()) {
+            if (lv.hours > (stdHours/2) || 
+            (actualHours === 0.0 && date.getTime() <= lastWork.getTime())) {
+            answer.code= lv.code;
+            answer.hours = lv.hours;
+            answer.workcenter = '';
+          }
+        }
+      });
+    }
     return answer;
   }
 

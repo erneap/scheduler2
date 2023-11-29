@@ -52,6 +52,7 @@ export class SiteSchedulePeriodComponent {
   endDate: Date = new Date();
   dates: Date[] = [];
   expanded: string[] = [];
+  rowIncrement: number = 0;
 
   constructor(
     protected siteService: SiteService,
@@ -296,5 +297,58 @@ export class SiteSchedulePeriodComponent {
       }
     }
     this.setMonth();
+  }
+
+  increment(wkctr: string, field: string, i: number, j: number): number {
+    let count = 0;
+    this.workcenters.forEach(wc => {
+      if (wc.id === wkctr) {
+        if (field.toLowerCase() === 'position') {
+          if (wc.positions) {
+            for (let p=0; p < i; p++) {
+              const position = wc.positions[p];
+              if (position.employees) {
+                count += position.employees.length;
+              }
+            }
+            count += j
+          }
+        } else if (field.toLowerCase() === 'shift') {
+          if (wc.positions) {
+            wc.positions.forEach(pos => {
+              if (pos.employees) {
+                count += pos.employees.length;
+              }
+            });
+          }
+          if (wc.shifts) {
+            for (let s=0; s < i; s++) {
+              const shift = wc.shifts[s];
+              if (shift.employees) {
+                count += shift.employees.length;
+              }
+            }
+          }
+          count += j;
+        } else {
+          if (wc.positions) {
+            wc.positions.forEach(pos => {
+              if (pos.employees) {
+                count += pos.employees.length;
+              }
+            });
+          }
+          if (wc.shifts) {
+            wc.shifts.forEach(sft => {
+              if (sft.employees) {
+                count += sft.employees.length;
+              }
+            })
+          }
+          count += j;
+        }  
+      }
+    });
+    return count;
   }
 }

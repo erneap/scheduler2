@@ -80,6 +80,7 @@ export class EmployeeScheduleMonthComponent {
     const emp = this.employeeService.getEmployee();
     if (emp) {
       if (!emp.hasWorkForYear(this.startDate.getFullYear())) {
+        console.log(emp.hasWorkForYear(this.startDate.getFullYear()));
         this.dialogService.showSpinner();
         this.employeeService.retrieveEmployeeWork(emp.id, 
           this.startDate.getFullYear()).subscribe({
@@ -87,9 +88,16 @@ export class EmployeeScheduleMonthComponent {
             this.dialogService.closeSpinner();
             if (resp && resp.id !== '') {
               if (emp.id === resp.id) {
-                resp.work?.forEach(wk => {
-                  emp.work?.push(new Work(wk))
-                });
+                if (!emp.work) {
+                  emp.work = [];
+                }
+                if (resp.work) {
+                  resp.work.forEach(wk => {
+                    if (emp.work) {
+                      emp.work.push(new Work(wk));
+                    }
+                  });
+                }
                 this.employeeService.setEmployee(emp);
               }
             }

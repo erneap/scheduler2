@@ -18,6 +18,8 @@ func main() {
 	// add routes
 	router := gin.Default()
 	roles := []string{"ADMIN", "SCHEDULER", "siteleader", "company", "teamleader"}
+	siteRoles := []string{"SCHEDULER", "siteleader", "company", "teamleader", "ADMIN"}
+	teamRoles := []string{"teamleader", "ADMIN"}
 	api := router.Group("/scheduler/api/v2")
 	{
 		api.GET("/:userid", svcs.CheckJWT("scheduler"), controllers.GetInitial)
@@ -71,26 +73,29 @@ func main() {
 			emp.POST("/specialty", controllers.UpdateSpecialty)
 			emp.POST("/specialties", controllers.UpdateSpecialties)
 		}
-		api.GET("/site/work/:teamid/:siteid/:year",
-			controllers.GetSiteEmployeesWork, svcs.CheckJWT("scheduler"))
-		site := api.Group("/site", svcs.CheckJWT("scheduler"),
-			svcs.CheckRoles("scheduler", roles))
+		site := api.Group("/site", svcs.CheckJWT("scheduler"))
 		{
 			site.GET("/:teamid/:siteid", controllers.GetSite)
 			site.GET("/:teamid/:siteid/:employees", controllers.GetSite)
-			site.POST("/", controllers.CreateSite)
-			site.PUT("/", controllers.UpdateSite)
-			site.DELETE("/:teamid/:siteid", controllers.DeleteSite)
-			site.POST("/balances", controllers.AddSitesEmployeeLeaveBalances)
+			site.POST("/", controllers.CreateSite,
+				svcs.CheckRoles("scheduler", teamRoles))
+			site.PUT("/", controllers.UpdateSite,
+				svcs.CheckRoles("scheduler", siteRoles))
+			site.DELETE("/:teamid/:siteid", controllers.DeleteSite,
+				svcs.CheckRoles("scheduler", teamRoles))
+			site.POST("/balances", controllers.AddSitesEmployeeLeaveBalances,
+				svcs.CheckRoles("scheduler", siteRoles))
 
-			wkctr := site.Group("/workcenter")
+			wkctr := site.Group("/workcenter",
+				svcs.CheckRoles("scheduler", siteRoles))
 			{
 				wkctr.POST("/", controllers.CreateWorkcenter)
 				wkctr.PUT("/", controllers.UpdateWorkcenter)
 				wkctr.DELETE("/:teamid/:siteid/:wkctrid",
 					controllers.DeleteSiteWorkcenter)
 
-				position := wkctr.Group("/position")
+				position := wkctr.Group("/position",
+					svcs.CheckRoles("scheduler", siteRoles))
 				{
 					position.POST("/", controllers.CreateWorkcenterPosition)
 					position.PUT("/", controllers.UpdateWorkcenterPosition)
@@ -98,7 +103,8 @@ func main() {
 						controllers.DeleteWorkcenterPosition)
 				}
 
-				shifts := wkctr.Group("/shift")
+				shifts := wkctr.Group("/shift",
+					svcs.CheckRoles("scheduler", siteRoles))
 				{
 					shifts.POST("/", controllers.CreateWorkcenterShift)
 					shifts.PUT("/", controllers.UpdateWorkcenterShift)
@@ -107,7 +113,8 @@ func main() {
 				}
 			}
 
-			rpt := site.Group("/forecast")
+			rpt := site.Group("/forecast",
+				svcs.CheckRoles("scheduler", siteRoles))
 			{
 				rpt.POST("/", controllers.CreateSiteForecastReport)
 				rpt.PUT("/", controllers.UpdateSiteForecastReport)
@@ -123,32 +130,33 @@ func main() {
 				}
 			}
 
-			cofs := site.Group("/cofs")
+			cofs := site.Group("/cofs",
+				svcs.CheckRoles("scheduler", siteRoles))
 			{
 				cofs.POST("/", controllers.CreateSiteCofSReport)
 				cofs.PUT("/", controllers.UpdateSiteCofSReport)
 				cofs.DELETE("/:teamid/:siteid/:rptid",
 					controllers.DeleteCofSReport)
 			}
-			//site.GET("/work/:teamid/:siteid/:year", controllers.GetSiteEmployeesWork)
+			site.GET("/work/:teamid/:siteid/:year", controllers.GetSiteEmployeesWork)
 		}
 
 		team := api.Group("/team", svcs.CheckJWT("scheduler"))
 		{
 			team.GET("/:teamid", controllers.GetTeam)
-			team.POST("/", svcs.CheckRoles("scheduler", roles),
+			team.POST("/", svcs.CheckRoles("scheduler", teamRoles),
 				controllers.CreateTeam)
-			team.PUT("/", svcs.CheckRoles("scheduler", roles),
+			team.PUT("/", svcs.CheckRoles("scheduler", teamRoles),
 				controllers.UpdateTeam)
-			team.DELETE("/:teamid", svcs.CheckRoles("scheduler", roles),
+			team.DELETE("/:teamid", svcs.CheckRoles("scheduler", teamRoles),
 				controllers.DeleteTeam)
-			wcode := team.Group("/workcode", svcs.CheckRoles("scheduler", roles))
+			wcode := team.Group("/workcode", svcs.CheckRoles("scheduler", teamRoles))
 			{
 				wcode.POST("/", controllers.CreateWorkcode)
 				wcode.PUT("/", controllers.UpdateTeamWorkcode)
 				wcode.DELETE("/:teamid/:wcid", controllers.DeleteTeamWorkcode)
 			}
-			comp := team.Group("/company", svcs.CheckRoles("scheduler", roles))
+			comp := team.Group("/company", svcs.CheckRoles("scheduler", teamRoles))
 			{
 				comp.POST("/", controllers.CreateTeamCompany)
 				comp.PUT("/", controllers.UpdateTeamCompany)
@@ -162,13 +170,13 @@ func main() {
 						controllers.DeleteCompanyHoliday)
 				}
 			}
-			contact := team.Group("/contact", svcs.CheckRoles("scheduler", roles))
+			contact := team.Group("/contact", svcs.CheckRoles("scheduler", teamRoles))
 			{
 				contact.POST("/", controllers.CreateContactType)
 				contact.PUT("/", controllers.ChangeContactType)
 				contact.DELETE("/:teamid/:id", controllers.DeleteContactType)
 			}
-			specialty := team.Group("/specialty", svcs.CheckRoles("scheduler", roles))
+			specialty := team.Group("/specialty", svcs.CheckRoles("scheduler", teamRoles))
 			{
 				specialty.POST("/", controllers.CreateSpecialtyType)
 				specialty.PUT("/", controllers.ChangeSpecialtyType)
@@ -179,11 +187,11 @@ func main() {
 		ingest := api.Group("/ingest", svcs.CheckJWT("scheduler"))
 		{
 			ingest.GET("/:teamid/:siteid/:company/:year",
-				svcs.CheckRoles("scheduler", roles),
+				svcs.CheckRoles("scheduler", siteRoles),
 				controllers.GetIngestEmployees)
-			ingest.POST("/", svcs.CheckRoles("scheduler", roles),
+			ingest.POST("/", svcs.CheckRoles("scheduler", siteRoles),
 				controllers.IngestFiles)
-			ingest.PUT("/", svcs.CheckRoles("scheduler", roles),
+			ingest.PUT("/", svcs.CheckRoles("scheduler", siteRoles),
 				controllers.ManualIngestActions)
 		}
 

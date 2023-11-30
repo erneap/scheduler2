@@ -71,6 +71,8 @@ func main() {
 			emp.POST("/specialty", controllers.UpdateSpecialty)
 			emp.POST("/specialties", controllers.UpdateSpecialties)
 		}
+		api.GET("/site/work/:teamid/:siteid/:year",
+			controllers.GetSiteEmployeesWork, svcs.CheckJWT("scheduler"))
 		site := api.Group("/site", svcs.CheckJWT("scheduler"),
 			svcs.CheckRoles("scheduler", roles))
 		{
@@ -128,7 +130,7 @@ func main() {
 				cofs.DELETE("/:teamid/:siteid/:rptid",
 					controllers.DeleteCofSReport)
 			}
-			site.GET("/work/:teamid/:siteid/:year", controllers.GetSiteEmployeesWork)
+			//site.GET("/work/:teamid/:siteid/:year", controllers.GetSiteEmployeesWork)
 		}
 
 		team := api.Group("/team", svcs.CheckJWT("scheduler"))

@@ -280,6 +280,11 @@ export class LeaveRequestEditorComponent {
           }
         });
       }
+    } else if (this.request.id === '' && field.toLowerCase() === 'start') {
+      const start = this.editorForm.value.start;
+      if (start) {
+        this.editorForm.controls['end'].setValue(new Date(start));
+      }
     }
   }
 

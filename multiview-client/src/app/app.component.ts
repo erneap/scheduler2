@@ -14,7 +14,6 @@ export class AppComponent {
     protected appState: AppStateService,
     protected authService: AuthService
   ) {
-
   }
 
   getHeight(): string {

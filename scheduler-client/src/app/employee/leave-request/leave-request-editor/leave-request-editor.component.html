@@ -4,17 +4,24 @@
     <div class="fxLayout-row-center">
       <div class="formFieldWide">
        <mat-form-field class="fieldWidthWide">
-          <mat-label>Request Dates</mat-label>
-          <mat-date-range-input
-            [rangePicker]="picker">
-            <input matStartDate placeholder="Start Date"
-              formControlName="start" (dateChange)="processChange('start')">
-            <input matEndDate placeholder="End Date"
-              formControlName="end" (dateChange)="processChange('end')">
-          </mat-date-range-input>
+          <mat-label>Request Start Date</mat-label>
+          <input matInput placeholder="Start Date"
+              formControlName="start" (dateChange)="processChange('start')"
+              [matDatepicker]="startpicker">
           <mat-hint>Include Time Off</mat-hint>
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
+          <mat-datepicker-toggle matIconSuffix [for]="startpicker"></mat-datepicker-toggle>
+          <mat-datepicker #startpicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="formFieldWide">
+       <mat-form-field class="fieldWidthWide">
+          <mat-label>Request End Date</mat-label>
+          <input matInput placeholder="End Date"
+            formControlName="end" (dateChange)="processChange('end')"
+            [matDatepicker]="endpicker">
+          <mat-hint>Include Time Off</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
+          <mat-datepicker #endpicker></mat-datepicker>
         </mat-form-field>
       </div>
       <div class="formFieldWide">

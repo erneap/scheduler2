@@ -80,7 +80,6 @@ export class EmployeeScheduleMonthComponent {
     const emp = this.employeeService.getEmployee();
     if (emp) {
       if (!emp.hasWorkForYear(this.startDate.getFullYear())) {
-        console.log(emp.hasWorkForYear(this.startDate.getFullYear()));
         this.dialogService.showSpinner();
         this.employeeService.retrieveEmployeeWork(emp.id, 
           this.startDate.getFullYear()).subscribe({
@@ -106,6 +105,7 @@ export class EmployeeScheduleMonthComponent {
           error: (err: EmployeeWorkResponse) => {
             this.dialogService.closeSpinner();
             this.authService.statusMessage = err.exception;
+            this.setWorkweeks(emp);
           }
         });
       } else {

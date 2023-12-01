@@ -56,6 +56,20 @@ export class TeamEditorSitesComponent {
   }
 
   updateTeam(team: Team) {
+    if (this.selectedSite.id === '') {
+      team.sites.forEach(sNew => {
+        let found = false;
+        this.team.sites.forEach(sOld => {
+          if (sNew.id === sOld.id) {
+            found = true;
+          }
+        })
+        if (!found) {
+          this.selectedSite = new Site(sNew);
+          this.sitesForm.controls['site'].setValue(sNew.id);
+        }
+      });
+    }
     this.team = team;
     this.changed.emit(this.team);
   }

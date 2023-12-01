@@ -97,10 +97,7 @@ func (cr *ReportCofS) Create() error {
 	cr.Writer = zip.NewWriter(cr.Buffer)
 
 	for _, cofs := range site.CofSReports {
-		if cofs.StartDate.Equal(cr.Date) ||
-			cofs.EndDate.Equal(cr.Date) ||
-			(cofs.StartDate.Before(cr.Date) &&
-				cofs.EndDate.After(cr.Date)) {
+		if !(cr.EndDate.Before(cofs.StartDate) || cr.StartDate.After(cofs.EndDate)) {
 			// create this CofS Report as it is in the date range
 			err = cr.CreateCofSXML(&cofs)
 			if err != nil {

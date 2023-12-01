@@ -16,7 +16,11 @@ export abstract class CacheService {
     if (typeof data === 'string') {
       localStorage.setItem(key, data)
     }
-    localStorage.setItem(key, JSON.stringify(data))
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   protected removeItem(key: string) {

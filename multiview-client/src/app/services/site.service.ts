@@ -45,7 +45,25 @@ export class SiteService extends CacheService {
 
   setSite(isite: ISite): void {
     const site = new Site(isite);
+    if (site.employees) {
+      for (let i=0; i < site.employees.length; i++) {
+        const emp = site.employees[i];
+        emp.work = undefined;
+        site.employees[i] = emp;
+      }
+    }
     this.setItem('current-site', site);
+  }
+
+  setSiteWork(teamid: string, siteid: string, work: SiteWorkResponse) {
+    const key = `work-${teamid}-${siteid}-${work.year}`;
+    this.setItem(key, work);
+  }
+
+  getSiteWork(teamid: string, siteid: string, year: number): 
+    SiteWorkResponse | undefined {
+    const key = `work-${teamid}-${siteid}-${year}`;
+    return this.getItem<SiteWorkResponse>(key);
   }
 
   getSelectedEmployee(): Employee | undefined {

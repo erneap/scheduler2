@@ -125,34 +125,55 @@ export class SiteSchedulePeriodComponent {
         const team = this.teamService.getTeam();
         let teamid = '';
         if (team) { teamid = team.id; }
-        this.dialogService.showSpinner();
-        this.siteService.retrieveSiteWork(teamid, site.id, start.getFullYear())
-        .subscribe({
-          next: resp => {
-            this.dialogService.closeSpinner();
-            if (resp && resp.employees) {
-              resp.employees.forEach(remp => {
-                if (site.employees) {
-                  site.employees.forEach(emp => {
-                    if (remp.work) {
-                      remp.work.forEach(wk => {
-                        if (emp.work) {
-                          emp.work.push(new Work(wk));
-                        }
-                      })
-                    }
-                  });
+        const work = this.siteService.getSiteWork(teamid, site.id, 
+          this.startDate.getFullYear());
+        if (work && work.employees) {
+          work.employees.forEach(remp => {
+            if (site.employees) {
+              site.employees.forEach(emp => {
+                if (emp.id === remp.id) {
+                  if (remp.work) {
+                    remp.work.forEach(wk => {
+                      emp.addWork(wk);
+                    })
+                  }
                 }
               });
-              this.siteService.setSite(site);
             }
-            this.setWorkcenters(site);
-          },
-          error: (err: SiteWorkResponse) => {
-            this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.exception;
-          }
-        });
+          });
+          this.setWorkcenters(site);
+        } else {
+          this.dialogService.showSpinner();
+          this.siteService.retrieveSiteWork(teamid, site.id, 
+            this.startDate.getFullYear()).subscribe({
+            next: resp => {
+              this.dialogService.closeSpinner();
+              if (resp && resp.employees) {
+                this.siteService.setSiteWork(teamid, site.id, resp);
+                resp.employees.forEach(remp => {
+                  if (site.employees) {
+                    site.employees.forEach(emp => {
+                      if (emp.id === remp.id) {
+                        if (remp.work) {
+                          remp.work.forEach(wk => {
+                            emp.addWork(wk);
+                          })
+                        }
+                      }
+                    });
+                  }
+                });
+                this.siteService.setSite(site);
+              }
+              this.setWorkcenters(site);
+            },
+            error: (err: SiteWorkResponse) => {
+              this.dialogService.closeSpinner();
+              this.authService.statusMessage = err.exception;
+              this.setWorkcenters(site);
+            }
+          });
+        }
       } else {
         this.setWorkcenters(site);
       }

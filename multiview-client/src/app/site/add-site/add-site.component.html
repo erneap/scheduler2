@@ -76,7 +76,7 @@
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Verify New Password</mat-label>
-            <input matInput type="password2" formControlName="password">
+            <input matInput type="password" formControlName="password2">
             <mat-error *ngIf="this.leadForm.get('password2')?.hasError('required')"
               class="error">Required</mat-error>
             <mat-error *ngIf="this.leadForm.get('password2')?.hasError('matching')"
@@ -85,6 +85,9 @@
         </div>
         <div class="flexlayout row topleft flexgap">
           <button mat-button matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" (click)="onAdd()">
+            Add
+          </button>
           <button mat-button matStepperNext>Next</button>
         </div>
       </form>
@@ -131,7 +134,7 @@
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Verify New Password</mat-label>
-            <input matInput type="password2" formControlName="password">
+            <input matInput type="password" formControlName="password2">
             <mat-error *ngIf="this.schedulerForm.get('password2')?.hasError('required')"
               class="error">Required</mat-error>
             <mat-error *ngIf="this.schedulerForm.get('password2')?.hasError('matching')"

@@ -86,17 +86,10 @@ export class EmployeeScheduleMonthComponent {
           next: resp => {
             this.dialogService.closeSpinner();
             if (resp && resp.id !== '') {
-              if (emp.id === resp.id) {
-                if (!emp.work) {
-                  emp.work = [];
-                }
-                if (resp.work) {
-                  resp.work.forEach(wk => {
-                    if (emp.work) {
-                      emp.work.push(new Work(wk));
-                    }
-                  });
-                }
+              if (emp.id === resp.id && resp.work) {
+                resp.work.forEach(wk => {
+                  emp.addWork(wk)
+                });
                 this.employeeService.setEmployee(emp);
               }
             }

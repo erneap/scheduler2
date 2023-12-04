@@ -248,6 +248,26 @@ export class Employee implements IEmployee {
     return answer;
   }
 
+  addWork(newIWork: IWork) {
+    const newWork: Work = new Work(newIWork);
+    let found = false;
+    if (!this.work) {
+      this.work = [];
+    } else {
+      this.work.forEach(wk => {
+        if (wk.dateWorked.getTime() === newWork.dateWorked.getTime() 
+          && newWork.chargeNumber === wk.chargeNumber 
+          && newWork.extension === wk.extension) {
+          found = true;
+        }
+      })
+    }
+    if (!found) {
+      this.work.push(newWork);
+    }
+    this.work.sort((a,b) => a.compareTo(b));
+  }
+
   getWorkday(site: string, date: Date): Workday {
     let answer: Workday = new Workday();
     let stdHours: number = 8.0;

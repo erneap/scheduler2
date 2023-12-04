@@ -1,5 +1,6 @@
 <mat-toolbar color="primary" class="app-toolbar">
-  <button mat-icon-button (click)="toggle()">
+  <button mat-icon-button (click)="toggle()"
+    *ngIf="authService.isAuthenticated">
     <mat-icon>menu</mat-icon>
   </button>
   <mat-icon svgIcon="calendar" *ngIf="!appState.isMobile()"></mat-icon>

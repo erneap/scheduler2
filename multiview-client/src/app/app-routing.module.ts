@@ -47,7 +47,6 @@ import { ReportsSiteComponent } from './reports/reports-site/reports-site.compon
 import { LogsComponent } from './logs/logs.component';
 
 const desktop_routes: Routes = [
-  {path: 'home', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'notifications', component: EmployeeNoticesDesktop },
   {path: 'employee',
@@ -93,7 +92,6 @@ const desktop_routes: Routes = [
 ];
 
 const mobile_routes: Routes = [
-  {path: 'home', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'notifications', component: EmployeeNoticesMobile },
   {path: 'employee',
@@ -127,7 +125,6 @@ const mobile_routes: Routes = [
 ];
 
 const tablet_routes: Routes = [
-  {path: 'home', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'notifications', component: EmployeeNoticesTablet },
   {path: 'employee',

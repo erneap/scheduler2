@@ -48,6 +48,17 @@ export class SiteService extends CacheService {
     this.setItem('current-site', site);
   }
 
+  setSiteWork(teamid: string, siteid: string, work: SiteWorkResponse) {
+    const key = `work-${teamid}-${siteid}-${work.year}`;
+    this.setItem(key, work);
+  }
+
+  getSiteWork(teamid: string, siteid: string, year: number): 
+    SiteWorkResponse | undefined {
+    const key = `work-${teamid}-${siteid}-${year}`;
+    return this.getItem<SiteWorkResponse>(key);
+  }
+
   getSelectedEmployee(): Employee | undefined {
     const iEmp = this.getItem<IEmployee>('selected-employee');
     if (iEmp) {

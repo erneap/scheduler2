@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { AppStateService } from './services/app-state.service';
 import { AuthService } from './services/auth.service';
 
@@ -8,6 +8,16 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  @HostListener('window:unload', [ '$event'])
+  unloadHandler(event: any) {
+    console.log(event);
+    for (var key in localStorage) {
+      if (key.substring(0, 4).toLowerCase() === 'work') {
+        localStorage.removeItem(key);
+      }
+    }
+    this.authService.logout();
+  }
   title = 'multiview-client';
 
   constructor(

@@ -79,6 +79,17 @@
       </button>
     </div>
   </form>
+  <div class="flexlayout row center year stdcolors">
+    <button mat-raised-button color="accent" (click)="updateYear('down')">
+      &lt;&lt;
+    </button>
+    <span class="flex-spacer"></span>
+    <div>{{year}}</div>
+    <span class="flex-spacer"></span>
+    <button mat-raised-button color="accent" (click)="updateYear('up')">
+      &gt;&gt;
+    </button>
+  </div>
   <div class="flexlayout row center">
     <div class="delete stdcolors">&nbsp;</div>
     <div class="date stdcolors">Leave Date</div>

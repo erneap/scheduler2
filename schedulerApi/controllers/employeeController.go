@@ -1188,6 +1188,11 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 					}
 				}
 			}
+			if strings.Contains(strings.ToLower(msg), "submitted") {
+				services.AddLogEntry(c, "leaverequest", "SUCCESS", "Submitted",
+					fmt.Sprintf("Leave Request submitted for period: %s - %s",
+						req.StartDate.Format("01/02/06"), req.EndDate.Format("01/02/06")))
+			}
 			if len(to) > 0 {
 				err = svcs.SendMail(to, "Leave Request Submitted", msg)
 				if err != nil {

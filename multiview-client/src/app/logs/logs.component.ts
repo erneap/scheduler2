@@ -64,6 +64,18 @@ export class LogsComponent {
     const screenWidth = window.innerWidth
     let listHeight = screenHeight - 350;
     let listWidth = screenWidth - 500;
-    return `height: ${listHeight}px;width: ${listWidth}px;`;
+    const style = `height: ${listHeight}px;width: ${listWidth}px;`;
+    console.log(style);
+    return style;
+  }
+
+  overallStyle(): string {
+    const screenHeight = window.innerHeight;
+    const screenWidth = window.innerWidth
+    let listHeight = screenHeight - 300;
+    let listWidth = screenWidth - 450;
+    const style = `height: ${listHeight}px;width: ${listWidth}px;`;
+    console.log(style);
+    return style;
   }
 }

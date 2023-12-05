@@ -135,10 +135,7 @@ export class EmployeeSpecialtiesComponent {
           this.dialogService.closeSpinner();
           if (resp.employee) {
             this.employee = new Employee(resp.employee);
-            const iEmp = this.empService.getEmployee();
-            if (iEmp && iEmp.id === this.employee.id) {
-              this.empService.setEmployee(this.employee);
-            }
+            this.empService.replaceEmployee(this.employee);
             this.changed.emit(this.employee);
           }
         },

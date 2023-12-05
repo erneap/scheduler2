@@ -121,6 +121,7 @@ export class SiteEmployeeVariationComponent {
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
+                  this.empService.replaceEmployee(data.employee);
                   this.changed.emit(this.employee);
                 }
               }
@@ -180,6 +181,7 @@ export class SiteEmployeeVariationComponent {
         if (data && data !== null) {
           if (data.employee) {
             this.employee = new Employee(data.employee);
+            this.empService.replaceEmployee(data.employee);
             this.changed.emit(this.employee);
             this.changeType.emit('add');
           }
@@ -230,6 +232,7 @@ export class SiteEmployeeVariationComponent {
             if (data && data !== null) {
               if (data.employee) {
                 this.employee = new Employee(data.employee);
+                this.empService.replaceEmployee(data.employee);
                 let max = 0;
                 this.employee.variations.forEach(v => {
                   if (v.id === variationID) {

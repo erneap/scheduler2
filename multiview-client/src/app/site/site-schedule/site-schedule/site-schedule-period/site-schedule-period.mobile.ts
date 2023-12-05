@@ -7,6 +7,7 @@ import { TeamService } from 'src/app/services/team.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { SiteWorkResponse } from 'src/app/models/web/siteWeb';
 import { Work } from 'src/app/models/employees/work';
+import { EmployeeService } from 'src/app/services/employee.service';
 
 @Component({
   selector: 'app-site-schedule-period-mobile',
@@ -15,12 +16,13 @@ import { Work } from 'src/app/models/employees/work';
 })
 export class SiteSchedulePeriodMobile extends SiteSchedulePeriodComponent {
   constructor(
+    protected es: EmployeeService,
     protected ss: SiteService,
     protected ts: TeamService,
     protected ds: DialogService,
     protected au: AuthService,
     protected as: AppStateService
-  ) { super(ss, ts, ds, au, as); }
+  ) { super(es, ss, ts, ds, au, as); }
 
   override setMonth() {
     this.monthLabel = `${this.months[this.month.getMonth()]} `

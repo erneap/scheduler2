@@ -221,10 +221,7 @@ export class EmployeeLeaveRequestEditorComponent {
                     this.selected = new LeaveRequest(req)
                   }
                 });
-                const iEmp = this.empService.getEmployee();
-                if (iEmp && iEmp.id === this.employee.id) {
-                  this.empService.setEmployee(data.employee);
-                }
+                this.empService.replaceEmployee(this.employee);
               }
               this.setCurrent();
             }
@@ -244,7 +241,10 @@ export class EmployeeLeaveRequestEditorComponent {
     if (this.selected && (this.selected.id === '' || this.selected.id === 'new') 
       && this.editorForm.valid && this.employee) {
       let start = new Date(this.editorForm.value.start);
+      start = new Date(Date.UTC(start.getFullYear(), start.getMonth(), 
+        start.getDate()));
       let end = new Date(this.editorForm.value.end);
+      end = new Date(Date.UTC(end.getFullYear(), end.getMonth(), end.getDate()));
       const code = this.editorForm.value.primarycode;
       this.dialogService.showSpinner();
       this.authService.statusMessage = "Processing leave request";
@@ -268,10 +268,7 @@ export class EmployeeLeaveRequestEditorComponent {
                 });
               }
               this.setRequests();
-              const iEmp = this.empService.getEmployee();
-              if (iEmp && iEmp.id === this.employee.id) {
-                this.empService.setEmployee(data.employee);
-              }
+              this.empService.replaceEmployee(this.employee);
             }
             if (this.selected) {
               this.selectionForm.controls['leaverequest'].setValue(this.selected.id);
@@ -339,7 +336,7 @@ export class EmployeeLeaveRequestEditorComponent {
                     this.selected = new LeaveRequest(req)
                   }
                 });
-                
+                this.empService.replaceEmployee(this.employee);
               }
               this.setCurrent();
             }
@@ -375,10 +372,7 @@ export class EmployeeLeaveRequestEditorComponent {
                   if (data.employee) {
                     this.employee = data.employee;
                     this.selected = new LeaveRequest();
-                    const iEmp = this.empService.getEmployee();
-                    if (iEmp && iEmp.id === this.employee.id) {
-                      this.empService.setEmployee(this.employee);
-                    }
+                    this.empService.replaceEmployee(this.employee);
                   }
                   this.setCurrent();
                 }
@@ -419,6 +413,7 @@ export class EmployeeLeaveRequestEditorComponent {
                   this.selected = new LeaveRequest(req)
                 }
               });
+              this.empService.replaceEmployee(this.employee);
             }
             this.setCurrent();
           }
@@ -456,6 +451,7 @@ export class EmployeeLeaveRequestEditorComponent {
                       this.selected = new LeaveRequest(req)
                     }
                   });
+                  this.empService.replaceEmployee(this.employee);
                 }
                 this.setCurrent();
               }
@@ -489,6 +485,7 @@ export class EmployeeLeaveRequestEditorComponent {
                   this.selected = new LeaveRequest(req)
                 }
               });
+              this.empService.replaceEmployee(this.employee);
             }
             this.setCurrent();
           }

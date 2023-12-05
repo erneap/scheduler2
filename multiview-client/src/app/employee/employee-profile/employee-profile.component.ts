@@ -121,10 +121,7 @@ export class EmployeeProfileComponent {
                 this.profileForm.controls['password2'].setValue(undefined);
               }
               if (data.employee && data.employee !== null) {
-                const iEmp = this.empService.getEmployee();
-                if (iEmp && iEmp.id === data.employee.id) {
-                  this.empService.setEmployee(new Employee(data.employee));
-                }
+                this.empService.replaceEmployee(data.employee);
                 this.changed.emit(new Employee(data.employee));
               }
             }
@@ -170,10 +167,7 @@ export class EmployeeProfileComponent {
           if (data && data !== null) {
             if (data.employee) {
               this.employee = data.employee;
-              const emp = this.empService.getEmployee();
-              if (emp && emp.id === data.employee.id) {
-                this.empService.setEmployee(data.employee);
-              }
+              this.empService.replaceEmployee(this.employee);
             }
           }
           this.changed.emit(new Employee(this.employee));

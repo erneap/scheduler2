@@ -61,6 +61,12 @@ export class LeaveDay implements ILeaveDay {
     }
     return -1;
   }
+
+  isDate(dt: Date): boolean {
+    return (this.leavedate.getFullYear() === dt.getFullYear()
+          && this.leavedate.getMonth() === dt.getMonth()
+          && this.leavedate.getDate() === dt.getDate());
+  }
 }
 
 export interface ILeaveRequestComment {

@@ -133,6 +133,7 @@ export class SiteEmployeeVariationsComponent {
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
+                  this.empService.replaceEmployee(data.employee);
                   this.employee.variations.sort((a,b) => a.compareTo(b));
                   this.variationForm.controls["variation"].setValue(0);
                   const vari = new Variation();

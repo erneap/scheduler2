@@ -115,6 +115,7 @@ export class SiteEmployeeAssignmentComponent {
               if (data && data !== null) {
                 if (data.employee) {
                   this.employee = new Employee(data.employee);
+                  this.empService.replaceEmployee(data.employee);
                   this.changed.emit(this.employee);
                 }
               }

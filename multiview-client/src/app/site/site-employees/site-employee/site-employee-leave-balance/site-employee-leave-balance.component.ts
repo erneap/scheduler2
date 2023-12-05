@@ -74,6 +74,7 @@ export class SiteEmployeeLeaveBalanceComponent {
             if (data && data !== null) {
               if (data.employee) {
                 this.employee = new Employee(data.employee);
+                this.empService.replaceEmployee(data.employee)
                 this.changed.emit(this.employee);
               }
             }
@@ -103,6 +104,7 @@ export class SiteEmployeeLeaveBalanceComponent {
               if (data && data !== null) {
                 if (data.site && data.site.employees) {
                   data.site.employees.forEach(emp => {
+                    this.empService.replaceEmployee(emp);
                     this.changed.emit(new Employee(emp))
                   });
                 }

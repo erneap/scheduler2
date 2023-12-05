@@ -48,12 +48,14 @@ export class EmployeeLeaveRequestCalendarComponent {
 
   setMonth() {
     this.calendar = new LeaveMonth();
-    let start = new Date(Date.UTC(this.startdate.getUTCFullYear(), this.startdate.getUTCMonth(), this.startdate.getUTCDate()));
+    let start = new Date(Date.UTC(this.startdate.getUTCFullYear(), 
+      this.startdate.getUTCMonth(), this.startdate.getUTCDate()));
 
     while (start.getUTCDay() !== 0) {
       start = new Date(start.getTime() - (24 * 3600000));
     }
-    let end = new Date(Date.UTC(this.enddate.getUTCFullYear(), this.enddate.getUTCMonth(), this.enddate.getUTCDate()));
+    let end = new Date(Date.UTC(this.enddate.getUTCFullYear(), 
+      this.enddate.getUTCMonth(), this.enddate.getUTCDate()));
     end = new Date(end.getTime() + (24 * 3600000));
     while (end.getUTCDay() !== 0) {
       end = new Date(end.getTime() + (24 * 3600000));
@@ -67,9 +69,7 @@ export class EmployeeLeaveRequestCalendarComponent {
       const day = new LeaveDay();
       day.leavedate = start;
       this._leaveDays.forEach(lv => {
-        if (day.leavedate.getFullYear() === lv.leavedate.getFullYear()
-          && day.leavedate.getMonth() === lv.leavedate.getMonth()
-          && day.leavedate.getDate() === lv.leavedate.getDate()) {
+        if (day.isDate(lv.leavedate)) {
           day.code = lv.code;
           day.hours = lv.hours;
         }
@@ -84,6 +84,7 @@ export class EmployeeLeaveRequestCalendarComponent {
   }
 
   showDay(lv: LeaveDay): boolean {
+    //console.log(`lv: ${lv.leavedate} - start: ${this.startdate} - end: ${this.enddate}`);
     const answer = (lv.leavedate.getTime() >= this.startdate.getTime() 
       && lv.leavedate.getTime() <= this.enddate.getTime());
     return answer;

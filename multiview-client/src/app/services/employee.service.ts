@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { map, catchError} from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Variation } from '../models/employees/assignments';
@@ -11,6 +12,8 @@ import { ChangeAssignmentRequest, EmployeeLaborCodeRequest,
 import { CreateSiteEmployeeLeaveBalances, SiteResponse } from '../models/web/siteWeb';
 import { CacheService } from './cache.service';
 import { TeamService } from './team.service';
+import { ISite, Site } from '../models/sites/site';
+import { ITeam, Team } from '../models/teams/team';
 
 @Injectable({
   providedIn: 'root'
@@ -98,7 +101,60 @@ export class EmployeeService extends CacheService {
 
   retrieveEmployee(id: string): Observable<EmployeeResponse> {
     const url = `/scheduler/api/v2/employee/${id}`;
-    return this.httpClient.get<EmployeeResponse>(url);
+    return this.httpClient.get<EmployeeResponse>(url)
+      .pipe(
+        map( (resp:EmployeeResponse) => {
+          if (resp.employee) {
+            this.replaceEmployee(resp.employee);
+          }
+          return resp;
+        })
+      );
+  }
+
+  replaceEmployee(employee: IEmployee) {
+    const emp = this.getItem<IEmployee>('current-employee');
+    if (emp && emp.id == employee.id) {
+      this.setItem('current-employee', employee);
+    }
+    const isite = this.getItem<ISite>('current-site');
+    if (isite && isite.id === employee.site) {
+      const site = new Site(isite);
+      if (site.employees) {
+        let found = false;
+        for (let e = 0; e < site.employees.length && !found; e++) {
+          if (site.employees[e].id === employee.id) {
+            site.employees[e] = new Employee(employee);
+            found = true;
+          }
+        }
+        this.setItem('current-site', site);
+      }
+    }
+    const iteam = this.getItem<ITeam>('current-team')
+    if (iteam) {
+      if (iteam.id === employee.team) {
+        const team = new Team(iteam);
+        if (team.sites) {
+          let found = false;
+          for (let s=0; s < team.sites.length && !found; s++) {
+            if (team.sites[s].id === employee.site) {
+              const site = team.sites[s];
+              if (site.employees) {
+                for (let e=0; e < site.employees.length && !found; e++) {
+                  if (site.employees[e].id === employee.id) {
+                    site.employees[e] = new Employee(employee);
+                    found = true;
+                  }
+                }
+              }
+              team.sites[s] = site;
+            }
+          }
+          this.setItem('current-team', team);
+        }
+      }
+    }
   }
 
   retrieveEmployeeWork(id: string, year: number): Observable<EmployeeWorkResponse> {

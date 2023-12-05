@@ -182,10 +182,7 @@ export class SiteEmployeeAssignmentEditComponent {
             if (data && data !== null) {
               if (data.employee) {
                 const employee: Employee = new Employee(data.employee);
-                const current = this .empService.getEmployee();
-                if (current && current.id === employee.id) {
-                  this.empService.setEmployee(employee);
-                }
+                this.empService.replaceEmployee(data.employee);
                 this.changed.emit(employee);
               }
             }
@@ -228,11 +225,8 @@ export class SiteEmployeeAssignmentEditComponent {
               if (data && data !== null) {
                 if (data.employee) {
                   const employee: Employee = new Employee(data.employee);
-                const current = this .empService.getEmployee();
-                if (current && current.id === employee.id) {
-                  this.empService.setEmployee(employee);
-                }
-                this.changed.emit(employee);
+                  this.empService.replaceEmployee(data.employee);
+                  this.changed.emit(employee);
                 }
               }
               this.authService.statusMessage = "Update complete";
@@ -254,10 +248,7 @@ export class SiteEmployeeAssignmentEditComponent {
               if (data && data !== null) {
                 if (data.employee) {
                   const employee: Employee = new Employee(data.employee);
-                  const current = this .empService.getEmployee();
-                  if (current && current.id === employee.id) {
-                    this.empService.setEmployee(employee);
-                  }
+                  this.empService.replaceEmployee(data.employee);
                   this.changed.emit(employee);
                 }
               }
@@ -287,10 +278,7 @@ export class SiteEmployeeAssignmentEditComponent {
           if (data && data !== null) {
             if (data.employee) {
               const employee = new Employee(data.employee);
-              const current = this.empService.getEmployee();
-              if (current && current.id === employee.id) {
-                this.empService.setEmployee(employee);
-              }
+              this.empService.replaceEmployee(data.employee);
               this.changed.emit(employee);
             }
           }
@@ -342,6 +330,7 @@ export class SiteEmployeeAssignmentEditComponent {
           if (data && data !== null) {
             if (data.employee) {
               this.employee = new Employee(data.employee);
+              this.empService.replaceEmployee(data.employee);
               this.changed.emit(this.employee);
             }
           }
@@ -360,6 +349,7 @@ export class SiteEmployeeAssignmentEditComponent {
           if (data && data !== null) {
             if (data.employee) {
               this.employee = new Employee(data.employee);
+              this.empService.replaceEmployee(data.employee);
               this.changed.emit(this.employee);
             }
           }

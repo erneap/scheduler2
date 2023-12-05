@@ -6,6 +6,7 @@ import { SiteWorkResponse } from 'src/app/models/web/siteWeb';
 import { AppStateService } from 'src/app/services/app-state.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
+import { EmployeeService } from 'src/app/services/employee.service';
 import { SiteService } from 'src/app/services/site.service';
 import { TeamService } from 'src/app/services/team.service';
 
@@ -55,6 +56,7 @@ export class SiteSchedulePeriodComponent {
   rowIncrement: number = 0;
 
   constructor(
+    protected empService: EmployeeService,
     protected siteService: SiteService,
     protected teamService: TeamService,
     protected dialogService: DialogService,
@@ -137,6 +139,7 @@ export class SiteSchedulePeriodComponent {
                       emp.addWork(wk);
                     })
                   }
+                  this.empService.replaceEmployee(emp);
                 }
               });
             }

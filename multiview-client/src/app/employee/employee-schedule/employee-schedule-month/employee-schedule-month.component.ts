@@ -90,7 +90,7 @@ export class EmployeeScheduleMonthComponent {
                 resp.work.forEach(wk => {
                   emp.addWork(wk)
                 });
-                this.employeeService.setEmployee(emp);
+                this.employeeService.replaceEmployee(emp);
               }
             }
             this.setWorkweeks(emp);

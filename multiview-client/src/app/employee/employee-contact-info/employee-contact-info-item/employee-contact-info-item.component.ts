@@ -73,6 +73,7 @@ export class EmployeeContactInfoItemComponent {
         this.authService.statusMessage = "Updated Employee Contact Info";
         if (resp.employee) {
           this.employee = resp.employee;
+          this.empService.replaceEmployee(this.employee);
           this.changed.emit(new Employee(resp.employee));
         }
       },

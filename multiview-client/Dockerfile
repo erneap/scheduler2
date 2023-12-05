@@ -6,7 +6,7 @@ RUN npm install
 RUN npm run build
 
 ### Stage 2: Run ###
-FROM nginx:latest
+FROM nginx:1.25.3-alpine3.18
 RUN mkdir -p /usr/share/nginx/html/scheduler
 ADD . /data/reports
 COPY --from=build /app/dist/multiview-client /usr/share/nginx/html/multiview/

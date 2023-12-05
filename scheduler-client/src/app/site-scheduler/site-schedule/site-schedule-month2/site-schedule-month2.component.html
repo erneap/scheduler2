@@ -2,7 +2,13 @@
   <div class="fxLayout-row-center">
     <div class="direction" (click)="changeMonth('down', 'year')">&lt;&lt;</div>
     <div class="direction" (click)="changeMonth('down', 'month')">&lt;</div>
-    <div class="month" [style]="monthStyle">{{monthLabel}}</div>
+    <div class="overall flexlayout row center">
+      <div class="notprint">&nbsp;</div>
+      <div class="month" [style]="monthStyle">{{monthLabel}}</div>
+      <div class="print" (click)="onSubmit()" matTooltip="Create Printable Schedule">
+        <mat-icon>print</mat-icon>
+      </div>
+    </div>
     <div class="direction" (click)="changeMonth('up', 'month')">&gt;</div>
     <div class="direction" (click)="changeMonth('up', 'year')">&gt;&gt;</div>
   </div>

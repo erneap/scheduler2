@@ -47,7 +47,8 @@ export class SiteSchedulePeriodComponent {
   directionStyle: string = 'width: 100px;';
   wkctrStyle: string = "width: 1700px;";
   monthStyle: string = "width: 1300px;";
-  nameStyle: string = "width: 200px;"
+  nameStyle: string = "width: 200px;";
+  printStyle: string = "width: 25px;";
   workcenters: Workcenter[] = [];
   startDate: Date = new Date();
   endDate: Date = new Date();
@@ -110,7 +111,7 @@ export class SiteSchedulePeriodComponent {
 
     this.daysInMonth = this.dates.length;
     let width = ((27 * this.daysInMonth) + 244) - 2;
-    let monthWidth = width - 408;
+    let monthWidth = width - 458;
     if (this.appState.isMobile() || (this.appState.isTablet() 
       && window.innerWidth > window.innerHeight)) {
       this.directionStyle = 'width: 35px;';

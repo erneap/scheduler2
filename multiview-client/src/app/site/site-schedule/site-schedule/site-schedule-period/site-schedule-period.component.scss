@@ -11,6 +11,31 @@
   cursor: pointer;
 }
 
+.print {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  height: 25px;
+  background-color: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.notprint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  height: 25px;
+  background-color: transparent;
+  color: white;
+  border: none;
+}
+
 .month {
   display: flex;
   justify-content: center;
@@ -19,7 +44,7 @@
   font-weight: bold;
   background-color: transparent;
   color: white;
-  border: solid 1px white;
+  border: solid 1px transparent;
   height: 25px;
 }
 

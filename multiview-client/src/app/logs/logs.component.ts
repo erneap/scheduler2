@@ -65,7 +65,6 @@ export class LogsComponent {
     let listHeight = screenHeight - 350;
     let listWidth = screenWidth - 500;
     const style = `height: ${listHeight}px;width: ${listWidth}px;`;
-    console.log(style);
     return style;
   }
 
@@ -75,7 +74,6 @@ export class LogsComponent {
     let listHeight = screenHeight - 300;
     let listWidth = screenWidth - 450;
     const style = `height: ${listHeight}px;width: ${listWidth}px;`;
-    console.log(style);
     return style;
   }
 }

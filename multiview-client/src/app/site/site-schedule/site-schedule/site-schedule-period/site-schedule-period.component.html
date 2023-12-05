@@ -4,7 +4,12 @@
       [style]="directionStyle">&lt;&lt;</div>
     <div class="direction" (click)="changeMonth('down', 'month')"
     [style]="directionStyle">&lt;</div>
+    <div class="notprint" [style]="printStyle">&nbsp;</div>
     <div class="month" [style]="monthStyle">{{monthLabel}}</div>
+    <div class="print" [style]="printStyle" 
+      matTooltip="Create Printable Schedule">
+      <mat-icon>print</mat-icon>
+    </div>
     <div class="direction" (click)="changeMonth('up', 'month')"
     [style]="directionStyle">&gt;</div>
     <div class="direction" (click)="changeMonth('up', 'year')"

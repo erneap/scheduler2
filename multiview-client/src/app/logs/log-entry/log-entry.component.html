@@ -6,5 +6,5 @@
   </div>
   <div class="category">{{entry.category.toUpperCase()}}</div>
   <div class="title">{{entry.title}}</div>
-  <div class="message">{{entry.message}}</div>
+  <div class="message" [innerHTML]="entry.message"></div>
 </div>

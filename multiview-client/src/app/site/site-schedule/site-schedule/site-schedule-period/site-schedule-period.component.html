@@ -6,7 +6,7 @@
     [style]="directionStyle">&lt;</div>
     <div class="notprint" [style]="printStyle">&nbsp;</div>
     <div class="month" [style]="monthStyle">{{monthLabel}}</div>
-    <div class="print" [style]="printStyle" 
+    <div class="print" [style]="printStyle" (click)="onSubmit()"
       matTooltip="Create Printable Schedule">
       <mat-icon>print</mat-icon>
     </div>

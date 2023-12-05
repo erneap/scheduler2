@@ -1,8 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { Work } from 'src/app/models/employees/work';
 import { Site } from 'src/app/models/sites/site';
 import { Workcenter } from 'src/app/models/sites/workcenter';
 import { SiteWorkResponse } from 'src/app/models/web/siteWeb';
+import { ReportRequest } from 'src/app/models/web/teamWeb';
 import { AppStateService } from 'src/app/services/app-state.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
@@ -62,7 +64,8 @@ export class SiteSchedulePeriodComponent {
     protected teamService: TeamService,
     protected dialogService: DialogService,
     protected authService: AuthService,
-    protected appState: AppStateService
+    protected appState: AppStateService,
+    private httpClient: HttpClient
   ) {
     this.expanded = this.siteService.getExpanded();
     if (this.expanded.length === 0 && appState.isDesktop()) {
@@ -375,5 +378,52 @@ export class SiteSchedulePeriodComponent {
       }
     });
     return count;
+  }
+
+  onSubmit() {
+    const url = '/scheduler/api/v2/reports';
+    const iTeam = this.teamService.getTeam();
+    const iSite = this.siteService.getSite();
+    if (iTeam && iSite) {
+      const request: ReportRequest = {
+        reportType: 'siteschedule',
+        period: '',
+        teamid: iTeam.id,
+        siteid: iSite.id
+      };
+      this.dialogService.showSpinner();
+      this.httpClient.post(url, request, { responseType: "blob", observe: 'response'})
+        .subscribe(file => {
+          if (file.body) {
+            const blob = new Blob([file.body],
+              {type: 'application/vnd.openxmlformat-officedocument.spreadsheetml.sheet'});
+              let contentDisposition = file.headers.get('Content-Disposition');
+              let parts = contentDisposition?.split(' ');
+              let fileName = '';
+              parts?.forEach(pt => {
+                if (pt.startsWith('filename')) {
+                  let fParts = pt.split('=');
+                  if (fParts.length > 1) {
+                    fileName = fParts[1];
+                  }
+                }
+              });
+              if (!fileName) {
+                fileName = 'SiteSchedule.xlsx';
+              }
+              const url = window.URL.createObjectURL(blob);
+              
+              const a: HTMLAnchorElement = document.createElement('a') as HTMLAnchorElement;
+              a.href = url;
+              a.download = fileName;
+              document.body.appendChild(a);
+              a.click();
+    
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+              this.dialogService.closeSpinner();
+          }
+        })
+    }
   }
 }

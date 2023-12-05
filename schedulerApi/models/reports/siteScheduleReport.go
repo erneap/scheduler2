@@ -74,11 +74,12 @@ func (sr *SiteScheduleReport) Create() error {
 	}
 
 	// create monthly schedule for each month of the year
-	for i := 0; i < 12; i++ {
-		err = sr.AddMonth(i + 1)
+	for startDate.Before(endDate) {
+		err = sr.AddMonth(startDate)
 		if err != nil {
 			return err
 		}
+		startDate = startDate.AddDate(0, 1, 0)
 	}
 
 	// add a leave legend sheet
@@ -233,7 +234,7 @@ func (sr *SiteScheduleReport) CreateStyles() error {
 	return nil
 }
 
-func (sr *SiteScheduleReport) AddMonth(monthID int) error {
+func (sr *SiteScheduleReport) AddMonth(month time.Time) error {
 	for w, wc := range sr.Workcenters {
 		for s, sft := range wc.Shifts {
 			sft.Employees = sft.Employees[:0]
@@ -245,7 +246,7 @@ func (sr *SiteScheduleReport) AddMonth(monthID int) error {
 		}
 		sr.Workcenters[w] = wc
 	}
-	startDate := time.Date(sr.Year, time.Month(monthID), 1, 0, 0, 0, 0, time.UTC)
+	startDate := time.Date(month.Year(), month.Month(), 1, 0, 0, 0, 0, time.UTC)
 	endDate := startDate.AddDate(0, 1, 0)
 	for _, emp := range sr.Employees {
 		if emp.AtSite(sr.SiteID, startDate, endDate) {
@@ -344,7 +345,7 @@ func (sr *SiteScheduleReport) AddMonth(monthID int) error {
 	sr.Report.SetCellStyle(sheetLabel, GetCellID(0, 2), GetCellID(0, 2), style)
 	sr.Report.SetCellValue(sheetLabel, GetCellID(0, 2), sr.Date.Format("01/02/2006"))
 
-	current := time.Date(sr.Year, time.Month(monthID), 1, 0, 0, 0, 0, time.UTC)
+	current := time.Date(month.Year(), month.Month(), 1, 0, 0, 0, 0, time.UTC)
 	for current.Before(endDate) {
 		styleID := "weekday"
 		if current.Weekday() == time.Saturday || current.Weekday() == time.Sunday {

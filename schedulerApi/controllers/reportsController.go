@@ -47,6 +47,39 @@ func CreateReport(c *gin.Context) {
 	}
 
 	switch strings.ToLower(data.ReportType) {
+	case "siteschedule":
+
+		sr := reports.SiteScheduleReport{
+			Date:   time.Now().UTC(),
+			TeamID: data.TeamID,
+			SiteID: data.SiteID,
+		}
+		if err := sr.Create(); err != nil {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s Schedule Creation Problem: %s", logmsg, err.Error()))
+			c.JSON(http.StatusInternalServerError, "Creation: "+err.Error())
+			return
+		}
+		var b bytes.Buffer
+		if err := sr.Report.Write(&b); err != nil {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s Schedule Write Problem: %s", logmsg, err.Error()))
+			c.JSON(http.StatusInternalServerError, "Buffer Write: "+err.Error())
+			return
+		}
+
+		// get team to include in the download name
+		team, _ := services.GetTeam(data.TeamID)
+		site, _ := services.GetSite(data.TeamID, data.SiteID)
+		downloadName := strings.ReplaceAll(team.Name, " ", "_") + "-" + site.Name +
+			"-Schedule-" + sr.Date.Format("060102") + ".xlsx"
+		c.Header("Content-Description", "File Transfer")
+		c.Header("Content-Disposition", "attachment; filename="+downloadName)
+		services.AddLogEntry(c, "scheduler", "SUCCESS", "CreateReport",
+			fmt.Sprintf("Schedule Created: %s", downloadName))
+		c.Data(http.StatusOK,
+			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+			b.Bytes())
 	case "schedule":
 		sr := reports.ScheduleReport{
 			Year:   year,

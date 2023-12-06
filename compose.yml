@@ -1,0 +1,140 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+  mongo:
+    image: mongo:4.4.17
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - /data/mongodata:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ernies
+      MONGO_INITDB_ROOT_PASSWORD: zse45RDXzse45RDX
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ernies
+      ME_CONFIG_MONGODB_ADMINPASSWORD: zse45RDXzse45RDX
+      ME_CONFIG_MONGODB_URL: mongodb://ernies:zse45RDXzse45RDX@mongo:27017/
+
+  metrics-api:
+    image: ernea5956/metrics-api:1.3.2
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - /data/reports:/data/reports
+    environment:
+      MONGO_URI: mongodb://ernies:zse45RDXzse45RDX@mongo:27017
+      MONGO_DB_NAME: metrics
+      ALGORITHM: aes-256-cbc
+      SALT: a77baf9a8ec280a7f9329e74f41a75e5
+      SECURITY_KEY: a77baf9a8ec280a7f9329e74f41a75e5
+      JWT_SECRET: NotANewKeyButAnOldOne
+      REPORT_DIR: /data/reports
+
+  metrics:
+    image: ernea5956/metrics:1.3.1
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - /data/reports:/data/reports
+
+  authentication-api:
+    image: ernea5956/authentication-api:1.0.4
+    restart: always
+    ports:
+      - 6000:6000
+    volumes:
+      - /data/logs:/data/logs
+    environment:
+      MONGO_URI: mongodb://ernies:zse45RDXzse45RDX@mongo:27017
+      MONGO_DB_NAME: scheduler
+      ALGORITHM: aes-256-cbc
+      SALT: a77baf9a8ec280a7f9329e74f41a75e5
+      SECURITY_KEY: a77baf9a8ec280a7f9329e74f41a75e5
+      JWT_SECRET: NotANewKeyButAnOldOne
+      REPORT_DIR: /data/reports
+      SMTP_SERVER: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_FROM: osanscheduler0@gmail.com
+      SMTP_PASS: wrpniroblaqybifr
+      LOGLEVEL: 1
+      LOG_DIR: /data/logs
+
+  scheduler-api:
+    image: ernea5956/scheduler-api:2.0.9
+    restart: always
+    ports:
+      - 6002:6002
+    volumes:
+      - /data/reports:/data/reports
+      - /data/logs:/data/logs
+    environment:
+      MONGO_URI: mongodb://ernies:zse45RDXzse45RDX@mongo:27017
+      MONGO_DB_NAME: scheduler
+      ALGORITHM: aes-256-cbc
+      SALT: a77baf9a8ec280a7f9329e74f41a75e5
+      SECURITY_KEY: a77baf9a8ec280a7f9329e74f41a75e5
+      JWT_SECRET: NotANewKeyButAnOldOne
+      REPORT_DIR: /data/reports
+      SMTP_SERVER: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_FROM: osanscheduler0@gmail.com
+      SMTP_PASS: wrpniroblaqybifr
+      LOGLEVEL: 1
+      LOG_DIR: /data/logs
+
+  query-api:
+    image: ernea5956/query-api:1.2.8
+    restart: always
+    ports:
+      - 6003:6003
+    volumes:
+      - /data/reports:/data/reports
+      - /data/logs:/data/logs
+    environment:
+      MONGO_URI: mongodb://ernies:zse45RDXzse45RDX@mongo:27017
+      MONGO_DB_NAME: scheduler
+      ALGORITHM: aes-256-cbc
+      SALT: a77baf9a8ec280a7f9329e74f41a75e5
+      SECURITY_KEY: a77baf9a8ec280a7f9329e74f41a75e5
+      JWT_SECRET: NotANewKeyButAnOldOne
+      REPORT_DIR: /data/reports
+      SMTP_SERVER: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_FROM: osanscheduler0@gmail.com
+      SMTP_PASS: wrpniroblaqybifr
+      LOGLEVEL: 1
+      LOG_DIR: /data/logs
+
+  scheduler:
+    image: ernea5956/scheduler-client:1.3.17
+    restart: always
+    ports:
+      - 8083:8083
+    volumes:
+      - /data/reports:/data/reports
+
+  multiview:
+    image: ernea5956/multiview-client:2.0.0b14
+    restart: always
+    ports:
+      - 8090:8090
+
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.24.0.0/16

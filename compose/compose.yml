@@ -125,7 +125,7 @@ services:
       - /data/reports:/data/reports
 
   multiview:
-    image: ernea5956/multiview-client:2.0.0b14
+    image: ernea5956/multiview-client:2.0.0b15
     restart: always
     ports:
       - 8090:8090

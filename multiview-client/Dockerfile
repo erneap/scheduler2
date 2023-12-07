@@ -1,5 +1,5 @@
 ### Stage 1: Build ###
-FROM node:21-bullseye-slim as build
+FROM node:20.10.0-bookworm as build
 WORKDIR /app
 COPY ./ /app/
 RUN npm install

@@ -4,7 +4,7 @@ version: '3.1'
 services:
 
   mongo:
-    image: mongo:4.4.17
+    image: mongo:4.4.26
     restart: always
     ports:
       - 27017:27017
@@ -49,7 +49,7 @@ services:
       - /data/reports:/data/reports
 
   authentication-api:
-    image: ernea5956/authentication-api:1.0.4
+    image: ernea5956/authentication-api:1.0.5
     restart: always
     ports:
       - 6000:6000
@@ -71,7 +71,7 @@ services:
       LOG_DIR: /data/logs
 
   scheduler-api:
-    image: ernea5956/scheduler-api:2.0.9
+    image: ernea5956/scheduler-api:2.0.11
     restart: always
     ports:
       - 6002:6002
@@ -94,7 +94,7 @@ services:
       LOG_DIR: /data/logs
 
   query-api:
-    image: ernea5956/query-api:1.2.8
+    image: ernea5956/query-api:1.2.9
     restart: always
     ports:
       - 6003:6003
@@ -129,7 +129,6 @@ services:
     restart: always
     ports:
       - 8090:8090
-
 
 networks:
   default:

@@ -12,6 +12,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ernies
       MONGO_INITDB_ROOT_PASSWORD: zse45RDXzse45RDX
+    networks:
+      - scheduler
 
   mongo-express:
     image: mongo-express
@@ -22,9 +24,11 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: ernies
       ME_CONFIG_MONGODB_ADMINPASSWORD: zse45RDXzse45RDX
       ME_CONFIG_MONGODB_URL: mongodb://ernies:zse45RDXzse45RDX@mongo:27017/
+    networks:
+      - scheduler
 
 networks:
-  default:
+  scheduler:
     driver: bridge
     ipam:
       driver: default

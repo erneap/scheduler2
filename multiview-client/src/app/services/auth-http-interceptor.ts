@@ -25,7 +25,7 @@ export class AuthHttpInterceptor implements HttpInterceptor {
                 if (err.status === 401 
                     && (this.router.routerState.snapshot.url.indexOf('login') < 0
                     && this.router.routerState.snapshot.url.indexOf('home') < 0)) {
-                    this.router.navigate(['/home'], {
+                    this.router.navigate(['/login'], {
                         queryParams: { 
                             redirectUrl: this.router.routerState.snapshot.url },
                     })

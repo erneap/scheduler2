@@ -102,6 +102,9 @@ export class EmployeeNoticesComponent {
             } else {
               this.msgService.clearMessages();
             }
+            if (this.messages.length <= 0) {
+              this.router.navigateByUrl('/employee/schedule');
+            }
             this.authService.statusMessage = "Acknowledgement Complete";
           } else if (data && data.exception && data.exception !== '') {
             this.authService.statusMessage = data.exception;
@@ -113,9 +116,6 @@ export class EmployeeNoticesComponent {
           this.authService.statusMessage = `Error acknowledging messages: ${err.exception}`;
         }
       });
-    }
-    if (this.messages.length <= 0) {
-      this.router.navigateByUrl('/employee/schedule');
     }
   }
 

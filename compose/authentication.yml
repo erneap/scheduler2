@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+
+  authentication-api:
+    image: ernea5956/authentication-api:1.0.4
+    restart: always
+    ports:
+      - 6000:6000
+    volumes:
+      - /data/logs:/data/logs
+    environment:
+      MONGO_URI: mongodb://ernies:zse45RDXzse45RDX@mongo:27017
+      MONGO_DB_NAME: scheduler
+      ALGORITHM: aes-256-cbc
+      SALT: a77baf9a8ec280a7f9329e74f41a75e5
+      SECURITY_KEY: a77baf9a8ec280a7f9329e74f41a75e5
+      JWT_SECRET: NotANewKeyButAnOldOne
+      REPORT_DIR: /data/reports
+      SMTP_SERVER: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_FROM: osanscheduler0@gmail.com
+      SMTP_PASS: wrpniroblaqybifr
+      LOGLEVEL: 1
+      LOG_DIR: /data/logs
+    networks:
+      - scheduler
+
+networks:
+  scheduler:
+    name: compose_scheduler
+    external: true

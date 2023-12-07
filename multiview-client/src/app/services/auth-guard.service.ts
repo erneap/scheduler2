@@ -53,7 +53,7 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
       }
     }
     if (!this.authService.isAuthenticated || !roleMatch) {
-      this.router.navigate(['/home', params || {}])
+      this.router.navigate(['/login', params || {}])
       return false;
     }
     return true;

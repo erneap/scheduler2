@@ -71,7 +71,7 @@ services:
       LOG_DIR: /data/logs
 
   scheduler-api:
-    image: ernea5956/scheduler-api:2.0.11
+    image: ernea5956/scheduler-api:2.1.13
     restart: always
     ports:
       - 6002:6002

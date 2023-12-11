@@ -70,4 +70,8 @@ export class HeaderComponent {
   toggle() {
     this.sidenav.emit();
   }
+
+  showNotices() {
+    this.router.navigateByUrl('/notifications');
+  }
 }

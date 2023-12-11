@@ -17,7 +17,7 @@
   </button>
   <button mat-icon-button *ngIf="this.msgService.showAlerts"
     matTooltip="Notifications Available"
-    routerLink="/notifications"
+    (click)="showNotices()"
     >
     <mat-icon class="warning-icon">notification_important</mat-icon>
   </button>

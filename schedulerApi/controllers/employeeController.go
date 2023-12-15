@@ -1150,6 +1150,7 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 		return
 	}
 
+	fmt.Printf("Message: %s\n", msg)
 	if msg != "" {
 		if strings.Contains(strings.ToLower(msg), "approved") ||
 			strings.Contains(strings.ToLower(msg), "unapproved") {
@@ -1162,6 +1163,8 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 			err = svcs.SendMail(to, subj, msg)
 			if err != nil {
 				fmt.Println(err.Error())
+			} else {
+				fmt.Println("Email Message Sent")
 			}
 			if req.ApprovedBy != "" {
 				logentry := fmt.Sprintf("Leave Request for %s was approved.<br>",
@@ -1197,6 +1200,8 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 				err = svcs.SendMail(to, "Leave Request Submitted", msg)
 				if err != nil {
 					fmt.Println(err.Error())
+				} else {
+					fmt.Println("Email message sent")
 				}
 			}
 		}

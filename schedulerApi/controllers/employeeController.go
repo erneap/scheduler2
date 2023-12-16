@@ -1150,7 +1150,6 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("Message: %s\n", msg)
 	if msg != "" {
 		if strings.Contains(strings.ToLower(msg), "approved") ||
 			strings.Contains(strings.ToLower(msg), "unapproved") {

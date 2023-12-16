@@ -32,6 +32,10 @@
         <app-site-employee-profile [employee]="employee" 
           (changed)="updateEmployee($event)"></app-site-employee-profile>
       </mat-step>
+      <mat-step label="Company Information">
+        <app-site-employee-company [employee]="employee"
+          (changed)="updateEmployee($event)"></app-site-employee-company>
+      </mat-step>
       <mat-step label="Contact Information">
         <app-employee-contact-info-desktop [employee]="employee"
           (changed)="updateEmployee($event)"></app-employee-contact-info-desktop>

@@ -55,6 +55,7 @@ export class EmployeeLeaveRequestEditorComponent {
   selected: LeaveRequest = new LeaveRequest();
   public selectionForm: FormGroup;
   editorForm: FormGroup;
+  commentForm: FormGroup;
   draft: boolean = false;
   ptohours: number = 0;
   holidayhours: number = 0;
@@ -79,6 +80,9 @@ export class EmployeeLeaveRequestEditorComponent {
       start: [new Date(), [Validators.required]],
       end: [new Date(), [Validators.required]],
       primarycode: ['V', [Validators.required]],
+    });
+    this.commentForm = this.fb.group({
+      comment: '',
     });
     this.workcodes = [];
     const team = this.teamService.getTeam();
@@ -503,5 +507,36 @@ export class EmployeeLeaveRequestEditorComponent {
   selectorWidth(): string {
     let width = (window.innerWidth - 100 > 400) ? 400 : window.innerWidth - 100;
     return `width: ${width}px;`
+  }
+
+  addComment() {
+    const newComment = this.commentForm.value.comment;
+    if (newComment !== '') {
+      this.dialogService.showSpinner()
+      this.empService.updateLeaveRequest(this.employee.id, this.selected.id, 
+        'comment', newComment).subscribe({
+        next: (data: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          if (data && data !== null) {
+            if (data.employee) {
+              this.employee = data.employee;
+              this.employee.requests.forEach(req => {
+                if (this.selected.id === req.id) {
+                  this.selected = new LeaveRequest(req)
+                }
+              });
+              this.empService.replaceEmployee(this.employee);
+            }
+            this.setCurrent();
+          }
+          this.authService.statusMessage = "Added Comment";
+          this.changed.emit(new Employee(this.employee));
+        },
+        error: (err: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          this.authService.statusMessage = err.exception;
+        }
+      })
+    }
   }
  }

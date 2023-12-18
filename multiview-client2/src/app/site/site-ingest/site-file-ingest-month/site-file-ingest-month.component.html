@@ -1,0 +1,32 @@
+<div class="flexlayout column center">
+  <div class="flexlayout row center">
+    <div class="flexlayout row left movement" >
+      <button mat-raised-button color="accent" (click)="changeMonth('down')">
+        &lt;
+      </button>
+    </div>
+    <div class="month" [style]="getMonthWidthStyle()">{{dateLabel}}</div>
+    <div class="flexlayout row right movement">
+      <button mat-raised-button color="accent" (click)="changeMonth('up')">
+        &gt;
+      </button>
+    </div>
+  </div>
+  <div class="flexlayout row center">
+    <div class="name">Employee</div>
+    <div class="day" *ngFor="let day of dates">{{day.getUTCDate()}}</div>
+    <div class="total">Totals</div>
+  </div>
+  <app-site-file-ingest-month-employee *ngFor="let emp of showList"
+    class="employee"
+    [employee]="emp" [ingestType]="ingestType" [leavecodes]="leavecodes"
+    [month]="month" (changed)="onChange($event)">
+  </app-site-file-ingest-month-employee>
+  <app-site-file-ingest-month-legend [month]="month" [leavecodes]="leavecodes">
+  </app-site-file-ingest-month-legend>
+  <div class="flexlayout row end" style="padding-top: 10px;" *ngIf="showApprove">
+    <button mat-raised-button color="accent" (click)="onApprove()">
+      Approve Update
+    </button>
+  </div>
+</div>

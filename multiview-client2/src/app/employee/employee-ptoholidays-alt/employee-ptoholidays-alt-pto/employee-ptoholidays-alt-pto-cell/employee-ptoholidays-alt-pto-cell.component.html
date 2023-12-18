@@ -1,0 +1,24 @@
+<ng-container *ngIf="leaveMonth.month.getTime() === 0">
+  <div class="flexlayout row center">
+    <div [class]="getStyle('month')">Month</div>
+    <div [class]="getStyle('dates')">
+      Dates Taken <span style="color: #3399ff;">(Projected)</span>
+    </div>
+    <div [class]="getStyle('actual')">Taken</div>
+    <div [class]="getStyle('requested')">Project</div>
+  </div>
+</ng-container>
+<ng-container *ngIf="leaveMonth.month.getTime() !== 0">
+  <div class="flexlayout row center">
+    <div [class]="getStyle('month')">{{months[leaveMonth.month.getMonth()]}}</div>
+    <div [class]="getStyle('dates')">
+      <ng-container *ngFor="let lvs of leaveMonth.leaveGroups; index as i">
+        <app-employee-ptoholidays-alt-pto-cell-display [leaves]="lvs.leaves">
+        </app-employee-ptoholidays-alt-pto-cell-display>
+        <ng-container *ngIf="i < (leaveMonth.leaveGroups.length - 1)">, </ng-container>
+      </ng-container>
+    </div>
+    <div [class]="getStyle('actual')">{{getActualHours()}}</div>
+    <div [class]="getStyle('requested')">{{getProjectedHours()}}</div>
+  </div>
+</ng-container>

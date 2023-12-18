@@ -1,0 +1,36 @@
+<div class="fxLayout flexlayout column center chart">
+  <div class="flexlayout row center">
+    <div class="movement" (click)="changeMonth('down', 'year')"
+      [style]="getCellStyle('')">&lt;&lt;</div>
+    <div class="movement" (click)="changeMonth('down', 'month')"
+    [style]="getCellStyle('')">&lt;</div>
+    <div class="month" [style]="getCellStyle('month')">{{monthLabel}}</div>
+    <div class="movement" (click)="changeMonth('up', 'month')"
+    [style]="getCellStyle('')">&gt;</div>
+    <div class="movement" (click)="changeMonth('up', 'year')"
+    [style]="getCellStyle('')">&gt;&gt;</div>
+  </div>
+  <div class="flexlayout row center">
+    <div class="daycell weekend"
+    [style]="getCellStyle('')">SUN</div>
+    <div class="daycell weekday"
+    [style]="getCellStyle('')">MON</div>
+    <div class="daycell weekday"
+    [style]="getCellStyle('')">TUE</div>
+    <div class="daycell weekday"
+    [style]="getCellStyle('')">WED</div>
+    <div class="daycell weekday"
+    [style]="getCellStyle('')">THU</div>
+    <div class="daycell weekday"
+    [style]="getCellStyle('')">FRI</div>
+    <div class="daycell weekend"
+    [style]="getCellStyle('')">SAT</div>
+  </div>
+  <ng-container *ngFor="let week of workweeks">
+    <div class="flexlayout row center">
+      <app-employee-schedule-day-tablet *ngFor="let day of week.getWorkdays()"
+        [workday]="day" [month]="month"
+        [workcenters]="workcenters"></app-employee-schedule-day-tablet>
+    </div>
+  </ng-container>
+</div>

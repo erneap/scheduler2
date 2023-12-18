@@ -1,0 +1,128 @@
+<div class="flexlayout column topleft">
+  <form [formGroup]="reportsForm" class="flexlayout row topleft flexgap">
+    <mat-form-field appearance="fill" style="width: 500px;">
+      <mat-label>Current Forecast Reports</mat-label>
+      <mat-select formControlName="report" (selectionChange)="onSelect()">
+        <mat-option value=0>New Forecast Report</mat-option>
+        <mat-option *ngFor="let rpt of currentReports" [value]="rpt.id">
+          {{reportLabel(rpt)}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+  <mat-stepper>
+    <mat-step label="Basic Information">
+      <form [formGroup]="basicForm" class="flexlayout column topleft">
+        <div class="flexlayout row center flexgap">
+          <mat-form-field appearance="fill">
+            <mat-label>Associated Company</mat-label>
+            <mat-select formControlName="companyid" 
+              (selectionChange)="onChange('companyid')">
+              <mat-option *ngFor="let co of team.companies" [value]="co.id">
+                {{co.name}}
+              </mat-option>
+            </mat-select>
+            <mat-error class="error" *ngIf="basicForm.controls['companyid'].invalid">
+              Required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Forecast Report Name</mat-label>
+            <input matInput formControlName="name" (blur)="onChange('name')">
+            <mat-error class="error" *ngIf="basicForm.controls['name'].invalid">
+              Required
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flexlayout row center flexgap">
+          <mat-form-field appearance="fill">
+            <mat-label>Report Start Date</mat-label>
+            <input matInput formControlName="start" [matDatepicker]="startpicker"
+                placeholder="Start date" (dateChange)="onSetEndDate();onChange('start')">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="startpicker"></mat-datepicker-toggle>
+            <mat-datepicker #startpicker></mat-datepicker>
+            <mat-error *ngIf="basicForm.controls['start'].hasError('required')">
+              Invalid start date
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Report End Date</mat-label>
+            <input matInput formControlName="end" [matDatepicker]="endpicker"
+                placeholder="End date" (dateChange)="onChange('end')">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
+            <mat-datepicker #endpicker></mat-datepicker>
+            <mat-error *ngIf="basicForm.controls['end'].hasError('required')">
+              Invalid end date
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flexlayout column topleft" style="padding-top: 10px;">
+          <div>Select Reporting Period End Day:</div>
+          <mat-radio-group formControlName="startday" 
+            (change)="onChange('startday')"
+            class="flexlayout row center periods flexwrap" >
+              <mat-radio-button *ngFor="let day of weekdays; let i = index"
+                [value]="i">{{day}}</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="flexlayout row center flexgap" 
+          style="width: 450px;padding-top: 10px;"
+          *ngIf="selectedReport.id <= 0">
+          <button mat-raised-button color="primary" 
+            [disabled]="basicForm.invalid"
+            (click)="onAdd()">
+            Add
+          </button>
+          <button mat-raised-button color="warn"
+          (click)="basicForm.reset()">Reset</button>
+        </div>
+        <div class="flexlayout row center flexgap" 
+          style="width: 450px;padding-top: 10px;"
+          *ngIf="selectedReport.id > 0">
+          <button mat-raised-button color="warn"
+          (click)="onDelete()">Delete</button>
+        </div>
+        <div class="flexlayout row center"
+          style="width: 450px;padding-top: 10px;"
+          *ngIf="selectedReport.id > 0">
+          <button mat-raised-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step label="Selected Report Periods" *ngIf="selectedReport.id > 0">
+      <form [formGroup]="periodForm" class="flexlayout column topleft">
+        <mat-form-field appearance="fill" style="width: 450px;">
+          <mat-label>Report Periods: Sub-Periods</mat-label>
+          <mat-select formControlName="period" 
+            (selectionChange)="onSelectPeriod()">
+            <mat-option *ngFor="let prd of selectedReport.periods; let i = index"
+              [value]="i">{{periodLabel(prd)}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="flexlayout row center" style="width:450px;">
+          Shift Week from Selected Month
+        </div>
+        <div class="flexlayout row center" style="width: 450px;">
+          <div class="flexlayout row topleft" style="width: 50%;">
+            <button mat-raised-button [disabled]="disableMoveFirst"
+              (click)="onMovePeriod('back')">
+              First Week
+            </button>
+          </div><div class="flexlayout row topright" style="width: 50%;">
+            <button mat-raised-button [disabled]="disableMoveLast"
+              (click)="onMovePeriod('forward')">
+              Last Week
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step label="Selected Report Labor Codes" *ngIf="selectedReport.id > 0">
+      <app-site-editor-report-forecast-labor [site]="site" [team]="team"
+        [report]="selectedReport" (changed)="updateSite($event)">
+      </app-site-editor-report-forecast-labor>
+    </mat-step>
+  </mat-stepper>
+</div>

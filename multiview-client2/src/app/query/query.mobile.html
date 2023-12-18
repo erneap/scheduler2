@@ -1,0 +1,54 @@
+<mat-vertical-stepper #stepper>
+  <mat-step label="Query For Who's Working">
+    <div class="flexlayout column topleft">
+      <form [formGroup]="queryForm" class="flexlayout column center" 
+        style="gap: 5px;">
+        <mat-form-field appearance="fill">
+          <mat-label>Over the Next ? Hours</mat-label>
+          <mat-select formControlName="hours">
+            <mat-option *ngFor="let item of [].constructor(13); let i = index"
+              [value]="i">{{i}} Hours</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>With Specialties</mat-label>
+          <mat-select formControlName="specialties" multiple="true">
+            <mat-option *ngFor="let sp of specialties" [value]="sp.id">
+              {{sp.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+      <button mat-raised-button color="primary" 
+        (click)="completeQuery();stepper.next()">Next</button>
+    </div>
+  </mat-step>
+  <mat-step label="Pick Worker">
+    <div class="flexlayout column topleft">
+      <form [formGroup]="employeeForm" class="flexlayout row center">
+        <mat-form-field appearance="fill" style="width: 300px;">
+          <mat-label>Working Employees</mat-label>
+          <mat-select formControlName="employee"
+            (selectionChange)="findEmployee();stepper.next()">
+            <mat-option *ngFor="let emp of listedEmployees" [value]="emp.id">
+              {{emp.name.getLastFirst()}} ({{emp.site.toUpperCase()}})
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+      <div class="flexlayout row center" style="gap: 5px;">
+        <button mat-raised-button color="primary" 
+        (click)="findEmployee();stepper.next()">Next</button>
+        <button mat-raised-button color="warn" matStepperPrevious>Back</button>
+      </div>
+    </div>
+  </mat-step>
+  <mat-step label="Worker's Contact Information">
+    <app-query-employee-contacts-mobile [employee]="employee" 
+      [contacttypes]="contactTypes"></app-query-employee-contacts-mobile>
+  </mat-step>
+  <mat-step label="Worker's Specialties">
+    <app-query-employee-specialties-mobile [employee]="employee"
+      [specialtytypes]="specialties"></app-query-employee-specialties-mobile>
+  </mat-step>
+</mat-vertical-stepper>

@@ -1,0 +1,25 @@
+.label {
+  width: 150px;
+  font-size: 1.2em;
+  font-weight: bold;
+  border: solid 1px black;
+  text-align: center;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 500px;
+  height: 100px;
+  overflow: auto;
+  font-size: 12pt;
+  margin: 0;
+  padding: 1px 3px;
+  border: solid 1px white;
+}
+
+.comment-edit {
+  width: 500px;
+}

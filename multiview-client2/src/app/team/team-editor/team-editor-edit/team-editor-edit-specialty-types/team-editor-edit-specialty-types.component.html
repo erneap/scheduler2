@@ -1,0 +1,36 @@
+<div class="fxLayout flexlayout row flexstretch ">
+  <div class="flexlayout column top full" [style]="maxHeight()">
+    <app-team-editor-edit-specialty-type [team]="team" [select]="selectedSpecialty"
+      (selected)="onSelect($event)" (changed)="onUpdateTeam($event)">
+    </app-team-editor-edit-specialty-type>
+    <app-team-editor-edit-specialty-type [team]="team" [select]="selectedSpecialty"
+      *ngFor="let sp of team.specialties" [specialty]="sp"
+      (selected)="onSelect($event)" (changed)="onUpdateTeam($event)">
+    </app-team-editor-edit-specialty-type>
+  </div>
+  <div class="flexlayout column center">
+    <div class="flexlayout column top">
+      <button mat-icon-button style="color: black;" 
+        [disabled]="disableUp" matTooltip="Move selected up the List"
+        (click)="onMove('up')">
+        <mat-icon>arrow_drop_up</mat-icon>
+      </button>
+    </div>
+    <div class="flex-spacer"></div>
+    <div class="flexlayout column center">
+      <button mat-icon-button style="color: red;"
+        [disabled]="disableDelete" matTooltip="Delete selected"
+        (click)="onDelete()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    <div class="flex-spacer"></div>
+    <div class="flexlayout column bottom">
+      <button mat-icon-button style="color: black;"
+        [disabled]="disableDown" matTooltip="Move selected down the list"
+        (click)="onMove('down')">
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

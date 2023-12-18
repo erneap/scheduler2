@@ -1,0 +1,8 @@
+<div class="fxLayout flexlayout column center">
+  <app-employee-schedule-month-desktop *ngIf="appState.isDesktop()">
+  </app-employee-schedule-month-desktop>
+  <app-employee-schedule-month-tablet *ngIf="appState.isTablet()">
+  </app-employee-schedule-month-tablet>
+  <app-employee-schedule-month-mobile *ngIf="appState.isMobile()">
+  </app-employee-schedule-month-mobile>
+</div>

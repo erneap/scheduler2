@@ -1,0 +1,99 @@
+<div class="flexlayout column topleft">
+  <form [formGroup]="laborForm" class="flexlayout column center flexgap">
+    <mat-form-field appearance="fill" style="width: 400px;">
+      <mat-label>Select Labor Code</mat-label>
+      <mat-select formControlName="id" (selectionChange)="onSelect()">
+        <mat-option value="new|new">Add New Labor Code</mat-option>
+        <mat-option *ngFor="let lc of report.laborCodes" 
+          [value]="laborID(lc)">
+          {{lc.chargeNumber}}-{{lc.extension}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="flexlayout row center flexgap">
+      <mat-form-field appearance="fill">
+        <mat-label>Charge Number</mat-label>
+        <input matInput formControlName="chargenumber" 
+          (blur)="onChange('chargenumber')">
+        <mat-error class="error" *ngIf="laborForm.controls['chargenumber'].invalid">
+          Required
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Extension</mat-label>
+        <input matInput formControlName="extension" 
+          (blur)="onChange('extension')">
+        <mat-error class="error" *ngIf="laborForm.controls['extension'].invalid">
+          Required
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="flexlayout row center flexgap">
+      <mat-form-field appearance="fill">
+        <mat-label>CLIN</mat-label>
+        <input matInput formControlName="clin" 
+          (blur)="onChange('clin')">
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>SLIN</mat-label>
+        <input matInput formControlName="slin" 
+          (blur)="onChange('slin')">
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>WBS</mat-label>
+        <input matInput formControlName="wbs" 
+          (blur)="onChange('wbs')">
+      </mat-form-field>
+    </div>
+    <div class="flexlayout row center flexgap">
+      <mat-form-field appearance="fill">
+        <mat-label>Number of Slots</mat-label>
+        <input matInput type="number" min=1 formControlName="slots" 
+          (blur)="onChange('slots')">
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Hours Per Employee</mat-label>
+        <input matInput type="number" step=0.5 min=0 formControlName="hours" 
+          (blur)="onChange('hours')">
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Empty Slot Name</mat-label>
+        <input matInput formControlName="emptyname" 
+          (blur)="onChange('emptyname')">
+      </mat-form-field>
+    </div>
+    <mat-checkbox formControlName="exercise">Exercise Code</mat-checkbox>
+    <div class="flexlayout row center flexgap">
+      <mat-form-field appearance="fill">
+        <mat-label>Start Date</mat-label>
+        <input matInput placeholder="Start Date"
+          [matDatepicker]="startpicker"                  
+          formControlName="start" (dateChange)="onChange('start')">
+        <mat-datepicker-toggle matIconSuffix [for]="startpicker"></mat-datepicker-toggle>
+        <mat-datepicker #startpicker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>End Date</mat-label>
+        <input matInput placeholder="End Date"
+          [matDatepicker]="endpicker"                  
+          formControlName="end" (dateChange)="onChange('end')">
+        <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
+        <mat-datepicker #endpicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="flexlayout row center flexgap">
+      <button mat-raised-button color="primary" (click)="onAdd()"
+        *ngIf="this.laborForm.value.id==='new|new'">
+        Add
+      </button>
+      <button mat-raised-button color="warn" (click)="laborForm.reset()"
+        *ngIf="this.laborForm.value.id==='new|new'">
+        Reset
+      </button>
+      <button mat-raised-button color="warn" (click)="onDelete()"
+        *ngIf="this.laborForm.value.id!=='new|new'">
+        Delete
+      </button>
+    </div>
+  </form>
+</div>

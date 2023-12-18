@@ -1,0 +1,34 @@
+<div class="flexlayout column center">
+  <div class="flexlayout column center main">
+    <div [class]="setLayout()" style="gap: 10px;">
+      <div class="flexlayout column center">
+        <div class="title">Employee's Current Specialties</div>
+        <div class="list">
+          <div class="item" *ngFor="let item of specialties">
+            {{item.label}}
+          </div>
+        </div>
+      </div>
+      <form class="flexlayout column center" [formGroup]="form">
+        <mat-form-field appearance="fill">
+          <mat-label>Available Specialties</mat-label>
+          <mat-select formControlName="available" multiple="true"
+            (selectionChange)="onSetChanges('available')">
+            <mat-option *ngFor="let item of available" [value]="item.id">
+              {{item.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Remove Specialties</mat-label>
+          <mat-select formControlName="specialties" multiple="true"
+            (selectionChange)="onSetChanges('specialties')">
+            <mat-option *ngFor="let item of specialties" [value]="item.id">
+              {{item.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </div>
+  </div>
+</div>

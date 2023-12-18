@@ -1,0 +1,53 @@
+<div class="flexlayout column center">
+  <mat-stepper>
+    <mat-step label="Basic Information">
+      <div class="flexlayout column topleft">
+        <form [formGroup]="variationForm" class="flexlayout row center"
+          style="gap: 5px;">
+          <mat-form-field class="fieldWidth">
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="startpicker"
+              formControlName="start" 
+              (dateChange)="updateVariation('start')">
+            <mat-datepicker-toggle matIconSuffix [for]="startpicker"></mat-datepicker-toggle>
+            <mat-datepicker #startpicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field class="fieldWidth">
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="endpicker"
+              formControlName="end" 
+              (dateChange)="updateVariation('end')">
+            <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
+            <mat-datepicker #endpicker></mat-datepicker>
+          </mat-form-field>
+          <mat-checkbox formControlName="mids" style="height: 55px;"
+            (change)="updateVariation('mids')">
+            MID Shift Rotation</mat-checkbox>
+          <mat-checkbox formControlName="dates" style="height: 55px;"
+            (change)="updateVariation('dates')">
+            Show Dates for Period</mat-checkbox>
+        </form>
+        <div class="flexlayout row center" style="gap: 5px;" 
+          *ngIf="variation.id === 0">
+          <button mat-raised-button color="primary"
+            (click)="addVariation()">
+            Add New
+          </button>
+          <button mat-raised-button color="warn"
+            (click)="variationForm.reset()">
+            Reset
+          </button>
+        </div>
+      </div>
+    </mat-step>
+    <mat-step label="Variation Schedule Editor">
+      <app-site-employee-assignment-schedule 
+        [startdate]="variation.startdate"
+        [enddate]="variation.enddate"
+        [schedule]="schedule"
+        [site]="site"
+        (change)="updateSchedule($event)">
+      </app-site-employee-assignment-schedule>
+    </mat-step>
+  </mat-stepper>
+</div>

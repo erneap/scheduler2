@@ -1,0 +1,25 @@
+<div class="flexlayout column topleft">
+  <div class="title">Holidays</div>
+  <div class="flexlayout row center" style="border: none;">
+    <div class="label" [style]="getWidthStyle('code')">&nbsp;</div>
+    <div class="label" [style]="getWidthStyle('reference')">Ref.</div>
+    <div class="label" [style]="getWidthStyle('dates')">
+      Date Taken <span style="color: #3399ff;">(Projected)</span>
+    </div>
+    <div class="label" [style]="getWidthStyle('hours')"
+      style="border-right: solid 1px black;">Hours</div>
+  </div>
+  <app-employee-ptoholidays-holiday-cell-desktop 
+  *ngFor="let hol of holidays" [year]="year" [holiday]="hol" [width]="width"
+   [activecell]="isActive(hol)"></app-employee-ptoholidays-holiday-cell-desktop>
+  <div class="flexlayout row center">
+    <div class="label" [style]="getWidthStyle('bottom')">Days Left</div>
+    <div class="label" [style]="getWidthStyle('bottom')">Hours Left</div>
+    <div class="label" [style]="getWidthStyle('bottom')">Hours Taken</div>
+  </div>
+  <div class="flexlayout row center">
+    <div class="data" [style]="getWidthStyle('bottom')">{{getHolidaysRemaining()}}</div>
+    <div class="data" [style]="getWidthStyle('bottom')">{{getHolidaysHoursRemaining()}}</div>
+    <div class="data" [style]="getWidthStyle('bottom')">{{getHolidayHoursTaken()}}</div>
+  </div>
+</div>

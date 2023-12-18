@@ -1,0 +1,63 @@
+.day-form-field {
+  font-size: 1.2em;
+  width: 99% !important;
+  height: 99% !important;
+  background-color: transparent;
+  text-align: center;
+  border: none;
+}
+
+.dayOfMonth {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0px;
+  margin: 0px;
+}
+
+.disabled {
+  background-color: darkgray;
+  color: black;
+  border: solid 1px black;
+}
+
+.weekday {
+  background-color: white;
+  color: black;
+  border: solid 1px black;
+}
+
+.cell {
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+  border: solid 1px black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  flex-grow: 1;
+}
+
+.code {
+  font-size: 1.2em;
+  display: flex;
+  flex-grow: 1;
+}
+
+.hours {
+  position: absolute;
+  top: 63px;
+  width: 99px;
+}
+
+.mat-input-wrapper {
+  width: 75px !important;
+}
+
+.options {
+  color: black !important;
+}

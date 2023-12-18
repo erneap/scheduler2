@@ -1,0 +1,11 @@
+<div class="flexlayout column center">
+  <div class="typeText">
+    {{contacttype.name}}
+  </div>
+  <form [formGroup]="form">
+    <mat-form-field appearance="fill" class="typeInput">
+      <input matInput (blur)="updateContactType()"
+        formControlName="itemValue">
+    </mat-form-field>
+  </form> 
+</div>

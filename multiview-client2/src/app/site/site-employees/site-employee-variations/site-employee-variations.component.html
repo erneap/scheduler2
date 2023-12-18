@@ -1,0 +1,24 @@
+<div class="flexlayout column topleft">
+  <form [formGroup]="variationForm" class="flexlayout row center" 
+    style="gap: 10px;">
+    <mat-form-field appearance="fill" style="width: 300px;">
+      <mat-label>Assignment to Edit</mat-label>
+      <mat-select formControlName="variation" 
+        (selectionChange)="onSelect()">
+        <mat-option value=0>Add New Variation</mat-option>
+        <mat-option *ngFor="let asgmt of variations" [value]="asgmt.id">
+          {{variationDates(asgmt)}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-icon-button color="warn" matTooltip="Delete variation"
+      *ngIf="selectedVariation && selectedVariation.id > 0" 
+      (click)="deleteVariation()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </form>
+  <app-site-employee-variation [variation]="selectedVariation"
+    [employee]="employee" [site]="site" (changed)="updateEmployee($event)"
+    (changeType)="updateChangeType($event)">
+  </app-site-employee-variation>
+</div>

@@ -1,0 +1,74 @@
+<div class="flexlayout column topleft holiday">
+  <form [formGroup]="holidaysForm" class="flexlayout row topcenter flexgap">
+    <mat-form-field appearance="fill" style="width: 350px;">
+      <mat-label>Select Holiday to Edit</mat-label>
+      <mat-select formControlName="holiday" (selectionChange)="onSelectHoliday()">
+        <mat-option value="">Add New Holiday</mat-option>
+        <mat-option *ngFor="let hol of company.holidays" [value]="holidayID(hol)">
+          {{holidayID(hol)}} - {{hol.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="flexlayout column center">
+      <button mat-icon-button [disabled]="disableHolidayUp"
+        (click)="onChangeSort('up')">
+        <mat-icon>arrow_drop_up</mat-icon>
+      </button>
+      <button mat-icon-button [disabled]="disableHolidayDown"
+        (click)="onChangeSort('down')">
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+    </div>
+  </form>
+  <form [formGroup]="holidayForm" class="flexlayout column topcenter">
+    <mat-radio-group formControlName="id" *ngIf="selectedHoliday.id === ''">
+      <mat-radio-button value="H">Federal/State Holiday</mat-radio-button>
+      <mat-radio-button value="F">Floating Holiday</mat-radio-button>
+    </mat-radio-group>
+    <mat-form-field appearance="fill" style="width: 400px;">
+      <mat-label>Holiday's Name/Title</mat-label>
+      <input matInput formControlName="name" (blur)="onUpdateHoliday('name')">
+      <mat-error class="error" *ngIf="holidayForm.controls['name'].invalid">
+        Required
+      </mat-error>
+    </mat-form-field>
+    <div class="flexlayout row center flexgap" *ngIf="selectedHoliday.id === ''">
+      <button mat-raised-button color="primary" [disabled]="holidayForm.invalid"
+        (click)="onAddHoliday()">
+        Add
+      </button>
+      <button mat-raised-button (click)="holidayForm.reset()">Reset</button>
+    </div>
+    <div class="flexlayout row center flexgap" *ngIf="selectedHoliday.id !== ''">
+      <button mat-raised-button color="warn" (click)="deleteHoliday()">
+        Delete
+      </button>
+    </div>
+    <div class="flexlayout column topcenter flexgap"
+      *ngIf="selectedHoliday.id === 'H'">
+      <div class="flexlayout row center">
+        <mat-form-field appearance="fill" style="width: 350px;">
+          <mat-label>Current Holiday Actual Dates</mat-label>
+          <mat-select formControlName="actual" 
+            (selectionChange)="onSelectActual()">
+            <mat-option value="">Add New Date</mat-option>
+            <mat-option *ngFor="let dt of selectedHoliday.actualdates"
+              [value]="actualLabel(dt)">{{actualLabel(dt)}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-icon-button [disabled]="disableActualDelete"
+          style="color: red;" (click)="deleteActualDate()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      <mat-form-field appearance="fill" style="width: 400px;">
+        <mat-label>Edit/Add Actual Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="actualdate"
+          (dateChange)="updateActualDate()">
+        <mat-datepicker-toggle matIconSuffix [for]="picker">
+        </mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </form>
+</div>

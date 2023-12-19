@@ -8,8 +8,6 @@ import { SiteEmployeeAssignmentComponent } from './site-employee-assignment/site
 import { SiteEmployeeAssignmentScheduleComponent } from './site-employee-assignment/site-employee-assignment-schedule/site-employee-assignment-schedule.component';
 import { SiteEmployeeAssignmentScheduleDayComponent } from './site-employee-assignment/site-employee-assignment-schedule-day/site-employee-assignment-schedule-day.component';
 import { SiteEmployeeComponent } from './site-employee/site-employee.component';
-import { EmployeeModule } from 'src/app/employee/employee.module';
-import { EmployeePTOHolidaysModule } from 'src/app/employee/employee-ptoholidays/employee-ptoholidays.module';
 import { EmployeeLeaveRequestModule } from 'src/app/employee/employee-leave-request/employee-leave-request.module';
 import { SiteEmployeeLeaveEditorComponent } from './site-employee/site-employee-leave-editor/site-employee-leave-editor.component';
 import { SiteEmployeeLeaveEditorRowComponent } from './site-employee/site-employee-leave-editor/site-employee-leave-editor-row/site-employee-leave-editor-row.component';
@@ -52,7 +50,6 @@ import { SiteEmployeeCompanyComponent } from './site-employee/site-employee-comp
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    EmployeePTOHolidaysModule,
     EmployeeLeaveRequestModule,
     EmployeeProfileModule,
     EmployeeContactInfoModule,

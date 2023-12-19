@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Router, RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './header/login/login.component';
-import { EmployeeScheduleMonthDesktop } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.desktop';
 import { EmployeeScheduleMonthTablet } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.tablet';
 import { AppStateService } from './services/app-state.service';
 import { EmployeeScheduleMonthMobile } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.mobile';
@@ -39,13 +38,14 @@ import { LogsComponent } from './logs/logs.component';
 import { EmployeeContactInfoComponent } from './employee/employee-contact-info/employee-contact-info.component';
 import { EmployeeSpecialtiesComponent } from './employee/employee-specialties/employee-specialties.component';
 import { EmployeeLeaveRequestEditorComponent } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.component';
+import { EmployeeScheduleMonthComponent } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.component';
 
 const desktop_routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'notifications', component: EmployeeNoticesDesktop },
   {path: 'employee',
     children: [
-      {path: 'schedule', component: EmployeeScheduleMonthDesktop},
+      {path: 'schedule', component: EmployeeScheduleMonthComponent},
       {path: 'ptoholidays', component: EmployeePtoholidaysAltComponent },
       {path: 'profile', component: EmployeeProfileDesktop },
       {path: 'leaverequest', component: EmployeeLeaveRequestEditorComponent },

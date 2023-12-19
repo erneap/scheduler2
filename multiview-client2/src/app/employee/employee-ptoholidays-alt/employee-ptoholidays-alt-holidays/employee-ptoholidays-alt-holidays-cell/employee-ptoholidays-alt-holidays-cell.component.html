@@ -1,5 +1,5 @@
 <ng-container *ngIf="holiday.id == ''">
-  <div class="cell">
+  <div class="cell" [style]="setWidth()">
     <div [class]="getStyle('code')">&nbsp;</div>
     <div [class]="getStyle('reference')">Reference</div>
     <div [class]="getStyle('dates')">
@@ -9,7 +9,7 @@
   </div>
 </ng-container>
 <ng-container *ngIf="holiday.id !== ''">
-  <div class="cell">
+  <div class="cell" [style]="setWidth()">
     <div [class]="getStyle('code')">{{getHolidayID()}}</div>
     <div [class]="getStyle('reference')">{{referenceDate}}</div>
     <div [class]="getStyle('dates')">

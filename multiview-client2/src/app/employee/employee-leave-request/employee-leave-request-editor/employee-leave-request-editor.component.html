@@ -2,7 +2,7 @@
   <mat-step [stepControl]="editorForm" errorMessage="Leave request incomplete">
     <ng-template matStepLabel>Create/Edit Request</ng-template>
     <div class="flexlayout column topleft">
-      <div class="flexlayout row topleft flexgap">
+      <div class="flexlayout row topleft flexgap flexwrap">
         <form [formGroup]="editorForm" class="flexlayout column topleft">
           <div class="flexlayout row left">
             <mat-form-field appearance="fill" style="width: 30rem;">
@@ -154,5 +154,5 @@
   </mat-step>
 </mat-stepper>
 <app-employee-leave-request-legend [leavecodes]="workcodes"
-[style]="setMaxWidth()">
+[maxWidth]="maxWidth">
 </app-employee-leave-request-legend>

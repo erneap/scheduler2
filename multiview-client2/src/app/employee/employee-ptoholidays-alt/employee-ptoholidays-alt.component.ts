@@ -26,6 +26,7 @@ export class EmployeePtoholidaysAltComponent {
     }
     return this._employee;
   }
+  @Input() maxWidth: number = 1005;
   width: number = 500;
   year: number = (new Date()).getFullYear();
   showHolidays: boolean = false;
@@ -35,6 +36,18 @@ export class EmployeePtoholidaysAltComponent {
     protected teamService: TeamService
   ) {
     this.setShowHolidays();
+    let width = window.innerWidth - 250;
+    if (width < this.maxWidth) {
+      this.maxWidth = width;
+      if (this.showHolidays) {
+        this.width = Math.floor(this.maxWidth /2);
+      } else {
+        this.width = this.maxWidth;
+      }
+    } else {
+      this.width = Math.floor(this.maxWidth / 2);
+    }
+    this.width = (this.width > 500) ? 500 : this.width;
   }
 
   updateYear(direction: string) {
@@ -60,24 +73,16 @@ export class EmployeePtoholidaysAltComponent {
   }
 
   chartWidthStyle(): string {
-    let width = window.innerWidth - 1;
-    if (width > 1000) {
-      width = 1000;
-    } else if ((window.innerWidth < window.innerHeight || !this.showHolidays) 
-      && width > 498) {
-      width = 498;
-    }
-    if (window.innerWidth < window.innerHeight || !this.showHolidays) {
-      this.width = width - 1;
-    } else {
-      this.width = Math.floor(width/2) - 2;
+    let width = this.width + 2;
+    if (this.showHolidays && this.maxWidth > 1000) {
+      width = width * 2;
     }
     return `width: ${width}px;align-items: stretch;`
   }
 
   displayStyle(): string {
     let answer = "flexlayout topleft";
-    if (window.innerWidth < window.innerHeight) {
+    if (this.maxWidth < 1000) {
       answer += " column";
     } else {
       answer += " row";

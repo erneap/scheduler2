@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
-import { LeaveGroup, LeaveMonth } from '../../employee-ptoholidays/employee-ptoholidays.model';
+import { LeaveGroup, LeaveMonth } from '../employee-ptoholidays.model';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { SiteService } from 'src/app/services/site.service';
 

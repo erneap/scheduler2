@@ -117,6 +117,9 @@ export class EmployeeLeaveRequestEditorComponent {
   }
 
   setMaxWidth(): string {
+    if (this.maxWidth > window.innerWidth- 250) {
+      this.maxWidth = window.innerWidth - 250;
+    }
     return `width: ${this.maxWidth}px;`;
   }
 

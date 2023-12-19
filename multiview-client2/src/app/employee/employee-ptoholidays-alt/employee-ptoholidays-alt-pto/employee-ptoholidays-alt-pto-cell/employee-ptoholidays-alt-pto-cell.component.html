@@ -1,5 +1,5 @@
 <ng-container *ngIf="leaveMonth.month.getTime() === 0">
-  <div class="flexlayout row center">
+  <div class="flexlayout row center" [style]="setWidth()">
     <div [class]="getStyle('month')">Month</div>
     <div [class]="getStyle('dates')">
       Dates Taken <span style="color: #3399ff;">(Projected)</span>
@@ -9,7 +9,7 @@
   </div>
 </ng-container>
 <ng-container *ngIf="leaveMonth.month.getTime() !== 0">
-  <div class="flexlayout row center">
+  <div class="flexlayout row center" [style]="setWidth()">
     <div [class]="getStyle('month')">{{months[leaveMonth.month.getMonth()]}}</div>
     <div [class]="getStyle('dates')">
       <ng-container *ngFor="let lvs of leaveMonth.leaveGroups; index as i">

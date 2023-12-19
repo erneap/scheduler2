@@ -17,7 +17,6 @@ import { TeamService } from './services/team.service';
 import { interceptorProviders } from './services/spin-interceptor.interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { HomeComponent } from './home/home.component';
 import { EmployeeModule } from './employee/employee.module';
 import { SiteModule } from './site/site.module';
 import { QueryModule } from './query/query.module';
@@ -31,7 +30,6 @@ import { LogsModule } from './logs/logs.module';
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
   ],
   imports: [
     BrowserModule,

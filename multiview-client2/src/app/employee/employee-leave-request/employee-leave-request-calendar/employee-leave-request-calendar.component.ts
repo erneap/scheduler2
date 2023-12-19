@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ILeaveDay, LeaveDay } from 'src/app/models/employees/leave';
 import { Workcode } from 'src/app/models/teams/workcode';
-import { LeaveGroup, LeaveMonth } from '../../employee-ptoholidays/employee-ptoholidays.model';
+import { LeaveGroup, LeaveMonth } from '../../employee-ptoholidays-alt/employee-ptoholidays.model';
 
 @Component({
   selector: 'app-employee-leave-request-calendar',

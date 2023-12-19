@@ -37,12 +37,12 @@
           (changed)="updateEmployee($event)"></app-site-employee-company>
       </mat-step>
       <mat-step label="Contact Information">
-        <app-employee-contact-info-desktop [employee]="employee"
-          (changed)="updateEmployee($event)"></app-employee-contact-info-desktop>
+        <app-employee-contact-info [employee]="employee"
+          (changed)="updateEmployee($event)"></app-employee-contact-info>
       </mat-step>
       <mat-step label="Employee Specialties">
-        <app-employee-specialties-desktop [employee]="employee"
-          (changed)="updateEmployee($event)"></app-employee-specialties-desktop>
+        <app-employee-specialties [employee]="employee"
+          (changed)="updateEmployee($event)"></app-employee-specialties>
       </mat-step>
     </mat-stepper>
   </mat-step>

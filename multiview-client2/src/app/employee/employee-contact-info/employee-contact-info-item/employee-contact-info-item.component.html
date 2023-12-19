@@ -1,1 +1,11 @@
-<p>employee-contact-info-item works!</p>
+<div class="flexlayout column center stdcolors">
+  <div class="flexlayout row center typeText">
+    {{contacttype.name}}
+  </div>
+  <form [formGroup]="form">
+    <mat-form-field appearance="fill" class="typeInput">
+      <input matInput (blur)="updateContactType()"
+        formControlName="itemValue">
+    </mat-form-field>
+  </form> 
+</div>

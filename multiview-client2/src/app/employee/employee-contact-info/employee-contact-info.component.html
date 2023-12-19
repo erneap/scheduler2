@@ -1,1 +1,10 @@
-<p>employee-contact-info works!</p>
+<div class="flexlayout column center" style="gap: 5px;" >
+  <div class="title" style="margin: 5px;">
+    Contact Information Type/Value
+  </div>
+  <div class="flexlayout row center flexwrap flexgap">
+    <app-employee-contact-info-item *ngFor="let ct of contactTypes"
+      [contacttype]="ct" [employee]="employee" 
+      (changed)="updatedEmployee($event)"></app-employee-contact-info-item>
+  </div>
+</div>

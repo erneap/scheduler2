@@ -1,14 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Router, RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './header/login/login.component';
-import { HomeComponent } from './home/home.component';
 import { EmployeeScheduleMonthDesktop } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.desktop';
 import { EmployeeScheduleMonthTablet } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.tablet';
 import { AppStateService } from './services/app-state.service';
 import { EmployeeScheduleMonthMobile } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.mobile';
-import { EmployeePTOHolidaysChartDesktop } from './employee/employee-ptoholidays/employee-ptoholidays-chart/employee-ptoholidays-chart.desktop';
-import { EmployeePTOHolidaysChartMobile } from './employee/employee-ptoholidays/employee-ptoholidays-chart/employee-ptoholidays-chart.mobile';
-import { EmployeePTOHolidaysChartTablet } from './employee/employee-ptoholidays/employee-ptoholidays-chart/employee-ptoholidays-chart.tablet';
 import { EmployeeProfileDesktop } from './employee/employee-profile/employee-profile.desktop';
 import { EmployeeProfileMobile } from './employee/employee-profile/employee-profile.mobile';
 import { EmployeeProfileTablet } from './employee/employee-profile/employee-profile.tablet';
@@ -18,12 +14,8 @@ import { EmployeeNoticesMobile } from './employee/employee-notices/employee-noti
 import { EmployeeNoticesTablet } from './employee/employee-notices/employee-notices.tablet';
 import { EmployeeLeaveRequestEditorTablet } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.tablet';
 import { EmployeeLeaveRequestEditorMobile } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.mobile';
-import { EmployeeContactInfoDesktop } from './employee/employee-contact-info/employee-contact-info.desktop';
 import { EmployeeContactInfoMobile } from './employee/employee-contact-info/employee-contact-info.mobile';
-import { EmployeeContactInfoTablet } from './employee/employee-contact-info/employee-contact-info.tablet';
 import { EmployeeSpecialtiesMobile } from './employee/employee-specialties/employee-specialties.mobile';
-import { EmployeeSpecialtiesDesktop } from './employee/employee-specialties/employee-specialties.desktop';
-import { EmployeeSpecialtiesComponent } from './employee/employee-specialties/employee-specialties.component';
 import { SiteScheduleDesktop } from './site/site-schedule/site-schedule/site-schedule.desktop';
 import { SiteScheduleTablet } from './site/site-schedule/site-schedule/site-schedule.tablet';
 import { SiteScheduleMobile } from './site/site-schedule/site-schedule/site-schedule.mobile';
@@ -45,6 +37,8 @@ import { EmployeePtoholidaysAltMobile } from './employee/employee-ptoholidays-al
 import { AdminComponent } from './admin/admin.component';
 import { ReportsSiteComponent } from './reports/reports-site/reports-site.component';
 import { LogsComponent } from './logs/logs.component';
+import { EmployeeContactInfoComponent } from './employee/employee-contact-info/employee-contact-info.component';
+import { EmployeeSpecialtiesComponent } from './employee/employee-specialties/employee-specialties.component';
 
 const desktop_routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -55,8 +49,8 @@ const desktop_routes: Routes = [
       {path: 'ptoholidays', component: EmployeePtoholidaysAltComponent },
       {path: 'profile', component: EmployeeProfileDesktop },
       {path: 'leaverequest', component: EmployeeLeaveRequestEditorDesktop },
-      {path: 'contacts', component: EmployeeContactInfoDesktop },
-      {path: 'specialties', component: EmployeeSpecialtiesDesktop }
+      {path: 'contacts', component: EmployeeContactInfoComponent },
+      {path: 'specialties', component: EmployeeSpecialtiesComponent }
     ]
   },
   {path: 'site', 
@@ -133,8 +127,8 @@ const tablet_routes: Routes = [
       {path: 'ptoholidays', component: EmployeePtoholidaysAltMobile },
       {path: 'profile', component: EmployeeProfileTablet },
       {path: 'leaverequest', component: EmployeeLeaveRequestEditorTablet },
-      {path: 'contacts', component: EmployeeContactInfoTablet },
-      {path: 'specialties', component: EmployeeSpecialtiesDesktop }
+      {path: 'contacts', component: EmployeeContactInfoComponent },
+      {path: 'specialties', component: EmployeeSpecialtiesComponent }
     ]
   },
   {path: 'site', 

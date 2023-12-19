@@ -8,7 +8,6 @@ import { EmployeeScheduleMonthMobile } from './employee/employee-schedule/employ
 import { EmployeeProfileDesktop } from './employee/employee-profile/employee-profile.desktop';
 import { EmployeeProfileMobile } from './employee/employee-profile/employee-profile.mobile';
 import { EmployeeProfileTablet } from './employee/employee-profile/employee-profile.tablet';
-import { EmployeeLeaveRequestEditorDesktop } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.desktop';
 import { EmployeeNoticesDesktop } from './employee/employee-notices/employee-notices.desktop';
 import { EmployeeNoticesMobile } from './employee/employee-notices/employee-notices.mobile';
 import { EmployeeNoticesTablet } from './employee/employee-notices/employee-notices.tablet';
@@ -39,6 +38,7 @@ import { ReportsSiteComponent } from './reports/reports-site/reports-site.compon
 import { LogsComponent } from './logs/logs.component';
 import { EmployeeContactInfoComponent } from './employee/employee-contact-info/employee-contact-info.component';
 import { EmployeeSpecialtiesComponent } from './employee/employee-specialties/employee-specialties.component';
+import { EmployeeLeaveRequestEditorComponent } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.component';
 
 const desktop_routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -48,7 +48,7 @@ const desktop_routes: Routes = [
       {path: 'schedule', component: EmployeeScheduleMonthDesktop},
       {path: 'ptoholidays', component: EmployeePtoholidaysAltComponent },
       {path: 'profile', component: EmployeeProfileDesktop },
-      {path: 'leaverequest', component: EmployeeLeaveRequestEditorDesktop },
+      {path: 'leaverequest', component: EmployeeLeaveRequestEditorComponent },
       {path: 'contacts', component: EmployeeContactInfoComponent },
       {path: 'specialties', component: EmployeeSpecialtiesComponent }
     ]

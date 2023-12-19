@@ -8,9 +8,14 @@ import { Workcode } from 'src/app/models/teams/workcode';
 })
 export class EmployeeLeaveRequestLegendComponent {
   @Input() leavecodes: Workcode[] = [];
+  @Input() maxWidth: number = 1200;
 
   constructor() {
 
+  }
+
+  setMaxWidth(): string {
+    return `width: ${this.maxWidth}px;`;
   }
 
   setLeave(code: string): string {

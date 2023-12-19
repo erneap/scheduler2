@@ -49,6 +49,7 @@ export class EmployeeLeaveRequestEditorComponent {
   get site(): Site {
     return this._site;
   }
+  @Input() maxWidth: number = 1200;
   @Output() changed = new EventEmitter<Employee>();
 
   requests: LeaveRequest[] = [];
@@ -77,9 +78,11 @@ export class EmployeeLeaveRequestEditorComponent {
       leaverequest: ['', [Validators.required]],
     });
     this.editorForm = this.fb.group({
+      leaverequest: '',
       start: [new Date(), [Validators.required]],
       end: [new Date(), [Validators.required]],
       primarycode: ['V', [Validators.required]],
+      comment: '',
     });
     this.commentForm = this.fb.group({
       comment: '',
@@ -113,6 +116,10 @@ export class EmployeeLeaveRequestEditorComponent {
     }
   }
 
+  setMaxWidth(): string {
+    return `width: ${this.maxWidth}px;`;
+  }
+
   setRequests() {
     this.requests = [];
     let now = new Date();
@@ -128,7 +135,7 @@ export class EmployeeLeaveRequestEditorComponent {
   }
 
   setCurrent() {
-    const reqID = this.selectionForm.value.leaverequest;
+    const reqID = this.editorForm.value.leaverequest;
     this.ptohours = 0.0;
     this.holidayhours = 0.0;
     this.approver = false;
@@ -149,6 +156,7 @@ export class EmployeeLeaveRequestEditorComponent {
       this.editorForm.controls['start'].setValue(this.selected.startdate);
       this.editorForm.controls['end'].setValue(this.selected.enddate);
       this.editorForm.controls['primarycode'].setValue(this.selected.primarycode);
+      this.editorForm.controls['comment'].setValue('');
       this.draft = (this.selected.status.toLowerCase() === 'draft')
       const tEmp = this.authService.getUser();
       if (tEmp) {
@@ -206,6 +214,9 @@ export class EmployeeLeaveRequestEditorComponent {
           break;
         case "code":
           value = this.editorForm.value.primarycode;
+          break;
+        case "comment":
+          value = this.editorForm.value.comment;
           break;
       }
       this.dialogService.showSpinner();

@@ -1,4 +1,4 @@
-<div class="toplevel" [style]="maxWidth()">
+<div class="toplevel" [style]="setMaxWidth()">
   <form [formGroup]="employeeSelectionForm" class="flexlayout row topcenter">
     <mat-form-field appearance="fill" style="width: 250px;">
       <mat-label>Employee To Edit</mat-label>
@@ -7,7 +7,7 @@
         <mat-option value="new">Add New Employee</mat-option>
         <mat-option *ngFor="let emp of siteEmployees" [value]="emp.id"
           [class]="optionClass(emp.id)">
-          {{emp.name.getFullName()}}
+          {{emp.name.getLastFirst()}}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -24,6 +24,7 @@
     (changed)="updateEmployee($event)" [site]="site">
   </app-new-employee>
   <app-site-employee *ngIf="selectedEmployee.id !== 'new'" [site]="site"
-    [employee]="selectedEmployee" (changed)="updateEmployee($event)">
+    [employee]="selectedEmployee" (changed)="updateEmployee($event)"
+    [maxWidth]="maxWidth">
   </app-site-employee>
 </div>

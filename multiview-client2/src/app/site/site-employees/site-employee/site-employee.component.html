@@ -6,12 +6,13 @@
         <!--<app-employee-ptoholidays-chart-desktop [employee]="employee"
           [width]="setMaxChildWidth()">
         </app-employee-ptoholidays-chart-desktop>-->
-        <app-employee-ptoholidays-alt [employee]="employee">
+        <app-employee-ptoholidays-alt [employee]="employee"
+          [maxWidth]="maxWidth">
         </app-employee-ptoholidays-alt>
       </mat-step>
       <mat-step label="Leave Request Editor">
         <app-employee-leave-request-editor [employee]="employee"
-          (changed)="updateEmployee($event)">
+          (changed)="updateEmployee($event)" [maxWidth]="maxWidth">
         </app-employee-leave-request-editor>
       </mat-step>
       <mat-step label="Leave Editor">

@@ -17,6 +17,7 @@ export class SiteEmployeeComponent {
   get site(): Site {
     return this._site;
   }
+  @Input() maxWidth: number = 1200;
   @Output() changed = new EventEmitter<Employee>();
 
   getTabMaxHeight(): string {
@@ -29,8 +30,7 @@ export class SiteEmployeeComponent {
   }
 
   setWidth(): string {
-    let width = window.innerWidth - 525;
-    return `width: ${width}px;`;
+    return `width: ${this.maxWidth}px;`;
   }
 
   setMaxChildWidth(): number {

@@ -27,6 +27,7 @@ export class SiteEmployeeProfileComponent {
   get employee(): Employee {
     return this._employee;
   }
+  @Input() maxWidth: number = window.innerWidth - 500;
   @Output() changed = new EventEmitter<Employee>();
   permissions: string[] = ['employee', 'scheduler', 'company', 'siteleader'];
   permNames: string[] = ['Employee', 'Site Scheduler', 'Site Company Leader',
@@ -270,5 +271,9 @@ export class SiteEmployeeProfileComponent {
         }
       }
     })
+  }
+
+  setWidth(): string {
+    return `width: ${this.maxWidth}px;`;
   }
 }

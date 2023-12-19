@@ -37,6 +37,7 @@ export class SiteEmployeesComponent {
   get team(): Team {
     return this._team;
   }
+  @Input() maxWidth: number = window.innerWidth - 500;
   @Output() changed = new EventEmitter<Site>();
   employeeSelectionForm: FormGroup;
   selectedEmployee: Employee = new Employee();
@@ -228,7 +229,7 @@ export class SiteEmployeesComponent {
     return answer;
   }
 
-  maxWidth(): string {
+  setMaxWidth(): string {
     let width = window.innerWidth - 500;
     return `max-width: ${width}px;`;
   }

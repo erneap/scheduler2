@@ -1,5 +1,5 @@
-<div class="fxLayout flexlayout column center">
-  <div class="flexlayout column center chart">
+<div class="fxLayout flexlayout column topleft">
+  <div class="flexlayout column topleft chart">
     <h2 class="title">User's Profile Editor</h2>
     <form [formGroup]="profileForm" class="flexlayout column center">
       <ng-container *ngIf="showPassword">
@@ -85,7 +85,7 @@
   </div>
   <div *ngIf="authService.isAdmin || authService.isTeamLeader || authService.isSiteLeader || authService.isScheduler">
     <h3 class="perms">User Permissions</h3>
-    <div class="flexlayout row topleft" style="flex-wrap: wrap;">
+    <div class="flexlayout row topleft flexwrap" [style]="setWidth()">
       <div class="flexlayout row left" style="width: 300px;"
         *ngFor="let perm of permissions;let i = index">
         <mat-checkbox [checked]="hasPermission(perm)"

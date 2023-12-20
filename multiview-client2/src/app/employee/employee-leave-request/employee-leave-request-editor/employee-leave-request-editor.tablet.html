@@ -1,24 +1,21 @@
 <mat-vertical-stepper #stepper>
-  <mat-step [stepControl]="selectionForm" errorMessage="Leave Request must be selected">
-    <form [formGroup]="selectionForm">
-      <ng-template matStepLabel>Choose Leave Request</ng-template>
-      <mat-form-field appearance="fill" style="width: 30rem;">
-        <mat-select formControlName="leaverequest" required
-          (selectionChange)="setCurrent();stepper.next()">
-          <mat-option value="0">Create New Request</mat-option>
-          <mat-option *ngFor="let req of requests" [value]="req.id">
-            {{getRequestLabel(req)}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </form>
-  </mat-step>
-  <mat-step [stepControl]="editorForm" errorMessage="Leave request incomplete">
-    <ng-template matStepLabel>Create/Edit Request</ng-template>
+  <mat-step errorMessage="Leave Request must be selected">
     <div class="flexlayout column topleft">
-      <div class="flexlayout row left" style="gap: 25px;flex-wrap: wrap;">
-        <form [formGroup]="editorForm">
-          <div class="flexlayout row left" style="gap: 5px;">
+      <div class="flexlayout row topleft flexgap flexwrap">
+        <form [formGroup]="editorForm" class="flexlayout column topleft">
+          <div class="flexlayout row left">
+            <mat-form-field appearance="fill" style="width: 30rem;">
+              <mat-label>Choose Leave Request</mat-label>
+              <mat-select formControlName="leaverequest" required
+                (selectionChange)="setCurrent()">
+                <mat-option value="0">Create New Request</mat-option>
+                <mat-option *ngFor="let req of requests" [value]="req.id">
+                  {{getRequestLabel(req)}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="flexlayout row left flexgap">
             <mat-form-field appearance="fill">
               <mat-label>Start Date</mat-label>
               <input matInput placeholder="Start Date"
@@ -37,24 +34,29 @@
               <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
               <mat-datepicker #endpicker></mat-datepicker>
             </mat-form-field>
-            <div class="formFieldWide">
-              <mat-form-field class="fieldWidthWide">
-                <mat-label>Primary Leave Code</mat-label>
-                <mat-select formControlName="primarycode"
-                  (selectionChange)="processChange('code')">
-                  <mat-option *ngFor="let wc of workcodes" [value]="wc.id">
-                    {{wc.title}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div> 
+            <mat-form-field appearance="fill">
+              <mat-label>Primary Leave Code</mat-label>
+              <mat-select formControlName="primarycode"
+                (selectionChange)="processChange('code')">
+                <mat-option *ngFor="let wc of workcodes" [value]="wc.id">
+                  {{wc.title}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
-          <div>
-            <button mat-raised-button matStepperPrevious>Back</button>
-            <button mat-raised-button matStepperNext 
-              (click)="processNewRequest()">Next</button>
+          <div class="flexlayout row left">
+            <mat-form-field appearance="fill" class="comment-edit">
+              <mat-label>Add A Comment</mat-label>
+              <textarea matInput formControlName="comment"
+               (blur)="processChange('comment')"></textarea>
+            </mat-form-field>
+          </div>
+          <div class="flexlayout row left">
+            <button mat-raised-button color="primary" 
+              *ngIf="selected.id === 'new'"
+              (click)="processNewRequest()">Add</button>
             <button mat-raised-button color="warn"
-              (click)="deleteRequest()"
+              (click)="deleteRequest();stepper.previous()"
               *ngIf="selected.id !== '' && !approver">
               Delete
             </button>
@@ -63,7 +65,7 @@
             </button>
             <button mat-raised-button color="primary" 
               (click)="submitForApproval()"
-              *ngIf="selected.status.toLowerCase() === 'draft' && selected.id !== ''">
+              *ngIf="selected.status.toLowerCase() === 'draft' && selected.id !== '' && selected.id !== 'new'">
               Submit For Approval
             </button>
             <button mat-raised-button color="accent" 
@@ -105,11 +107,11 @@
           </div>
         </div>
       </div>
-      <app-employee-leave-request-calendar
+      <app-employee-leave-request-calendar 
         style="margin-top: 10px;"
         [startdate]="selected.startdate"
         [enddate]="selected.enddate" [leaveCodes]="workcodes"
-        [hours]="stdHours"
+        [hours]="stdHours" (changed)="processDayChange($event)"
         [leavedays]="selected.requesteddays">
       </app-employee-leave-request-calendar>
     </div>

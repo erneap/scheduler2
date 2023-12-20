@@ -193,13 +193,16 @@ export class EmployeeService extends CacheService {
   }
 
   addNewLeaveRequest(empid: string, start: Date, end: Date, 
-    code: string): Observable<EmployeeResponse> {
+    code: string, comment?: string): Observable<EmployeeResponse> {
     const data: EmployeeLeaveRequest = {
       employee: empid,
       code: code,
       startdate: start,
-      enddate: end,
+      enddate: end
     };
+    if (comment) {
+      data.comment = comment;
+    }
     const url = '/scheduler/api/v2/employee/request';
     return this.httpClient.post<EmployeeResponse>(url, data);
   }

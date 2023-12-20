@@ -53,8 +53,9 @@
             </mat-form-field>
           </div>
           <div class="flexlayout row left">
-            <button mat-raised-button matStepperNext color="primary"
-              (click)="processNewRequest()">Add/Next</button>
+            <button mat-raised-button color="primary" 
+              *ngIf="selected.id === 'new'"
+              (click)="processNewRequest()">Add</button>
             <button mat-raised-button color="warn"
               (click)="deleteRequest();stepper.previous()"
               *ngIf="selected.id !== '' && !approver">
@@ -65,7 +66,7 @@
             </button>
             <button mat-raised-button color="primary" 
               (click)="submitForApproval()"
-              *ngIf="selected.status.toLowerCase() === 'draft' && selected.id !== ''">
+              *ngIf="selected.status.toLowerCase() === 'draft' && selected.id !== '' && selected.id !== 'new'">
               Submit For Approval
             </button>
             <button mat-raised-button color="accent" 

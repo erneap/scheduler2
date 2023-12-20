@@ -10,8 +10,9 @@ import (
 )
 
 type EmployeeResponse struct {
-	Employee  *employees.Employee `json:"employee,omitempty"`
-	Exception string              `json:"exception"`
+	Employee     *employees.Employee     `json:"employee,omitempty"`
+	LeaveRequest *employees.LeaveRequest `json:"leaverequest,omitempty"`
+	Exception    string                  `json:"exception"`
 }
 
 type InitialResponse struct {

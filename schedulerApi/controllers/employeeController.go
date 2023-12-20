@@ -1083,8 +1083,8 @@ func CreateEmployeeLeaveRequest(c *gin.Context) {
 		services.AddLogEntry(c, "scheduler", "ERROR", "PROBLEM",
 			fmt.Sprintf("%s GetSite Problem: %s", logmsg, err.Error()))
 	}
-	emp.NewLeaveRequest(data.EmployeeID, data.Code, data.StartDate,
-		data.EndDate, site.UtcOffset)
+	req := emp.NewLeaveRequest(data.EmployeeID, data.Code, data.StartDate,
+		data.EndDate, site.UtcOffset, data.Comment)
 
 	err = services.UpdateEmployee(emp)
 	if err != nil {
@@ -1096,11 +1096,12 @@ func CreateEmployeeLeaveRequest(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "scheduler", "CREATED", "SUCCESS",
+	services.AddLogEntry(c, "leaverequest", "CREATED", "SUCCESS",
 		fmt.Sprintf("Leave Request Created for %s: Base Code: %s Period: %s-%s",
 			emp.Name.GetLastFirstMI(), data.Code,
 			data.StartDate.Format("01/02/06"), data.EndDate.Format("01/02/06")))
-	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
+	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp,
+		LeaveRequest: req, Exception: ""})
 }
 
 func UpdateEmployeeLeaveRequest(c *gin.Context) {
@@ -1151,6 +1152,8 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 	}
 
 	if msg != "" {
+		fmt.Println(msg)
+		fmt.Println(req.ApprovedBy)
 		if strings.Contains(strings.ToLower(msg), "approved") ||
 			strings.Contains(strings.ToLower(msg), "unapproved") {
 			err = svcs.CreateMessage(emp.ID.Hex(), data.Value, msg)
@@ -1240,14 +1243,7 @@ func DeleteEmployeeLeaveRequest(c *gin.Context) {
 		return
 	}
 
-	var req employees.LeaveRequest
-	for _, r := range emp.Requests {
-		if r.ID == reqID {
-			req = r
-		}
-	}
-
-	err = emp.DeleteLeaveRequest(reqID)
+	msg, err := emp.DeleteLeaveRequest(reqID)
 	if err != nil {
 		services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
 			fmt.Sprintf("%s DeleteLeaveRequest Problem: %s", logmsg, err.Error()))
@@ -1266,10 +1262,7 @@ func DeleteEmployeeLeaveRequest(c *gin.Context) {
 	}
 
 	// return the corrected employee back to the client.
-	services.AddLogEntry(c, "leaverequest", "SUCCESS", "DELETED",
-		fmt.Sprintf("Leave Request Deleted for: %s, Dates: Start: %s, "+
-			"End: %s", emp.Name.GetLastFirstMI(),
-			req.StartDate.Format("01/02/06"), req.EndDate.Format("01/02/06")))
+	services.AddLogEntry(c, "leaverequest", "SUCCESS", "DELETED", msg)
 	c.JSON(http.StatusOK, web.EmployeeResponse{Employee: emp, Exception: ""})
 }
 

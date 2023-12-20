@@ -54,7 +54,6 @@ export class EmployeeLeaveRequestEditorComponent {
 
   requests: LeaveRequest[] = [];
   selected: LeaveRequest = new LeaveRequest();
-  public selectionForm: FormGroup;
   editorForm: FormGroup;
   commentForm: FormGroup;
   draft: boolean = false;
@@ -74,9 +73,6 @@ export class EmployeeLeaveRequestEditorComponent {
     private fb: FormBuilder,
     protected dialog: MatDialog
   ) { 
-    this.selectionForm = this.fb.group({
-      leaverequest: ['', [Validators.required]],
-    });
     this.editorForm = this.fb.group({
       leaverequest: '',
       start: [new Date(), [Validators.required]],
@@ -266,14 +262,18 @@ export class EmployeeLeaveRequestEditorComponent {
       const code = this.editorForm.value.primarycode;
       this.dialogService.showSpinner();
       this.authService.statusMessage = "Processing leave request";
-      this.empService.addNewLeaveRequest(this.employee.id, start, end, code)
+      this.empService.addNewLeaveRequest(this.employee.id, start, end, code, 
+        this.editorForm.value.comment)
       .subscribe({
         next: (data: EmployeeResponse) => {
           this.dialogService.closeSpinner();
           if (data && data !== null) {
             if (data.employee) {
               this.employee = data.employee;
-              if (this.employee.requests) {
+              this.setRequests();
+              if (data.leaverequest) {
+                this.selected = new LeaveRequest(data.leaverequest);
+              } else if (this.employee.requests) {
                 this.employee.requests.forEach(req => {
                   if (req.startdate.getFullYear() === start.getFullYear()
                     && req.startdate.getMonth() === start.getMonth()
@@ -285,11 +285,10 @@ export class EmployeeLeaveRequestEditorComponent {
                     }
                 });
               }
-              this.setRequests();
               this.empService.replaceEmployee(this.employee);
             }
             if (this.selected) {
-              this.selectionForm.controls['leaverequest'].setValue(this.selected.id);
+              this.editorForm.controls['leaverequest'].setValue(this.selected.id);
             }
             this.setCurrent();
           }

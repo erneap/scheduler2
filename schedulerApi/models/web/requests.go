@@ -59,6 +59,7 @@ type EmployeeLeaveRequest struct {
 	Code       string    `json:"code"`
 	StartDate  time.Time `json:"startdate"`
 	EndDate    time.Time `json:"enddate"`
+	Comment    string    `json:"comment,omitempty"`
 }
 
 type EmployeeLaborCodeRequest struct {

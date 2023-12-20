@@ -1,10 +1,11 @@
 <mat-vertical-stepper #stepper>
   <mat-step errorMessage="Leave Request must be selected">
+    <ng-template matStepLabel>Leave Request</ng-template>
     <div class="flexlayout column topleft">
       <div class="flexlayout row topleft flexgap flexwrap">
         <form [formGroup]="editorForm" class="flexlayout column topleft">
           <div class="flexlayout row left">
-            <mat-form-field appearance="fill" style="width: 30rem;">
+            <mat-form-field appearance="fill" style="width: 300px;">
               <mat-label>Choose Leave Request</mat-label>
               <mat-select formControlName="leaverequest" required
                 (selectionChange)="setCurrent()">
@@ -15,7 +16,7 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="flexlayout row left flexgap">
+          <div class="flexlayout column left flexgap">
             <mat-form-field appearance="fill">
               <mat-label>Start Date</mat-label>
               <input matInput placeholder="Start Date"
@@ -107,13 +108,13 @@
           </div>
         </div>
       </div>
-      <app-employee-leave-request-calendar 
+      <app-employee-leave-request-calendar-mobile
         style="margin-top: 10px;"
         [startdate]="selected.startdate"
         [enddate]="selected.enddate" [leaveCodes]="workcodes"
         [hours]="stdHours" (changed)="processDayChange($event)"
         [leavedays]="selected.requesteddays">
-      </app-employee-leave-request-calendar>
+      </app-employee-leave-request-calendar-mobile>
     </div>
   </mat-step>
   <mat-step *ngIf="selected.id !== ''">

@@ -18,6 +18,7 @@ export class TeamEditorComponent {
   get team(): Team {
     return this._team;
   }
+  @Input() maxWidth: number = window.innerWidth - 500;
   @Output() changed = new EventEmitter<Team>();
 
   constructor(
@@ -40,5 +41,9 @@ export class TeamEditorComponent {
       }
       this.changed.emit(this.team);
     }
+  }
+
+  setWidth(): string {
+    return `width: ${this.maxWidth}px;`;
   }
 }

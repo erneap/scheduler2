@@ -21,6 +21,7 @@ export class TeamEditorEditComponent {
   get team(): Team {
     return this._team;
   }
+  @Input() maxWidth: number = window.innerWidth - 500;
   @Output() changed = new EventEmitter<Team>();
   basicForm: FormGroup;
 
@@ -60,5 +61,9 @@ export class TeamEditorEditComponent {
         this.authService.statusMessage = err.exception;
       }
     });
+  }
+
+  setWidth(): string {
+    return `width: ${this.maxWidth}px;`;
   }
 }

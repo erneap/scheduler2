@@ -18,5 +18,5 @@
     (changed)="updateTeam($event)">
   </app-add-site>
   <app-team-editor-site *ngIf="this.selectedSite.id !== ''" [team]="team"
-    [site]="selectedSite"></app-team-editor-site>
+    [site]="selectedSite" [maxWidth]="maxWidth"></app-team-editor-site>
 </div>

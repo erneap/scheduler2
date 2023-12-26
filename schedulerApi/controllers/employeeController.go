@@ -193,6 +193,15 @@ func UpdateEmployeeBasic(c *gin.Context) {
 		if user != nil {
 			user.EmailAddress = data.Value
 		}
+	case "addemail":
+		emp.AddEmailAddress(data.Value)
+	case "removeemail":
+		emp.RemoveEmailAddress(data.Value)
+	case "updateemail":
+		if data.OptionalID != "" {
+			emp.RemoveEmailAddress(data.OptionalID)
+			emp.AddEmailAddress(data.Value)
+		}
 	case "suffix":
 		emp.Name.Suffix = data.Value
 	case "company":
@@ -1161,6 +1170,13 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 				fmt.Println(err.Error())
 			}
 			to := []string{emp.User.EmailAddress}
+			if len(emp.EmailAddresses) > 0 {
+				for _, email := range emp.EmailAddresses {
+					if !strings.EqualFold(emp.User.EmailAddress, email) {
+						to = append(to, email)
+					}
+				}
+			}
 			subj := "Leave Request Approved"
 			err = svcs.SendMail(to, subj, msg)
 			if err != nil {
@@ -1186,7 +1202,11 @@ func UpdateEmployeeLeaveRequest(c *gin.Context) {
 			for _, e := range siteEmps {
 				if e.User.IsInGroup("scheduler", "siteleader") ||
 					e.User.IsInGroup("scheduler", "scheduler") {
-					to = append(to, e.User.EmailAddress)
+					if len(e.EmailAddresses) > 0 {
+						to = append(to, e.EmailAddresses...)
+					} else {
+						to = append(to, e.User.EmailAddress)
+					}
 					err = svcs.CreateMessage(e.ID.Hex(), emp.ID.Hex(), msg)
 					if err != nil {
 						fmt.Println(err.Error())

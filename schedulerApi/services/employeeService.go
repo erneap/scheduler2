@@ -119,6 +119,12 @@ func GetEmployee(id string) (*employees.Employee, error) {
 		fmt.Println(err.Error())
 		return nil, err
 	}
+	if len(emp.EmailAddresses) <= 0 {
+		if emp.Email != "" {
+			emp.AddEmailAddress(emp.Email)
+			UpdateEmployee(&emp)
+		}
+	}
 	var user users.User
 	userCol.FindOne(context.TODO(), filter).Decode(&user)
 	emp.User = &user
@@ -150,6 +156,12 @@ func GetEmployeeByName(first, middle, last string) (*employees.Employee, error) 
 			}
 		} else {
 			return nil, err
+		}
+	}
+	if len(emp.EmailAddresses) <= 0 {
+		if emp.Email != "" {
+			emp.AddEmailAddress(emp.Email)
+			UpdateEmployee(&emp)
 		}
 	}
 	var user users.User
@@ -185,6 +197,12 @@ func GetEmployees(teamid, siteid string) ([]employees.Employee, error) {
 	}
 
 	for i, emp := range emps {
+		if len(emp.EmailAddresses) <= 0 {
+			if emp.Email != "" {
+				emp.AddEmailAddress(emp.Email)
+				UpdateEmployee(&emp)
+			}
+		}
 		filter = bson.M{
 			"_id": emp.ID,
 		}
@@ -231,6 +249,12 @@ func GetEmployeesForTeam(teamid string) ([]employees.Employee, error) {
 	}
 
 	for i, emp := range employees {
+		if len(emp.EmailAddresses) <= 0 {
+			if emp.Email != "" {
+				emp.AddEmailAddress(emp.Email)
+				UpdateEmployee(&emp)
+			}
+		}
 		filter = bson.M{
 			"_id": emp.ID,
 		}

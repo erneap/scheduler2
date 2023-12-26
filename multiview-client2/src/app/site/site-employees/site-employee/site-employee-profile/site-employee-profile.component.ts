@@ -11,6 +11,7 @@ import { EmployeeService } from 'src/app/services/employee.service';
 import { SiteService } from 'src/app/services/site.service';
 import { SiteEmployeeProfileUserAccountDialogComponent } from './site-employee-profile-user-account-dialog/site-employee-profile-user-account-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { DeletionConfirmationComponent } from 'src/app/generic/deletion-confirmation/deletion-confirmation.component';
 
 @Component({
   selector: 'app-site-employee-profile',
@@ -33,8 +34,10 @@ export class SiteEmployeeProfileComponent {
   permNames: string[] = ['Employee', 'Site Scheduler', 'Site Company Leader',
     'Site Leader']
   profileForm: FormGroup;
+  emailForm: FormGroup;
   formError: string = '';
   showPassword: boolean = true;
+  selectedEmail: string = '';
 
   constructor(
     protected authService: AuthService,
@@ -53,6 +56,9 @@ export class SiteEmployeeProfileComponent {
       password: ['', [new PasswordStrengthValidator()]],
       password2: ['', [new MustMatchValidator()]],
     });
+    this.emailForm = fb.group({
+      editor: ['', [Validators.email]],
+    })
     const iEmp = this.empService.getEmployee();
     if (iEmp) {
       this.employee = iEmp;
@@ -275,5 +281,104 @@ export class SiteEmployeeProfileComponent {
 
   setWidth(): string {
     return `width: ${this.maxWidth}px;`;
+  }
+
+  setEmailClass(email: string): string {
+    let answer = 'item';
+    if (email.toLowerCase() === this.selectedEmail.toLowerCase()) {
+      answer += " selected";
+    }
+    return answer;
+  }
+
+  selectEmail(email: string) {
+    if (email !== 'new') {
+      this.selectedEmail = email;
+      this.emailForm.controls['editor'].setValue(email);
+    } else {
+      this.selectedEmail = '';
+      this.emailForm.controls['editor'].setValue('');
+    }
+  }
+
+  updateEmail() {
+    this.dialogService.showSpinner();
+    const newEmail = this.emailForm.value.editor;
+    if (this.selectedEmail === '') {
+      this.empService.updateEmployee(this.employee.id, "addemail", newEmail)
+      .subscribe({
+        next: (data: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          if (data && data !== null) {
+            if (data.employee) {
+              this.employee = data.employee;
+              this.empService.replaceEmployee(this.employee);
+            }
+          }
+          this.changed.emit(new Employee(this.employee));
+          this.emailForm.controls['editor'].setValue(newEmail);
+          this.selectedEmail = newEmail;
+          this.authService.statusMessage = "Update complete"; 
+        },
+        error: (err: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          this.authService.statusMessage = err.exception;
+        }
+      });
+    } else {
+      this.empService.updateEmployeeEmail(this.employee.id, "updateemail", 
+        this.selectedEmail, newEmail).subscribe({
+        next: (data: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          if (data && data !== null) {
+            if (data.employee) {
+              this.employee = data.employee;
+              this.empService.replaceEmployee(this.employee);
+            }
+          }
+          this.changed.emit(new Employee(this.employee));
+          this.authService.statusMessage = "Update complete"; 
+        },
+        error: (err: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          this.authService.statusMessage = err.exception;
+        }
+      });
+    }
+  }
+
+  deleteEmail() {
+    if (this.selectedEmail !== '') {
+      const dialogRef = this.dialog.open(DeletionConfirmationComponent, {
+        data: {title: 'Confirm Email Deletion',
+        message:  "Are you sure you want to delete this employee's email address?"},
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'yes') {
+          this.dialogService.showSpinner();
+          this.empService.updateEmployee(this.employee.id, "removeemail", 
+            this.selectedEmail).subscribe({
+            next: (data: EmployeeResponse) => {
+              this.dialogService.closeSpinner();
+              if (data && data !== null) {
+                if (data.employee) {
+                  this.employee = data.employee;
+                  this.empService.replaceEmployee(this.employee);
+                }
+              }
+              this.changed.emit(new Employee(this.employee));
+              this.emailForm.controls['editor'].setValue('');
+              this.selectedEmail = '';
+              this.authService.statusMessage = "Update complete"; 
+            },
+            error: (err: EmployeeResponse) => {
+              this.dialogService.closeSpinner();
+              this.authService.statusMessage = err.exception;
+            }
+          });
+        }
+      });
+    }
   }
 }

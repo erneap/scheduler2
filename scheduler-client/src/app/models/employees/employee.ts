@@ -82,6 +82,7 @@ export interface IEmployee {
   work?: IWork[];
   contactinfo: IContact[];
   specialties: ISpecialty[];
+  emails?: string[];
 }
 
 export class Employee implements IEmployee {
@@ -100,6 +101,7 @@ export class Employee implements IEmployee {
   work?: Work[];
   contactinfo: Contact[];
   specialties: Specialty[];
+  emails: string[];
 
   constructor(emp?: IEmployee) {
     this.id = (emp) ? emp.id : '';
@@ -161,6 +163,12 @@ export class Employee implements IEmployee {
       emp.specialties.forEach(s => {
         this.specialties.push(new Specialty(s));
       });
+    }
+    this.emails = [];
+    if (emp && emp.emails && emp.emails.length > 0) {
+      emp.emails.forEach(em => {
+        this.emails.push(em);
+      })
     }
   }
 

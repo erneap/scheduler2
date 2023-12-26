@@ -13,6 +13,8 @@ import { ChangeAssignmentRequest, EmployeeLaborCodeRequest,
 import { CreateSiteEmployeeLeaveBalances, SiteResponse } from '../models/web/siteWeb';
 import { CacheService } from './cache.service';
 import { TeamService } from './team.service';
+import { ISite, Site } from '../models/sites/site';
+import { ITeam, Team } from '../models/teams/team';
 
 @Injectable({
   providedIn: 'root'
@@ -108,6 +110,51 @@ export class EmployeeService extends CacheService {
     return this.httpClient.get<EmployeeWorkResponse>(url);
   }
 
+  replaceEmployee(employee: IEmployee) {
+    const emp = this.getItem<IEmployee>('current-employee');
+    if (emp && emp.id == employee.id) {
+      this.setItem('current-employee', employee);
+    }
+    const isite = this.getItem<ISite>('current-site');
+    if (isite && isite.id === employee.site) {
+      const site = new Site(isite);
+      if (site.employees) {
+        let found = false;
+        for (let e = 0; e < site.employees.length && !found; e++) {
+          if (site.employees[e].id === employee.id) {
+            site.employees[e] = new Employee(employee);
+            found = true;
+          }
+        }
+        this.setItem('current-site', site);
+      }
+    }
+    const iteam = this.getItem<ITeam>('current-team')
+    if (iteam) {
+      if (iteam.id === employee.team) {
+        const team = new Team(iteam);
+        if (team.sites) {
+          let found = false;
+          for (let s=0; s < team.sites.length && !found; s++) {
+            if (team.sites[s].id === employee.site) {
+              const site = team.sites[s];
+              if (site.employees) {
+                for (let e=0; e < site.employees.length && !found; e++) {
+                  if (site.employees[e].id === employee.id) {
+                    site.employees[e] = new Employee(employee);
+                    found = true;
+                  }
+                }
+              }
+              team.sites[s] = site;
+            }
+          }
+          this.setItem('current-team', team);
+        }
+      }
+    }
+  }
+
   updateEmployee(empID: string, field: string, value: string): 
     Observable<EmployeeResponse> {
     const url = '/scheduler/api/v2/employee';
@@ -115,6 +162,18 @@ export class EmployeeService extends CacheService {
       id: empID,
       field: field,
       value: value,
+    };
+    return this.httpClient.put<EmployeeResponse>(url, data);
+  }
+
+  updateEmployeeEmail(empID: string, field: string, oldEmail: string, 
+    newEmail: string): Observable<EmployeeResponse> {
+    const url = '/scheduler/api/v2/employee';
+    const data: UpdateRequest = {
+      id: empID,
+      field: field,
+      optional: oldEmail,
+      value: newEmail,
     };
     return this.httpClient.put<EmployeeResponse>(url, data);
   }

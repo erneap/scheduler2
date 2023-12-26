@@ -48,6 +48,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     align-items: flex-start;
 }
 
+.flexgap {
+    gap: 5px;
+}
+
 .fxLayout-column-center {
     display: flex;
     flex-direction: column;

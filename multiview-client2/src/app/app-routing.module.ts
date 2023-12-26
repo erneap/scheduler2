@@ -4,9 +4,7 @@ import { LoginComponent } from './header/login/login.component';
 import { EmployeeScheduleMonthTablet } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.tablet';
 import { AppStateService } from './services/app-state.service';
 import { EmployeeScheduleMonthMobile } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.mobile';
-import { EmployeeProfileDesktop } from './employee/employee-profile/employee-profile.desktop';
 import { EmployeeProfileMobile } from './employee/employee-profile/employee-profile.mobile';
-import { EmployeeProfileTablet } from './employee/employee-profile/employee-profile.tablet';
 import { EmployeeNoticesDesktop } from './employee/employee-notices/employee-notices.desktop';
 import { EmployeeNoticesMobile } from './employee/employee-notices/employee-notices.mobile';
 import { EmployeeNoticesTablet } from './employee/employee-notices/employee-notices.tablet';
@@ -39,6 +37,7 @@ import { EmployeeContactInfoComponent } from './employee/employee-contact-info/e
 import { EmployeeSpecialtiesComponent } from './employee/employee-specialties/employee-specialties.component';
 import { EmployeeLeaveRequestEditorComponent } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.component';
 import { EmployeeScheduleMonthComponent } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.component';
+import { EmployeeProfileComponent } from './employee/employee-profile/employee-profile.component';
 
 const desktop_routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -47,7 +46,7 @@ const desktop_routes: Routes = [
     children: [
       {path: 'schedule', component: EmployeeScheduleMonthComponent},
       {path: 'ptoholidays', component: EmployeePtoholidaysAltComponent },
-      {path: 'profile', component: EmployeeProfileDesktop },
+      {path: 'profile', component: EmployeeProfileComponent },
       {path: 'leaverequest', component: EmployeeLeaveRequestEditorComponent },
       {path: 'contacts', component: EmployeeContactInfoComponent },
       {path: 'specialties', component: EmployeeSpecialtiesComponent }
@@ -125,7 +124,7 @@ const tablet_routes: Routes = [
     children: [
       {path: 'schedule', component: EmployeeScheduleMonthTablet},
       {path: 'ptoholidays', component: EmployeePtoholidaysAltMobile },
-      {path: 'profile', component: EmployeeProfileTablet },
+      {path: 'profile', component: EmployeeProfileComponent },
       {path: 'leaverequest', component: EmployeeLeaveRequestEditorTablet },
       {path: 'contacts', component: EmployeeContactInfoComponent },
       {path: 'specialties', component: EmployeeSpecialtiesComponent }

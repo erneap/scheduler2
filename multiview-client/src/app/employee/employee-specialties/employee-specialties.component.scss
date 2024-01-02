@@ -1,9 +1,31 @@
 .main {
+  position: relative;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.lists {
+  position: relative;
   background-color: #3f51b5;
+  color: white;
   padding: 5px;
+  height: 475px;
+  width: 755px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .title {
+  position: absolute;
+  top: 1 px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -16,20 +38,68 @@
   border: none;
 }
 
+.current {
+  position: absolute;
+  top: 10px;
+  left: 25px;
+  width: 325px;
+  height: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.available {
+  position: absolute;
+  top: 10px;
+  left: 406px;
+  width: 325px;
+  height: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.buttonDiv {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 351px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  color: white;
+}
+
 .list {
+  position: absolute;
+  top: 25px;
+  bottom: 0px;
+  left: 0px;
   text-align: center;
   vertical-align: top;
   background-color: white;
-  color: black;
   width: 325px;
-  min-height: 300px;
+  height: 425px;
   padding: 0;
   margin: 0;
-  border: solid 1px white;
-  overflow-y: visible;
+  overflow-y: auto;
 }
 
 .item {
   font-size: 1.2em;
   font-weight: bold;
+  cursor: pointer;
+}
+
+.unselected {
+  background-color: white;
+  color: black;
+}
+
+.selected {
+  background-color: blue;
+  color: white;
 }

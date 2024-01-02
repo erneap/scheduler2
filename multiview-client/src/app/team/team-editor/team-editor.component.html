@@ -1,12 +1,14 @@
 <div class="fxLayout flexlayout column topleft flexgap stdcolors" 
   style="padding: 10px;">
-  <mat-stepper #stepper>
+  <mat-stepper #stepper [style]="setWidth()">
     <mat-step label="Edit Team">
-      <app-team-editor-edit [team]="team" (changed)="updateTeam($event)">
+      <app-team-editor-edit [team]="team" (changed)="updateTeam($event)"
+        [maxWidth]="maxWidth">
       </app-team-editor-edit>
     </mat-step>
     <mat-step label="Edit Team's Sites">
-      <app-team-editor-sites [team]="team" (changed)="updateTeam($event)">
+      <app-team-editor-sites [team]="team" (changed)="updateTeam($event)"
+        [maxWidth]="maxWidth">
       </app-team-editor-sites>
     </mat-step>
   </mat-stepper>

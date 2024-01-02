@@ -1,38 +1,32 @@
-<div class="fxLayout flexlayout column center">
-  <div class="flexlayout column center main">
-    <div [class]="setLayout()" style="gap: 10px;">
-      <div class="flexlayout column center">
-        <div class="title">Employee's Current Specialties</div>
-        <div class="list">
-          <div class="item" *ngFor="let item of specialties">
-            {{item.label}}
-          </div>
+<div class="main">
+  <div class="lists">
+    <div class="current">
+      <div class="title">Employee's Current Specialties</div>
+      <div class="list">
+        <div *ngFor="let item of specialties" [class]="setItemClass(item)"
+          (click)="selectItem('specialties', item.id)">
+          {{item.label}}
         </div>
       </div>
-      <form class="flexlayout column center" [formGroup]="form">
-        <div class="flexlayout row center" style="gap: 2px;">
-          <mat-form-field appearance="fill">
-            <mat-label>Available Specialties</mat-label>
-            <mat-select formControlName="available" multiple="true"
-              (selectionChange)="onSetChanges('available')">
-              <mat-option *ngFor="let item of available" [value]="item.id">
-                {{item.label}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+    </div>
+    <div class="buttonDiv">
+      <button mat-icon-button *ngIf="bAddAvailable"
+        (click)="onSetChanges('available')">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button mat-icon-button *ngIf="bAddSpecialty"
+        (click)="onSetChanges('specialties')">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+    <div class="available">
+      <div class="title">Available Specialties</div>
+      <div class="list">
+        <div *ngFor="let item of available" [class]="setItemClass(item)"
+        (click)="selectItem('available', item.id)">
+          {{item.label}}
         </div>
-        <div class="flexlayout row center" style="gap: 2px;">
-          <mat-form-field appearance="fill">
-            <mat-label>Remove Specialties</mat-label>
-            <mat-select formControlName="specialties" multiple="true"
-              (selectionChange)="onSetChanges('specialties')">
-              <mat-option *ngFor="let item of specialties" [value]="item.id">
-                {{item.label}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>

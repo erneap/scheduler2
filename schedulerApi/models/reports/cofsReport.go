@@ -147,11 +147,9 @@ func (cr *ReportCofS) CreateCofSXML(rpt *sites.CofSReport) error {
 						hours += emp.GetWorkedHoursForLabor(
 							lc.ChargeNumber, lc.Extension, cr.StartDate,
 							cr.EndDate)
-						for _, elc := range emp.LaborCodes {
-							if elc.ChargeNumber == lc.ChargeNumber &&
-								elc.Extension == lc.Extension {
-								bPrimary = true
-							}
+						if emp.IsPrimaryCode(cr.StartDate, lc.ChargeNumber, lc.Extension) ||
+							emp.IsPrimaryCode(cr.EndDate, lc.ChargeNumber, lc.Extension) {
+							bPrimary = true
 						}
 					}
 

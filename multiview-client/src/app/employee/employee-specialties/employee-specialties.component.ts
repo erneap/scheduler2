@@ -36,6 +36,8 @@ export class EmployeeSpecialtiesComponent {
   @Output() changed = new EventEmitter<Employee>();
   available: ListItem[] = [];
   specialties: ListItem[] = [];
+  bAddSpecialty: boolean = false;
+  bAddAvailable: boolean = false;
   form: FormGroup;
 
   constructor(
@@ -57,6 +59,7 @@ export class EmployeeSpecialtiesComponent {
         this.employee = emp;
       }
     }
+    this.setContactTypes();
     this.form = this.formBuilder.group({
       available: [],
       specialties: [],
@@ -66,7 +69,7 @@ export class EmployeeSpecialtiesComponent {
   setContactTypes() {
     this.available = [];
     this.specialties = [];
-    this.team.specialties = this.team.specialties.sort((a,b) => a.compareTo(b));
+    this.team.specialties.sort((a,b) => a.compareTo(b));
     this.team.specialties.forEach(sp => {
       let found = false;
       this.employee.specialties.forEach(esp => {
@@ -108,26 +111,24 @@ export class EmployeeSpecialtiesComponent {
     const specialties: number[] = [];
     let action = '';
     if (list.toLowerCase() === 'available') {
-      const items: string[] = this.form.value.available;
-      if (items && items.length) {
-        action = 'add';
-        items.forEach(item => {
-          specialties.push(Number(item))
-        });
-      }
-      this.form.controls['available'].setValue([]);
+      action = 'add';
+      this.available.forEach(item => {
+        if (item.selected) {
+          specialties.push(Number(item.id));
+        }
+      });
     } else {
-      const items: string[] = this.form.value.specialties;
-      if (items && items.length) {
-        action = 'delete';
-        items.forEach(item => {
-          specialties.push(Number(item))
-        });
-      }
-      this.form.controls['specialties'].setValue([]);
+      action = 'delete';
+      this.specialties.forEach(item => {
+        if (item.selected) {
+          specialties.push(Number(item.id));
+        }
+      });
     }
     if (action !== '' && specialties.length > 0) {
       this.dialogService.showSpinner();
+      this.bAddAvailable = false;
+      this.bAddSpecialty = false;
       this.authService.statusMessage = "Updating Employee Specialties";
       this.empService.updateEmployeeSpecialties(this.employee.id, action, 
         specialties).subscribe({
@@ -154,5 +155,38 @@ export class EmployeeSpecialtiesComponent {
       answer = "flexlayout row center";
     }
     return answer;
+  }
+
+  setItemClass(item: ListItem): string {
+    if (item.selected) {
+      return "item selected";
+    } else {
+      return "item unselected";
+    }
+  }
+
+  selectItem(list: string, id: string) {
+    if (list.toLowerCase() === 'available') {
+      this.bAddAvailable = false;
+      this.available.forEach(item => {
+        if (item.id === id) {
+          item.selected = !item.selected;
+        }
+        if (item.selected) {
+          this.bAddAvailable = true;
+        }
+      });
+    } else {
+      this.bAddSpecialty = false;
+      this.specialties.forEach(item => {
+        if (item.id === id) {
+          item.selected = !item.selected;
+        }
+        if (item.selected) {
+          this.bAddSpecialty = true;
+        }
+      });
+    }
+    
   }
 }

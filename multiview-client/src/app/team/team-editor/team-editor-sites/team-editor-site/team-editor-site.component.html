@@ -1,11 +1,11 @@
-<mat-stepper>
+<mat-stepper [style]="setWidth()">
   <mat-step label="Site Information Editor">
     <app-site-editor [site]="site" [team]="team" (changed)="updateTeam($event)">
     </app-site-editor>
   </mat-step>
   <mat-step label="Site Employees Editor">
     <app-site-employees [site]="site" [team]="team" 
-      (changed)="updateTeam($event)">
+      (changed)="updateTeam($event)" [maxWidth]="maxWidth - 150">
     </app-site-employees>
   </mat-step>
 </mat-stepper>

@@ -17,6 +17,7 @@ export class AdminTeamsEditorComponent {
   teams: Team[] = [];
   selectedTeam: Team = new Team();
   teamsForm: FormGroup;
+  width: number = window.innerWidth - 730;
 
   constructor(
     protected teamService: TeamService,

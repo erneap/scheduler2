@@ -37,6 +37,7 @@ export class SiteEmployeesComponent {
   get team(): Team {
     return this._team;
   }
+  @Input() maxWidth: number = window.innerWidth - 500;
   @Output() changed = new EventEmitter<Site>();
   employeeSelectionForm: FormGroup;
   selectedEmployee: Employee = new Employee();
@@ -65,7 +66,7 @@ export class SiteEmployeesComponent {
     if (site) {
       this.site = site;
     }
-    this.selectEmployee();
+    this.selectEmployee(empID);
   }
 
   setEmployees(): void {
@@ -124,8 +125,7 @@ export class SiteEmployeesComponent {
     }
   }
 
-  selectEmployee(): void {
-    const empID: string = this.employeeSelectionForm.value.employee;
+  selectEmployee(empID: string): void {
     if (empID === 'new') {
       this.selectedEmployee = new Employee();
       this.selectedEmployee.id = 'new';
@@ -228,8 +228,37 @@ export class SiteEmployeesComponent {
     return answer;
   }
 
-  maxWidth(): string {
-    let width = window.innerWidth - 500;
+  setMaxWidth(): string {
+    let width = window.innerWidth - 570;
     return `max-width: ${width}px;`;
+  }
+  
+  setEditorWidth(): string {
+    let width = window.innerWidth - 755;
+    this.maxWidth = width - 50;
+    return `max-width: ${width}px;`;
+  }
+
+  employeeClass(empID: string): string {
+    let answer = "item ";
+    if (this.selectedEmployee.id === empID) {
+      answer += "selected";
+    } else {
+      this.siteEmployees.forEach(emp => {
+        if (emp.id === empID) {
+          if (emp.user && emp.user.isExpired()) {
+            answer += "expired";
+          } else if (emp.user && emp.user.isLocked()) {
+            answer += "locked";
+          } else {
+            answer += "unselected";
+          }
+        }
+      })
+      if (answer === "item ") {
+        answer += "unselected";
+      }
+    }
+    return answer;
   }
 }

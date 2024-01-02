@@ -5,6 +5,7 @@
   right: 10px;
   bottom: 10px;
   padding: 10px;
+  min-height: 800px;
   background-color: #3f51b5;
   color: white;
   display: flex;
@@ -23,4 +24,80 @@
   background-color: #ff9900;
   color: black;
   border: solid 1px black;
+}
+
+.employeeListDiv {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: 250px;
+  border-right: solid 2px #3f51b5;
+}
+
+.editorDiv {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 253px;
+  right: 3px;
+  background-color: white;
+  overflow: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.employeeList {
+  position: absolute;
+  top: 0px;
+  bottom: 100px;
+  left: 0px;
+  right: 2px;
+  background-color: white;
+  overflow-y: auto;
+}
+
+.bottomDiv {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 2px;
+  height: 99px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  border-top: solid 1px white;
+}
+
+.item {
+  position: relative;
+  left: 0px;
+  right: 0px;
+  height: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: 12pt;
+  cursor: pointer;
+}
+
+.unselected {
+  background-color: white;
+  color: black;
+  font-weight: normal;
+}
+
+.item:hover {
+  background-color: lightblue;
+  color: black;
+}
+
+.selected {
+  background-color: #3f51b5;
+  color: white;
+  font-weight: bold;
 }

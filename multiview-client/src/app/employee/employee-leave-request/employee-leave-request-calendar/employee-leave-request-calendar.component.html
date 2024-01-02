@@ -1,1 +1,20 @@
-<p>employee-leave-request-calendar works!</p>
+<div class="flexlayout column center">
+  <div class="flexlayout row center">
+    <div class="daycell weekend">SUN</div>
+    <div class="daycell weekday">MON</div>
+    <div class="daycell weekday">TUE</div>
+    <div class="daycell weekday">WED</div>
+    <div class="daycell weekday">THU</div>
+    <div class="daycell weekday">FRI</div>
+    <div class="daycell weekend">SAT</div>
+  </div>
+  <ng-container *ngFor="let week of calendar.leaveGroups">
+    <div class="flexlayout row center">
+      <app-employee-leave-request-day *ngFor="let lv of week.leaves"
+        [leave]="lv" [leaveCodes]="leaveCodes" [showdate]="showDay(lv)" 
+        [hours]="hours"
+        (changed)="processChange($event)">
+      </app-employee-leave-request-day>
+    </div>
+  </ng-container>
+</div>

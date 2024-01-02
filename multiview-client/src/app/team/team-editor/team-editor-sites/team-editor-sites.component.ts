@@ -25,6 +25,7 @@ export class TeamEditorSitesComponent {
   get team(): Team {
     return this._team;
   }
+  @Input() maxWidth: number = window.innerWidth - 500;
   @Output() changed = new EventEmitter<Team>();
   selectedSite: Site = new Site()
   sitesForm: FormGroup;
@@ -99,5 +100,9 @@ export class TeamEditorSitesComponent {
         });
       }
     })
+  }
+
+  setWidth(): string {
+    return `width: ${this.maxWidth}px;`;
   }
 }

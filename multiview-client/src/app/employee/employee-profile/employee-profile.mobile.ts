@@ -6,6 +6,7 @@ import { DialogService } from 'src/app/services/dialog-service.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { SiteService } from 'src/app/services/site.service';
 import { EmployeeProfileComponent } from './employee-profile.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-employee-profile-mobile',
@@ -19,9 +20,10 @@ export class EmployeeProfileMobile extends EmployeeProfileComponent {
     protected ss: SiteService,
     protected ds: DialogService,
     private hc: HttpClient,
-    private f: FormBuilder
+    private f: FormBuilder,
+    private d: MatDialog
   ) {
-    super(as, es, ss, ds, hc, f);
+    super(as, es, ss, ds, hc, f, d);
   }
 
   getDisplayClass(): string {

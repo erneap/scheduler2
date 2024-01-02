@@ -1,9 +1,10 @@
 <div class="chart" [style]="widthStyle()">
   <div class="title">Leaves</div>
-  <app-employee-ptoholidays-alt-pto-cell>
+  <app-employee-ptoholidays-alt-pto-cell [width]="width">
   </app-employee-ptoholidays-alt-pto-cell>
   <app-employee-ptoholidays-alt-pto-cell *ngFor="let month of leaveMonths"
-    [leaveMonth]="month"></app-employee-ptoholidays-alt-pto-cell>
+    [leaveMonth]="month" [width]="width">
+  </app-employee-ptoholidays-alt-pto-cell>
   <ng-container *ngIf="annual > 0.0">
     <div class="cell">
       <div class="label">Annual</div>

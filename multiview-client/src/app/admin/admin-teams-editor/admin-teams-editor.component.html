@@ -17,6 +17,6 @@
   <app-add-team *ngIf="selectedTeam.id === ''" (changed)="updateTeam($event)">
   </app-add-team>
   <app-team-editor *ngIf="selectedTeam.id !== ''" [team]="selectedTeam"
-    (changed)="updateTeam($event)">
+    (changed)="updateTeam($event)" [maxWidth]="width">
   </app-team-editor>
 </div>

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { ILeaveDay, LeaveDay } from 'src/app/models/employees/leave';
 import { ISite, Site } from 'src/app/models/sites/site';
-import { LeaveGroup, LeaveMonth } from '../../employee-ptoholidays/employee-ptoholidays.model';
+import { LeaveGroup, LeaveMonth } from '../../employee-ptoholidays-alt/employee-ptoholidays.model';
 
 @Component({
   selector: 'app-employee-leave-request-availability-calendar',

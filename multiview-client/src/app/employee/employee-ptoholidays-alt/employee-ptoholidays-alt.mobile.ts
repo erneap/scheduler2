@@ -15,5 +15,7 @@ export class EmployeePtoholidaysAltMobile
       protected ts: TeamService
     ) {
       super(es, ts);
+      this.maxWidth = window.innerWidth - 1;
+      this.width = this.maxWidth;
     }
 }

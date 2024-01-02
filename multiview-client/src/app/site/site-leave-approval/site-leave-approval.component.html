@@ -97,12 +97,12 @@
   </mat-step>
   <mat-step *ngIf="selected.id > 0">
     <ng-template matStepLabel>Leave Request Calendar</ng-template>
-    <app-employee-leave-request-calendar-desktop 
+    <app-employee-leave-request-calendar 
       [startdate]="selected.leaveRequest.startdate"
       [enddate]="selected.leaveRequest.enddate" [leaveCodes]="workcodes"
       [hours]="stdHours"
       [leavedays]="selected.leaveRequest.requesteddays">
-    </app-employee-leave-request-calendar-desktop>
+    </app-employee-leave-request-calendar>
     <div>
       <button mat-raised-button matStepperPrevious>Back</button>
       <button mat-raised-button matStepperNext
@@ -129,14 +129,14 @@
   </mat-step>
   <mat-step *ngIf="selected.id > 0">
     <ng-template matStepLabel>Shift Coverage</ng-template>
-    <app-employee-leave-request-availability-calendar-desktop
+    <app-employee-leave-request-availability-calendar
       [employee]="employee" 
       [site]="site" 
       [leavedays]="selected.leaveRequest.requesteddays"
       [startdate]="selected.leaveRequest.startdate" 
       [enddate]="selected.leaveRequest.enddate">
-    </app-employee-leave-request-availability-calendar-desktop>
+    </app-employee-leave-request-availability-calendar>
   </mat-step>
 </mat-vertical-stepper>
-<app-employee-leave-request-legend-desktop [leavecodes]="workcodes">
-</app-employee-leave-request-legend-desktop>
+<app-employee-leave-request-legend [leavecodes]="workcodes">
+</app-employee-leave-request-legend>

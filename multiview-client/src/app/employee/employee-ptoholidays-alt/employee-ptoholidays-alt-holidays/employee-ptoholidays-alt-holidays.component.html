@@ -1,9 +1,9 @@
 <div class="chart" [style]="widthStyle()">
   <div class="title">Holidays</div>
-  <app-employee-ptoholidays-alt-holidays-cell>
+  <app-employee-ptoholidays-alt-holidays-cell [width]="width">
   </app-employee-ptoholidays-alt-holidays-cell>
   <app-employee-ptoholidays-alt-holidays-cell *ngFor="let hol of holidays"
-    [holiday]="hol" [year]="year" [activecell]="isActive(hol)">
+    [holiday]="hol" [year]="year" [activecell]="isActive(hol)" [width]="width">
   </app-employee-ptoholidays-alt-holidays-cell>
   <div class="cell">
     <div class="label">Days Left</div>

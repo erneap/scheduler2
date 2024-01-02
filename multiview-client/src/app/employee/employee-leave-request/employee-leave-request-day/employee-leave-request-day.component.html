@@ -1,1 +1,13 @@
-<p>employee-leave-request-day works!</p>
+<div class="cell" [style]="dayStyle">
+  <form [formGroup]="dayForm">
+    <div class="dayOfMonth weekday">{{leave.leavedate.getUTCDate()}}</div>
+    <div class="code">
+      <select class="day-form-field" formControlName="code"
+        [style]="fontStyle"(change)="changeCode()">
+        <option value=""></option>
+        <option *ngFor="let opt of leaveCodes"
+          [value]="opt.id">{{opt.id.toUpperCase()}}</option>
+      </select>
+    </div>
+  </form>
+</div>

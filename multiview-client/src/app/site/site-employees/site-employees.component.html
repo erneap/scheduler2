@@ -1,29 +1,36 @@
-<div class="toplevel" [style]="maxWidth()">
-  <form [formGroup]="employeeSelectionForm" class="flexlayout row topcenter">
-    <mat-form-field appearance="fill" style="width: 250px;">
-      <mat-label>Employee To Edit</mat-label>
-      <mat-select formControlName="employee"
-        (selectionChange)="selectEmployee()">
-        <mat-option value="new">Add New Employee</mat-option>
-        <mat-option *ngFor="let emp of siteEmployees" [value]="emp.id"
-          [class]="optionClass(emp.id)">
-          {{emp.name.getFullName()}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-checkbox formControlName="activeOnly"
-      (change)="setEmployees()">
-      <span style="color: white;">Show Active Only</span>
-    </mat-checkbox>
-    <button mat-icon-button color="warn" matTooltip="Delete employee"
-      (click)="deleteEmployee()" *ngIf="selectedEmployee.id !== 'new'">
-      <mat-icon>delete</mat-icon>
-    </button>
-  </form>
-  <app-new-employee *ngIf="selectedEmployee.id === 'new'"
-    (changed)="updateEmployee($event)" [site]="site">
-  </app-new-employee>
-  <app-site-employee *ngIf="selectedEmployee.id !== 'new'" [site]="site"
-    [employee]="selectedEmployee" (changed)="updateEmployee($event)">
-  </app-site-employee>
+<div class="toplevel" [style]="setMaxWidth()">
+  <div class="employeeListDiv">
+    <div class="employeeList">
+      <div [class]="employeeClass('new')" (click)="selectEmployee('new')">
+        Add New Employee
+      </div>
+      <div *ngFor="let emp of siteEmployees" [class]="employeeClass(emp.id)"
+        (click)="selectEmployee(emp.id)">
+        {{emp.name.getLastFirst()}}
+      </div>
+    </div>
+    <div class="bottomDiv">
+      <form [formGroup]="employeeSelectionForm" class="flexlayout row topcenter">
+        <mat-checkbox formControlName="activeOnly"
+          (change)="setEmployees()">
+          <span style="color: white;">Show Active Only</span>
+        </mat-checkbox>
+        <button mat-icon-button color="warn" matTooltip="Delete employee"
+          (click)="deleteEmployee()" *ngIf="selectedEmployee.id !== 'new'">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </form>
+      <div class="item locked">Account Locked</div>
+      <div class="item expired">Account Passwd Expired</div>
+    </div>
+  </div>
+  <div class="editorDiv" [style]="setEditorWidth()">
+    <app-new-employee *ngIf="selectedEmployee.id === 'new'"
+      (changed)="updateEmployee($event)" [site]="site">
+    </app-new-employee>
+    <app-site-employee *ngIf="selectedEmployee.id !== 'new'" [site]="site"
+      [employee]="selectedEmployee" (changed)="updateEmployee($event)"
+      [maxWidth]="maxWidth">
+    </app-site-employee>
+  </div>
 </div>

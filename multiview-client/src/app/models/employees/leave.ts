@@ -133,7 +133,7 @@ export class LeaveRequest implements ILeaveRequest {
   comments: LeaveRequestComment[];
 
   constructor(lr?: ILeaveRequest) {
-    this.id = (lr) ? lr.id : '';
+    this.id = (lr) ? lr.id : 'new';
     this.employeeid = (lr) ? lr.employeeid : '';
     this.requestDate = (lr) ? new Date(lr.requestDate) : new Date();
     this.primarycode = (lr) ? lr.primarycode : 'V';

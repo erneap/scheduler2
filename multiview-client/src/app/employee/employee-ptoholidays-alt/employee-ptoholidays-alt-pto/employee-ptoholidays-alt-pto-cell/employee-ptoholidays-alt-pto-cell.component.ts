@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { LeaveMonth } from 'src/app/employee/employee-ptoholidays/employee-ptoholidays.model';
+import { LeaveMonth } from 'src/app/employee/employee-ptoholidays-alt/employee-ptoholidays.model';
 
 @Component({
   selector: 'app-employee-ptoholidays-alt-pto-cell',
@@ -15,6 +15,7 @@ export class EmployeePtoholidaysAltPtoCellComponent {
   get leaveMonth(): LeaveMonth {
     return this._month;
   }
+  @Input() width: number = 502;
   months: string[] = new Array("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL",
     "AUG", "SEP", "OCT", "NOV", "DEC");
 
@@ -55,6 +56,10 @@ export class EmployeePtoholidaysAltPtoCellComponent {
       answer += ' projected ';
     }
     return answer;
+  }
+
+  setWidth(): string {
+    return `width: ${this.width}px;`;
   }
 
   getActualHours(): string {

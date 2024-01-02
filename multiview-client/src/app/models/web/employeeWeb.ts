@@ -1,6 +1,6 @@
 import { Variation } from "../employees/assignments";
 import { IEmployee } from "../employees/employee";
-import { LeaveDay } from "../employees/leave";
+import { ILeaveRequest, LeaveDay } from "../employees/leave";
 import { Work } from "../employees/work";
 import { ISite } from "../sites/site";
 import { ITeam } from "../teams/team";
@@ -78,6 +78,7 @@ export interface EmployeeLeaveRequest {
   code: string;
   startdate: Date;
   enddate: Date;
+  comment?: string;
 }
 
 export interface EmployeeLaborCodeRequest {
@@ -107,6 +108,7 @@ export interface InitialResponse {
 
 export interface EmployeeResponse {
   employee?: IEmployee;
+  leaverequest?: ILeaveRequest;
   exception: string;
 }
 

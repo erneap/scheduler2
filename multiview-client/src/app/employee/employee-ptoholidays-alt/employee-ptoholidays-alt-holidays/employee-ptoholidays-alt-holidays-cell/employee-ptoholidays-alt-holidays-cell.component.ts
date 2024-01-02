@@ -47,6 +47,7 @@ export class EmployeePtoholidaysAltHolidaysCellComponent {
   get year(): number {
     return this._year;
   }
+  @Input() width: number = 502;
   cellBackground: string = "background-color: #FFFFFF;"
   referenceDate: string = '';
 
@@ -84,6 +85,10 @@ export class EmployeePtoholidaysAltHolidaysCellComponent {
 
   getHolidayID(): string {
     return `${this.holiday.id.toUpperCase()}${this.holiday.sort}`;
+  }
+
+  setWidth(): string {
+    return `width: ${this.width}px;`;
   }
 
   getStyle(field: string): string {

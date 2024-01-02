@@ -49,11 +49,11 @@ export class EmployeeLeaveRequestEditorComponent {
   get site(): Site {
     return this._site;
   }
+  @Input() maxWidth: number = 1200;
   @Output() changed = new EventEmitter<Employee>();
 
   requests: LeaveRequest[] = [];
   selected: LeaveRequest = new LeaveRequest();
-  public selectionForm: FormGroup;
   editorForm: FormGroup;
   commentForm: FormGroup;
   draft: boolean = false;
@@ -73,13 +73,12 @@ export class EmployeeLeaveRequestEditorComponent {
     private fb: FormBuilder,
     protected dialog: MatDialog
   ) { 
-    this.selectionForm = this.fb.group({
-      leaverequest: ['', [Validators.required]],
-    });
     this.editorForm = this.fb.group({
+      leaverequest: 'new',
       start: [new Date(), [Validators.required]],
       end: [new Date(), [Validators.required]],
       primarycode: ['V', [Validators.required]],
+      comment: '',
     });
     this.commentForm = this.fb.group({
       comment: '',
@@ -113,6 +112,13 @@ export class EmployeeLeaveRequestEditorComponent {
     }
   }
 
+  setMaxWidth(): string {
+    if (this.maxWidth > window.innerWidth- 250) {
+      this.maxWidth = window.innerWidth - 250;
+    }
+    return `width: ${this.maxWidth}px;`;
+  }
+
   setRequests() {
     this.requests = [];
     let now = new Date();
@@ -128,7 +134,7 @@ export class EmployeeLeaveRequestEditorComponent {
   }
 
   setCurrent() {
-    const reqID = this.selectionForm.value.leaverequest;
+    const reqID = this.editorForm.value.leaverequest;
     this.ptohours = 0.0;
     this.holidayhours = 0.0;
     this.approver = false;
@@ -149,6 +155,7 @@ export class EmployeeLeaveRequestEditorComponent {
       this.editorForm.controls['start'].setValue(this.selected.startdate);
       this.editorForm.controls['end'].setValue(this.selected.enddate);
       this.editorForm.controls['primarycode'].setValue(this.selected.primarycode);
+      this.editorForm.controls['comment'].setValue('');
       this.draft = (this.selected.status.toLowerCase() === 'draft')
       const tEmp = this.authService.getUser();
       if (tEmp) {
@@ -207,6 +214,9 @@ export class EmployeeLeaveRequestEditorComponent {
         case "code":
           value = this.editorForm.value.primarycode;
           break;
+        case "comment":
+          value = this.editorForm.value.comment;
+          break;
       }
       this.dialogService.showSpinner();
       if (value !== '' && this.selected) {
@@ -238,6 +248,16 @@ export class EmployeeLeaveRequestEditorComponent {
           }
         });
       }
+    } else if (field.toLowerCase() === 'start') {
+      const start = this.editorForm.value.start;
+      const end = this.editorForm.value.end;
+      if (start) {
+        const dStart = new Date(start);
+        const dEnd = new Date(end);
+        if (dEnd.getTime() < dStart.getTime()) {
+          this.editorForm.controls['end'].setValue(dStart);
+        }
+      }
     }
   }
   
@@ -252,14 +272,18 @@ export class EmployeeLeaveRequestEditorComponent {
       const code = this.editorForm.value.primarycode;
       this.dialogService.showSpinner();
       this.authService.statusMessage = "Processing leave request";
-      this.empService.addNewLeaveRequest(this.employee.id, start, end, code)
+      this.empService.addNewLeaveRequest(this.employee.id, start, end, code, 
+        this.editorForm.value.comment)
       .subscribe({
         next: (data: EmployeeResponse) => {
           this.dialogService.closeSpinner();
           if (data && data !== null) {
             if (data.employee) {
               this.employee = data.employee;
-              if (this.employee.requests) {
+              this.setRequests();
+              if (data.leaverequest) {
+                this.selected = new LeaveRequest(data.leaverequest);
+              } else if (this.employee.requests) {
                 this.employee.requests.forEach(req => {
                   if (req.startdate.getFullYear() === start.getFullYear()
                     && req.startdate.getMonth() === start.getMonth()
@@ -271,11 +295,10 @@ export class EmployeeLeaveRequestEditorComponent {
                     }
                 });
               }
-              this.setRequests();
               this.empService.replaceEmployee(this.employee);
             }
             if (this.selected) {
-              this.selectionForm.controls['leaverequest'].setValue(this.selected.id);
+              this.editorForm.controls['leaverequest'].setValue(this.selected.id);
             }
             this.setCurrent();
           }
@@ -376,6 +399,7 @@ export class EmployeeLeaveRequestEditorComponent {
                   if (data.employee) {
                     this.employee = data.employee;
                     this.selected = new LeaveRequest();
+                    this.editorForm.controls['leaverequest'].setValue('new');
                     this.empService.replaceEmployee(this.employee);
                   }
                   this.setCurrent();

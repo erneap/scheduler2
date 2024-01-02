@@ -173,6 +173,18 @@ export class EmployeeService extends CacheService {
     return this.httpClient.put<EmployeeResponse>(url, data);
   }
 
+  updateEmployeeEmail(empID: string, field: string, oldEmail: string, 
+    newEmail: string): Observable<EmployeeResponse> {
+    const url = '/scheduler/api/v2/employee';
+    const data: UpdateRequest = {
+      id: empID,
+      field: field,
+      optional: oldEmail,
+      value: newEmail,
+    };
+    return this.httpClient.put<EmployeeResponse>(url, data);
+  }
+
   deleteEmployee(empID: string): Observable<Message> {
     const url = `/scheduler/api/v2/employee/${empID}`;
     return this.httpClient.delete<Message>(url);
@@ -193,13 +205,16 @@ export class EmployeeService extends CacheService {
   }
 
   addNewLeaveRequest(empid: string, start: Date, end: Date, 
-    code: string): Observable<EmployeeResponse> {
+    code: string, comment?: string): Observable<EmployeeResponse> {
     const data: EmployeeLeaveRequest = {
       employee: empid,
       code: code,
       startdate: start,
-      enddate: end,
+      enddate: end
     };
+    if (comment) {
+      data.comment = comment;
+    }
     const url = '/scheduler/api/v2/employee/request';
     return this.httpClient.post<EmployeeResponse>(url, data);
   }

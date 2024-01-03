@@ -109,6 +109,7 @@
         </div>
       </div>
       <app-employee-leave-request-calendar 
+        *ngIf="selected.id !== '' && selected.id !== 'new'"
         style="margin-top: 10px;"
         [startdate]="selected.startdate"
         [enddate]="selected.enddate" [leaveCodes]="workcodes"
@@ -117,7 +118,7 @@
       </app-employee-leave-request-calendar>
     </div>
   </mat-step>
-  <mat-step *ngIf="selected.id !== ''">
+  <mat-step *ngIf="selected.id !== '' && selected.id !== 'new'">
     <ng-template matStepLabel>Comments</ng-template>
     <div class="flexlayout row left">
       <form [formGroup]="commentForm">
@@ -146,7 +147,7 @@
         *ngIf="selected.id !== ''">Next</button>
     </div>
   </mat-step>
-  <mat-step *ngIf="selected.id !== ''">
+  <mat-step *ngIf="selected.id !== '' && selected.id !== 'new'">
     <ng-template matStepLabel>Shift Coverage</ng-template>
     <app-employee-leave-request-availability-calendar
       [employee]="employee" [site]="site" [leavedays]="selected.requesteddays"

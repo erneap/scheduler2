@@ -38,6 +38,8 @@ export class EmployeeLeaveRequestEditorComponent {
   public set employee(emp: IEmployee) {
     this._employee = new Employee(emp);
     this.setRequests();
+    this.selected = new LeaveRequest();
+    this.editorForm.controls['leaverequest'].setValue('new');
   }
   get employee(): Employee {
     return this._employee;
@@ -101,6 +103,7 @@ export class EmployeeLeaveRequestEditorComponent {
     if (iEmp) {
       this.employee = iEmp;
     }
+    this.selected = new LeaveRequest();
     this.setCurrent();
     const tEmp = this.authService.getUser();
     if (tEmp) {

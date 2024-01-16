@@ -28,6 +28,7 @@ export class EmployeeScheduleMonthComponent {
   month: Date = new Date();
   startDate: Date = new Date();
   endDate: Date = new Date();
+  lastWork: Date;
 
   workweeks: WorkWeek[] = [];
   monthLabel: string = "";
@@ -48,10 +49,22 @@ export class EmployeeScheduleMonthComponent {
     }
     this.workcenters = [];
     const site = this.siteService.getSite();
+    this.lastWork = new Date(0);
     if (site) {
       site.workcenters.forEach(wc => {
         this.workcenters.push(new Workcenter(wc));
       });
+      if (site.employees) {
+        site.employees.forEach(emp => {
+          if (emp.work) {
+            emp.work.forEach(wk => {
+              if (wk.dateWorked.getTime() > this.lastWork.getTime()) {
+                this.lastWork = new Date(wk.dateWorked);
+              }
+            });
+          }
+        });
+      }
     }
     this.month = new Date();
     this.month = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
@@ -118,7 +131,7 @@ export class EmployeeScheduleMonthComponent {
         this.workweeks.push(workweek);
       }
       if (emp) {
-        let wd = emp.getWorkday(emp.site, start);
+        let wd = emp.getWorkday(emp.site, start, this.lastWork);
         if (!wd) {
           wd = new Workday();
           wd.id = start.getUTCDay();

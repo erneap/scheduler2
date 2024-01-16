@@ -10,6 +10,7 @@ import { Employee, IEmployee } from 'src/app/models/employees/employee';
 export class SiteScheduleRowComponent {
   private _employee: Employee = new Employee();
   private _month: Date = new Date();
+  private _lastWorked: Date = new Date(0);
   @Input()
   public set employee(emp: IEmployee) {
     this._employee = new Employee(emp);
@@ -43,6 +44,14 @@ export class SiteScheduleRowComponent {
   get period(): number {
     return this._period;
   }
+  @Input()
+  public set lastWorked(last: Date) {
+    this._lastWorked = new Date(last);
+    this.setMonth();
+  }
+  get lastWorked(): Date {
+    return this._lastWorked;
+  }
   baseClass: string = 'background-color: white; color: black;';
   workdays: Workday[] = [];
   dates: Date[] = [];
@@ -74,7 +83,8 @@ export class SiteScheduleRowComponent {
     this.dates = [];
     while (start.getTime() < this.endDate.getTime()) {
       this.dates.push(new Date(start));
-      const wd = this.employee.getWorkday(this.employee.site, start);
+      const wd = this.employee.getWorkday(this.employee.site, start, 
+        this.lastWorked);
       if (wd) {
         this.workdays.push(new Workday(wd));
       } else {

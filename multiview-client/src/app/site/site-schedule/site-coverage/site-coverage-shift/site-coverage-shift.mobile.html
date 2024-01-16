@@ -3,6 +3,7 @@
     {{shift.name.toUpperCase()}}
   </div>
   <app-site-coverage-day-mobile *ngFor="let day of dates" 
-    [workcenter]="workcenter" [shift]="shift" [date]="day">
+    [workcenter]="workcenter" [shift]="shift" [date]="day"
+    [lastWorked]="lastWorked">
   </app-site-coverage-day-mobile>
 </div>

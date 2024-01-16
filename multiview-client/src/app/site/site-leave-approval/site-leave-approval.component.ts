@@ -47,6 +47,7 @@ export class SiteLeaveApprovalComponent {
   stdHours: number = 10.0;
   coverageStatus: string = 'OK';
   coverageClass: string = 'label';
+  lastWorked: Date;
 
   constructor(
     protected empService: EmployeeService,
@@ -58,9 +59,21 @@ export class SiteLeaveApprovalComponent {
     private fb: FormBuilder
   ) {
     this.site = new Site();
+    this.lastWorked = new Date(0);
     const iSite = this.siteService.getSite();
     if (iSite) {
       this.site = new Site(iSite);
+      if (this.site.employees) {
+        this.site.employees.forEach(emp => {
+          if (emp.work) {
+            emp.work.forEach(wk => {
+              if (wk.dateWorked.getTime() > this.lastWorked.getTime()) {
+                this.lastWorked = new Date(wk.dateWorked);
+              }
+            })
+          }
+        })
+      }
     }
     const iTeam = this.teamService.getTeam();
     if (iTeam) {
@@ -195,7 +208,7 @@ export class SiteLeaveApprovalComponent {
       displaySize = 0;
       if (this.site.employees) {
         this.site.employees.forEach(emp => {
-          wd = emp.getWorkday(this.site.id, start);
+          wd = emp.getWorkday(this.site.id, start, this.lastWorked);
           codes.forEach(cd => {
             if (wd.workcenter === wkctr && cd.toLowerCase() === wd.code.toLowerCase()) {
               displaySize++;
@@ -203,7 +216,7 @@ export class SiteLeaveApprovalComponent {
           });
         });
       }
-      wd = this.employee.getWorkday(this.site.id, start);
+      wd = this.employee.getWorkday(this.site.id, start, this.lastWorked);
       codes.forEach(cd => {
         if (wd.workcenter === wkctr && cd.toLowerCase() === wd.code.toLowerCase()) {
           displaySize--;

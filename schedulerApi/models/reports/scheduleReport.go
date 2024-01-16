@@ -23,7 +23,7 @@ type ScheduleReport struct {
 	Workcodes   map[string]bool
 	Styles      map[string]int
 	Employees   []employees.Employee
-	Offset      float64
+	LastWorked  time.Time
 }
 
 func (sr *ScheduleReport) Create() error {
@@ -31,6 +31,7 @@ func (sr *ScheduleReport) Create() error {
 	sr.Workcodes = make(map[string]bool)
 	sr.Report = excelize.NewFile()
 	sr.Date = time.Now().UTC()
+	sr.LastWorked = time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC)
 
 	// get employees with assignments for the site that are assigned
 	// during the year.
@@ -48,6 +49,11 @@ func (sr *ScheduleReport) Create() error {
 			wr, err := services.GetEmployeeWork(emp.ID.Hex(), uint(startDate.Year()))
 			if err == nil {
 				emp.Work = append(emp.Work, wr.Work...)
+				for _, wk := range wr.Work {
+					if wk.DateWorked.After(sr.LastWorked) {
+						sr.LastWorked = wk.DateWorked
+					}
+				}
 			}
 			if startDate.Year() != endDate.Year() {
 				wr, err = services.GetEmployeeWork(emp.ID.Hex(), uint(endDate.Year()))
@@ -64,7 +70,6 @@ func (sr *ScheduleReport) Create() error {
 	if err != nil {
 		return err
 	}
-	sr.Offset = 0 //site.UtcOffset
 	sr.Workcenters = append(sr.Workcenters, site.Workcenters...)
 	sort.Sort(sites.ByWorkcenter(sr.Workcenters))
 
@@ -423,7 +428,7 @@ func (sr *ScheduleReport) CreateEmployeeRow(sheetLabel string,
 	current := time.Date(start.Year(), start.Month(), start.Day(), 0, 0, 0, 0,
 		time.UTC)
 	for current.Before(end) {
-		wd := emp.GetWorkday(current, sr.Offset)
+		wd := emp.GetWorkday(current, sr.LastWorked)
 		code := ""
 		styleID = "weekday"
 		if wd != nil && wd.Code != "" {

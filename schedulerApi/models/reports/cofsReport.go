@@ -273,7 +273,7 @@ func (cr *ReportCofS) CreateEmployeeData(count, coCount int,
 				cr.Remarks = append(cr.Remarks, remark)
 			}
 		} else if !bExercise {
-			wd := emp.GetWorkdayActual(current, 0.0)
+			wd := emp.GetWorkdayActual(current)
 			if wd != nil && wd.Code != "" {
 				if wc, ok := cr.LeaveCodes[wd.Code]; ok && wc.AltCode != "" {
 					esb.WriteString(fmt.Sprintf("<%s>%s</%s>", label,

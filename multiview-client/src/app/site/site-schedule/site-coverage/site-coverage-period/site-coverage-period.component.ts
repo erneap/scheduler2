@@ -43,6 +43,7 @@ export class SiteCoveragePeriodComponent {
   startDate: Date = new Date();
   endDate: Date = new Date();
   workcenters: Workcenter[] = [];
+  lastWorked: Date;
 
   constructor(
     protected siteService: SiteService,
@@ -52,6 +53,7 @@ export class SiteCoveragePeriodComponent {
     let now = new Date();
     this.month = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 
       now.getDate()));
+    this.lastWorked = new Date(0);
     this.setMonth();
   }
   
@@ -97,12 +99,25 @@ export class SiteCoveragePeriodComponent {
 
     this.workcenters = [];
     const site = this.siteService.getSite();
-    if (site && site.workcenters && site.workcenters.length > 0) {
-      site.workcenters.forEach(wk => {
-        if (wk.shifts && wk.shifts.length > 0) {
-          this.workcenters.push(new Workcenter(wk));
-        }
-      });
+    if (site) {
+      if (site.workcenters && site.workcenters.length > 0) {
+        site.workcenters.forEach(wk => {
+          if (wk.shifts && wk.shifts.length > 0) {
+            this.workcenters.push(new Workcenter(wk));
+          }
+        });
+      }
+      if (site.employees) {
+        site.employees.forEach(emp => {
+          if (emp.work) {
+            emp.work.forEach(wk => {
+              if (wk.dateWorked.getTime() > this.lastWorked.getTime()) {
+                this.lastWorked = new Date(wk.dateWorked);
+              }
+            });
+          }
+        });
+      }
     }
   }
 

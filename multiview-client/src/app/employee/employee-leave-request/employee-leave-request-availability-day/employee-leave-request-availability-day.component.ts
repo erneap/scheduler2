@@ -13,6 +13,7 @@ export class EmployeeLeaveRequestAvailabilityDayComponent {
   private _leaveday: LeaveDay = new LeaveDay();
   private _employee: Employee = new Employee();
   private _site: Site = new Site();
+  lastWorked: Date = new Date(0)
   @Input()
   public set showdate(show: boolean) {
     this._show = show;
@@ -40,6 +41,17 @@ export class EmployeeLeaveRequestAvailabilityDayComponent {
   @Input()
   public set site(isite: ISite) {
     this._site = new Site(isite);
+    if (this._site.employees) {
+      this._site.employees.forEach(emp => {
+        if (emp.work) {
+          emp.work.forEach(wk => {
+            if (wk.dateWorked.getTime() > this.lastWorked.getTime()) {
+              this.lastWorked = new Date(wk.dateWorked);
+            }
+          });
+        }
+      });
+    }
     this.displayClass = this.coverage();
   }
   get site(): Site {
@@ -98,7 +110,8 @@ export class EmployeeLeaveRequestAvailabilityDayComponent {
     this.displaySize = 0;
     if (this.site.employees) {
       this.site.employees.forEach(emp => {
-        wd = emp.getWorkday(this.site.id, this.leaveday.leavedate);
+        wd = emp.getWorkday(this.site.id, this.leaveday.leavedate, 
+          this.lastWorked);
         codes.forEach(cd => {
           if (wd.workcenter === wkctr && cd.toLowerCase() === wd.code.toLowerCase()) {
             this.displaySize++;
@@ -106,7 +119,8 @@ export class EmployeeLeaveRequestAvailabilityDayComponent {
         });
       });
     }
-    wd = this.employee.getWorkday(this.site.id, this.leaveday.leavedate);
+    wd = this.employee.getWorkday(this.site.id, this.leaveday.leavedate,
+      this.lastWorked);
     codes.forEach(cd => {
       if (wd.workcenter === wkctr && cd.toLowerCase() === wd.code.toLowerCase()) {
         this.displaySize--;

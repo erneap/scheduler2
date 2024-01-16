@@ -1714,7 +1714,7 @@ func (lr *LeaveReport) CreateEmployeeRow(sheetName string,
 		emp.Name.GetLastFirst())
 	col++
 	for current.Before(end) {
-		wd := emp.GetWorkdayActual(current, 0.0)
+		wd := emp.GetWorkdayActual(current)
 		sStyle := ""
 		display := 0.0
 		for _, wc := range lr.Workcodes {

@@ -36,6 +36,14 @@ export class SiteCoverageDayComponent {
   get date(): Date {
     return this._date;
   }
+  private _last: Date = new Date(0)
+  @Input() 
+  public set lastWorked(last: Date) {
+    this._last = new Date(last);
+  }
+  get lastWorked(): Date {
+    return this._last;
+  }
   count = 0;
   dayStyle: string = 'background-color: white;';
 
@@ -49,7 +57,7 @@ export class SiteCoverageDayComponent {
     if (site && site.employees && site.employees.length > 0) {
       site.employees.forEach(iEmp => {
         const emp = new Employee(iEmp);
-        const wd = emp.getWorkday(site.id, this.date)
+        const wd = emp.getWorkday(site.id, this.date, this.lastWorked)
         if (wd.workcenter.toLowerCase() === this.workcenter.toLowerCase()) {
           if (this.shift && this.shift.associatedCodes) {
             this.shift.associatedCodes.forEach(code => {

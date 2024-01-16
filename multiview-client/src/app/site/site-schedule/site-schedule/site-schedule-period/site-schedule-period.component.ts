@@ -54,6 +54,7 @@ export class SiteSchedulePeriodComponent {
   workcenters: Workcenter[] = [];
   startDate: Date = new Date();
   endDate: Date = new Date();
+  lastWorked: Date;
   dates: Date[] = [];
   expanded: string[] = [];
   rowIncrement: number = 0;
@@ -68,6 +69,7 @@ export class SiteSchedulePeriodComponent {
     private httpClient: HttpClient
   ) {
     this.expanded = this.siteService.getExpanded();
+    this.lastWorked = new Date(0);
     if (this.expanded.length === 0 && appState.isDesktop()) {
       const site = this.siteService.getSite();
       if (site) {
@@ -83,6 +85,7 @@ export class SiteSchedulePeriodComponent {
   }
 
   setMonth() {
+    console.log(this.lastWorked);
     this.monthLabel = `${this.months[this.month.getMonth()]} `
       + `${this.month.getFullYear()}`;
     
@@ -141,7 +144,11 @@ export class SiteSchedulePeriodComponent {
                   if (remp.work) {
                     remp.work.forEach(wk => {
                       emp.addWork(wk);
-                    })
+                      const oWk = new Work(wk);
+                      if (oWk.dateWorked.getTime() > this.lastWorked.getTime()) {
+                        this.lastWorked = new Date(oWk.dateWorked);
+                      }
+                    });
                   }
                   this.empService.replaceEmployee(emp);
                 }
@@ -164,7 +171,11 @@ export class SiteSchedulePeriodComponent {
                         if (remp.work) {
                           remp.work.forEach(wk => {
                             emp.addWork(wk);
-                          })
+                            const oWk = new Work(wk);
+                            if (oWk.dateWorked.getTime() > this.lastWorked.getTime()) {
+                              this.lastWorked = new Date(oWk.dateWorked);
+                            }
+                          });
                         }
                       }
                     });

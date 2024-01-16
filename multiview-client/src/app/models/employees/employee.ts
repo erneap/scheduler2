@@ -276,13 +276,12 @@ export class Employee implements IEmployee {
     this.work.sort((a,b) => a.compareTo(b));
   }
 
-  getWorkday(site: string, date: Date): Workday {
+  getWorkday(site: string, date: Date, lastWork: Date): Workday {
     let answer: Workday = new Workday();
     let stdHours: number = 8.0;
     let stdCode: string = '';
     let stdWorkCtr: string = '';
     let actualHours: number = 0.0;
-    let lastWork: Date = new Date(0);
     this.assignments.sort((a,b) => a.compareTo(b));
     this.variations.sort((a,b) => a.compareTo(b));
     if (this.work) {
@@ -291,9 +290,6 @@ export class Employee implements IEmployee {
         && date.getMonth() === wk.dateWorked.getMonth() 
         && date.getDate() === wk.dateWorked.getDate()) {
           actualHours += wk.hours;
-        }
-        if (wk.dateWorked.getTime() > lastWork.getTime()) {
-          lastWork = new Date(wk.dateWorked)
         }
       });
     }

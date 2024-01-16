@@ -10,6 +10,7 @@ export class SiteCoverageShiftComponent {
   private _workcenter: string = ''
   private _shift: Shift = new Shift();
   private _date: Date = new Date();
+  private _lastWorked: Date = new Date(0);
   @Input()
   public set workcenter(wkc: string) {
     this._workcenter = wkc;
@@ -43,6 +44,13 @@ export class SiteCoverageShiftComponent {
   }
   get period(): number {
     return this._period;
+  }
+  @Input()
+  public set lastWorked(last: Date) {
+    this._lastWorked = new Date(last);
+  }
+  public get lastWorked(): Date {
+    return this._lastWorked
   }
 
   constructor() {}

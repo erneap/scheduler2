@@ -36,18 +36,21 @@
           <ng-container *ngFor="let pos of wkctr.positions; let i = index">
             <app-site-schedule-row-mobile *ngFor="let emp of pos.employees"
               [employee]="emp" [index]="i" [month]="month" [period]="period"
+              [lastWorked]="lastWorked"
             ></app-site-schedule-row-mobile>
           </ng-container>
           <ng-container *ngFor="let sft of wkctr.shifts">
             <ng-container *ngIf="showShift(sft.id)">
               <app-site-schedule-row-mobile *ngFor="let emp of sft.employees; let i = index"
-                [employee]="emp" [index]="i" [month]="month" [period]="period">
+                [employee]="emp" [index]="i" [month]="month" [period]="period"
+                [lastWorked]="lastWorked">
               </app-site-schedule-row-mobile>
             </ng-container>
           </ng-container>
           <ng-container *ngIf="wkctr.employees && wkctr.employees.length > 0">
             <app-site-schedule-row-mobile *ngFor="let emp of wkctr.employees; let i = index"
-            [employee]="emp" [index]="i" [month]="month" [period]="period">
+            [employee]="emp" [index]="i" [month]="month" [period]="period"
+            [lastWorked]="lastWorked">
           </app-site-schedule-row-mobile>
           </ng-container>
         </div>

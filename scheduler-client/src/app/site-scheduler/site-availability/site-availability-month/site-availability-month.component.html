@@ -21,8 +21,7 @@
   <ng-container *ngFor="let wkctr of workcenters">
     <div class="workcenter" [style]="wkctrStyle">{{wkctr.name.toUpperCase()}}</div>
     <app-site-availability-shift *ngFor="let shft of wkctr.shifts" 
-      [shift]="shft" [workcenter]="wkctr.id" [month]="month"
-      [lastWorked]="lastWorked">
+      [shift]="shft" [workcenter]="wkctr.id" [month]="month">
     </app-site-availability-shift>
   </ng-container>
 </div>

@@ -107,17 +107,6 @@ export class SiteCoveragePeriodComponent {
           }
         });
       }
-      if (site.employees) {
-        site.employees.forEach(emp => {
-          if (emp.work) {
-            emp.work.forEach(wk => {
-              if (wk.dateWorked.getTime() > this.lastWorked.getTime()) {
-                this.lastWorked = new Date(wk.dateWorked);
-              }
-            });
-          }
-        });
-      }
     }
   }
 

@@ -92,10 +92,10 @@ export class EmployeeScheduleMonthComponent {
     
     const emp = this.employeeService.getEmployee();
     if (emp) {
-      if (!emp.hasWorkForYear(this.startDate.getFullYear())) {
+      if (!emp.hasWorkForYear(this.month.getFullYear())) {
         this.dialogService.showSpinner();
         this.employeeService.retrieveEmployeeWork(emp.id, 
-          this.startDate.getFullYear()).subscribe({
+          this.month.getFullYear()).subscribe({
           next: resp => {
             this.dialogService.closeSpinner();
             if (resp && resp.id !== '') {

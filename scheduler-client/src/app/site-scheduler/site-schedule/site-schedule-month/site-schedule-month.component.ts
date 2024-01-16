@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { Work } from 'src/app/models/employees/work';
 import { Site } from 'src/app/models/sites/site';
 import { Workcenter } from 'src/app/models/sites/workcenter';
@@ -220,5 +221,28 @@ export class SiteScheduleMonthComponent {
       }
     }
     this.setMonth();
+  }
+
+  getLastWorked(iEmp: IEmployee): Date {
+    const emp = new Employee(iEmp);
+    let lastWorked: Date = new Date(0);
+    const iSite = this.siteService.getSite();
+    if (iSite) {
+      const site = new Site(iSite);
+      if (site.employees) {
+        site.employees.forEach(e => {
+          if (e.companyinfo.company === emp.companyinfo.company) {
+            if (e.work) {
+              e.work.forEach(wk => {
+                if (wk.dateWorked.getTime() > lastWorked.getTime()) {
+                  lastWorked = new Date(wk.dateWorked);
+                }
+              });
+            }
+          }
+        });
+      }
+    }
+    return lastWorked;
   }
 }

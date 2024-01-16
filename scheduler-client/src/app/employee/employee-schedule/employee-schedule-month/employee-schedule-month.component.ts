@@ -47,7 +47,6 @@ export class EmployeeScheduleMonthComponent {
   setMonth() {
     this.monthLabel = `${this.months[this.month.getMonth()]} `
       + `${this.month.getFullYear()}`;
-      this.workweeks = [];
     
     // calculate the display's start and end date, where start date is always
     // the sunday before the 1st of the month and end date is the saturday after
@@ -62,29 +61,13 @@ export class EmployeeScheduleMonthComponent {
     while (this.endDate.getUTCDay() !== 0) {
       this.endDate = new Date(this.endDate.getTime() + (24 * 3600000));
     }
-
-    const iSite = this.siteService.getSite();
-    if (iSite) {
-      const site = new Site(iSite);
-      if (site.employees) {
-        site.employees.forEach(emp => {
-          if (emp.work) {
-            emp.work.forEach(wk => {
-              if (wk.dateWorked.getTime() > this.lastWork.getTime()) {
-                this.lastWork = new Date(wk.dateWorked);
-              }
-            });
-          }
-        });
-      }
-    }
     
     const emp = this.employeeService.getEmployee();
     if (emp) {
-      if (!emp.hasWorkForYear(this.startDate.getFullYear())) {
+      if (!emp.hasWorkForYear(this.month.getFullYear())) {
         this.dialogService.showSpinner();
         this.employeeService.retrieveEmployeeWork(emp.id, 
-          this.startDate.getFullYear()).subscribe({
+          this.month.getFullYear()).subscribe({
           next: resp => {
             this.dialogService.closeSpinner();
             if (resp && resp.id !== '') {
@@ -106,9 +89,27 @@ export class EmployeeScheduleMonthComponent {
         this.setWorkweeks(emp);
       }
     }
+
+    const iSite = this.siteService.getSite();
+    if (iSite) {
+      const site = new Site(iSite);
+      if (site.employees) {
+        site.employees.forEach(e => {
+          if (e.work) {
+            e.work.forEach(wk => {
+              if (e.companyinfo.company === emp?.companyinfo.company 
+                && wk.dateWorked.getTime() > this.lastWork.getTime()) {
+                this.lastWork = new Date(wk.dateWorked);
+              }
+            });
+          }
+        });
+      }
+    }
   }
 
   setWorkweeks(emp: Employee) {
+    this.workweeks = [];
     let count = -1;
     let start = new Date(this.startDate);
     var workweek: WorkWeek | undefined;

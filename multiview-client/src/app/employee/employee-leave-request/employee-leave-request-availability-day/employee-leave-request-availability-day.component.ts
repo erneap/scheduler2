@@ -41,17 +41,6 @@ export class EmployeeLeaveRequestAvailabilityDayComponent {
   @Input()
   public set site(isite: ISite) {
     this._site = new Site(isite);
-    if (this._site.employees) {
-      this._site.employees.forEach(emp => {
-        if (emp.work) {
-          emp.work.forEach(wk => {
-            if (wk.dateWorked.getTime() > this.lastWorked.getTime()) {
-              this.lastWorked = new Date(wk.dateWorked);
-            }
-          });
-        }
-      });
-    }
     this.displayClass = this.coverage();
   }
   get site(): Site {

@@ -23,7 +23,6 @@ type ScheduleReport struct {
 	Workcodes   map[string]bool
 	Styles      map[string]int
 	Employees   []employees.Employee
-	LastWorked  time.Time
 }
 
 func (sr *ScheduleReport) Create() error {
@@ -31,7 +30,6 @@ func (sr *ScheduleReport) Create() error {
 	sr.Workcodes = make(map[string]bool)
 	sr.Report = excelize.NewFile()
 	sr.Date = time.Now().UTC()
-	sr.LastWorked = time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC)
 
 	// get employees with assignments for the site that are assigned
 	// during the year.
@@ -49,11 +47,6 @@ func (sr *ScheduleReport) Create() error {
 			wr, err := services.GetEmployeeWork(emp.ID.Hex(), uint(startDate.Year()))
 			if err == nil {
 				emp.Work = append(emp.Work, wr.Work...)
-				for _, wk := range wr.Work {
-					if wk.DateWorked.After(sr.LastWorked) {
-						sr.LastWorked = wk.DateWorked
-					}
-				}
 			}
 			if startDate.Year() != endDate.Year() {
 				wr, err = services.GetEmployeeWork(emp.ID.Hex(), uint(endDate.Year()))
@@ -419,6 +412,41 @@ func (sr *ScheduleReport) CreateEmployeeRow(sheetLabel string,
 	if row%2 == 0 {
 		styleID = "evenday"
 	}
+	lastWorked := time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC)
+	for _, wc := range sr.Workcenters {
+		if len(wc.Positions) > 0 {
+			for _, pos := range wc.Positions {
+				if len(pos.Employees) > 0 {
+					for _, e := range pos.Employees {
+						if strings.EqualFold(e.CompanyInfo.Company, emp.CompanyInfo.Company) &&
+							len(e.Work) > 0 {
+							for _, wk := range e.Work {
+								if wk.DateWorked.After(lastWorked) {
+									lastWorked = wk.DateWorked
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if len(wc.Shifts) > 0 {
+			for _, pos := range wc.Shifts {
+				if len(pos.Employees) > 0 {
+					for _, e := range pos.Employees {
+						if strings.EqualFold(e.CompanyInfo.Company, emp.CompanyInfo.Company) &&
+							len(e.Work) > 0 {
+							for _, wk := range e.Work {
+								if wk.DateWorked.After(lastWorked) {
+									lastWorked = wk.DateWorked
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 	style := sr.Styles[styleID]
 	sr.Report.SetRowHeight(sheetLabel, row, 20)
 	sr.Report.SetCellStyle(sheetLabel, GetCellID(0, row), GetCellID(0, row), style)
@@ -428,7 +456,7 @@ func (sr *ScheduleReport) CreateEmployeeRow(sheetLabel string,
 	current := time.Date(start.Year(), start.Month(), start.Day(), 0, 0, 0, 0,
 		time.UTC)
 	for current.Before(end) {
-		wd := emp.GetWorkday(current, sr.LastWorked)
+		wd := emp.GetWorkday(current, lastWorked)
 		code := ""
 		styleID = "weekday"
 		if wd != nil && wd.Code != "" {

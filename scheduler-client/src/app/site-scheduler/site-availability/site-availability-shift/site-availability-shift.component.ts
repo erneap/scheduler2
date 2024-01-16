@@ -33,14 +33,6 @@ export class SiteAvailabilityShiftComponent {
   get month(): Date {
     return this._date;
   }
-  private _last: Date = new Date(0);
-  @Input()
-  public set lastWorked(last: Date) {
-    this._last = new Date(last);
-  }
-  get lastWorked(): Date {
-    return this._last;
-  }
   dates: Date[] = [];
   startDate: Date = new Date();
   endDate: Date = new Date();

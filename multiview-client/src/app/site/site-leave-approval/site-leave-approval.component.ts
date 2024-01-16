@@ -63,17 +63,6 @@ export class SiteLeaveApprovalComponent {
     const iSite = this.siteService.getSite();
     if (iSite) {
       this.site = new Site(iSite);
-      if (this.site.employees) {
-        this.site.employees.forEach(emp => {
-          if (emp.work) {
-            emp.work.forEach(wk => {
-              if (wk.dateWorked.getTime() > this.lastWorked.getTime()) {
-                this.lastWorked = new Date(wk.dateWorked);
-              }
-            })
-          }
-        })
-      }
     }
     const iTeam = this.teamService.getTeam();
     if (iTeam) {

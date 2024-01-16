@@ -28,6 +28,7 @@ export class SiteScheduleMonthComponent {
   startDate: Date = new Date();
   endDate: Date = new Date();
   dates: Date[] = [];
+  lastWorked: Date = new Date(0);
 
   constructor(
     protected siteService: SiteService,
@@ -82,6 +83,10 @@ export class SiteScheduleMonthComponent {
                   if (remp.work) {
                     remp.work.forEach(wk => {
                       emp.addWork(wk);
+                      const oWk = new Work(wk);
+                      if (oWk.dateWorked.getTime() > this.lastWorked.getTime()) {
+                        this.lastWorked = new Date(oWk.dateWorked);
+                      }
                     })
                   }
                 }

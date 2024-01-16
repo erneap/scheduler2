@@ -67,6 +67,7 @@ export class SiteEmployeeLeaveRequestAvailabilityDayComponent {
     return this._employeeID;
   }
   coverage: number = 0;
+  lastWorked: Date = new Date(0);
 
   constructor(
     protected siteService: SiteService
@@ -95,6 +96,17 @@ export class SiteEmployeeLeaveRequestAvailabilityDayComponent {
         }
       })
     }
+    if (this.site.employees) {
+      this.site.employees.forEach(emp => {
+        if (emp.work) {
+          emp.work.forEach(wk => {
+            if (wk.dateWorked.getTime() > this.lastWorked.getTime()) {
+              this.lastWorked = new Date(wk.dateWorked);
+            }
+          })
+        }
+      });
+    }
     let bUse = false;
     this.request.requesteddays.forEach(day => {
       if (this.date.getFullYear() === day.leavedate.getFullYear()
@@ -107,7 +119,7 @@ export class SiteEmployeeLeaveRequestAvailabilityDayComponent {
     if (this.site.employees) {
       this.site.employees.forEach(iEmp => {
         const emp = new Employee(iEmp);
-        const wd = emp.getWorkday(this.site.id, this.date);
+        const wd = emp.getWorkday(this.site.id, this.date, this.lastWorked);
         if (wd.workcenter.toLowerCase() === this.workcenter.toLowerCase()) {
           if (shift  && shift.associatedCodes) {
             shift.associatedCodes.forEach(ac => {

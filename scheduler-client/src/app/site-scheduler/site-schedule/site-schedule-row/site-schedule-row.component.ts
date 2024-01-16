@@ -34,6 +34,15 @@ export class SiteScheduleRowComponent {
   get month(): Date {
     return this._month;
   }
+  private _last: Date = new Date(0);
+  @Input()
+  public set lastWorked(last: Date) {
+    this._last = new Date(last);
+    this.setMonth();
+  }
+  get lastWorked(): Date {
+    return this._last;
+  }
   baseClass: string = 'background-color: white; color: black;';
   workdays: Workday[] = [];
   dates: Date[] = [];
@@ -55,7 +64,8 @@ export class SiteScheduleRowComponent {
     this.dates = [];
     while (start.getTime() < this.endDate.getTime()) {
       this.dates.push(new Date(start));
-      const wd = this.employee.getWorkday(this.employee.site, start);
+      const wd = this.employee.getWorkday(this.employee.site, start, 
+        this.lastWorked);
       if (wd) {
         this.workdays.push(new Workday(wd));
       } else {

@@ -31,6 +31,7 @@ export class SiteScheduleMonth2Component {
   endDate: Date = new Date();
   dates: Date[] = [];
   expanded: string[] = [];
+  lastWorked: Date = new Date(0);
 
   constructor(
     protected siteService: SiteService,
@@ -73,7 +74,7 @@ export class SiteScheduleMonth2Component {
     this.monthStyle = `width: ${monthWidth}px;`;
     const site = this.siteService.getSite();
     if (site) {
-      if (!site.hasEmployeeWork(start.getFullYear())) {
+      if (!site.hasEmployeeWork(this.startDate.getFullYear())) {
         const team = this.teamService.getTeam();
         let teamid = '';
         if (team) { teamid = team.id; }
@@ -89,7 +90,11 @@ export class SiteScheduleMonth2Component {
                     if (remp.work) {
                       remp.work.forEach(wk => {
                         if (emp.work) {
-                          emp.work.push(new Work(wk));
+                          const oWk = new Work(wk);
+                          if (oWk.dateWorked.getTime() > this.lastWorked.getTime()) {
+                            this.lastWorked = new Date(oWk.dateWorked);
+                          }
+                          emp.work.push(oWk);
                         }
                       })
                     }
@@ -106,6 +111,17 @@ export class SiteScheduleMonth2Component {
           }
         });
       } else {
+        if (site.employees) {
+          site.employees.forEach(emp => {
+            if (emp.work) {
+              emp.work.forEach(wk => {
+                if (wk.dateWorked.getTime() > this.lastWorked.getTime()) {
+                  this.lastWorked = new Date(wk.dateWorked);
+                }
+              })
+            }
+          });
+        }
         this.setWorkcenters(site);
       }
     }

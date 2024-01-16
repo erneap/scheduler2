@@ -22,6 +22,7 @@ export class SiteAvailabilityMonthComponent {
   startDate: Date = new Date();
   endDate: Date = new Date();
   workcenters: Workcenter[] = [];
+  lastWorked: Date = new Date(0);
 
   constructor(
     protected siteService: SiteService
@@ -59,12 +60,25 @@ export class SiteAvailabilityMonthComponent {
 
     this.workcenters = [];
     const site = this.siteService.getSite();
-    if (site && site.workcenters && site.workcenters.length > 0) {
-      site.workcenters.forEach(wk => {
-        if (wk.shifts && wk.shifts.length > 0) {
-          this.workcenters.push(new Workcenter(wk));
-        }
-      });
+    if (site) { 
+      if (site.workcenters && site.workcenters.length > 0) {
+        site.workcenters.forEach(wk => {
+          if (wk.shifts && wk.shifts.length > 0) {
+            this.workcenters.push(new Workcenter(wk));
+          }
+        });
+      }
+      if (site.employees) {
+        site.employees.forEach(emp => {
+          if (emp.work) {
+            emp.work.forEach(wk => {
+              if (wk.dateWorked.getTime() > this.lastWorked.getTime()) {
+                this.lastWorked = new Date(wk.dateWorked);
+              }
+            });
+          }
+        });
+      }
     }
   }
 

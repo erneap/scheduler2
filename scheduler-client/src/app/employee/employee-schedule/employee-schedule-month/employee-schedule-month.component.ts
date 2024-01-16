@@ -10,6 +10,7 @@ import { EmployeeService } from 'src/app/services/employee.service';
 import { SiteService } from 'src/app/services/site.service';
 import { TeamService } from 'src/app/services/team.service';
 import { WorkWeek } from '../employee-schedule.model';
+import { Site } from 'src/app/models/sites/site';
 
 @Component({
   selector: 'app-employee-schedule-month',
@@ -26,6 +27,7 @@ export class EmployeeScheduleMonthComponent {
   month: Date = new Date();
   startDate: Date = new Date();
   endDate: Date = new Date();
+  lastWork: Date = new Date(0);
 
   workweeks: WorkWeek[] = [];
   monthLabel: string = "";
@@ -59,6 +61,22 @@ export class EmployeeScheduleMonthComponent {
       this.month.getMonth() + 1, 1, 0, 0, 0));
     while (this.endDate.getUTCDay() !== 0) {
       this.endDate = new Date(this.endDate.getTime() + (24 * 3600000));
+    }
+
+    const iSite = this.siteService.getSite();
+    if (iSite) {
+      const site = new Site(iSite);
+      if (site.employees) {
+        site.employees.forEach(emp => {
+          if (emp.work) {
+            emp.work.forEach(wk => {
+              if (wk.dateWorked.getTime() > this.lastWork.getTime()) {
+                this.lastWork = new Date(wk.dateWorked);
+              }
+            });
+          }
+        });
+      }
     }
     
     const emp = this.employeeService.getEmployee();
@@ -101,7 +119,7 @@ export class EmployeeScheduleMonthComponent {
         this.workweeks.push(workweek);
       }
       if (emp) {
-        let wd = emp.getWorkday(emp.site, start);
+        let wd = emp.getWorkday(emp.site, start, this.lastWork);
         if (!wd) {
           wd = new Workday();
           wd.id = start.getUTCDay();

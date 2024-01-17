@@ -32,7 +32,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 })
 export class LeaveRequestEditorComponent {
   private _employee: Employee = new Employee();
-  private _request: LeaveRequest = new LeaveRequest();
+  private _request?: LeaveRequest;
   private _approver: boolean = false;
   @Input()
   public set employee(emp: IEmployee) {
@@ -42,11 +42,15 @@ export class LeaveRequestEditorComponent {
     return this._employee;
   }
   @Input()
-  public set request(iReq: ILeaveRequest) {
-    this._request = new LeaveRequest(iReq);
+  public set request(iReq: ILeaveRequest | undefined) {
+    if (iReq) {
+      this._request = new LeaveRequest(iReq);
+    } else {
+      this._request = undefined;
+    }
     this.setCurrent();
   }
-  get request(): LeaveRequest {
+  get request(): LeaveRequest | undefined {
     return this._request;
   }
   @Input()
@@ -74,9 +78,9 @@ export class LeaveRequestEditorComponent {
     protected dialog: MatDialog
   ) { 
     this.editorForm = this.fb.group({
-      start: [new Date(), [Validators.required]],
-      end: [new Date(), [Validators.required]],
-      primarycode: ['V', [Validators.required]],
+      start: ["", [Validators.required]],
+      end: ["", [Validators.required]],
+      primarycode: ['', [Validators.required]],
     });
     this.leaveList = [];
     const team = this.teamService.getTeam();
@@ -103,27 +107,40 @@ export class LeaveRequestEditorComponent {
     this.ptohours = 0.0;
     this.holidayhours = 0.0;
     this.approver = false;
-    this.editorForm.controls['start'].setValue(this.request.startdate);
-    this.editorForm.controls['end'].setValue(this.request.enddate);
-    this.editorForm.controls['primarycode'].setValue(this.request.primarycode);
-    this.draft = (this.request.status.toLowerCase() === 'draft')
-    const tEmp = this.authService.getUser();
-    if (tEmp) {
-      if (this.request.id !== '' && this.employee.id !== tEmp.id 
-        && this.request.status.toLowerCase() === "requested"
-        && this.request.approvedby === ''
-        && (this.authService.hasRole('scheduler')
-        || this.authService.hasRole('siteleader'))) {
-        this.approver = true;
+    if (this.request) {
+      this.editorForm.controls['start'].setValue(this.request.startdate);
+      this.editorForm.controls['end'].setValue(this.request.enddate);
+      this.editorForm.controls['primarycode'].setValue(this.request.primarycode);
+      this.editorForm.controls['start'].enable();
+      this.editorForm.controls['end'].enable();
+      this.editorForm.controls['primarycode'].enable();
+      
+      this.draft = (this.request.status.toLowerCase() === 'draft')
+      const tEmp = this.authService.getUser();
+      if (tEmp) {
+        if (this.request.id !== '' && this.employee.id !== tEmp.id 
+          && this.request.status.toLowerCase() === "requested"
+          && this.request.approvedby === ''
+          && (this.authService.hasRole('scheduler')
+          || this.authService.hasRole('siteleader'))) {
+          this.approver = true;
+        }
       }
+      this.request.requesteddays.forEach(day => {
+        if (day.code.toLowerCase() === 'v') {
+          this.ptohours += day.hours;
+        } else if (day.code.toLowerCase() === 'h') {
+          this.holidayhours += day.hours;
+        }
+      });
+    } else {
+      this.editorForm.controls['start'].setValue("");
+      this.editorForm.controls['end'].setValue("");
+      this.editorForm.controls['primarycode'].setValue("");
+      this.editorForm.controls['start'].disable();
+      this.editorForm.controls['end'].disable();
+      this.editorForm.controls['primarycode'].disable();
     }
-    this.request.requesteddays.forEach(day => {
-      if (day.code.toLowerCase() === 'v') {
-        this.ptohours += day.hours;
-      } else if (day.code.toLowerCase() === 'h') {
-        this.holidayhours += day.hours;
-      }
-    })
   }
 
   getDateString(date: Date): string {
@@ -159,7 +176,7 @@ export class LeaveRequestEditorComponent {
       const site = this.siteService.getSite();
       if (site && site.employees && site.employees.length > 0) {
         site.employees.forEach(emp => {
-          if (emp.id === this.request.approvedby) {
+          if (this.request && emp.id === this.request.approvedby) {
             answer = emp.name.getFullName();
           }
         });
@@ -224,21 +241,23 @@ export class LeaveRequestEditorComponent {
   }
 
   processChange(field: string) {
-    if (this._employee && this.request.id !== '') {
+    if (this._employee && this.request && this.request.id !== '') {
       let value = '';
       switch (field.toLowerCase()) {
         case "start":
-        case "end":
-          field = "dates";
           const start = this.editorForm.value.start;
-          const end = this.editorForm.value.end;
-          if (start && end) {
+          if (start) {
             const dStart = new Date(start);
-            const dEnd = new Date(end);
             value = `${dStart.getUTCFullYear()}-`
               + `${(dStart.getUTCMonth() < 9) ? '0' : ''}${dStart.getUTCMonth() + 1}-`
-              + `${(dStart.getUTCDate() < 10) ? '0' : ''}${dStart.getUTCDate()}|`
-              + `${dEnd.getUTCFullYear()}-`
+              + `${(dStart.getUTCDate() < 10) ? '0' : ''}${dStart.getUTCDate()}`;
+          }
+          break;
+        case "end":
+          const end = this.editorForm.value.end;
+          if (end) {
+            const dEnd = new Date(end);
+            value = `${dEnd.getUTCFullYear()}-`
               + `${(dEnd.getUTCMonth() < 9)? '0' : ''}${dEnd.getUTCMonth() + 1}-`
               + `${(dEnd.getUTCDate() < 10) ? '0' : ''}${dEnd.getUTCDate()}`;
           }
@@ -260,7 +279,7 @@ export class LeaveRequestEditorComponent {
               if (data.employee) {
                 this.employee = data.employee;
                 this.employee.requests.forEach(req => {
-                  if (this.request.id === req.id) {
+                  if (this.request && this.request.id === req.id) {
                     this.request = new LeaveRequest(req)
                   }
                 });
@@ -280,7 +299,8 @@ export class LeaveRequestEditorComponent {
           }
         });
       }
-    } else if (this.request.id === '' && field.toLowerCase() === 'start') {
+    } else if (this.request && this.request.id === '' 
+      && field.toLowerCase() === 'start') {
       const start = this.editorForm.value.start;
       if (start) {
         this.editorForm.controls['end'].setValue(new Date(start));
@@ -289,7 +309,7 @@ export class LeaveRequestEditorComponent {
   }
 
   processDayChange(value: string) {
-    if (value !== '' && this.request.id !== '') {
+    if (value !== '' && this.request && this.request.id !== '') {
       this.authService.statusMessage = "Updating Leave Request Date change";
       this.empService.updateLeaveRequest(this.employee.id, 
         this.request.id, 'day', value)
@@ -300,7 +320,7 @@ export class LeaveRequestEditorComponent {
               if (data.employee) {
                 this.employee = data.employee;
                 this.employee.requests.forEach(req => {
-                  if (this.request.id === req.id) {
+                  if (this.request && this.request.id === req.id) {
                     this.request = new LeaveRequest(req)
                   }
                 });
@@ -325,11 +345,12 @@ export class LeaveRequestEditorComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result.toLowerCase() === 'yes') {
+      if (result.toLowerCase() === 'yes' && this.request) {
         this.dialogService.showSpinner();
         const reqid = this.request.id;
         this.clearRequest();
         if (reqid) {
+          this.request = undefined;
           this.authService.statusMessage = "Deleting Leave Request";
           this.empService.deleteLeaveRequest(this.employee.id, reqid)
             .subscribe({
@@ -339,7 +360,7 @@ export class LeaveRequestEditorComponent {
                   if (data.employee) {
                     this.employee = data.employee;
                     this.employee.requests.forEach(req => {
-                      if (this.request.id === req.id) {
+                      if (this.request && this.request.id === req.id) {
                         this.request = new LeaveRequest(req)
                       }
                     });
@@ -360,17 +381,15 @@ export class LeaveRequestEditorComponent {
   }
 
   clearRequest() {
-    this.request = new LeaveRequest();
-    this.editorForm.controls["start"].setValue(new Date())
-    this.editorForm.controls["end"].setValue(new Date());
-    this.editorForm.controls["primarycode"].setValue('V');
+    this.request = undefined;
+    this.setCurrent();
   }
 
   approveLeaveRequest() {
     this.authService.statusMessage = "Approving Leave Request";
     this.dialogService.showSpinner();
     const iEmp = this.empService.getEmployee();
-    if (iEmp) {
+    if (iEmp && this.request) {
       this.empService.updateLeaveRequest(this.employee.id, this.request.id, 
       "approve", iEmp.id).subscribe({
         next: (data: EmployeeResponse) => {
@@ -379,7 +398,7 @@ export class LeaveRequestEditorComponent {
             if (data.employee) {
               this.employee = data.employee;
               this.employee.requests.forEach(req => {
-                if (this.request.id === req.id) {
+                if (this.request && this.request.id === req.id) {
                   this.request = new LeaveRequest(req)
                 }
               });
@@ -407,7 +426,7 @@ export class LeaveRequestEditorComponent {
         this.authService.statusMessage = "Un-Approving Leave Request";
         this.dialogService.showSpinner();
         const iEmp = this.empService.getEmployee();
-        if (iEmp) {
+        if (iEmp && this.request) {
           this.empService.updateLeaveRequest(this.employee.id, this.request.id, 
             "unapprove", result).subscribe({
             next: (data: EmployeeResponse) => {
@@ -416,7 +435,7 @@ export class LeaveRequestEditorComponent {
                 if (data.employee) {
                   this.employee = data.employee;
                   this.employee.requests.forEach(req => {
-                    if (this.request.id === req.id) {
+                    if (this.request && this.request.id === req.id) {
                       this.request = new LeaveRequest(req)
                     }
                   });
@@ -440,7 +459,7 @@ export class LeaveRequestEditorComponent {
     this.authService.statusMessage = "Submitting for approval";
     this.dialogService.showSpinner();
     const iEmp = this.empService.getEmployee();
-    if (iEmp) {
+    if (iEmp && this.request) {
       this.empService.updateLeaveRequest(this.employee.id, this.request.id, 
       "requested", iEmp.id).subscribe({
         next: (data: EmployeeResponse) => {
@@ -449,7 +468,7 @@ export class LeaveRequestEditorComponent {
             if (data.employee) {
               this.employee = data.employee;
               this.employee.requests.forEach(req => {
-                if (this.request.id === req.id) {
+                if (this.request && this.request.id === req.id) {
                   this.request = new LeaveRequest(req)
                 }
               });

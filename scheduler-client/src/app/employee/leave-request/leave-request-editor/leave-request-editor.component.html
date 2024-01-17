@@ -35,14 +35,8 @@
           </mat-select>
         </mat-form-field>
       </div> 
-      <button mat-icon-button  
-        *ngIf="editorForm.valid && !approver"
-        matTooltip="Add/Update Leave Request"
-        (click)="processNewRequest()">
-        <mat-icon>add</mat-icon>
-      </button> 
       <button mat-icon-button color="accent"
-        *ngIf="request.id !== '' && !approver"
+        *ngIf="request && request.id !== '' && !approver"
         matTooltip="Delete Current Leave Request"
         (click)="deleteRequest()">
         <mat-icon>delete</mat-icon>
@@ -54,7 +48,7 @@
       </button>
     </div>
   </form>
-  <div *ngIf="request.id !== ''" style="padding-bottom: 10px;"
+  <div *ngIf="request && request.id !== ''" style="padding-bottom: 10px;"
     class="flexlayout row center">
     <div class="fxLayout-column-center">
       <div class="fxLayout-row-center">
@@ -106,12 +100,12 @@
       </div>
     </div>
   </div>
-  <div class="comments" *ngIf="request.comments.length > 0">
+  <div class="comments" *ngIf="request && request.comments.length > 0">
     <div *ngFor="let cmt of request.comments">
       <div>{{cmt.getDate()}} - {{cmt.comment}}</div>
     </div>
   </div>
-  <div class="fxLayout-row-center" *ngIf="request.id !== ''">
+  <div class="fxLayout-row-center" *ngIf="request && request.id !== ''">
     <app-leave-request-calendar [leaveCodes]="leaveList" 
       [startdate]="request.startdate"
       [enddate]="request.enddate"

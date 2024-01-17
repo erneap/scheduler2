@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { LeaveRequest } from 'src/app/models/employees/leave';
 import { Workcode } from 'src/app/models/teams/workcode';
+import { EmployeeResponse } from 'src/app/models/web/employeeWeb';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { EmployeeService } from 'src/app/services/employee.service';
@@ -20,7 +21,7 @@ export class LeaveRequestFormComponent {
   @Input()
   public set employee(emp: IEmployee) {
     if (emp.id !== this._employee.id) {
-      this.currentLeaveRequest = new LeaveRequest();
+      this.currentLeaveRequest = undefined;
     }
     this._employee = new Employee(emp);
     this.setCurrent();
@@ -31,8 +32,7 @@ export class LeaveRequestFormComponent {
   @Output() changed = new EventEmitter<Employee>();
 
   currentLeaveRequests: LeaveRequest[] = [];
-  currentLeaveRequest: LeaveRequest = new LeaveRequest();
-  editorForm: FormGroup;
+  currentLeaveRequest?: LeaveRequest = undefined;
   leaveList: Workcode[];
   approver: boolean = false;
 
@@ -45,11 +45,6 @@ export class LeaveRequestFormComponent {
     private fb: FormBuilder,
     protected dialog: MatDialog
   ) { 
-    this.editorForm = this.fb.group({
-      start: [new Date(), [Validators.required]],
-      end: [new Date(), [Validators.required]],
-      primarycode: ['V', [Validators.required]],
-    });
     this.leaveList = [];
     const team = this.teamService.getTeam();
     if (team) {
@@ -100,11 +95,52 @@ export class LeaveRequestFormComponent {
   }
 
   setSelected(id: string) {
-    this.currentLeaveRequests.forEach(lr => {
-      if (lr.id === id) {
-        this.currentLeaveRequest = new LeaveRequest(lr);
-      }
-    });
+    if (id === 'new') {
+      let now = new Date();
+      now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 
+        0, 0, 0, 0))
+      this.dialogService.showSpinner();
+      this.authService.statusMessage = "Processing leave request";
+      this.empService.addNewLeaveRequest(this.employee.id, now, now, 'V')
+        .subscribe({
+          next: (data: EmployeeResponse) => {
+            this.dialogService.closeSpinner();
+            if (data && data !== null) {
+              if (data.employee) {
+                this.employee = data.employee;
+                if (this.employee.requests) {
+                  this.employee.requests.forEach(req => {
+                    if (req.startdate.getFullYear() === now.getFullYear() 
+                      && req.startdate.getMonth() === now.getMonth()
+                      && req.startdate.getDate() === now.getDate()
+                      && req.primarycode === 'V') {
+                      this.currentLeaveRequest = new LeaveRequest(req);
+                    }
+                  });
+                }
+                const iEmp = this.empService.getEmployee();
+                if (iEmp && iEmp.id === this.employee.id) {
+                  this.empService.setEmployee(data.employee);
+                }
+              }
+              this.setCurrent();
+              const site = this.siteService.getSite()
+            }
+            this.authService.statusMessage = "Leave Request processing complete";
+            this.changed.emit(new Employee(this.employee));
+          },
+          error: (err: EmployeeResponse) => {
+            this.dialogService.closeSpinner();
+            this.authService.statusMessage = err.exception;
+          }
+        });
+    } else {
+      this.currentLeaveRequests.forEach(lr => {
+        if (lr.id === id) {
+          this.currentLeaveRequest = new LeaveRequest(lr);
+        }
+      });
+    }
   }
 
   changedEmployee(iEmp: Employee) {
@@ -115,7 +151,7 @@ export class LeaveRequestFormComponent {
 
   getButtonClass(id: string): string {
     let answer = 'employee';
-    if (this.currentLeaveRequest.id === id) {
+    if (this.currentLeaveRequest && this.currentLeaveRequest.id === id) {
       answer += " active";
     }
     return answer;

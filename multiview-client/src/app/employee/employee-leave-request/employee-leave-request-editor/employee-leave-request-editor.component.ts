@@ -38,8 +38,7 @@ export class EmployeeLeaveRequestEditorComponent {
   public set employee(emp: IEmployee) {
     this._employee = new Employee(emp);
     this.setRequests();
-    this.selected = new LeaveRequest();
-    this.editorForm.controls['leaverequest'].setValue('new');
+    this.editorForm.controls['leaverequest'].setValue('');
   }
   get employee(): Employee {
     return this._employee;
@@ -55,7 +54,7 @@ export class EmployeeLeaveRequestEditorComponent {
   @Output() changed = new EventEmitter<Employee>();
 
   requests: LeaveRequest[] = [];
-  selected: LeaveRequest = new LeaveRequest();
+  selected?: LeaveRequest;
   editorForm: FormGroup;
   commentForm: FormGroup;
   draft: boolean = false;
@@ -76,10 +75,10 @@ export class EmployeeLeaveRequestEditorComponent {
     protected dialog: MatDialog
   ) { 
     this.editorForm = this.fb.group({
-      leaverequest: 'new',
-      start: [new Date(), [Validators.required]],
-      end: [new Date(), [Validators.required]],
-      primarycode: ['V', [Validators.required]],
+      leaverequest: '',
+      start: ['', [Validators.required]],
+      end: ['', [Validators.required]],
+      primarycode: ['', [Validators.required]],
       comment: '',
     });
     this.commentForm = this.fb.group({
@@ -103,7 +102,6 @@ export class EmployeeLeaveRequestEditorComponent {
     if (iEmp) {
       this.employee = iEmp;
     }
-    this.selected = new LeaveRequest();
     this.setCurrent();
     const tEmp = this.authService.getUser();
     if (tEmp) {
@@ -137,28 +135,15 @@ export class EmployeeLeaveRequestEditorComponent {
   }
 
   setCurrent() {
-    const reqID = this.editorForm.value.leaverequest;
-    this.ptohours = 0.0;
-    this.holidayhours = 0.0;
-    this.approver = false;
-    if (reqID === '') {
-      this.selected = new LeaveRequest();
-    } else if (reqID === '0') {
-      this.selected = new LeaveRequest();
-      this.selected.id = 'new';
-    } else {
-      this.selected = new LeaveRequest();
-      this.requests.forEach(req => {
-        if (req.id === reqID) {
-          this.selected = new LeaveRequest(req);
-        }
-      });
-    }
     if (this.selected) {
       this.editorForm.controls['start'].setValue(this.selected.startdate);
       this.editorForm.controls['end'].setValue(this.selected.enddate);
       this.editorForm.controls['primarycode'].setValue(this.selected.primarycode);
       this.editorForm.controls['comment'].setValue('');
+      this.editorForm.controls['start'].enable();
+      this.editorForm.controls['end'].enable();
+      this.editorForm.controls['primarycode'].enable();
+      this.editorForm.controls['comment'].enable();
       this.draft = (this.selected.status.toLowerCase() === 'draft')
       const tEmp = this.authService.getUser();
       if (tEmp) {
@@ -170,6 +155,8 @@ export class EmployeeLeaveRequestEditorComponent {
           this.approver = true;
         }
       }
+      this.ptohours = 0.0;
+      this.holidayhours = 0.0;
       this.selected.requesteddays.forEach(day => {
         if (day.code.toLowerCase() === 'v') {
           this.ptohours += day.hours;
@@ -177,6 +164,74 @@ export class EmployeeLeaveRequestEditorComponent {
           this.holidayhours += day.hours;
         }
       });
+    } else {
+      this.editorForm.controls['start'].setValue('');
+      this.editorForm.controls['end'].setValue('');
+      this.editorForm.controls['primarycode'].setValue('');
+      this.editorForm.controls['comment'].setValue('');
+      this.editorForm.controls['start'].disable();
+      this.editorForm.controls['end'].disable();
+      this.editorForm.controls['primarycode'].disable();
+      this.editorForm.controls['comment'].disable();
+      this.draft = true
+      this.approver = false;
+      this.ptohours = 0.0;
+      this.holidayhours = 0.0;
+    }
+  }
+
+  setRequest() {
+    const reqID = this.editorForm.value.leaverequest;
+    this.ptohours = 0.0;
+    this.holidayhours = 0.0;
+    this.approver = false;
+    this.selected = undefined;
+    if (reqID === '0' || reqID === 'new') {
+      let now = new Date();
+      now = new Date(Date.UTC(now.getUTCFullYear(), now.getMonth(), 
+        now.getDate(), 0, 0, 0, 0));
+      this.dialogService.showSpinner();
+      this.empService.addNewLeaveRequest(this.employee.id, now, now, 'V')
+      .subscribe({
+        next: (data: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          if (data && data !== null) {
+            if (data.employee) {
+              const emp = new Employee(data.employee);
+              emp.requests.forEach(eReq => {
+                let found = false;
+                this.employee.requests.forEach(oReq => {
+                  if (oReq.id === eReq.id) {
+                    found = true;
+                  }
+                });
+                if (!found) {
+                  this.selected = new LeaveRequest(eReq);
+                }
+              });
+              this.employee = data.employee;
+              this.empService.replaceEmployee(emp);
+            }
+            if (this.selected) {
+              this.editorForm.controls['leaverequest'].setValue(this.selected.id);
+            }
+            this.setCurrent();
+          }
+          this.authService.statusMessage = "Leave Request processing complete";
+          this.changed.emit(new Employee(this.employee));
+        },
+        error: (err: EmployeeResponse) => {
+          this.dialogService.closeSpinner();
+          this.authService.statusMessage = err.exception;
+        }
+      });
+    } else {
+      this.requests.forEach(req => {
+        if (req.id === reqID) {
+          this.selected = new LeaveRequest(req);
+        }
+      });
+      this.setCurrent();
     }
   }
 
@@ -199,17 +254,19 @@ export class EmployeeLeaveRequestEditorComponent {
       let value = '';
       switch (field.toLowerCase()) {
         case "start":
-        case "end":
-          field = "dates";
           const start = this.editorForm.value.start;
-          const end = this.editorForm.value.end;
-          if (start && end) {
+          if (start) {
             const dStart = new Date(start);
-            const dEnd = new Date(end);
             value = `${dStart.getUTCFullYear()}-`
               + `${(dStart.getUTCMonth() < 9) ? '0' : ''}${dStart.getUTCMonth() + 1}-`
-              + `${(dStart.getUTCDate() < 10) ? '0' : ''}${dStart.getUTCDate()}|`
-              + `${dEnd.getUTCFullYear()}-`
+              + `${(dStart.getUTCDate() < 10) ? '0' : ''}${dStart.getUTCDate()}`;
+          }
+          break;
+        case "end":
+          const end = this.editorForm.value.end;
+          if (end) {
+            const dEnd = new Date(end);
+            value = `${dEnd.getUTCFullYear()}-`
               + `${(dEnd.getUTCMonth() < 9)? '0' : ''}${dEnd.getUTCMonth() + 1}-`
               + `${(dEnd.getUTCDate() < 10) ? '0' : ''}${dEnd.getUTCDate()}`;
           }
@@ -322,7 +379,7 @@ export class EmployeeLeaveRequestEditorComponent {
         + `${this.selected.requestDate.getDate()}/`
         + `${this.selected.requestDate.getFullYear()}`;
     }
-    return 'NEW';
+    return '-';
   }
 
   getApprovedBy(): string {
@@ -331,7 +388,7 @@ export class EmployeeLeaveRequestEditorComponent {
       const site = this.siteService.getSite();
       if (site && site.employees && site.employees.length > 0) {
         site.employees.forEach(emp => {
-          if (emp.id === this.selected.approvedby) {
+          if (this.selected && emp.id === this.selected.approvedby) {
             answer = emp.name.getFullName();
           }
         });
@@ -351,7 +408,7 @@ export class EmployeeLeaveRequestEditorComponent {
   }
 
   processDayChange(value: string) {
-    if (value !== '' && this.selected.id !== '') {
+    if (this.selected && value !== '' && this.selected.id !== '') {
       this.authService.statusMessage = "Updating Leave Request Date change";
       this.empService.updateLeaveRequest(this.employee.id, 
         this.selected.id, 'day', value)
@@ -360,15 +417,16 @@ export class EmployeeLeaveRequestEditorComponent {
             this.dialogService.closeSpinner();
             if (data && data !== null) {
               if (data.employee) {
-                this.employee = data.employee;
-                this.employee.requests.forEach(req => {
-                  if (this.selected.id === req.id) {
-                    this.selected = new LeaveRequest(req)
+                data.employee.requests.forEach(req => {
+                  if (this.selected && this.selected.id === req.id) {
+                    this.selected = new LeaveRequest(req);
+                    this.setCurrent();
                   }
                 });
-                this.empService.replaceEmployee(this.employee);
+                this.employee = data.employee;
+                this.editorForm.controls['leaverequest'].setValue(this.selected?.id)
+                this.empService.replaceEmployee(data.employee);
               }
-              this.setCurrent();
             }
             this.authService.statusMessage = "Update complete";
             this.changed.emit(new Employee(this.employee));
@@ -388,7 +446,7 @@ export class EmployeeLeaveRequestEditorComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result.toLowerCase() === 'yes') {
+      if (this.selected && result.toLowerCase() === 'yes') {
         this.dialogService.showSpinner();
         const reqid = this.selected.id;
         this.clearRequest();
@@ -401,8 +459,8 @@ export class EmployeeLeaveRequestEditorComponent {
                 if (data && data !== null) {
                   if (data.employee) {
                     this.employee = data.employee;
-                    this.selected = new LeaveRequest();
-                    this.editorForm.controls['leaverequest'].setValue('new');
+                    this.selected = undefined
+                    this.editorForm.controls['leaverequest'].setValue('');
                     this.empService.replaceEmployee(this.employee);
                   }
                   this.setCurrent();
@@ -421,17 +479,15 @@ export class EmployeeLeaveRequestEditorComponent {
   }
 
   clearRequest() {
-    this.selected = new LeaveRequest();
-    this.editorForm.controls["start"].setValue(new Date())
-    this.editorForm.controls["end"].setValue(new Date());
-    this.editorForm.controls["primarycode"].setValue('V');
+    this.selected = undefined;
+    this.setCurrent();
   }
 
   approveLeaveRequest() {
     this.authService.statusMessage = "Approving Leave Request";
     this.dialogService.showSpinner();
     const iEmp = this.empService.getEmployee();
-    if (iEmp) {
+    if (this.selected && iEmp) {
       this.empService.updateLeaveRequest(this.employee.id, this.selected.id, 
       "approve", iEmp.id).subscribe({
         next: (data: EmployeeResponse) => {
@@ -440,7 +496,7 @@ export class EmployeeLeaveRequestEditorComponent {
             if (data.employee) {
               this.employee = data.employee;
               this.employee.requests.forEach(req => {
-                if (this.selected.id === req.id) {
+                if (this.selected && this.selected.id === req.id) {
                   this.selected = new LeaveRequest(req)
                 }
               });
@@ -469,7 +525,7 @@ export class EmployeeLeaveRequestEditorComponent {
         this.authService.statusMessage = "Un-Approving Leave Request";
         this.dialogService.showSpinner();
         const iEmp = this.empService.getEmployee();
-        if (iEmp) {
+        if (this.selected && iEmp) {
           this.empService.updateLeaveRequest(this.employee.id, this.selected.id, 
             "unapprove", result).subscribe({
             next: (data: EmployeeResponse) => {
@@ -478,7 +534,7 @@ export class EmployeeLeaveRequestEditorComponent {
                 if (data.employee) {
                   this.employee = data.employee;
                   this.employee.requests.forEach(req => {
-                    if (this.selected.id === req.id) {
+                    if (this.selected && this.selected.id === req.id) {
                       this.selected = new LeaveRequest(req)
                     }
                   });
@@ -503,7 +559,7 @@ export class EmployeeLeaveRequestEditorComponent {
     this.authService.statusMessage = "Submitting for approval";
     this.dialogService.showSpinner();
     const iEmp = this.empService.getEmployee();
-    if (iEmp) {
+    if (this.selected && iEmp) {
       this.empService.updateLeaveRequest(this.employee.id, this.selected.id, 
       "requested", iEmp.id).subscribe({
         next: (data: EmployeeResponse) => {
@@ -512,7 +568,7 @@ export class EmployeeLeaveRequestEditorComponent {
             if (data.employee) {
               this.employee = data.employee;
               this.employee.requests.forEach(req => {
-                if (this.selected.id === req.id) {
+                if (this.selected && this.selected.id === req.id) {
                   this.selected = new LeaveRequest(req)
                 }
               });
@@ -538,7 +594,7 @@ export class EmployeeLeaveRequestEditorComponent {
 
   addComment() {
     const newComment = this.commentForm.value.comment;
-    if (newComment !== '') {
+    if (this.selected && newComment !== '') {
       this.dialogService.showSpinner()
       this.empService.updateLeaveRequest(this.employee.id, this.selected.id, 
         'comment', newComment).subscribe({
@@ -548,7 +604,7 @@ export class EmployeeLeaveRequestEditorComponent {
             if (data.employee) {
               this.employee = data.employee;
               this.employee.requests.forEach(req => {
-                if (this.selected.id === req.id) {
+                if (this.selected && this.selected.id === req.id) {
                   this.selected = new LeaveRequest(req)
                 }
               });

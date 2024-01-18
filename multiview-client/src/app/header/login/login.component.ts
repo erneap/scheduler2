@@ -228,4 +228,8 @@ export class LoginComponent {
       }
     })
   }
+
+  startForgot() {
+    this.router.navigateByUrl('/reset/start');
+  }
 }

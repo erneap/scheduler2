@@ -8,7 +8,7 @@
             <mat-form-field appearance="fill" style="width: 300px;">
               <mat-label>Choose Leave Request</mat-label>
               <mat-select formControlName="leaverequest" required
-                (selectionChange)="setCurrent()">
+                (selectionChange)="setRequest()">
                 <mat-option value="0">Create New Request</mat-option>
                 <mat-option *ngFor="let req of requests" [value]="req.id">
                   {{getRequestLabel(req)}}
@@ -54,29 +54,30 @@
           </div>
           <div class="flexlayout row left">
             <button mat-raised-button color="primary" 
-              *ngIf="selected.id === 'new'"
+              *ngIf="selected && selected.id === 'new'"
               (click)="processNewRequest()">Add</button>
             <button mat-raised-button color="warn"
               (click)="deleteRequest();stepper.previous()"
-              *ngIf="selected.id !== '' && !approver">
+              *ngIf="selected && selected.id !== '' && !approver">
               Delete
             </button>
-            <button mat-raised-button (click)="stepper.reset()" *ngIf="selected.id === ''">
+            <button mat-raised-button (click)="stepper.reset()" 
+              *ngIf="selected && selected.id === ''">
               Start Over
             </button>
             <button mat-raised-button color="primary" 
               (click)="submitForApproval()"
-              *ngIf="selected.status.toLowerCase() === 'draft' && selected.id !== '' && selected.id !== 'new'">
+              *ngIf="selected && selected.status.toLowerCase() === 'draft' && selected.id !== '' && selected.id !== 'new'">
               Submit For Approval
             </button>
             <button mat-raised-button color="accent" 
               (click)="approveLeaveRequest()"
-              *ngIf="selected.status.toLowerCase() === 'requested' && approver">
+              *ngIf="selected && selected.status.toLowerCase() === 'requested' && approver">
               Approve
             </button>
             <button mat-raised-button color="accent" 
               (click)="unapproveLeaveRequest()"
-              *ngIf="selected.status.toLowerCase() === 'requested' && approver">
+              *ngIf="selected && selected.status.toLowerCase() === 'requested' && approver">
               Unapprove
             </button>
           </div>
@@ -88,7 +89,12 @@
           </div>
           <div class="flexlayout row center">
             <div class="label">Current Status:</div>
-            <div class="label">{{selected.status.toUpperCase()}}</div>
+            <ng-container *ngIf="selected">
+              <div class="label">{{selected.status.toUpperCase()}}</div>
+            </ng-container>
+            <ng-container *ngIf="!selected">
+              <div class="label">-</div>
+            </ng-container>
           </div>
           <div class="flexlayout row center">
             <div class="label">Approved By:</div>
@@ -109,6 +115,7 @@
         </div>
       </div>
       <app-employee-leave-request-calendar-mobile
+        *ngIf="selected"
         style="margin-top: 10px;"
         [startdate]="selected.startdate"
         [enddate]="selected.enddate" [leaveCodes]="workcodes"
@@ -117,7 +124,7 @@
       </app-employee-leave-request-calendar-mobile>
     </div>
   </mat-step>
-  <mat-step *ngIf="selected.id !== ''">
+  <mat-step *ngIf="selected && selected.id !== ''">
     <ng-template matStepLabel>Comments</ng-template>
     <div class="comments" [style]="selectorWidth()">
       <div class="flexlayout column topleft">
@@ -147,7 +154,7 @@
         *ngIf="selected.id !== ''">Next</button>
     </div>
   </mat-step>
-  <mat-step *ngIf="selected.id !== ''">
+  <mat-step *ngIf="selected && selected.id !== ''">
     <ng-template matStepLabel>Shift Coverage</ng-template>
     <app-employee-leave-request-availability-calendar-mobile
       [employee]="employee" [site]="site" [leavedays]="selected.requesteddays"

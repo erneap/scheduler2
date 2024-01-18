@@ -8,7 +8,6 @@ import { EmployeeProfileMobile } from './employee/employee-profile/employee-prof
 import { EmployeeNoticesDesktop } from './employee/employee-notices/employee-notices.desktop';
 import { EmployeeNoticesMobile } from './employee/employee-notices/employee-notices.mobile';
 import { EmployeeNoticesTablet } from './employee/employee-notices/employee-notices.tablet';
-import { EmployeeLeaveRequestEditorTablet } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.tablet';
 import { EmployeeLeaveRequestEditorMobile } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.mobile';
 import { EmployeeContactInfoMobile } from './employee/employee-contact-info/employee-contact-info.mobile';
 import { EmployeeSpecialtiesMobile } from './employee/employee-specialties/employee-specialties.mobile';
@@ -38,6 +37,8 @@ import { EmployeeSpecialtiesComponent } from './employee/employee-specialties/em
 import { EmployeeLeaveRequestEditorComponent } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.component';
 import { EmployeeScheduleMonthComponent } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.component';
 import { EmployeeProfileComponent } from './employee/employee-profile/employee-profile.component';
+import { ForgotPasswordComponent } from './header/forgot-password/forgot-password.component';
+import { ForgotPasswordResetComponent } from './header/forgot-password-reset/forgot-password-reset.component';
 
 const desktop_routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -77,6 +78,12 @@ const desktop_routes: Routes = [
       {path: 'add', component: AddTeamComponent }
     ]
   },
+  {path: 'reset',
+    children: [
+      {path: 'start', component: ForgotPasswordComponent},
+      {path: 'finish', component: ForgotPasswordResetComponent },
+    ]
+  },
   {path: 'admin', component: AdminComponent },
   {path: 'query', component: QueryComponent},
   {path: 'reports', component: ReportsSiteComponent },
@@ -113,6 +120,12 @@ const mobile_routes: Routes = [
       }
     ]
   },
+  {path: 'reset',
+    children: [
+      {path: 'start', component: ForgotPasswordComponent},
+      {path: 'finish', component: ForgotPasswordResetComponent },
+    ]
+  },
   {path: 'query', component: QueryMobile},
   {path: '**', redirectTo: 'login'}
 ];
@@ -125,7 +138,7 @@ const tablet_routes: Routes = [
       {path: 'schedule', component: EmployeeScheduleMonthTablet},
       {path: 'ptoholidays', component: EmployeePtoholidaysAltMobile },
       {path: 'profile', component: EmployeeProfileComponent },
-      {path: 'leaverequest', component: EmployeeLeaveRequestEditorTablet },
+      {path: 'leaverequest', component: EmployeeLeaveRequestEditorComponent },
       {path: 'contacts', component: EmployeeContactInfoComponent },
       {path: 'specialties', component: EmployeeSpecialtiesComponent }
     ]
@@ -144,6 +157,12 @@ const tablet_routes: Routes = [
           {path: 'leaveapprover', component: SiteLeaveApprovalComponent }
         ]
       }
+    ]
+  },
+  {path: 'reset',
+    children: [
+      {path: 'start', component: ForgotPasswordComponent},
+      {path: 'finish', component: ForgotPasswordResetComponent },
     ]
   },
   {path: 'query', component: QueryMobile},

@@ -10,7 +10,6 @@ import { EmployeeLeaveRequestCalendarTablet } from './employee-leave-request-cal
 import { EmployeeLeaveRequestCalendarMobile } from './employee-leave-request-calendar/employee-leave-request-calendar.mobile';
 import { EmployeeLeaveRequestEditorComponent } from './employee-leave-request-editor/employee-leave-request-editor.component';
 import { EmployeeLeaveRequestEditorMobile } from './employee-leave-request-editor/employee-leave-request-editor.mobile';
-import { EmployeeLeaveRequestEditorTablet } from './employee-leave-request-editor/employee-leave-request-editor.tablet';
 import { EmployeeLeaveRequestDeletionDialogComponent } from './employee-leave-request-deletion-dialog/employee-leave-request-deletion-dialog.component';
 import { EmployeeLeaveRequestUnapproveDialogComponent } from './employee-leave-request-unapprove-dialog/employee-leave-request-unapprove-dialog.component';
 import { EmployeeLeaveRequestAvailabilityDayComponent } from './employee-leave-request-availability-day/employee-leave-request-availability-day.component';
@@ -35,7 +34,6 @@ import { EmployeeLeaveRequestLegendTablet } from './employee-leave-request-legen
     EmployeeLeaveRequestCalendarMobile,
     EmployeeLeaveRequestEditorComponent,
     EmployeeLeaveRequestEditorMobile,
-    EmployeeLeaveRequestEditorTablet,
     EmployeeLeaveRequestDeletionDialogComponent,
     EmployeeLeaveRequestUnapproveDialogComponent,
     EmployeeLeaveRequestAvailabilityDayComponent,

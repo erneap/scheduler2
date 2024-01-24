@@ -3,6 +3,7 @@ import { SiteCoveragePeriodComponent } from './site-coverage-period.component';
 import { SiteService } from 'src/app/services/site.service';
 import { AppStateService } from 'src/app/services/app-state.service';
 import { Workcenter } from 'src/app/models/sites/workcenter';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-site-coverage-period-mobile',
@@ -12,8 +13,9 @@ import { Workcenter } from 'src/app/models/sites/workcenter';
 export class SiteCoveragePeriodMobile extends SiteCoveragePeriodComponent {
   constructor(
     protected ss: SiteService,
-    protected as: AppStateService
-  ) { super(ss, as); }
+    protected as: AppStateService, 
+    private f: FormBuilder
+  ) { super(ss, as, f); }
 
   override setMonth() {
     this.monthLabel = `${this.months[this.month.getMonth()]} `

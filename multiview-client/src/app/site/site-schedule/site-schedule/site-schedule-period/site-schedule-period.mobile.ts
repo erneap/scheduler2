@@ -9,6 +9,7 @@ import { SiteWorkResponse } from 'src/app/models/web/siteWeb';
 import { Work } from 'src/app/models/employees/work';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { HttpClient } from '@angular/common/http';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-site-schedule-period-mobile',
@@ -23,8 +24,9 @@ export class SiteSchedulePeriodMobile extends SiteSchedulePeriodComponent {
     protected ds: DialogService,
     protected au: AuthService,
     protected as: AppStateService,
-    private hc: HttpClient
-  ) { super(es, ss, ts, ds, au, as, hc); }
+    private hc: HttpClient,
+    private f: FormBuilder
+  ) { super(es, ss, ts, ds, au, as, hc, f); }
 
   override setMonth() {
     this.monthLabel = `${this.months[this.month.getMonth()]} `

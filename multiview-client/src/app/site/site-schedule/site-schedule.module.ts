@@ -24,6 +24,7 @@ import { SiteMidScheduleComponent } from './site-mid-schedule/site-mid-schedule.
 import { SiteMidScheduleMobile } from './site-mid-schedule/site-mid-schedule.mobile';
 import { SiteMidScheduleYearComponent } from './site-mid-schedule/site-mid-schedule-year/site-mid-schedule-year.component';
 import { SiteMidScheduleYearMobile } from './site-mid-schedule/site-mid-schedule-year/site-mid-schedule-year.mobile';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,8 @@ import { SiteMidScheduleYearMobile } from './site-mid-schedule/site-mid-schedule
   imports: [
     CommonModule,
     MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
     EmployeeLeaveRequestModule
   ]
 })

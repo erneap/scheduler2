@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { Work } from 'src/app/models/employees/work';
 import { Site } from 'src/app/models/sites/site';
@@ -59,6 +60,7 @@ export class SiteSchedulePeriodComponent {
   dates: Date[] = [];
   expanded: string[] = [];
   rowIncrement: number = 0;
+  monthForm: FormGroup;
 
   constructor(
     protected empService: EmployeeService,
@@ -67,7 +69,8 @@ export class SiteSchedulePeriodComponent {
     protected dialogService: DialogService,
     protected authService: AuthService,
     protected appState: AppStateService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private fb: FormBuilder
   ) {
     this.expanded = this.siteService.getExpanded();
     this.lastWorked = new Date(0);
@@ -82,6 +85,10 @@ export class SiteSchedulePeriodComponent {
     let now = new Date();
     this.month = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 
       now.getDate()));
+    this.monthForm = this.fb.group({
+      month: this.month.getMonth(),
+      year: this.month.getFullYear(),
+    });
     this.setMonth();
   }
 
@@ -336,6 +343,8 @@ export class SiteSchedulePeriodComponent {
         this.month.getMonth(), 1);
       }
     }
+    this.monthForm.controls["month"].setValue(this.month.getMonth());
+    this.monthForm.controls["year"].setValue(this.month.getFullYear());
     this.setMonth();
   }
 
@@ -460,5 +469,12 @@ export class SiteSchedulePeriodComponent {
       }
     }
     return lastWorked;
+  }
+
+  selectMonth() {
+    let iMonth = Number(this.monthForm.value.month);
+    let iYear = Number(this.monthForm.value.year);
+    this.month = new Date(iYear, iMonth, 1);
+    this.setMonth();
   }
 }

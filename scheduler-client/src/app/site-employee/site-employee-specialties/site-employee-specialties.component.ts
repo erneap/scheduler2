@@ -60,7 +60,6 @@ export class SiteEmployeeSpecialtiesComponent {
     this.team.specialties.forEach(sp => {
       let found = false;
       this.employee.specialties.forEach(esp => {
-        console.log(`${esp.specialtyid} === ${sp.id} - ${esp.specialtyid === sp.id}`);
         if (esp.specialtyid === sp.id) {
           found = true;
           this.specialties.push(new ListItem(`${esp.id}`, sp.name));

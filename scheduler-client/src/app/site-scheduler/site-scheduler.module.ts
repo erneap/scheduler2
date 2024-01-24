@@ -16,6 +16,7 @@ import { SiteMidScheduleComponent } from './site-mid-schedule/site-mid-schedule.
 import { SiteIngestModule } from '../site-ingest/site-ingest.module';
 import { SiteScheduleMonth2Component } from './site-schedule/site-schedule-month2/site-schedule-month2.component';
 import { SiteScheduleAllComponent } from './site-schedule-all/site-schedule-all.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,8 @@ import { SiteScheduleAllComponent } from './site-schedule-all/site-schedule-all.
     SiteSchedulerRoutingModule,
     MaterialModule,
     SiteIngestModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class SiteSchedulerModule { }

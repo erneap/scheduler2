@@ -2,7 +2,18 @@
   <div class="fxLayout-row-center">
     <div class="direction" (click)="changeMonth('down', 'year')">&lt;&lt;</div>
     <div class="direction" (click)="changeMonth('down', 'month')">&lt;</div>
-    <div class="month" [style]="monthStyle">{{monthLabel}}</div>
+    <div class="month" [style]="monthStyle">
+      <form [formGroup]="monthForm" class="flexlayout row center flexgap">
+        <select class="monthSelect" (change)="selectMonth()" 
+          formControlName="month">
+          <option *ngFor="let m of months;let i = index" [value]="i">
+            {{m}}
+          </option>
+        </select>
+        <input type="number" (change)="selectMonth()" formControlName="year"
+        class="yearSelect">
+      </form>
+    </div>
     <div class="direction" (click)="changeMonth('up', 'month')">&gt;</div>
     <div class="direction" (click)="changeMonth('up', 'year')">&gt;&gt;</div>
   </div>

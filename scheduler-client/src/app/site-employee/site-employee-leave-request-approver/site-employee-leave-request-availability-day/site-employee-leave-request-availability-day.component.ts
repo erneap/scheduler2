@@ -62,6 +62,7 @@ export class SiteEmployeeLeaveRequestAvailabilityDayComponent {
   @Input()
   public set employee(id: string) {
     this._employeeID = id;
+    this.getCoverage();
   }
   get employee(): string {
     return this._employeeID;

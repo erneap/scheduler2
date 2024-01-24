@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Workcenter } from 'src/app/models/sites/workcenter';
 import { AppStateService } from 'src/app/services/app-state.service';
 import { SiteService } from 'src/app/services/site.service';
@@ -44,15 +45,21 @@ export class SiteCoveragePeriodComponent {
   endDate: Date = new Date();
   workcenters: Workcenter[] = [];
   lastWorked: Date;
+  monthForm: FormGroup;
 
   constructor(
     protected siteService: SiteService,
-    protected appState: AppStateService
+    protected appState: AppStateService,
+    private fb: FormBuilder
   ) {
     
     let now = new Date();
     this.month = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 
       now.getDate()));
+    this.monthForm = this.fb.group({
+      month: this.month.getMonth(),
+      year: this.month.getFullYear(),
+    });
     this.lastWorked = new Date(0);
     this.setMonth();
   }
@@ -145,6 +152,15 @@ export class SiteCoveragePeriodComponent {
         this.month.getMonth(), 1);
       }
     }
+    this.monthForm.controls["month"].setValue(this.month.getMonth());
+    this.monthForm.controls["year"].setValue(this.month.getFullYear());
+    this.setMonth();
+  }
+
+  selectMonth() {
+    let iMonth = Number(this.monthForm.value.month);
+    let iYear = Number(this.monthForm.value.year);
+    this.month = new Date(iYear, iMonth, 1);
     this.setMonth();
   }
 }

@@ -26,6 +26,7 @@
         <hr />
         <app-site-employee-leave-request-availability-period [site]="site"
           [workcenter]="workcenter" [request]="request"
+          [employee]="requestEmployee.id"
           *ngIf="workcenter !== ''">
         </app-site-employee-leave-request-availability-period>
       </mat-card-content>

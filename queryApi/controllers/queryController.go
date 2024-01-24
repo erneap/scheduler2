@@ -65,7 +65,7 @@ func BasicQuery(c *gin.Context) {
 					ds.Day(), 0, 0, 0, 0, time.UTC)
 			}
 		}
-		wd := emp.GetWorkday(dateAtSite, float64(0))
+		wd := emp.GetWorkday(dateAtSite, now)
 		if wd != nil {
 			for _, wc := range team.Workcodes {
 				if !wc.IsLeave && strings.EqualFold(wc.Id, wd.Code) {
@@ -146,7 +146,7 @@ func ComplexQuery(c *gin.Context) {
 					ds.Day(), 0, 0, 0, 0, time.UTC)
 			}
 		}
-		wd := emp.GetWorkday(dateAtSite, float64(0))
+		wd := emp.GetWorkday(dateAtSite, now)
 		if wd != nil {
 			for _, wc := range team.Workcodes {
 				if !wc.IsLeave && strings.EqualFold(wc.Id, wd.Code) {

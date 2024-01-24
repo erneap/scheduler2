@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { Work } from 'src/app/models/employees/work';
 import { Site } from 'src/app/models/sites/site';
@@ -30,15 +31,21 @@ export class SiteScheduleMonthComponent {
   endDate: Date = new Date();
   dates: Date[] = [];
   lastWorked: Date = new Date(0);
+  monthForm: FormGroup;
 
   constructor(
     protected siteService: SiteService,
     protected teamService: TeamService,
     protected dialogService: DialogService,
-    protected authService: AuthService
+    protected authService: AuthService,
+    private fb: FormBuilder
   ) {
     this.month = new Date();
     this.month = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
+    this.monthForm = this.fb.group({
+      month: this.month.getMonth(),
+      year: this.month.getFullYear(),
+    })
     this.setMonth();
   }
 
@@ -220,6 +227,8 @@ export class SiteScheduleMonthComponent {
         this.month.getMonth(), 1);
       }
     }
+    this.monthForm.controls["month"].setValue(this.month.getMonth());
+    this.monthForm.controls["year"].setValue(this.month.getFullYear());
     this.setMonth();
   }
 
@@ -244,5 +253,12 @@ export class SiteScheduleMonthComponent {
       }
     }
     return lastWorked;
+  }
+
+  selectMonth() {
+    let iMonth = Number(this.monthForm.value.month);
+    let iYear = Number(this.monthForm.value.year);
+    this.month = new Date(iYear, iMonth, 1);
+    this.setMonth();
   }
 }

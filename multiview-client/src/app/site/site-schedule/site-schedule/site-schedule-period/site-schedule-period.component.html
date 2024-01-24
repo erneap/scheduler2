@@ -5,7 +5,18 @@
     <div class="direction" (click)="changeMonth('down', 'month')"
     [style]="directionStyle">&lt;</div>
     <div class="notprint" [style]="printStyle">&nbsp;</div>
-    <div class="month" [style]="monthStyle">{{monthLabel}}</div>
+    <div class="month" [style]="monthStyle">
+      <form [formGroup]="monthForm" class="flexlayout row center flexgap">
+        <select class="monthSelect" (change)="selectMonth()" 
+          formControlName="month">
+          <option *ngFor="let m of months;let i = index" [value]="i">
+            {{m}}
+          </option>
+        </select>
+        <input type="number" (change)="selectMonth()" formControlName="year"
+        class="yearSelect">
+      </form>
+    </div>
     <div class="print" [style]="printStyle" (click)="onSubmit()"
       matTooltip="Create Printable Schedule">
       <mat-icon>print</mat-icon>

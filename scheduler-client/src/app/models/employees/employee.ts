@@ -186,7 +186,8 @@ export class Employee implements IEmployee {
   }
 
   isActive(): boolean {
-    const now = new Date();
+    let now = new Date();
+    now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
     const atSite = this.atSite(this.site, now, now);
 
     return atSite;

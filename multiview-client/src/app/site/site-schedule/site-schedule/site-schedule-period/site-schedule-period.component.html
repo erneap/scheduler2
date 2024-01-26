@@ -9,7 +9,8 @@
       <form [formGroup]="monthForm" class="flexlayout row center flexgap">
         <select class="monthSelect" (change)="selectMonth()" 
           formControlName="month">
-          <option *ngFor="let m of months;let i = index" [value]="i">
+          <option *ngFor="let m of months;let i = index" [value]="i"
+            class="monthSelectOption">
             {{m}}
           </option>
         </select>

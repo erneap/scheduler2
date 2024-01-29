@@ -99,6 +99,7 @@ export class SiteEmployeeLeaveRequestApproverComponent {
 
   onSelect(id: string) {
     this.selected = id;
+    this.workcenter = '';
     const parts = id.split("|");
     if (this.site.employees) {
       this.site.employees.forEach(emp => {
@@ -108,9 +109,14 @@ export class SiteEmployeeLeaveRequestApproverComponent {
               if (req.id === parts[1]) {
                 this.requestEmployee = new Employee(emp);
                 this.request = new LeaveRequest(req);
-                const wd = this.requestEmployee.getWorkdayWOLeaves(
-                  this.site.id, this.request.startdate);
-                this.workcenter = wd.workcenter;
+                let testDate = new Date(this.request.startdate);
+                while (this.workcenter === '' 
+                  && testDate.getTime() <= this.request.enddate.getTime()) {
+                  const wd = this.requestEmployee.getWorkdayWOLeaves(
+                    this.site.id, testDate);
+                  this.workcenter = wd.workcenter;
+                  testDate = new Date(testDate.getTime() + (24 * 3600000));
+                }
               }
             });
           }

@@ -15,6 +15,7 @@ import { MessageService } from 'src/app/services/message.service';
 import { LeaveUnapproveDialogComponent } from './leave-unapprove-dialog/leave-unapprove-dialog.component';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { LeaveRequestMidDenialDialogComponent } from '../leave-request-mid-denial-dialog/leave-request-mid-denial-dialog.component';
 
 @Component({
   selector: 'app-leave-request-editor',
@@ -66,6 +67,7 @@ export class LeaveRequestEditorComponent {
   draft: boolean = false;
   ptohours: number = 0;
   holidayhours: number = 0;
+  maxMids: number = 0;
 
   constructor(
     protected authService: AuthService,
@@ -197,12 +199,21 @@ export class LeaveRequestEditorComponent {
 
   processNewRequest() {
     if (this.editorForm.valid && this.employee) {
+      const maxMids = 0;
       let start = new Date(this.editorForm.value.start);
       let end = new Date(this.editorForm.value.end);
       const code = this.editorForm.value.primarycode;
-      this.dialogService.showSpinner();
-      this.authService.statusMessage = "Processing leave request";
-      this.empService.addNewLeaveRequest(this.employee.id, start, end, code)
+      // check for mid-shift rotation conflict
+      const conflict = this.checkForMidShift(start, end);
+      if (conflict > this.maxMids) {
+        const dialogRef = this.dialog.open(LeaveRequestMidDenialDialogComponent, {
+          width: '250px',
+          height: '150px'
+        });
+      } else {
+        this.dialogService.showSpinner();
+        this.authService.statusMessage = "Processing leave request";
+        this.empService.addNewLeaveRequest(this.employee.id, start, end, code)
         .subscribe({
           next: (data: EmployeeResponse) => {
             this.dialogService.closeSpinner();
@@ -237,67 +248,112 @@ export class LeaveRequestEditorComponent {
             this.authService.statusMessage = err.exception;
           }
         });
+      }
     }
+  }
+
+  checkForMidShift(startDate: Date, endDate: Date): number {
+    let answer = 0;
+    const site = this.siteService.getSite();
+    console.log(site);
+    if (site && !site.showMids) {
+      const now = new Date();
+      if (!this.employee) {
+        const tEmp = this.empService.getEmployee();
+        if (tEmp) {
+          this.employee = tEmp;
+        }
+      }
+      let start:Date = new Date(startDate);
+      while (start.getTime() <= endDate.getTime()) {
+        const wd = this.employee.getWorkday(site.id, start, now);
+        if (wd.code.toLowerCase() === 'm') {
+          answer++;
+        }
+        start = new Date(start.getTime() + (24 * 3600000));
+      }
+    }
+    return answer;
   }
 
   processChange(field: string) {
     if (this._employee && this.request && this.request.id !== '') {
       let value = '';
+      let conflict: number = 0;
+      const start = this.editorForm.value.start;
+      let dStart: Date = new Date(0);
+      if (start) {
+        dStart = new Date(start);
+      }
+      const end = this.editorForm.value.end;
+      let dEnd: Date = new Date(0);
+      if (end) {
+        dEnd = new Date(end);
+      }
       switch (field.toLowerCase()) {
         case "start":
-          const start = this.editorForm.value.start;
           if (start) {
-            const dStart = new Date(start);
             value = `${dStart.getUTCFullYear()}-`
               + `${(dStart.getUTCMonth() < 9) ? '0' : ''}${dStart.getUTCMonth() + 1}-`
               + `${(dStart.getUTCDate() < 10) ? '0' : ''}${dStart.getUTCDate()}`;
           }
+          if (dEnd.getTime() < dStart.getTime()) {
+            dEnd = new Date(dStart);
+          }
+          conflict = this.checkForMidShift(dStart, dEnd);
           break;
         case "end":
           const end = this.editorForm.value.end;
           if (end) {
-            const dEnd = new Date(end);
             value = `${dEnd.getUTCFullYear()}-`
               + `${(dEnd.getUTCMonth() < 9)? '0' : ''}${dEnd.getUTCMonth() + 1}-`
               + `${(dEnd.getUTCDate() < 10) ? '0' : ''}${dEnd.getUTCDate()}`;
           }
+          conflict = this.checkForMidShift(dStart, dEnd);
           break;
         case "code":
           value = this.editorForm.value.primarycode;
           break;
       }
-      this.dialogService.showSpinner();
-      if (value !== '') {
-        this.empService.updateLeaveRequest(this.employee.id, 
-          this.request.id, field, value)
-        .subscribe({
-          next: (data: EmployeeResponse) => {
-            this.authService.statusMessage = "Updating Leave Request "
-              + "Primary Code change";
-            this.dialogService.closeSpinner();
-            if (data && data !== null) {
-              if (data.employee) {
-                this.employee = data.employee;
-                this.employee.requests.forEach(req => {
-                  if (this.request && this.request.id === req.id) {
-                    this.request = new LeaveRequest(req)
-                  }
-                });
-                const iEmp = this.empService.getEmployee();
-                if (iEmp && iEmp.id === this.employee.id) {
-                  this.empService.setEmployee(data.employee);
-                }
-              }
-              this.setCurrent();
-            }
-            this.authService.statusMessage = "Update complete";
-            this.changed.emit(new Employee(this.employee));
-          },
-          error: (err: EmployeeResponse) => {
-            this.dialogService.closeSpinner();
-            this.authService.statusMessage = err.exception;
-          }
+      if (conflict > this.maxMids) {
+        const dialogRef = this.dialog.open(LeaveRequestMidDenialDialogComponent, {
+          width: '400px',
+          height: '200px'
         });
+      } else {
+        this.dialogService.showSpinner();
+        if (value !== '') {
+          this.empService.updateLeaveRequest(this.employee.id, 
+            this.request.id, field, value)
+          .subscribe({
+            next: (data: EmployeeResponse) => {
+              this.authService.statusMessage = "Updating Leave Request "
+                + "Primary Code change";
+              this.dialogService.closeSpinner();
+              if (data && data !== null) {
+                if (data.employee) {
+                  this.employee = data.employee;
+                  this.employee.requests.forEach(req => {
+                    if (this.request && this.request.id === req.id) {
+                      this.request = new LeaveRequest(req)
+                    }
+                  });
+                  const iEmp = this.empService.getEmployee();
+                  if (iEmp && iEmp.id === this.employee.id) {
+                    this.empService.setEmployee(data.employee);
+                  }
+                }
+                this.setCurrent();
+              }
+              this.authService.statusMessage = "Update complete";
+              this.changed.emit(new Employee(this.employee));
+            },
+            error: (err: EmployeeResponse) => {
+              this.dialogService.closeSpinner();
+              this.authService.statusMessage = err.exception;
+            }
+          });
+        }
       }
     } else if (this.request && this.request.id === '' 
       && field.toLowerCase() === 'start') {

@@ -267,9 +267,10 @@ func (cr *ReportCofS) CreateEmployeeData(count, coCount int,
 					hours, label))
 			}
 			if hours > 12.0 {
-				remark := fmt.Sprintf("%s: %s %s received safety briefing for working over 12 hours on %s.",
+				remark := fmt.Sprintf("%s: %s %s received a safety briefing for "+
+					"working over 12 hours on %s.",
 					company, emp.Name.FirstName, emp.Name.LastName,
-					current.Format("02 Jan"))
+					current.Format("02 January"))
 				cr.Remarks = append(cr.Remarks, remark)
 			}
 		} else if !bExercise {

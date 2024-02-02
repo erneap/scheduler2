@@ -29,6 +29,7 @@ import { LeaveUnapproveDialogComponent } from './leave-request/leave-request-edi
 import { EmployeeContactInfoComponent } from './employee-contact-info/employee-contact-info.component';
 import { EmployeeContactInfoItemComponent } from './employee-contact-info/employee-contact-info-item/employee-contact-info-item.component';
 import { EmployeeSpecialtiesComponent } from './employee-specialties/employee-specialties.component';
+import { LeaveRequestMidDenialDialogComponent } from './leave-request/leave-request-mid-denial-dialog/leave-request-mid-denial-dialog.component';
 @NgModule({
   declarations: [
     EmployeeScheduleComponent,
@@ -56,7 +57,8 @@ import { EmployeeSpecialtiesComponent } from './employee-specialties/employee-sp
     LeaveUnapproveDialogComponent,
     EmployeeContactInfoComponent,
     EmployeeContactInfoItemComponent,
-    EmployeeSpecialtiesComponent
+    EmployeeSpecialtiesComponent,
+    LeaveRequestMidDenialDialogComponent
   ],
   imports: [
     CommonModule,

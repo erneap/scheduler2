@@ -71,7 +71,7 @@ export class SiteIngestMonthComponent {
           this.changed.emit(new IngestManualChange('', this.month, 
             'approved'));
         
-          const months: string[] = [ "January", "Febuary", "March", "April", "May",
+          const months: string[] = [ "January", "February", "March", "April", "May",
             "June", "July", "August", "September", "October", "November", "December"];
           if (direction.toLowerCase() === 'down') {
             this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
@@ -104,7 +104,7 @@ export class SiteIngestMonthComponent {
         }
       });
     } else {
-      const months: string[] = [ "January", "Febuary", "March", "April", "May",
+      const months: string[] = [ "January", "February", "March", "April", "May",
         "June", "July", "August", "September", "October", "November", "December"];
       if (direction.toLowerCase() === 'down') {
         this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 

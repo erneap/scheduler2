@@ -20,7 +20,7 @@ import { Employee } from 'src/app/models/employees/employee';
 export class EmployeeScheduleMonthComponent {
   public workcenters: Workcenter[] = [];
   public workcodes: Workcode[] = [];
-  months: string[] = new Array("January", "Febuary", "March", "April", "May",
+  months: string[] = new Array("January", "February", "March", "April", "May",
     "June", "July", "August", "September", "October", "November", "December");
 
   weekdays: string[] = new Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");

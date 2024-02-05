@@ -14,7 +14,7 @@ import { TeamService } from 'src/app/services/team.service';
 export class ReportsSiteCertOfServiceComponent {
   @Input() reportType: string = '';
   reportForm: FormGroup;
-  months: string[] = new Array("January", "Febuary", 
+  months: string[] = new Array("January", "February", 
     "March", "April", "May", "June", "July", "August", 
     "September", "October", "November", "December");
 

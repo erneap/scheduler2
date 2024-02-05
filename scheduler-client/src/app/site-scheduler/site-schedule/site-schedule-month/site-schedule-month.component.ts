@@ -16,7 +16,7 @@ import { TeamService } from 'src/app/services/team.service';
   styleUrls: ['./site-schedule-month.component.scss']
 })
 export class SiteScheduleMonthComponent {
-  months: string[] = new Array("January", "Febuary", "March", "April", "May",
+  months: string[] = new Array("January", "February", "March", "April", "May",
     "June", "July", "August", "September", "October", "November", "December");
 
   weekdays: string[] = new Array("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa");

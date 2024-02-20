@@ -35,6 +35,7 @@ export class SiteScheduleMonth2Component {
   expanded: string[] = [];
   lastWorked: Date = new Date(0);
   monthForm: FormGroup;
+  wkCount: number = 0;
 
   constructor(
     protected siteService: SiteService,
@@ -184,6 +185,7 @@ export class SiteScheduleMonth2Component {
           this.workcenters.forEach(wk => {
             if (wk.id.toLowerCase() === wkctr.toLowerCase()) {
               wk.addEmployee(emp, site.showMids, this.month);
+              wk.setWorkcenterStyles();
             }
           });
         });

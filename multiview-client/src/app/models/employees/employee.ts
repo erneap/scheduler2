@@ -101,7 +101,8 @@ export class Employee implements IEmployee {
   work?: Work[];
   contactinfo: Contact[];
   specialties: Specialty[];
-  emails: string[] 
+  emails: string[];
+  even: boolean;
 
   constructor(emp?: IEmployee) {
     this.id = (emp) ? emp.id : '';
@@ -170,6 +171,7 @@ export class Employee implements IEmployee {
         this.emails.push(em);
       })
     }
+    this.even = false;
   }
 
   compareTo(other?: Employee): number {

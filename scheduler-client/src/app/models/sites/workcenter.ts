@@ -203,4 +203,28 @@ export class Workcenter implements IWorkcenter {
       this.employees.push(emp)
     }
   }
+
+  setWorkcenterStyles(): void {
+    let count = 0;
+    if (this.positions && this.positions.length > 0) {
+      this.positions.forEach(pos => {
+        if (pos.employees && pos.employees.length > 0) {
+          pos.employees.forEach(emp => {
+            count++;
+            emp.even = (count % 2 === 0);
+          });
+        }
+      });
+    }
+    if (this.shifts && this.shifts.length > 0) {
+      this.shifts.forEach(shft => {
+        if (shft.employees && shft.employees.length > 0) {
+          shft.employees.forEach(emp => {
+            count++;
+            emp.even = (count % 2 === 0);
+          });
+        }
+      });
+    }
+  }
 }

@@ -255,6 +255,7 @@ export class SiteSchedulePeriodComponent {
           this.workcenters.forEach(wk => {
             if (wk.id.toLowerCase() === wkctr.toLowerCase()) {
               wk.addEmployee(emp, site.showMids, this.month);
+              wk.setWorkcenterStyles();
             }
           });
         });

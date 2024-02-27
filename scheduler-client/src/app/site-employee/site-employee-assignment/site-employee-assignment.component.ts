@@ -217,6 +217,7 @@ export class SiteEmployeeAssignmentComponent {
   }
 
   getYearFirstDate(date: Date): string {
+    date = new Date(date);
     let answer =  `${date.getFullYear()}-`;
     if (date.getMonth() + 1 < 10) {
       answer += '0';

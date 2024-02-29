@@ -129,6 +129,7 @@ export class SiteEditorReportForecastLaborComponent {
   }
 
   getDateString(date: Date): string {
+    date = new Date(date);
     let answer = `${date.getFullYear()}-`;
     if (date.getMonth() < 9) {
       answer += '0';

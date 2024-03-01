@@ -122,6 +122,5 @@ func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ExcelRow, time.Ti
 			}
 		}
 	}
-
 	return records, startDate, endDate
 }

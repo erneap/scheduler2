@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { MessageRequest, NotificationAck, NotificationResponse } from '../models/web/internalWeb';
 import { Observable, map } from 'rxjs';
 import { CacheService } from './cache.service';
-import { INotification, Notification } from '../employee/employee-notices/employee-notices.model';
+import { INotification, Notification } from '../scheduler/employee/employee-notices/employee-notices.model';
 import { EmployeeService } from './employee.service';
 import { AuthService } from './auth.service';
 

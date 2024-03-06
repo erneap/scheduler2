@@ -29,6 +29,7 @@ export class AuthService extends CacheService {
   teamID: string = '';
   siteID: string = '';
   interval: any;
+  application: string;
 
   authStatus = new BehaviorSubject<IAuthStatus>( 
     this.getItem('authStatus') || defaultAuthStatus);
@@ -42,6 +43,12 @@ export class AuthService extends CacheService {
     private router: Router
   ) {
     super();
+    let app = this.getItem<string>('application');
+    if (app) {
+      this.application = app;
+    } else {
+      this.application = 'scheduler';
+    }
     this.authStatus.subscribe(authStatus => this.setItem('authStatus', 
       authStatus));
     this.authProvider = this.apiAuthProvider;
@@ -282,6 +289,11 @@ export class AuthService extends CacheService {
   initialData(id: string): Observable<InitialResponse> {
     const url = `/scheduler/api/v2/${id}`;
     return this.httpClient.get<InitialResponse>(url);
+  }
+
+  setApplication(app: string) {
+    this.application = app;
+    this.setItem('application', app);
   }
 }
 

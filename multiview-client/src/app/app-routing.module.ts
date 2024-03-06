@@ -1,82 +1,98 @@
 import { NgModule } from '@angular/core';
 import { Router, RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './header/login/login.component';
-import { EmployeeScheduleMonthTablet } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.tablet';
+import { EmployeeScheduleMonthTablet } from './scheduler/employee/employee-schedule/employee-schedule-month/employee-schedule-month.tablet';
 import { AppStateService } from './services/app-state.service';
-import { EmployeeScheduleMonthMobile } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.mobile';
-import { EmployeeProfileMobile } from './employee/employee-profile/employee-profile.mobile';
-import { EmployeeNoticesDesktop } from './employee/employee-notices/employee-notices.desktop';
-import { EmployeeNoticesMobile } from './employee/employee-notices/employee-notices.mobile';
-import { EmployeeNoticesTablet } from './employee/employee-notices/employee-notices.tablet';
-import { EmployeeLeaveRequestEditorMobile } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.mobile';
-import { EmployeeContactInfoMobile } from './employee/employee-contact-info/employee-contact-info.mobile';
-import { EmployeeSpecialtiesMobile } from './employee/employee-specialties/employee-specialties.mobile';
-import { SiteScheduleDesktop } from './site/site-schedule/site-schedule/site-schedule.desktop';
-import { SiteScheduleTablet } from './site/site-schedule/site-schedule/site-schedule.tablet';
-import { SiteScheduleMobile } from './site/site-schedule/site-schedule/site-schedule.mobile';
-import { SiteCoverageComponent } from './site/site-schedule/site-coverage/site-coverage.component';
-import { SiteCoverageMobile } from './site/site-schedule/site-coverage/site-coverage.mobile';
-import { SiteMidScheduleComponent } from './site/site-schedule/site-mid-schedule/site-mid-schedule.component';
-import { SiteMidScheduleMobile } from './site/site-schedule/site-mid-schedule/site-mid-schedule.mobile';
-import { QueryComponent } from './query/query.component';
-import { QueryMobile } from './query/query.mobile';
-import { SiteEmployeesComponent } from './site/site-employees/site-employees.component';
-import { SiteLeaveApprovalComponent } from './site/site-leave-approval/site-leave-approval.component';
-import { SiteLeaveApprovalMobile } from './site/site-leave-approval/site-leave-approval.mobile';
-import { SiteEditorComponent } from './site/site-editor/site-editor.component';
-import { TeamEditorComponent } from './team/team-editor/team-editor.component';
-import { AddTeamComponent } from './team/add-team/add-team.component';
-import { SiteFileIngestComponent } from './site/site-ingest/site-file-ingest/site-file-ingest.component';
-import { EmployeePtoholidaysAltComponent } from './employee/employee-ptoholidays-alt/employee-ptoholidays-alt.component';
-import { EmployeePtoholidaysAltMobile } from './employee/employee-ptoholidays-alt/employee-ptoholidays-alt.mobile';
+import { EmployeeScheduleMonthMobile } from './scheduler/employee/employee-schedule/employee-schedule-month/employee-schedule-month.mobile';
+import { EmployeeProfileMobile } from './scheduler/employee/employee-profile/employee-profile.mobile';
+import { EmployeeNoticesDesktop } from './scheduler/employee/employee-notices/employee-notices.desktop';
+import { EmployeeNoticesMobile } from './scheduler/employee/employee-notices/employee-notices.mobile';
+import { EmployeeNoticesTablet } from './scheduler/employee/employee-notices/employee-notices.tablet';
+import { EmployeeLeaveRequestEditorMobile } from './scheduler/employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.mobile';
+import { EmployeeContactInfoMobile } from './scheduler/employee/employee-contact-info/employee-contact-info.mobile';
+import { EmployeeSpecialtiesMobile } from './scheduler/employee/employee-specialties/employee-specialties.mobile';
+import { SiteScheduleDesktop } from './scheduler/site/site-schedule/site-schedule/site-schedule.desktop';
+import { SiteScheduleTablet } from './scheduler/site/site-schedule/site-schedule/site-schedule.tablet';
+import { SiteScheduleMobile } from './scheduler/site/site-schedule/site-schedule/site-schedule.mobile';
+import { SiteCoverageComponent } from './scheduler/site/site-schedule/site-coverage/site-coverage.component';
+import { SiteCoverageMobile } from './scheduler/site/site-schedule/site-coverage/site-coverage.mobile';
+import { SiteMidScheduleComponent } from './scheduler/site/site-schedule/site-mid-schedule/site-mid-schedule.component';
+import { SiteMidScheduleMobile } from './scheduler/site/site-schedule/site-mid-schedule/site-mid-schedule.mobile';
+import { QueryComponent } from './scheduler/query/query.component';
+import { QueryMobile } from './scheduler/query/query.mobile';
+import { SiteEmployeesComponent } from './scheduler/site/site-employees/site-employees.component';
+import { SiteLeaveApprovalComponent } from './scheduler/site/site-leave-approval/site-leave-approval.component';
+import { SiteLeaveApprovalMobile } from './scheduler/site/site-leave-approval/site-leave-approval.mobile';
+import { SiteEditorComponent } from './scheduler/site/site-editor/site-editor.component';
+import { TeamEditorComponent } from './scheduler/team/team-editor/team-editor.component';
+import { AddTeamComponent } from './scheduler/team/add-team/add-team.component';
+import { SiteFileIngestComponent } from './scheduler/site/site-ingest/site-file-ingest/site-file-ingest.component';
+import { EmployeePtoholidaysAltComponent } from './scheduler/employee/employee-ptoholidays-alt/employee-ptoholidays-alt.component';
+import { EmployeePtoholidaysAltMobile } from './scheduler/employee/employee-ptoholidays-alt/employee-ptoholidays-alt.mobile';
 import { AdminComponent } from './admin/admin.component';
 import { ReportsSiteComponent } from './reports/reports-site/reports-site.component';
 import { LogsComponent } from './logs/logs.component';
-import { EmployeeContactInfoComponent } from './employee/employee-contact-info/employee-contact-info.component';
-import { EmployeeSpecialtiesComponent } from './employee/employee-specialties/employee-specialties.component';
-import { EmployeeLeaveRequestEditorComponent } from './employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.component';
-import { EmployeeScheduleMonthComponent } from './employee/employee-schedule/employee-schedule-month/employee-schedule-month.component';
-import { EmployeeProfileComponent } from './employee/employee-profile/employee-profile.component';
+import { EmployeeContactInfoComponent } from './scheduler/employee/employee-contact-info/employee-contact-info.component';
+import { EmployeeSpecialtiesComponent } from './scheduler/employee/employee-specialties/employee-specialties.component';
+import { EmployeeLeaveRequestEditorComponent } from './scheduler/employee/employee-leave-request/employee-leave-request-editor/employee-leave-request-editor.component';
+import { EmployeeScheduleMonthComponent } from './scheduler/employee/employee-schedule/employee-schedule-month/employee-schedule-month.component';
+import { EmployeeProfileComponent } from './scheduler/employee/employee-profile/employee-profile.component';
 import { ForgotPasswordComponent } from './header/forgot-password/forgot-password.component';
 import { ForgotPasswordResetComponent } from './header/forgot-password-reset/forgot-password-reset.component';
+import { MissionsHomeComponent } from './metrics/missions/home/home.component';
+import { GroundOutageComponent } from './metrics/ground-outage/ground-outage.component';
+import { AuthGuard } from './services/auth-guard.service';
 
 const desktop_routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'notifications', component: EmployeeNoticesDesktop },
-  {path: 'employee',
+  {path: 'scheduler',
     children: [
-      {path: 'schedule', component: EmployeeScheduleMonthComponent},
-      {path: 'ptoholidays', component: EmployeePtoholidaysAltComponent },
-      {path: 'profile', component: EmployeeProfileComponent },
-      {path: 'leaverequest', component: EmployeeLeaveRequestEditorComponent },
-      {path: 'contacts', component: EmployeeContactInfoComponent },
-      {path: 'specialties', component: EmployeeSpecialtiesComponent }
-    ]
-  },
-  {path: 'site', 
-    children: [
-      {path: 'schedule',
+      {path: 'employee',
         children: [
-          {path: 'schedule', component: SiteScheduleDesktop },
-          {path: 'coverage', component: SiteCoverageComponent },
-          {path: 'mids', component: SiteMidScheduleComponent }
+          {path: 'schedule', component: EmployeeScheduleMonthComponent},
+          {path: 'ptoholidays', component: EmployeePtoholidaysAltComponent },
+          {path: 'profile', component: EmployeeProfileComponent },
+          {path: 'leaverequest', component: EmployeeLeaveRequestEditorComponent },
+          {path: 'contacts', component: EmployeeContactInfoComponent },
+          {path: 'specialties', component: EmployeeSpecialtiesComponent }
         ]
       },
-      {path: 'editor',
+      {path: 'site', 
         children: [
-          {path: 'employees', component: SiteEmployeesComponent },
-          {path: 'leaveapprover', component: SiteLeaveApprovalComponent },
-          {path: 'siteeditor', component: SiteEditorComponent }
+          {path: 'schedule',
+            children: [
+              {path: 'schedule', component: SiteScheduleDesktop },
+              {path: 'coverage', component: SiteCoverageComponent },
+              {path: 'mids', component: SiteMidScheduleComponent }
+            ]
+          },
+          {path: 'editor',
+            children: [
+              {path: 'employees', component: SiteEmployeesComponent },
+              {path: 'leaveapprover', component: SiteLeaveApprovalComponent },
+              {path: 'siteeditor', component: SiteEditorComponent }
+            ]
+          },
+          {path: 'ingest', component: SiteFileIngestComponent }
         ]
       },
-      {path: 'ingest', component: SiteFileIngestComponent }
+      {path: 'team',
+        children: [
+          {path: 'editor', component: TeamEditorComponent },
+          {path: 'add', component: AddTeamComponent }
+        ]
+      },
+      {path: 'query', component: QueryComponent},
+      {path: 'reports', component: ReportsSiteComponent }
     ]
   },
-  {path: 'team',
+  {path: 'metrics',
     children: [
-      {path: 'editor', component: TeamEditorComponent },
-      {path: 'add', component: AddTeamComponent }
-    ]
+      { path: 'missions', component: MissionsHomeComponent },
+      { path: 'outages', component: GroundOutageComponent },
+    ],
+    canActivate: [AuthGuard]
   },
   {path: 'reset',
     children: [
@@ -85,8 +101,6 @@ const desktop_routes: Routes = [
     ]
   },
   {path: 'admin', component: AdminComponent },
-  {path: 'query', component: QueryComponent},
-  {path: 'reports', component: ReportsSiteComponent },
   {path: 'logs', component: LogsComponent },
   {path: '**', redirectTo: 'login'}
 ];

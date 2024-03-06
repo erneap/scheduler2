@@ -42,6 +42,7 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
     let roleMatch = true;
     let params: any;
     if (route) {
+      console.log(route.url);
       const expectedRole = route.data['expectedRole'];
       if (expectedRole) {
         roleMatch = this.authService.hasRole(expectedRole)

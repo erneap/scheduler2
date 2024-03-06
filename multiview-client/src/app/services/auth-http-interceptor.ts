@@ -17,9 +17,11 @@ export class AuthHttpInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): 
         Observable<HttpEvent<any>> {
-        const jwt = this.authService.getToken()
+        const jwt = this.authService.getToken();
         const authRequest = req.clone(
-            { setHeaders: { authorization: `${jwt}`}})
+            { setHeaders: { authorization: `${jwt}`}});
+        const route = this.router.routerState.snapshot.url;
+        console.log(route);
         return next.handle(authRequest).pipe(
             catchError((err: HttpErrorResponse) => {
                 if (err.status === 401 

@@ -17,15 +17,18 @@ import { TeamService } from './services/team.service';
 import { interceptorProviders } from './services/spin-interceptor.interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { EmployeeModule } from './employee/employee.module';
-import { SiteModule } from './site/site.module';
-import { QueryModule } from './query/query.module';
+import { EmployeeModule } from './scheduler/employee/employee.module';
+import { SiteModule } from './scheduler/site/site.module';
+import { QueryModule } from './scheduler/query/query.module';
 import { GenericModule } from './generic/generic.module';
-import { TeamModule } from './team/team.module';
+import { TeamModule } from './scheduler/team/team.module';
 import { AdminModule } from './admin/admin.module';
 import { AdminService } from './services/admin.service';
 import { ReportsModule } from './reports/reports.module';
 import { LogsModule } from './logs/logs.module';
+import { MissionService } from './services/mission.service';
+import { OutageService } from './services/outage.service';
+import { MetricsModule } from './metrics/metrics.module';
 
 @NgModule({
   declarations: [
@@ -47,7 +50,8 @@ import { LogsModule } from './logs/logs.module';
     TeamModule,
     AdminModule,
     ReportsModule,
-    LogsModule
+    LogsModule,
+    MetricsModule
   ],
   providers: [
     AdminService,
@@ -56,6 +60,8 @@ import { LogsModule } from './logs/logs.module';
     DialogService,
     EmployeeService,
     LogsService,
+    MissionService,
+    OutageService,
     QueryService,
     SiteService,
     TeamService,

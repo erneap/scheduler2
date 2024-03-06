@@ -5,8 +5,8 @@ import { AdminTeamsEditorComponent } from './admin-teams-editor/admin-teams-edit
 import { AdminDataPurgeToolComponent } from './admin-data-purge-tool/admin-data-purge-tool.component';
 import { MaterialModule } from '../material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TeamModule } from '../team/team.module';
-import { TeamEditorModule } from '../team/team-editor/team-editor.module';
+import { TeamModule } from '../scheduler/team/team.module';
+import { TeamEditorModule } from '../scheduler/team/team-editor/team-editor.module';
 import { AdminUsersToolComponent } from './admin-users-tool/admin-users-tool.component';
 
 

@@ -42,6 +42,7 @@ import { ForgotPasswordResetComponent } from './header/forgot-password-reset/for
 import { MissionsHomeComponent } from './metrics/missions/home/home.component';
 import { GroundOutageComponent } from './metrics/ground-outage/ground-outage.component';
 import { AuthGuard } from './services/auth-guard.service';
+import { MetricsReportsComponent } from './metrics/reports/reports.component';
 
 const desktop_routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -84,13 +85,16 @@ const desktop_routes: Routes = [
         ]
       },
       {path: 'query', component: QueryComponent},
-      {path: 'reports', component: ReportsSiteComponent }
+      {path: 'reports', component: ReportsSiteComponent },
+      {path: '**', redirectTo: '/scheduler/schedule'}
     ]
   },
   {path: 'metrics',
     children: [
       { path: 'missions', component: MissionsHomeComponent },
       { path: 'outages', component: GroundOutageComponent },
+      { path: 'reports', component: MetricsReportsComponent },
+      { path: '**', redirectTo: '/metrics/missions'}
     ],
     canActivate: [AuthGuard]
   },

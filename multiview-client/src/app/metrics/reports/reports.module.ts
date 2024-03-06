@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 
 import { ReportsRoutingModule } from './reports-routing.module';
 import { ReviewSensorComponent } from './review-sensor/review-sensor.component';
-import { MaterialModule } from '../material.module';
 import { ReviewMissionComponent } from './review-mission/review-mission.component';
 import { ReviewSensorsComponent } from './review-sensors/review-sensors.component';
 import { ReviewDayComponent } from './review-day/review-day.component';
 import { ReviewComponent } from './review/review.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule } from 'src/app/material.module';
+import { MetricsReportsComponent } from './reports.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReviewSensorsComponent,
     ReviewMissionComponent,
     ReviewDayComponent,
-    ReviewComponent
+    ReviewComponent,
+    MetricsReportsComponent
   ],
   imports: [
     CommonModule,
@@ -27,4 +29,4 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule
   ]
 })
-export class ReportsModule { }
+export class MetricsReportsModule { }

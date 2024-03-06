@@ -2,16 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ReportType, Report, ReportPeriod } from '../models/systems';
-import { ReportRequest } from '../models/web';
-import { DialogService } from '../services/dialog-service.service';
+import { ReportRequest } from 'src/app/models/web/reports';
+import { DialogService } from 'src/app/services/dialog-service.service';
+import  { Report, ReportPeriod, ReportType } from 'src/app/models/systems/reports'
 
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.scss']
 })
-export class ReportsComponent {
+export class MetricsReportsComponent {
   reports: string[] = ["Msn Summary", "Draw", "XINT"];
   periods: string[] = ['Daily', 'Weekly', 'Monthly', 'Annual', 'Custom'];
   includes: string[] = ['Full Report', 'GEOINT Only', 'SYERS Only', 'DDSA Only', 

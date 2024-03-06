@@ -1,7 +1,7 @@
-<div class="fxLayout fxLayout-column-center">
+<div class="fxLayout flexlayout column center">
     <mat-card style="width:90%;background-color: #3f51b5; color: white;">
         <mat-card-header>
-            <div class="fxLayout-row-center">
+            <div class="flexlayout row center">
                 <h2>Mission Information</h2>
                 <span class="flex-spacer"></span>
                 <button mat-icon-button color="accent"
@@ -17,9 +17,9 @@
                 </button>
             </div>
         </mat-card-header>
-        <mat-card-content class="fxLayout-column-center" style="overflow-y:auto;">
+        <mat-card-content class="flexlayout column center" style="overflow-y:auto;">
             <form [formGroup]="missionForm">
-                <div class="fxLayout-row-center">
+                <div class="flexlayout row center">
                     <div class="formField">
                         <mat-form-field appearance="fill" class="fieldWidth">
                             <mat-label>Mission Date</mat-label>
@@ -57,7 +57,7 @@
                     </div>
                 </div>
                 <ng-container *ngIf="showMission">
-                    <div class="fxLayout-row-center">
+                    <div class="flexlayout row center">
                         <div class="formField">
                             <mat-form-field class="fieldWidth">
                                 <mat-label>Mission Exploitation</mat-label>
@@ -114,7 +114,7 @@
                             </mat-form-field>
                         </div>
                     </div>
-                    <div class="fxLayout-row-center">
+                    <div class="flexlayout row center">
                         <mat-form-field style="width: 800px;">
                             <mat-label>Overall Mission Comments</mat-label>
                             <textarea matInput formControlName="comments"
@@ -122,8 +122,8 @@
                                 (blur)="updateMission('comments')"></textarea>
                         </mat-form-field>
                     </div>
-                    <div class="fxLayout-row-center">
-                        <div class="fxLayout-row-center" style="background-color: white;">
+                    <div class="flexlayout row center">
+                        <div class="flexlayout row center" style="background-color: white;">
                             <mat-radio-group formControlName="isExecuted"
                                 (change)="updateMission('isExecuted')">
                                 <mat-radio-button [value]="'executed'">Executed</mat-radio-button>
@@ -133,8 +133,8 @@
                             </mat-radio-group>
                         </div>
                     </div>
-                    <div class="fxLayout-row-center">
-                        <div class="fxLayout-row-center" style="background-color: white;">
+                    <div class="flexlayout row center">
+                        <div class="flexlayout row center" style="background-color: white;">
                             <h5 style="color: black;">GEOINT Exploitation Sensor:</h5>
                             <mat-radio-group formControlName="imintsensor"
                                 (change)="updateMission('imintsensor')">

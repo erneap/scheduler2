@@ -7,8 +7,8 @@ import { GroundOutageListComponent } from './ground-outage/ground-outage-list/gr
 import { GroundOutageItemComponent } from './ground-outage/ground-outage-item/ground-outage-item.component';
 import { MaterialModule } from '../material.module';
 import { MissionsModule } from './missions/missions.module';
-import { ReportsModule } from '../reports/reports.module';
 import { GroundOutageComponent } from './ground-outage/ground-outage.component';
+import { MetricsReportsModule } from './reports/reports.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +22,7 @@ import { GroundOutageComponent } from './ground-outage/ground-outage.component';
     HttpClientModule,
     MaterialModule,
     MissionsModule,
-    ReportsModule,
+    MetricsReportsModule,
     FormsModule,
     ReactiveFormsModule
   ]

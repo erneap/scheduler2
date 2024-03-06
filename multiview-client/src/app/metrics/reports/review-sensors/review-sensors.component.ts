@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { IMissionSensor, MissionSensor } from 'src/app/models/interfaces';
+import { IMissionSensor } from 'src/app/models/interfaces/missionSensor';
 
 @Component({
   selector: 'app-review-sensors',

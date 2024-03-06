@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { Mission } from 'src/app/models/interfaces';
+import { Mission } from 'src/app/models/interfaces/mission';
 import { ReviewDay } from 'src/app/models/web/reviewDay';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';

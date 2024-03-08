@@ -132,7 +132,7 @@ func IngestFiles(c *gin.Context) {
 	switch strings.ToLower(ingestType) {
 	case "sap":
 		sapIngest := ingest.SAPIngest{
-			Files: files,
+			Files:  files,
 			TeamID: teamid,
 		}
 		records, start, end = sapIngest.Process()
@@ -226,7 +226,11 @@ func IngestFiles(c *gin.Context) {
 							ChargeNumber: rec.ChargeNumber,
 							Extension:    rec.Extension,
 							PayCode:      converters.ParseInt(rec.Preminum),
+							ModifiedTime: rec.Modified,
 							Hours:        rec.Hours,
+						}
+						if rec.Modified {
+							wr.Hours = wr.Hours * -1.0
 						}
 						workrec, err := services.GetEmployeeWork(emp.ID.Hex(),
 							uint(rec.Date.Year()))

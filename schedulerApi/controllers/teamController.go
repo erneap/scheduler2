@@ -478,7 +478,7 @@ func UpdateTeamCompany(c *gin.Context) {
 		return
 	}
 
-	for c, company := range team.Companies {
+	for co, company := range team.Companies {
 		if strings.EqualFold(company.ID, data.AdditionalID) {
 			switch strings.ToLower(data.Field) {
 			case "name":
@@ -497,8 +497,62 @@ func UpdateTeamCompany(c *gin.Context) {
 				if err == nil {
 					company.IngestStartDay = iVal
 				}
+			case "addmod", "addmodperiod":
+				parts := strings.Split(data.Value, "|")
+				if len(parts) > 2 {
+					services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+						fmt.Sprintf("%s Not enough info (Add Mod): data split too short",
+							logmsg))
+					c.JSON(http.StatusBadRequest,
+						web.SiteResponse{Team: nil, Site: nil,
+							Exception: "Not enough info (Add Mod): data split too short"})
+					return
+				}
+				year, err := strconv.Atoi(parts[0])
+				if err != nil {
+					services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+						fmt.Sprintf("%s Converting Add Mod Year: %s", logmsg, err.Error()))
+					c.JSON(http.StatusBadRequest,
+						web.SiteResponse{Team: nil, Site: nil,
+							Exception: "Error with Company Add Mod Period Year: " +
+								err.Error()})
+					return
+				}
+				start, err := time.ParseInLocation("2006-01-02", parts[1], time.UTC)
+				if err != nil {
+					services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+						fmt.Sprintf("%s Converting Add Mod Start: %s", logmsg, err.Error()))
+					c.JSON(http.StatusBadRequest,
+						web.SiteResponse{Team: nil, Site: nil,
+							Exception: "Error with Company Add Mod Period Start: " +
+								err.Error()})
+					return
+				}
+				end, err := time.ParseInLocation("2006-01-02", parts[2], time.UTC)
+				if err != nil {
+					services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+						fmt.Sprintf("%s Converting Add Mod End: %s", logmsg, err.Error()))
+					c.JSON(http.StatusBadRequest,
+						web.SiteResponse{Team: nil, Site: nil,
+							Exception: "Error with Company Add Mod Period End: " +
+								err.Error()})
+					return
+				}
+				company.AddModPeriod(year, start, end)
+			case "delmod", "delmodperiod", "deletemodperiod":
+				year, err := strconv.Atoi(data.Value)
+				if err != nil {
+					services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+						fmt.Sprintf("%s Converting Add Mod Year: %s", logmsg, err.Error()))
+					c.JSON(http.StatusBadRequest,
+						web.SiteResponse{Team: nil, Site: nil,
+							Exception: "Error with Company Add Mod Period Year: " +
+								err.Error()})
+					return
+				}
+				company.DeleteModPeriod(year)
 			}
-			team.Companies[c] = company
+			team.Companies[co] = company
 		}
 	}
 

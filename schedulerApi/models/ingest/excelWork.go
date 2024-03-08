@@ -9,6 +9,7 @@ type ExcelRow struct {
 	ChargeNumber string
 	Extension    string
 	Code         string
+	Modified     bool
 	Hours        float64
 }
 

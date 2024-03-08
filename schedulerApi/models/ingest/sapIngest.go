@@ -114,6 +114,7 @@ func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ExcelRow, time.Ti
 							Preminum:     premimum,
 							ChargeNumber: chargeNo,
 							Extension:    extension,
+							Modified:     strings.Contains(strings.ToLower(description), "modified"),
 							Hours:        hours,
 						}
 						records = append(records, record)

@@ -3,6 +3,7 @@ export interface IWork {
   chargeNumber: string;
   extension: string;
   payCode: number;
+  modtime?: boolean;
   hours: number;
 }
 
@@ -11,6 +12,7 @@ export class Work implements IWork {
   chargeNumber: string;
   extension: string;
   payCode: number;
+  modtime: boolean;
   hours: number;
 
   constructor(wk?: IWork) {
@@ -18,6 +20,7 @@ export class Work implements IWork {
     this.chargeNumber = (wk) ? wk.chargeNumber : '';
     this.extension = (wk) ? wk.extension : '';
     this.payCode = (wk) ? wk.payCode : 1;
+    this.modtime = (wk && wk.modtime) ? wk?.modtime : false;
     this.hours = (wk) ? wk.hours : 0.0;
   }
 

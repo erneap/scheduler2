@@ -408,4 +408,19 @@ export class Employee implements IEmployee {
     }
     return found;
   }
+
+  getModTimeBalance(start: Date, end: Date): number {
+    start = new Date(start);
+    end = new Date(end);
+    let answer = 0.0;
+    if (this.work && start.getTime() > 0) {
+      this.work.forEach(wk => {
+        if (wk.dateWorked.getTime() >= start.getTime() 
+          && wk.dateWorked.getTime() <= end.getTime() && wk.modtime) {
+          answer += wk.hours;
+        }
+      });
+    }
+    return answer;
+  }
 }

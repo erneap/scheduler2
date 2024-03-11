@@ -214,11 +214,9 @@ func GetEmployees(teamid, siteid string) ([]employees.Employee, error) {
 		if work != nil {
 			emp.Work = append(emp.Work, work.Work...)
 		}
-		if now.Month() == time.January {
-			work, _ = GetEmployeeWork(emp.ID.Hex(), uint(now.Year()-1))
-			if work != nil {
-				emp.Work = append(emp.Work, work.Work...)
-			}
+		work, _ = GetEmployeeWork(emp.ID.Hex(), uint(now.Year()-1))
+		if work != nil {
+			emp.Work = append(emp.Work, work.Work...)
 		}
 		sort.Sort(employees.ByEmployeeWork(emp.Work))
 

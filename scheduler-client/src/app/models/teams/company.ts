@@ -71,6 +71,31 @@ export class CompanyHoliday implements ICompanyHoliday {
   }
 }
 
+export interface IModPeriod {
+  year: number;
+  start: Date;
+  end: Date;
+}
+
+export class ModPeriod implements IModPeriod {
+  year: number;
+  start: Date;
+  end: Date;
+
+  constructor(mod?: IModPeriod) {
+    this.year = (mod) ? mod.year : (new Date()).getFullYear();
+    this.start = (mod) ? new Date(mod.start) : new Date(0);
+    this.end = (mod) ? new Date(mod.end) : new Date(0);
+  }
+
+  compareTo(other?: ModPeriod): number {
+    if (other) {
+      return this.year < other.year ? -1 : 1;
+    }
+    return 0;
+  }
+}
+
 export interface ICompany {
   id: string;
   name: string;
@@ -79,6 +104,7 @@ export interface ICompany {
   ingestPeriod?: number;
   startDay?: number;
   holidays?: ICompanyHoliday[];
+  modperiods?: IModPeriod[];
 }
 
 export class Company implements ICompany {
@@ -89,6 +115,7 @@ export class Company implements ICompany {
   ingestPeriod: number;  // default to weekly
   startDay: number;      // default to Saturday
   holidays: CompanyHoliday[];
+  modperiods: ModPeriod[];
 
   constructor(com?: ICompany) {
     this.id = (com) ? com.id : '';
@@ -104,6 +131,13 @@ export class Company implements ICompany {
         this.holidays.push(new CompanyHoliday(hol));
       });
       this.holidays.sort((a,b) => a.compareTo(b));
+    }
+    this.modperiods = [];
+    if (com && com.modperiods && com.modperiods.length > 0) {
+      com.modperiods.forEach(mod => {
+        this.modperiods.push(new ModPeriod(mod));
+      });
+      this.modperiods.sort((a,b) => a.compareTo(b))
     }
   }
 

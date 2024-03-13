@@ -13,6 +13,8 @@ import { SiteForecastReportPeriodsComponent } from './site-forecast-report-edito
 import { SiteForecastReportLaborCodesComponent } from './site-forecast-report-editor/site-forecast-report-labor-codes/site-forecast-report-labor-codes.component';
 import { SiteReportEditorComponent } from './site-report-editor/site-report-editor.component';
 import { SiteCofsReportEditorComponent } from './site-cofs-report-editor/site-cofs-report-editor.component';
+import { SiteModReportViewComponent } from './site-mod-report-view/site-mod-report-view.component';
+import { SiteModReportViewEmployeeComponent } from './site-mod-report-view/site-mod-report-view-employee/site-mod-report-view-employee.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { SiteCofsReportEditorComponent } from './site-cofs-report-editor/site-co
        SiteForecastReportPeriodsComponent,
        SiteForecastReportLaborCodesComponent,
        SiteReportEditorComponent,
-       SiteCofsReportEditorComponent
+       SiteCofsReportEditorComponent,
+       SiteModReportViewComponent,
+       SiteModReportViewEmployeeComponent
   ],
   imports: [
     CommonModule,

@@ -210,7 +210,8 @@ export class Employee implements IEmployee {
       this.work.forEach(wk => {
         if (wk.dateWorked.getFullYear() === date.getFullYear() 
           && wk.dateWorked.getMonth() === date.getMonth()
-          && wk.dateWorked.getDate() === date.getDate()) {
+          && wk.dateWorked.getDate() === date.getDate()
+          && !wk.modtime) {
           work += wk.hours;
         }
       });
@@ -409,14 +410,32 @@ export class Employee implements IEmployee {
     return found;
   }
 
-  getModTimeBalance(start: Date, end: Date): number {
+  showModTime(start: Date, end: Date): boolean {
     start = new Date(start);
     end = new Date(end);
-    let answer = 0.0;
-    if (this.work && start.getTime() > 0) {
-      this.work.forEach(wk => {
+    let balance = 0.0;
+    if (this.work) {
+      for (let i=0; i < this.work.length; i++) {
+        const wk = this.work[i];
         if (wk.dateWorked.getTime() >= start.getTime() 
-          && wk.dateWorked.getTime() <= end.getTime() && wk.modtime) {
+          && wk.dateWorked.getTime() <= end.getTime()) {
+          if (wk.modtime) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  getModTimeForPeriod(start: Date, end: Date): number {
+    let answer = 0.0;
+    start = new Date(start);
+    end = new Date(end);
+    if (this.work) {
+      this.work.forEach(wk => {
+        if (wk.modtime && wk.dateWorked.getTime() >= start.getTime() 
+          && wk.dateWorked.getTime() <= end.getTime()) {
           answer += wk.hours;
         }
       });

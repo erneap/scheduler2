@@ -31,6 +31,7 @@ export class TeamCompanyComponent {
   companyForm: FormGroup;
   company?: Company;
   hasHolidays: boolean = false;
+  showModTime: boolean = false;
   showIngestStart: boolean = false;
   weekdays: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
     "Friday", "Saturday"];
@@ -53,6 +54,7 @@ export class TeamCompanyComponent {
       period: "7",
       start: "6",
       holidays: false,
+      modtime: false,
     })
   }
 
@@ -83,6 +85,7 @@ export class TeamCompanyComponent {
         if (co.id === id) {
           this.company = new Company(co);
           this.hasHolidays = this.company.holidays.length > 0;
+          this.showModTime = this.company.modperiods.length > 0;
         }
       });
     }
@@ -107,7 +110,8 @@ export class TeamCompanyComponent {
       } else {
         this.companyForm.controls["start"].setValue(0);
       }
-        this.companyForm.controls['holidays'].setValue(this.company.holidays.length > 0);
+      this.companyForm.controls['holidays'].setValue(this.company.holidays.length > 0);
+      this.companyForm.controls['modtime'].setValue(this.company.modperiods.length > 0);
     } else {
       this.companyForm.controls['id'].setValue('');
       this.companyForm.controls['name'].setValue('');
@@ -115,6 +119,7 @@ export class TeamCompanyComponent {
       this.companyForm.controls['period'].setValue('30');
       this.companyForm.controls["start"].setValue(`6`);
       this.companyForm.controls['holidays'].setValue(false);
+      this.companyForm.controls['modtime'].setValue(false);
     }
   }
 
@@ -185,11 +190,18 @@ export class TeamCompanyComponent {
     }
     if (this.selected !== 'new' && this.companyForm.controls[field].valid) {
       const value = this.companyForm.controls[field].value;
-      if (field !== 'holidays') {
-        this.authService.statusMessage = "Updating Team Company";
-        this.dialogService.showSpinner();
-        this.teamService.updateTeamCompany(this.team.id, this.selected, field,
-          value).subscribe({
+      switch (field.toLowerCase()) {
+        case 'holidays':
+          this.hasHolidays = value;
+          break;
+        case 'modtime':
+          this.showModTime = value;
+          break;
+        default:
+          this.authService.statusMessage = "Updating Team Company";
+          this.dialogService.showSpinner();
+          this.teamService.updateTeamCompany(this.team.id, this.selected, field,
+            value).subscribe({
             next: (data: SiteResponse) => {
               this.dialogService.closeSpinner();
               if (data && data != null && data.team) {
@@ -204,8 +216,7 @@ export class TeamCompanyComponent {
               this.authService.statusMessage = err.exception;
             }
           });
-      } else {
-        this.hasHolidays = value;
+          break;
       }
     }
   }

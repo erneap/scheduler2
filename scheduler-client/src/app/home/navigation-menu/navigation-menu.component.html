@@ -52,6 +52,9 @@
       <a mat-list-item routerLink="/siteleaveapprover"
       *ngIf="this.authService.isScheduler || this.authService.isSiteLeader"
       style="height: 20px;">Leave Approval</a>
+      <a mat-list-item routerLink="/sitemodview"
+      *ngIf="this.authService.isScheduler || this.authService.isSiteLeader"
+      style="height: 20px;">Site Mod Time Review</a>
       <a mat-list-item routerLink="/siteeditor"
       *ngIf="this.authService.isScheduler || this.authService.isSiteLeader"
       style="height: 20px;">Site Editor</a>

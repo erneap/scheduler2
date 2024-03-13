@@ -14,6 +14,7 @@ import { NewTeamComponent } from './new-team/new-team.component';
 import { TeamComponent } from './team.component';
 import { TeamContactListComponent } from './team-contact-list/team-contact-list.component';
 import { TeamSpecialtiesListComponent } from './team-specialties-list/team-specialties-list.component';
+import { TeamCompanyModtimeComponent } from './team-company/team-company-modtime/team-company-modtime.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { TeamSpecialtiesListComponent } from './team-specialties-list/team-speci
     NewTeamComponent,
     TeamComponent,
     TeamContactListComponent,
-    TeamSpecialtiesListComponent
+    TeamSpecialtiesListComponent,
+    TeamCompanyModtimeComponent
   ],
   imports: [
     CommonModule,

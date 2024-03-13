@@ -10,6 +10,7 @@ import { ReportChargeNumberComponent } from './report-charge-number/report-charg
 import { ReportCertOfServiceComponent } from './report-cert-of-service/report-cert-of-service.component';
 import { ReportMidShiftComponent } from './report-mid-shift/report-mid-shift.component';
 import { ReportEnterpriseComponent } from './report-enterprise/report-enterprise.component';
+import { ReportModTimeComponent } from './report-mod-time/report-mod-time.component';
 
 
 
@@ -21,7 +22,8 @@ import { ReportEnterpriseComponent } from './report-enterprise/report-enterprise
     ReportChargeNumberComponent,
     ReportCertOfServiceComponent,
     ReportMidShiftComponent,
-    ReportEnterpriseComponent
+    ReportEnterpriseComponent,
+    ReportModTimeComponent
   ],
   imports: [
     CommonModule,

@@ -76,6 +76,10 @@
           <mat-checkbox formControlName="holidays"
             (change)="onUpdate('holidays')">Has Holidays</mat-checkbox>
         </div>
+        <div class="formField" *ngIf="selected !== 'new'">
+          <mat-checkbox formControlName="modtime"
+            (change)="onUpdate('modtime')">Uses ModTime</mat-checkbox>
+        </div>
         <div class="flexlayout row center"
         *ngIf="selected === 'new' && companyForm.valid">
           <button mat-raised-button color="accent"
@@ -89,6 +93,11 @@
       <h4>Company Holidays Editor</h4>
       <app-team-company-holidays [team]="team" [company]="company">
       </app-team-company-holidays>
+    </div>
+    <div class="flexlayout column centertop" *ngIf="showModTime">
+      <h4>ModTime Periods</h4>
+      <app-team-company-modtime [team]="team" [company]="company">
+      </app-team-company-modtime>
     </div>
   </div>
 </div>

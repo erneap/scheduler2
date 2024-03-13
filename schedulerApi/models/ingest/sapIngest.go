@@ -96,7 +96,7 @@ func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ExcelRow, time.Ti
 						}
 					}
 				}
-				if !bLeave && !strings.Contains(strings.ToLower(description), "modified") {
+				if !bLeave {
 					found := false
 					for r, record := range records {
 						if record.Date.Equal(date) && companyID == record.CompanyID &&

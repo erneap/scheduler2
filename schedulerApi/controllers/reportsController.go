@@ -180,6 +180,41 @@ func CreateReport(c *gin.Context) {
 		c.Data(http.StatusOK,
 			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 			b.Bytes())
+	case "modtime":
+		reportDate := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+		modrpt := reports.ModTimeReport{
+			Date:      reportDate,
+			TeamID:    data.TeamID,
+			SiteID:    data.SiteID,
+			CompanyID: data.CompanyID,
+		}
+		if err := modrpt.Create(); err != nil {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s ModTime Report Creation Problem: %s", logmsg, err.Error()))
+			c.JSON(http.StatusInternalServerError, "Creation: "+err.Error())
+			return
+		}
+		var b bytes.Buffer
+		if err := modrpt.Report.Write(&b); err != nil {
+			services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+				fmt.Sprintf("%s ModTime Report Write Problem: %s", logmsg, err.Error()))
+			c.JSON(http.StatusInternalServerError, "Buffer Write: "+err.Error())
+			return
+		}
+
+		// get team to include in the download name
+		team, _ := services.GetTeam(data.TeamID)
+		site, _ := services.GetSite(data.TeamID, data.SiteID)
+		downloadName := strings.ReplaceAll(team.Name, " ", "_") + "-" + site.Name +
+			"-ModTime-" + data.CompanyID + ".xlsx"
+		c.Header("Content-Description", "File Transfer")
+		c.Header("Content-Disposition", "attachment; filename="+downloadName)
+		services.AddLogEntry(c, "scheduler", "SUCCESS", "CreateReport",
+			fmt.Sprintf("ModTime Report Created: Company: %s: Name: %s",
+				strings.ToUpper(data.CompanyID), downloadName))
+		c.Data(http.StatusOK,
+			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+			b.Bytes())
 	case "cofs":
 		reportDate := time.Date(year, month, 1, 0, 0, 0, 0,
 			time.UTC)

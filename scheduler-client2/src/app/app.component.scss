@@ -1,0 +1,60 @@
+h1 {
+  color: white;
+}
+
+.user {
+  font-size: .7em;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.app-is-mobile .app-toolbar {
+  position: fixed;
+  z-index: 2;
+}
+
+.app-sidenav-container {
+  flex: 1;
+}
+
+.app-is-mobile .app-sidenav-container {
+  flex: 1 0 auto;
+}
+
+mat-sidenav {
+  width: 250px;
+}
+
+.statusbar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #3f51b5;
+  color: white;
+  font-size: 10pt;
+  font-weight: bold;
+  height: 25px;
+  border: solid 2px white;
+  text-align: left;
+  padding-left: 5px;
+}
+
+.warning-icon {
+  color: lightsalmon !important;
+}
+
+.warning-icon svg {
+  fill: lightsalmon !important;
+}
+
+.version {
+  font-size: 8pt;
+}

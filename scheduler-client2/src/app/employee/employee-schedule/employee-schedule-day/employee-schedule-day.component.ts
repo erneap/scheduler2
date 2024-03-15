@@ -18,8 +18,6 @@ export class EmployeeScheduleDayComponent {
       wd = new Workday();
     }
     this._workday = wd;
-    this.setDateClass();
-    this.setWorkdayStyle();
   }
   get workday(): Workday {
     return this._workday;
@@ -29,36 +27,52 @@ export class EmployeeScheduleDayComponent {
   @Input() 
   public set month(date: Date) {
     this._month = new Date(date);
-    this.setWorkdayStyle();
   }
   get month(): Date {
     return this._month;
   }
   @Input() workcenters: Workcenter[] = [];
+  @Input() width: number = 100;
 
   constructor(
     protected teamService: TeamService,
   ) { }
 
-  setDateClass() {
+  getDateClass() : string {
     const today = new Date();
+    let classes = 'dayOfMonth ';
     if (this.workday && this.workday.date) {
       if (today.getFullYear() === this.workday.date.getUTCFullYear() 
         && today.getMonth() === this.workday.date.getUTCMonth()
         && today.getDate() === this.workday.date.getUTCDate()) {
-        this.dateClass = "dayOfMonth today";
+        classes += "today";
       } else if (this.workday.date.getUTCDay() === 0 
         || this.workday.date.getUTCDay() === 6) {
-        this.dateClass = "dayOfMonth weekend";
+        classes += "weekend";
       } else {
-        this.dateClass = "dayOfMonth weekday";
+        classes += "weekday";
       }
     } else {
-      this.dateClass = "dayOfMonth weekday";
+      classes += "weekday";
     }
+    return classes;
   }
 
-  setWorkdayStyle() {
+  getDateStyles(): string {
+    if (this.width > 100) {
+      this.width = 100;
+    }
+    const cWidth = (this.width / 4);
+    const fontSize = 1.1 * (cWidth / 25);
+    return `height: ${cWidth}px;width: ${cWidth}px;font-size: ${fontSize}em;`;
+  }
+
+  getWorkdayStyle(): string {
+    if (this.width > 100) {
+      this.width = 100;
+    }
+    let bkColor = 'ffffff';
+    let txColor = '000000';
     if (this.workday && this.workday.code !== "") {
       // find the workcode setting from the team
       const team = this.teamService.getTeam()
@@ -68,20 +82,25 @@ export class EmployeeScheduleDayComponent {
           let wc: Workcode = team.workcodes[i];
           if (wc.id.toLowerCase() === this.workday.code.toLowerCase()) {
             found = true;
-            this.workdayStyle = `background-color:#${wc.backcolor};`
-              + `color:#${wc.textcolor};`;
+            bkColor = wc.backcolor;
+            txColor = wc.textcolor;
             if (wc.backcolor.toLowerCase() === 'ffffff' 
               && this.workday.date?.getMonth() !== this.month.getMonth())  {
-              this.workdayStyle = 'background-color: #C0C0C0;color:#000000;';
+              bkColor = 'C0C0C0';
+              txColor = '000000';
             }
           }
         }
       }
     } else if (this.workday?.date?.getMonth() !== this.month.getMonth()) {
-      this.workdayStyle = 'background-color: #C0C0C0;color:#000000;';
+      bkColor = 'C0C0C0';
+      txColor = '000000';
     } else {
-      this.workdayStyle = 'background-color: #FFFFFF;color:#000000;';
+      bkColor = 'ffffff';
+      txColor = '000000';
     }
+    return `height: ${this.width}px;width: ${this.width}px;`
+      + `background-color: $${bkColor};color: #${txColor};`;
   }
 
   getWorkcenter(): string {

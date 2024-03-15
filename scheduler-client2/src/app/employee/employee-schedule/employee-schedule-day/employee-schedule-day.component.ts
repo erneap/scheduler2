@@ -22,8 +22,6 @@ export class EmployeeScheduleDayComponent {
   get workday(): Workday {
     return this._workday;
   }
-  dateClass: string = "dayOfMonth";
-  workdayStyle: string = "background-color: white;color: black;"
   @Input() 
   public set month(date: Date) {
     this._month = new Date(date);

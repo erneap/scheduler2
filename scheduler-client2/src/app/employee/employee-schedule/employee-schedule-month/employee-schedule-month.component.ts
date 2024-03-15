@@ -19,6 +19,7 @@ import { Site } from 'src/app/models/sites/site';
 })
 export class EmployeeScheduleMonthComponent {
   @Input() workcenters: Workcenter[] = [];
+  @Input() width: number = 714;
   months: string[] = new Array("January", "February", "March", "April", "May",
     "June", "July", "August", "September", "October", "November", "December");
 

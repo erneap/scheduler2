@@ -1,5 +1,5 @@
-<div class="cell" [style]="workdayStyle">
-  <div [class]="dateClass">{{workday.date?.getUTCDate()}}</div>
+<div class="cell" [style]="getWorkdayStyle()">
+  <div [class]="getDateClass()" [style]="getDateStyles()">{{workday.date?.getUTCDate()}}</div>
   <div class="code">{{workday.code}}</div>
   <div class="workcenter">
     {{getWorkcenter()}}

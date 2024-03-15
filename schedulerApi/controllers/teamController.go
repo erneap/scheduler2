@@ -499,7 +499,7 @@ func UpdateTeamCompany(c *gin.Context) {
 				}
 			case "addmod", "addmodperiod":
 				parts := strings.Split(data.Value, "|")
-				if len(parts) > 2 {
+				if len(parts) < 3 {
 					services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
 						fmt.Sprintf("%s Not enough info (Add Mod): data split too short",
 							logmsg))
@@ -539,6 +539,31 @@ func UpdateTeamCompany(c *gin.Context) {
 					return
 				}
 				company.AddModPeriod(year, start, end)
+			case "updatemod", "updatemodperiod":
+				parts := strings.Split(data.Value, "|")
+				if len(parts) > 2 {
+					iYear, err := strconv.Atoi(parts[1])
+					if err != nil {
+						services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+							fmt.Sprintf("%s Converting Mod Year Key: %s", logmsg, err.Error()))
+						c.JSON(http.StatusBadRequest,
+							web.SiteResponse{Team: nil, Site: nil,
+								Exception: "Error with converting mod year key: " +
+									err.Error()})
+						return
+					}
+					oDate, err := time.ParseInLocation("2006-01-02", parts[2], time.UTC)
+					if err != nil {
+						services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+							fmt.Sprintf("%s Converting Mod Year Date: %s", logmsg, err.Error()))
+						c.JSON(http.StatusBadRequest,
+							web.SiteResponse{Team: nil, Site: nil,
+								Exception: "Error with converting mod year date: " +
+									err.Error()})
+						return
+					}
+					company.UpdateModPeriod(iYear, parts[0], oDate)
+				}
 			case "delmod", "delmodperiod", "deletemodperiod":
 				year, err := strconv.Atoi(data.Value)
 				if err != nil {

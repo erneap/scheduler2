@@ -167,13 +167,14 @@ export class SiteForecastReportLaborCodesComponent {
     const ext = this.laborForm.value.extension;
     const startDate = this.laborForm.value.startDate;
     const endDate = this.laborForm.value.endDate;
+    const mins = this.laborForm.value.minimum;
 
     this.authService.statusMessage = "Adding new labor code";
     this.dialogService.showSpinner();
     this.siteService.createReportLaborCode(this.teamid, this.site.id, 
       this.report.id, chgNo, ext, this.laborForm.value.clin, 
       this.laborForm.value.slin, this.laborForm.value.wbs, 
-      this.laborForm.value.location, this.laborForm.value.minumum,
+      this.laborForm.value.location, mins,
       this.laborForm.value.hoursPerEmployee, this.laborForm.value.notAssignedName,
       this.laborForm.value.exercise, this.getDateString(startDate), 
       this.getDateString(endDate)).subscribe({

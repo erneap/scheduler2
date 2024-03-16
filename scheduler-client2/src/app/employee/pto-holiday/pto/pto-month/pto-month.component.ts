@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { LeaveMonth } from 'src/app/models/employees/leave';
+import { AppStateService } from 'src/app/services/app-state.service';
 
 @Component({
   selector: 'app-pto-month',
@@ -18,7 +19,9 @@ export class PtoMonthComponent {
   months: string[] = new Array("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL",
     "AUG", "SEP", "OCT", "NOV", "DEC");
 
-  constructor() {}
+  constructor(
+    protected stateService: AppStateService
+  ) {}
 
   getStyle(field: string): string {
     let answer = `${field} `;
@@ -53,4 +56,23 @@ export class PtoMonthComponent {
     })
     return total.toFixed(1);
   }
+
+  getMonthStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(65 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.4 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
+  getDatesStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(260 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.4 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
 }

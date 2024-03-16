@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { INotification, Notification } from 'src/app/models/employees/notification';
+import { AppStateService } from 'src/app/services/app-state.service';
 
 @Component({
   selector: 'app-notifications-message',
@@ -28,7 +29,9 @@ export class NotificationsMessageComponent {
   }
   @Output() checkChanged = new EventEmitter<string>();
 
-  constructor() { }
+  constructor(
+    protected stateService: AppStateService
+  ) { }
 
   onCheck() {
     this.message.checked = !this.message.checked;
@@ -56,6 +59,20 @@ export class NotificationsMessageComponent {
   }
 
   getStyle(): string {
-    return `flexlayout row center ${this.messageStyle}`;
+    return `notification ${this.messageStyle}`;
+  }
+
+  getDateWidth(): string {
+    let ratio = this.stateService.viewWidth / 714;
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(155 * ratio);
+    return `width: ${width}px;font-size: ${ratio}em;`;
+  }
+
+  getMsgWidth(): string {
+    let ratio = this.stateService.viewWidth / 714;
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(430 * ratio);
+    return `width: ${width}px;font-size: ${ratio}em;`;
   }
 }

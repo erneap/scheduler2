@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { last } from 'rxjs';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { LeaveGroup, LeaveMonth } from 'src/app/models/employees/leave';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { SiteService } from 'src/app/services/site.service';
 
@@ -69,7 +70,8 @@ export class PtoComponent {
 
   constructor(
     protected empService: EmployeeService,
-    protected siteService: SiteService
+    protected siteService: SiteService,
+    protected stateService: AppStateService
   ) {
     this.leaveMonths = [];
     this._employee = this.empService.getEmployee();
@@ -179,5 +181,41 @@ export class PtoComponent {
         }
       }
     }
+  }
+
+  getMonthStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(65 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.2 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
+  getDatesStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(260 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.2 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
+  getTotalsStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(91 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.2 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
+  getLabelStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(460 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.5 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
   }
 }

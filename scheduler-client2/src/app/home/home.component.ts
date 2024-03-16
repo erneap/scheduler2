@@ -18,6 +18,7 @@ import { Site } from '../models/sites/site';
 import { Team } from '../models/teams/team';
 import { Employee } from '../models/employees/employee';
 import { PtoHolidayBelowDialogComponent } from './pto-holiday-below-dialog/pto-holiday-below-dialog.component';
+import { AppStateService } from '../services/app-state.service';
 
 @Component({
   selector: 'app-home',
@@ -35,6 +36,7 @@ export class HomeComponent {
     protected employeeService: EmployeeService,
     protected siteService: SiteService,
     protected teamService: TeamService,
+    protected stateService: AppStateService,
     private formBuilder: FormBuilder,
     private router: Router,
     public dialog: MatDialog,
@@ -193,7 +195,7 @@ export class HomeComponent {
               },
             });
         }
-        this.authService.setWebLabel(team, site);
+        this.authService.setWebLabel(team, site, this.stateService.viewState);
         this.siteService.startAutoUpdates();
         this.getInitialNotifications(id);
       },

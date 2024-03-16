@@ -159,4 +159,27 @@ export class EmployeeScheduleMonthComponent {
     }
     this.setMonth();
   }
+
+  getCellWidth(): number {
+    let width = Math.floor((this.width - 14) / 7);
+    this.width = (7 * width) + 14;
+    return width;
+  }
+
+  getMoveStyle(): string {
+    const ratio = this.width / 714;
+    return `width: ${this.getCellWidth()}px;font-size: ${1.3 * ratio}em;`;
+  }
+
+  getMonthStyle(): string {
+    const ratio = this.width / 714;
+    let cWidth = this.getCellWidth();
+    const mWidth = this.width - (4 * (cWidth + 2));
+    return `width: ${mWidth}px;font-size: ${1.3 * ratio}em;`
+  }
+
+  getDayStyle(): string {
+    const ratio = this.width / 714;
+    return `width: ${this.getCellWidth()}px;font-size: ${1.2 * ratio}em;`;
+  }
 }

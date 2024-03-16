@@ -1,25 +1,25 @@
-<div class="fxLayout-column-center">
-  <div class="label">Holidays</div>
-  <div class="fxLayout-row-center">
-    <div class="code">&nbsp;</div>
-    <div class="referenceDate">Reference Date</div>
-    <div class="dates">
+<div class="flexlayout column center">
+  <div class="label" [style]="getLabelStyle()">Holidays</div>
+  <div class="flexlayout row center">
+    <div class="code" [style]="getCodeStyle()">&nbsp;</div>
+    <div class="referenceDate" [style]="getReferenceStyle()">Ref Date</div>
+    <div class="dates" [style]="getDatesStyle()">
       Date Taken <span style="color: #3399ff;">(Projected)</span>
     </div>
-    <div class="actual">Hours</div>
+    <div class="actual" [style]="getHoursStyle()">Hours</div>
   </div>
   <app-pto-holiday-cell *ngFor="let hol of holidays" [year]="year" [holiday]="hol"
    [activecell]="isActive(hol)"></app-pto-holiday-cell>
-  <div class="fxLayout-row-center">
-    <div class="code">&nbsp;</div>
-    <div class="daysleft">Days Left</div>
-    <div class="hoursleft">Hours Left</div>
-    <div class="hourstaken">Hours Taken</div>
+  <div class="flexlayout row center">
+    <div class="code" [style]="getCodeStyle()">&nbsp;</div>
+    <div class="daysleft" [style]="getTotalsStyle()">Days Left</div>
+    <div class="hoursleft" [style]="getTotalsStyle()">Hours Left</div>
+    <div class="hourstaken" [style]="getTotalsStyle()">Hours Taken</div>
   </div>
-  <div class="fxLayout-row-center">
-    <div class="code">&nbsp;</div>
-    <div class="daysleftData">{{getHolidaysRemaining()}}</div>
-    <div class="hoursleftData">{{getHolidaysHoursRemaining()}}</div>
-    <div class="hourstakenData">{{getHolidayHoursTaken()}}</div>
+  <div class="flexlayout row center">
+    <div class="code" [style]="getCodeStyle()">&nbsp;</div>
+    <div class="daysleftData" [style]="getTotalsStyle()">{{getHolidaysRemaining()}}</div>
+    <div class="hoursleftData" [style]="getTotalsStyle()">{{getHolidaysHoursRemaining()}}</div>
+    <div class="hourstakenData" [style]="getTotalsStyle()">{{getHolidayHoursTaken()}}</div>
   </div>
 </div>

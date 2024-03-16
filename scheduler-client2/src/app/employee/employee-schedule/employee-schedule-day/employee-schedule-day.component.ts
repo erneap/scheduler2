@@ -97,8 +97,9 @@ export class EmployeeScheduleDayComponent {
       bkColor = 'ffffff';
       txColor = '000000';
     }
-    return `height: ${this.width}px;width: ${this.width}px;`
-      + `background-color: $${bkColor};color: #${txColor};`;
+    const style = `height: ${this.width}px;width: ${this.width}px;`
+      + `background-color: #${bkColor};color: #${txColor};`;
+    return style;
   }
 
   getWorkcenter(): string {
@@ -112,5 +113,17 @@ export class EmployeeScheduleDayComponent {
       return answer;
     }
     return '';
+  }
+
+  getCodeStyle(): string {
+    const fontSize = (this.width / 100) * 1.8;
+    const height = (this.width / 100) * 35;
+    return `height: ${height}px;font-size: ${fontSize}em;`;
+  }
+
+  getWorkcenterStyle(): string {
+    const fontSize = (this.width / 100);
+    const height = (this.width / 100) * 25;
+    return `height: ${height}px;font-size: ${fontSize}em;`;
   }
 }

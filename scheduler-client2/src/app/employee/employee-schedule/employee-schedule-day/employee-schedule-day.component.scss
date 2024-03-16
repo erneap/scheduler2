@@ -2,14 +2,12 @@
   position: absolute;
   top: 0px;
   right: 0px;
-  font-size: 1.2em;
-  font-weight: bold;
-  text-align: center;
-  vertical-align: middle;
-  height: 25px;
-  width: 25px;
   padding: 0px;
   margin: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .weekend {
@@ -33,36 +31,21 @@
 .cell {
   margin: 0px;
   padding: 0px;
-  height: 100px;
-  width: 100px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
   border: solid 1px black;
 }
 
 .code {
-  position: absolute;
-  top: 25px;
-  left: 0px;
-  right: 0px;
-  text-align: center;
-  vertical-align: middle;
-  padding: 0px;
   margin: 0px;
-  font-size: 2em;
-  font-weight: bold;
-  height: 50px;
-}
-
-.workcenter {
-  position: absolute;
-  top: 75px;
-  left: 0px;
-  right: 0px;
-  text-align: center;
-  vertical-align: middle;
   padding: 0px;
-  margin: 0px;
-  font-size: 1em;
-  font-weight: bold;
-  height: 25px;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 99%;
 }

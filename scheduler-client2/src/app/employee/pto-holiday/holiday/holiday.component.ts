@@ -3,6 +3,7 @@ import { MatFabButton } from '@angular/material/button';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { CompanyHoliday } from 'src/app/models/teams/company';
 import { Team } from 'src/app/models/teams/team';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { SiteService } from 'src/app/services/site.service';
 import { TeamService } from 'src/app/services/team.service';
@@ -67,7 +68,8 @@ export class HolidayComponent {
   constructor(
     protected empService: EmployeeService,
     protected siteService: SiteService,
-    protected teamService: TeamService
+    protected teamService: TeamService,
+    protected stateService: AppStateService
   ) {
     this.setHolidays();
     this._employee = empService.getEmployee()
@@ -190,5 +192,59 @@ export class HolidayComponent {
         actual.getTime() <= endasgmt.endDate.getTime());
     }
     return true;
+  }
+
+  getCodeStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(41 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.4 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
+  getReferenceStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(100 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.4 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
+  getDatesStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(249 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.4 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
+  getHoursStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(65 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.4 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
+  getLabelStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(458 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.4 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
+  getTotalsStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(138 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.4 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
   }
 }

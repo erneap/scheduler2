@@ -5,16 +5,12 @@
 }
 
 .message {
-  width: 565px;
-  font-size: 12pt;
   align-items: left;
   justify-content: stretch;
   margin: 2px 5px;
 }
 
 .date {
-  width: 200px;
-  font-size: 12pt;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,8 +18,10 @@
 }
 
 .notification {
-  width: 800px;
+  display: flex;
   flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
   padding: 0;
   margin: 0;
 }

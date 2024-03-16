@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import jwt_decode from 'jwt-decode';
 import { ExceptionResponse, PasswordResetRequest, UsersResponse } from '../models/web/userWeb';
 import { DialogService } from './dialog-service.service';
+import { ViewState } from '../models/state/viewstate';
 
 @Injectable({
   providedIn: 'root'
@@ -215,13 +216,23 @@ export class AuthService extends CacheService {
     this.siteID = '';
   }
 
-  setWebLabel(team: string, site: string) {
-    if (team === "" && site === "") {
-      this.schedulerLabel = "Scheduler";
-    } else if (site === "") {
-      this.schedulerLabel = `${team.toUpperCase()} Scheduler`;
+  setWebLabel(team: string, site: string, viewState?: ViewState) {
+    if (!viewState || viewState === ViewState.Desktop) {
+      if (team === "" && site === "") {
+        this.schedulerLabel = "Scheduler";
+      } else if (site === "") {
+        this.schedulerLabel = `${team.toUpperCase()} Scheduler`;
+      } else {
+        this.schedulerLabel = `${team.toUpperCase()} - ${site.toUpperCase()} Scheduler`;
+      }
     } else {
-      this.schedulerLabel = `${team.toUpperCase()} - ${site.toUpperCase()} Scheduler`;
+      if (team === "" && site === "") {
+        this.schedulerLabel = "Scheduler";
+      } else if (site === "") {
+        this.schedulerLabel = `${team.toUpperCase()}`;
+      } else {
+        this.schedulerLabel = `${site.toUpperCase()}`;
+      }
     }
   }
 

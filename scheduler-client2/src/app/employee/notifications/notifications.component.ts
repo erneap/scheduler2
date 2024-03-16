@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Notification } from 'src/app/models/employees/notification';
 import { NotificationResponse } from 'src/app/models/web/internalWeb';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { MessageService } from 'src/app/services/message.service';
@@ -22,6 +23,7 @@ export class NotificationsComponent {
     protected msgService: MessageService,
     protected dialogService: DialogService,
     protected authService: AuthService,
+    protected stateService: AppStateService,
     protected router: Router) { 
     this.messages = [];
     const msgs = this.msgService.getMessages();
@@ -185,5 +187,19 @@ export class NotificationsComponent {
         }
       });
     }
+  }
+
+  getDateWidth(): string {
+    let ratio = this.stateService.viewWidth / 714;
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(155 * ratio);
+    return `width: ${width}px;font-size: ${ratio}em;`;
+  }
+
+  getMsgWidth(): string {
+    let ratio = this.stateService.viewWidth / 714;
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(430 * ratio);
+    return `width: ${width}px;font-size: ${ratio}em;`;
   }
 }

@@ -4,10 +4,10 @@
       color="primary"
       (change)="onCheck()"></mat-checkbox>
   </div>
-  <div class="date">
+  <div class="date" [style]="getDateWidth()">
     {{msgDate()}}
   </div>
-  <div class="message">
+  <div class="message" [style]="getMsgWidth()">
     {{message.message}}
   </div>
 </div>

@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { Team } from 'src/app/models/teams/team';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { TeamService } from 'src/app/services/team.service';
 
@@ -31,7 +32,8 @@ export class PtoHolidayChartComponent {
 
   constructor(
     protected empService: EmployeeService,
-    protected teamService: TeamService
+    protected teamService: TeamService,
+    protected stateService: AppStateService
   ) {
     this.setShowHolidays();
   }
@@ -56,5 +58,15 @@ export class PtoHolidayChartComponent {
         }
       });
     }
+  }
+
+  getDisplayClass(): string {
+    let answer = 'flexlayout topcenter ';
+    if (this.stateService.viewWidth < 900) {
+      answer += "column";
+    } else {
+      answer += "row";
+    }
+    return answer;
   }
 }

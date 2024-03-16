@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ILeaveDay, LeaveDay } from 'src/app/models/employees/leave';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { TeamService } from 'src/app/services/team.service';
 
@@ -29,10 +30,13 @@ export class PtoMonthDatesDisplayComponent {
 
   constructor(
     protected teamService: TeamService,
-    protected empService: EmployeeService
+    protected empService: EmployeeService,
+    protected stateService: AppStateService
   ) { }
 
   setDisplayStyle(): void {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
     let answer = 'background-color: white;color: black;';
 
     const team = this.teamService.getTeam();

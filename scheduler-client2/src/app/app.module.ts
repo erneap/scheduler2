@@ -35,6 +35,9 @@ import { LogViewerModule } from './log-viewer/log-viewer.module';
 import { LogsService } from './services/logs.service';
 import { QueryComponent } from './query/query.component';
 import { QueryService } from './services/query.service';
+import { AppStateService } from './services/app-state.service';
+import { HeaderComponent } from './home/header/header.component';
+import { StatusbarComponent } from './home/statusbar/statusbar.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +51,9 @@ import { QueryService } from './services/query.service';
     ForgotPasswordComponent,
     ForgotPasswordResetComponent,
     PtoHolidayBelowDialogComponent,
-    QueryComponent
+    QueryComponent,
+    HeaderComponent,
+    StatusbarComponent
   ],
   imports: [
     BrowserModule,
@@ -74,6 +79,7 @@ import { QueryService } from './services/query.service';
   ],
   providers: [AuthService, DialogService, EmployeeService, SiteService, 
     TeamService, LogsService, QueryService, interceptorProviders,
+    AppStateService,
   ],
   bootstrap: [AppComponent]
 })

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Site } from 'src/app/models/sites/site';
 import { Workcenter } from 'src/app/models/sites/workcenter';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { SiteService } from 'src/app/services/site.service';
 
 @Component({
@@ -12,7 +13,8 @@ export class EmployeeScheduleComponent {
   workcenters: Workcenter[] = []
 
   constructor(
-    protected siteService: SiteService
+    protected siteService: SiteService,
+    protected stateService: AppStateService
   ) {
     const iSite = this.siteService.getSite();
     if (iSite) {
@@ -25,5 +27,13 @@ export class EmployeeScheduleComponent {
       }
       this.workcenters.sort((a,b) => a.compareTo(b));
     }
+  }
+
+  getWidth(): number {
+    let ratio = this.stateService.viewWidth / 778; 
+    if (ratio > 1.0) {
+      ratio = 1.0;
+    }
+    return Math.floor(714 * ratio);
   }
 }

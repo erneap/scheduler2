@@ -8,6 +8,7 @@ import { MustMatchValidator } from 'src/app/models/validators/must-match-validat
 import { PasswordStrengthValidator } from 'src/app/models/validators/password-strength-validator.directive';
 import { AuthenticationResponse, InitialResponse } from 'src/app/models/web/employeeWeb';
 import { NotificationResponse } from 'src/app/models/web/internalWeb';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { EmployeeService } from 'src/app/services/employee.service';
@@ -30,6 +31,7 @@ export class ForgotPasswordResetComponent {
     protected employeeService: EmployeeService,
     protected siteService: SiteService,
     protected teamService: TeamService,
+    protected stateService: AppStateService,
     protected msgService: MessageService,
     private router: Router,
     private fb: FormBuilder
@@ -103,7 +105,7 @@ export class ForgotPasswordResetComponent {
           team = oTeam.name;
           this.teamService.setTeam(oTeam);
         }
-        this.authService.setWebLabel(team, site);
+        this.authService.setWebLabel(team, site, this.stateService.viewState);
         this.siteService.startAutoUpdates();
         this.getInitialNotifications(id);
       },

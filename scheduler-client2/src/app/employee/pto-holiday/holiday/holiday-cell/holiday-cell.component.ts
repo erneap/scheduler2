@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ILeaveDay, LeaveDay } from 'src/app/models/employees/leave';
 import { CompanyHoliday, ICompanyHoliday } from 'src/app/models/teams/company';
+import { AppStateService } from 'src/app/services/app-state.service';
 
 @Component({
   selector: 'app-pto-holiday-cell',
@@ -50,7 +51,9 @@ export class HolidayCellComponent {
   cellBackground: string = "background-color: #FFFFFF;"
   referenceDate: string = '';
 
-  constructor() {}
+  constructor(
+    protected stateService: AppStateService
+  ) {}
 
   getTotalActual(): string {
     let total: number = 0.0;
@@ -84,5 +87,41 @@ export class HolidayCellComponent {
 
   getHolidayID(): string {
     return `${this.holiday.id.toUpperCase()}${this.holiday.sort}`;
+  }
+
+  getCodeStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(41 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.4 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
+  getReferenceStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(100 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.4 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
+  getDatesStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(249 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.4 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+  }
+
+  getHoursStyle(): string {
+    let ratio = (this.stateService.viewWidth / 778);
+    if (ratio > 1.0) { ratio = 1.0; }
+    const width = Math.floor(65 * ratio);
+    const height = Math.floor(30 * ratio);
+    const fontSize = 1.4 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
   }
 }

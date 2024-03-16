@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ITeam, Team } from 'src/app/models/teams/team';
 import { SiteResponse } from 'src/app/models/web/siteWeb';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { SiteService } from 'src/app/services/site.service';
@@ -30,6 +31,7 @@ export class EditorComponent {
     protected dialogService: DialogService,
     protected siteService: SiteService,
     protected teamService: TeamService,
+    protected stateService: AppStateService,
     private fb: FormBuilder
   ) {
     this._team = new Team(this.teamService.getTeam());
@@ -56,9 +58,11 @@ export class EditorComponent {
             this.teamService.setTeam(data.team);
             const iSite = this.siteService.getSite();
             if (iSite) {
-              this.authService.setWebLabel(this.team.name, iSite.name);
+              this.authService.setWebLabel(this.team.name, iSite.name,
+                this.stateService.viewState);
             } else {
-              this.authService.setWebLabel(this.team.name, '');
+              this.authService.setWebLabel(this.team.name, '',
+                this.stateService.viewState);
             }
           }
           this.changed.emit(new Team(data.team));

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ISite, Site } from 'src/app/models/sites/site';
 import { SiteResponse } from 'src/app/models/web/siteWeb';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { SiteService } from 'src/app/services/site.service';
@@ -45,6 +46,7 @@ export class SiteBasicInformationComponent {
     protected dialogService: DialogService,
     protected siteService: SiteService,
     protected teamService: TeamService,
+    protected stateService: AppStateService,
     private fb: FormBuilder
   ) {
     const team = this.teamService.getTeam();
@@ -89,7 +91,8 @@ export class SiteBasicInformationComponent {
             this.teamService.setSelectedSite(new Site(data.site));
             const iTeam = this.teamService.getTeam();
             if (iTeam) {
-              this.authService.setWebLabel(iTeam.name, this.site.name);
+              this.authService.setWebLabel(iTeam.name, this.site.name,
+                this.stateService.viewState);
             }
           }
           this.authService.statusMessage = "Update complete"

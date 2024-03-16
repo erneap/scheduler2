@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { AppStateService } from 'src/app/services/app-state.service';
 
 @Component({
   selector: 'app-navigation-menu',
@@ -8,14 +9,24 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./navigation-menu.component.scss']
 })
 export class NavigationMenuComponent {
+  @Output() sidenav = new EventEmitter<any>();
   section: string = 'employee';
   constructor(
     public authService: AuthService,
+    protected appState: AppStateService,
+    private router: Router
   ) {
     
   }
 
   isInGroup(role: string): boolean {
     return this.authService.hasRole(role);
+  }
+
+  goToLink(url: string) {
+    this.router.navigateByUrl(url);
+    if (!this.appState.isDesktop()) {
+      this.sidenav.emit();
+    }
   }
 }

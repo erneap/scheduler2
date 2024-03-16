@@ -14,6 +14,7 @@ import { HttpResponse } from '@angular/common/http';
 import { NotificationResponse } from './models/web/internalWeb';
 import { Team } from './models/teams/team';
 import { Location } from '@angular/common';
+import { AppStateService } from './services/app-state.service';
 const { version: appVersion } = require('../../package.json');
 
 @Component({
@@ -26,11 +27,13 @@ export class AppComponent {
   isMobile = false;
   initialUrl: string = '';
   appVersion: string;
+  width: number;
 
   constructor(
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer,
     protected authService: AuthService,
+    protected stateService: AppStateService,
     protected dialogService: DialogService,
     protected empService: EmployeeService,
     protected siteService: SiteService,
@@ -54,12 +57,14 @@ export class AppComponent {
     } else {
       this.getInitialData(user.id);
     }
+    this.width = window.innerWidth;
+    this.isMobile = this.width < 1000;
   }
 
   logout() {
     this.siteService.clearSite();
     this.teamService.clearTeam();
-    this.authService.setWebLabel('','');
+    this.authService.setWebLabel('','', this.stateService.viewState);
     this.msgService.clearMessages();
     this.siteService.stopAutoUpdate();
     this.authService.logout();
@@ -91,7 +96,7 @@ export class AppComponent {
           team = oTeam.name;
           this.teamService.setTeam(oTeam);
         }
-        this.authService.setWebLabel(team, site);
+        this.authService.setWebLabel(team, site, this.stateService.viewState);
         this.siteService.startAutoUpdates();
         this.getInitialNotifications(id);
       },

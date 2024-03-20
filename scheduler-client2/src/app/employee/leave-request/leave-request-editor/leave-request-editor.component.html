@@ -1,9 +1,10 @@
 
-<div class="flexlayout column topcenter">
-  <form [formGroup]="editorForm">
-    <div class="fxLayout-row-center">
+<div class="flexlayout column topleft" >
+  <div class="flexlayout row center">
+    <form [formGroup]="editorForm" 
+      class="flexlayout row topleft flexwrap flexgap">
       <div class="formFieldWide">
-       <mat-form-field class="fieldWidthWide">
+        <mat-form-field class="fieldWidthWide">
           <mat-label>Request Start Date</mat-label>
           <input matInput placeholder="Start Date"
               formControlName="start" (dateChange)="processChange('start')"
@@ -14,7 +15,7 @@
         </mat-form-field>
       </div>
       <div class="formFieldWide">
-       <mat-form-field class="fieldWidthWide">
+        <mat-form-field class="fieldWidthWide">
           <mat-label>Request End Date</mat-label>
           <input matInput placeholder="End Date"
             formControlName="end" (dateChange)="processChange('end')"
@@ -35,6 +36,8 @@
           </mat-select>
         </mat-form-field>
       </div> 
+    </form>
+    <div class="flexlayout column center">
       <button mat-icon-button color="accent"
         *ngIf="request && request.id !== '' && !approver"
         matTooltip="Delete Current Leave Request"
@@ -47,7 +50,7 @@
         <mat-icon>deselect</mat-icon>
       </button>
     </div>
-  </form>
+  </div>
   <div *ngIf="request && request.id !== ''" style="padding-bottom: 10px;"
     class="flexlayout row center">
     <div class="fxLayout-column-center">
@@ -100,7 +103,8 @@
       </div>
     </div>
   </div>
-  <div class="comments" *ngIf="request && request.comments.length > 0">
+  <div class="comments" *ngIf="request && request.comments.length > 0"
+    [style]="commentsWidth()">
     <div *ngFor="let cmt of request.comments">
       <div>{{cmt.getDate()}} - {{cmt.comment}}</div>
     </div>

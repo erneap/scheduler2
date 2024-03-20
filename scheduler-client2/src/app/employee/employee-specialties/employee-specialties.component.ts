@@ -4,6 +4,7 @@ import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { SpecialtyType } from 'src/app/models/teams/contacttype';
 import { ITeam, Team } from 'src/app/models/teams/team';
 import { EmployeeResponse } from 'src/app/models/web/employeeWeb';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { EmployeeService } from 'src/app/services/employee.service';
@@ -37,12 +38,14 @@ export class EmployeeSpecialtiesComponent {
   specialties: ListItem[] = [];
   availableSelected: string[] = [];
   specialtiesSelected: string[] = []
+  width: number = 650;
 
   constructor(
     protected teamService: TeamService,
     protected empService: EmployeeService,
     protected dialogService: DialogService,
-    protected authService: AuthService
+    protected authService: AuthService,
+    protected appState: AppStateService
   ) {
     if (this.team.id === '') {
       const tm = this.teamService.getTeam();
@@ -56,6 +59,63 @@ export class EmployeeSpecialtiesComponent {
         this.employee = emp;
       }
     }
+    if (this.appState.viewWidth < 694) {
+      this.width = this.appState.viewWidth - 44;
+      let cWidth = Math.floor((this.width - 50) / 2);
+      this.width = (cWidth * 2) + 50;
+    } else {
+      this.width = 650;
+    }
+  }
+
+  viewClass(): string {
+    if (this.appState.isMobile() || this.appState.isTablet()) {
+      return "flexlayout column topleft";
+    }
+    return "fxLayout flexlayout column topleft";
+  }
+
+  cardClass(): string {
+    if (this.appState.isMobile() || this.appState.isTablet()) {
+      return "background-color: #3f51b3;color: white; width: 100%;";
+    }
+    return "background-color: #3f51b3;color: white;";
+  }
+
+  labelStyle(): string {
+    const ratio = this.width / 650;
+    let lWidth = Math.floor(352 * ratio);
+    let fontSize = Math.floor(18 * ratio);
+    return `width: ${lWidth}px;font-size: ${fontSize}pt;`;
+  }
+
+  listStyle(): string {
+    const ratio = this.width / 650;
+    let lWidth = Math.floor(300 * ratio);
+    return `width: ${lWidth}px;`;
+  }
+
+  itemStyle(): string {
+    const ratio = this.width / 650;
+    let lWidth = Math.floor(283 * ratio);
+    let lHeight = Math.floor(30 * ratio)
+    let fontSize = Math.floor(14 * ratio);
+    return `width: ${lWidth}px;font-size: ${fontSize}pt;`
+      + `min-height: ${lHeight} !important`;
+  }
+
+  moveStyle(): string {
+    const ratio = this.width / 650;
+    let lWidth = Math.floor(50 * ratio);
+    let gap = Math.floor(20 * ratio);
+    return `width: ${lWidth}px;gap: ${gap}px;`;
+  }
+
+  iconStyle(): string {
+    const ratio = this.width / 650;
+    let lWidth = Math.floor(30 * ratio);
+    let fontSize = Math.floor(30 * ratio);
+    return `width: ${lWidth}px;height: ${lWidth}px;font-size: ${fontSize}pt;`;
   }
 
   setContactTypes() {
@@ -65,7 +125,6 @@ export class EmployeeSpecialtiesComponent {
     this.team.specialties.forEach(sp => {
       let found = false;
       this.employee.specialties.forEach(esp => {
-        console.log(`${esp.specialtyid} === ${sp.id} - ${esp.specialtyid === sp.id}`);
         if (esp.specialtyid === sp.id) {
           found = true;
           this.specialties.push(new ListItem(`${esp.id}`, sp.name));

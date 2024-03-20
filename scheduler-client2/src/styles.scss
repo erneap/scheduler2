@@ -52,6 +52,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     gap: 5px;
 }
 
+.flexwrap {
+    flex-wrap: wrap;
+}
+
+.noflexgap {
+    gap: 0px;
+}
+
+.noflexwrap {
+    flex-wrap: no-wrap;
+}
+
 .fxLayout-column-center {
     display: flex;
     flex-direction: column;

@@ -5,6 +5,7 @@ import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { LeaveRequest } from 'src/app/models/employees/leave';
 import { Workcode } from 'src/app/models/teams/workcode';
 import { EmployeeResponse } from 'src/app/models/web/employeeWeb';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { EmployeeService } from 'src/app/services/employee.service';
@@ -42,6 +43,7 @@ export class LeaveRequestFormComponent {
     protected siteService: SiteService,
     protected teamService: TeamService,
     protected dialogService: DialogService,
+    protected appState: AppStateService,
     private fb: FormBuilder,
     protected dialog: MatDialog
   ) { 
@@ -64,6 +66,20 @@ export class LeaveRequestFormComponent {
         this.approver = true;
       }
     }
+  }
+
+  viewClass(): string {
+    if (this.appState.isMobile() || this.appState.viewWidth < 1024) {
+      return "flexlayout column topleft flexgap";
+    }
+    return "flexlayout row topleft flexgap";
+  }
+
+  listStyle(): string {
+    if (this.appState.isMobile() || this.appState.viewWidth < 450) {
+      return "width: 98%;";
+    }
+    return "width: 250px;";
   }
 
   setCurrent() {

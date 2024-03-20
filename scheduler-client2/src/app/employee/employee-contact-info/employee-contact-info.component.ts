@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { ContactType } from 'src/app/models/teams/contacttype';
 import { ITeam, Team } from 'src/app/models/teams/team';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { TeamService } from 'src/app/services/team.service';
 
@@ -29,10 +30,12 @@ export class EmployeeContactInfoComponent {
     return this._employee;
   }
   contactTypes: ContactType[] = []
+  width: number = 650;
 
   constructor(
     protected teamService: TeamService,
-    protected empService: EmployeeService
+    protected empService: EmployeeService,
+    protected appState: AppStateService
   ) {
     if (this.team.id === '') {
       const tm = this.teamService.getTeam();
@@ -46,6 +49,32 @@ export class EmployeeContactInfoComponent {
         this.employee = emp;
       }
     }
+    if (this.appState.viewWidth < 694) {
+      let width = Math.floor(this.appState.viewWidth - 44) / 2;
+      this.width = width * 2;
+    } else {
+      this.width = 650;
+    }
+  }
+
+  viewClass(): string {
+    if (this.appState.isMobile() || this.appState.isTablet()) {
+      return "flexlayout column topleft";
+    }
+    return "fxLayout flexlayout column topleft";
+  }
+
+  cardClass(): string {
+    if (this.appState.isMobile() || this.appState.isTablet()) {
+      return "background-color: #3f51b3;color: white; width: 100%;";
+    }
+    return "background-color: #3f51b3;color: white;";
+  }
+
+  contactStyle(): string {
+    let cWidth = this.width / 2;
+    const ratio = this.width / 650;
+    return `width: ${cWidth}px;font-size: ${ratio * 1.3}em;`
   }
 
   setContactTypes() {

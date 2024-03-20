@@ -34,6 +34,7 @@ export class EmployeeContactInfoItemComponent {
   get employee(): Employee {
     return this._employee;
   }
+  @Input() width: number = 650;
   @Output() changed = new EventEmitter<Employee>();
   contactid: number = 0;
   form: FormGroup;
@@ -48,6 +49,12 @@ export class EmployeeContactInfoItemComponent {
     this.form = this.fb.group({
       itemValue: ['', [Validators.required]],
     })
+  }
+
+  contactStyle(): string {
+    let cWidth = this.width / 2;
+    const ratio = this.width / 650;
+    return `width: ${cWidth}px;font-size: ${ratio * 1.2}em;`
   }
 
   setContactType() {

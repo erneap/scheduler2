@@ -11,6 +11,7 @@ import { SiteService } from 'src/app/services/site.service';
 import { TeamService } from 'src/app/services/team.service';
 import { WorkWeek } from '../employee-schedule.model';
 import { Site } from 'src/app/models/sites/site';
+import { AppStateService } from 'src/app/services/app-state.service';
 
 @Component({
   selector: 'app-employee-schedule-month',
@@ -38,11 +39,20 @@ export class EmployeeScheduleMonthComponent {
     protected employeeService: EmployeeService,
     protected teamService: TeamService,
     protected dialogService: DialogService,
-    protected authService: AuthService
+    protected authService: AuthService,
+    protected appState: AppStateService
   ) {
     this.month = new Date();
     this.month = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
+    if (this.appState.viewWidth < this.width) {
+      const cWidth = Math.floor((this.appState.viewWidth - 14) / 7);
+      this.width = (cWidth * 7) + 14;
+    }
     this.setMonth();
+  }
+
+  getCellWidth(): number {
+    return (this.width - 14) / 7;
   }
 
   setMonth() {
@@ -158,12 +168,6 @@ export class EmployeeScheduleMonthComponent {
       }
     }
     this.setMonth();
-  }
-
-  getCellWidth(): number {
-    let width = Math.floor((this.width - 14) / 7);
-    this.width = (7 * width) + 14;
-    return width;
   }
 
   getMoveStyle(): string {

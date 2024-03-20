@@ -1,15 +1,15 @@
-<div class="flexlayout row center chart flexgap">
+<div [class]="viewClass()">
   <form [formGroup]="profileForm" class="flexlayout column center">
     <ng-container *ngIf="showPassword">
-      <div class="fxLayout-row-center">
+      <div [class]="itemClass()">
         <mat-form-field>
-          <mat-label>E-mail Address</mat-label>
+          <mat-label>Login E-mail Address</mat-label>
           <input matInput formControlName="email"
             (blur)="updateUserField('email')">
         </mat-form-field>
       </div>
     </ng-container>
-    <div class="fxLayout-row-center">
+    <div [class]="itemClass()">
       <div class="formField">
         <mat-form-field class="fieldWidth">
           <mat-label>First Name</mat-label>
@@ -33,10 +33,10 @@
       </div>
     </div>
     <ng-container *ngIf="showPassword">
-      <div class="fxLayout-row-center">
+      <div [class]="itemClass()">
         <h3>Reset Password</h3>
       </div>
-      <div class="fxLayout-row-center">
+      <div [class]="itemClass()">
         <div class="formFieldWide">
           <mat-form-field style="width: 225px;">
             <mat-label>New Password</mat-label>
@@ -64,7 +64,7 @@
         </div>
       </div>
     </ng-container>
-    <div class="fxLayout-row-center" *ngIf="formError !== ''">
+    <div [class]="itemClass()" *ngIf="formError !== ''">
       <span class="error">{{formError}}</span>
     </div>
   </form>

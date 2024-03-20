@@ -58,7 +58,7 @@ export class AppComponent {
       this.getInitialData(user.id);
     }
     this.width = window.innerWidth;
-    this.isMobile = this.width < 1000;
+    this.isMobile = this.stateService.isMobile() || this.stateService.isTablet();
   }
 
   logout() {

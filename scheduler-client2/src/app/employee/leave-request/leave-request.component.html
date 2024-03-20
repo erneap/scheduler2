@@ -1,7 +1,7 @@
-<div class="fxLayout fxLayout-column-center">
-  <mat-card class="standardCard" style="background-color: #3f51b3;">
+<div [class]="viewClass()">
+  <mat-card [style]="cardClass()">
     <mat-card-header>
-      <div class="fxLayout-row-topleft">
+      <div class="flexlayout column topleft">
         <h2>Employee Leave Request Editor</h2>
       </div>
     </mat-card-header>

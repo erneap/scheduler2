@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ILeaveDay, LeaveDay, LeaveGroup, LeaveMonth } from 'src/app/models/employees/leave';
 import { Workcode } from 'src/app/models/teams/workcode';
+import { AppStateService } from 'src/app/services/app-state.service';
 
 @Component({
   selector: 'app-leave-request-calendar',
@@ -43,6 +44,18 @@ export class LeaveRequestCalendarComponent {
   @Output() changed = new EventEmitter<string>();
 
   calendar: LeaveMonth = new LeaveMonth();
+  width: number = 714;
+
+  constructor(
+    protected appState: AppStateService
+  ) {
+    if (this.appState.viewWidth < 714) {
+      let cWidth = Math.floor((this.appState.viewWidth - 44) / 7);
+      this.width = (cWidth * 7) + 14;
+    } else {
+      this.width = 714;
+    }
+  }
 
   setMonth() {
     this.calendar = new LeaveMonth();
@@ -79,5 +92,18 @@ export class LeaveRequestCalendarComponent {
 
   processChange(value: string) {
     this.changed.emit(value);
+  }
+
+  getCellWidth(): number {
+    return ((this.width - 14) / 7);
+  }
+
+  getDateStyles(): string {
+    let ratio = 1.0;
+    if (this.width < 714) {
+      ratio = (this.width / 714)
+    }
+    const cWidth = this.getCellWidth();
+    return `width: ${cWidth}px;font-size: ${ratio}em;`;
   }
 }

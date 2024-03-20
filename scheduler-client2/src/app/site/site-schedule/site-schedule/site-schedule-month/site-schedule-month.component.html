@@ -34,40 +34,9 @@
             {{wkctr.name.toUpperCase()}}
           </mat-panel-description>
         </mat-expansion-panel-header>
-        <div class="flexlayout column center">
-          <div class="flexlayout row center">
-            <div class="name">&nbsp;</div>
-            <div *ngFor="let dt of dates" class="day" [style]="getDateStyle(dt)">
-              {{dt.getUTCDate()}}
-            </div> 
-          </div>
-          <div class="flexlayout row center">
-            <div class="name">Name</div>
-            <div *ngFor="let dt of dates" class="day" [style]="getDateStyle(dt)">
-              {{weekdays[dt.getUTCDay()]}}
-            </div> 
-          </div>
-          <ng-container *ngFor="let pos of wkctr.positions; let i = index">
-            <app-site-schedule-row *ngFor="let emp of pos.employees"
-              [employee]="emp" [index]="(emp.even) ? 0 : 1" [month]="month"
-              [lastWorked]="getLastWorked(emp)"
-            ></app-site-schedule-row>
-          </ng-container>
-          <ng-container *ngFor="let sft of wkctr.shifts">
-            <ng-container *ngIf="showShift(sft.id)">
-              <app-site-schedule-row *ngFor="let emp of sft.employees; let i = index"
-                [employee]="emp" [index]="(emp.even) ? 0 : 1" [month]="month"
-                [lastWorked]="getLastWorked(emp)">
-              </app-site-schedule-row>
-            </ng-container>
-          </ng-container>
-          <ng-container *ngIf="wkctr.employees && wkctr.employees.length > 0">
-            <app-site-schedule-row *ngFor="let emp of wkctr.employees; let i = index"
-            [employee]="emp" [index]="(emp.even) ? 0 : 1" [month]="month" 
-            [lastWorked]="getLastWorked(emp)">
-          </app-site-schedule-row>
-          </ng-container>
-        </div>
+        <app-site-schedule-month-office *ngFor="let wc of workcenters"
+          [site]="site" [workcenter]="wc" [month]="month">
+        </app-site-schedule-month-office>
       </mat-expansion-panel>
     </ng-container>
   </mat-accordion>

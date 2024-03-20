@@ -1,11 +1,8 @@
-<div class="flexlayout row center">
-  <div class="typeText">
+<form [formGroup]="form" class="overall">
+  <div class="typeText" [style]="contactStyle()">
     {{contacttype.name}}
   </div>
-  <div class="flexlayout row center">
-    <form [formGroup]="form">
-      <input class="typeInput" (blur)="updateContactType()"
-        formControlName="itemValue">
-    </form> 
-  </div>
-</div>
+  <input class="typeInput" (blur)="updateContactType()"
+    [style]="contactStyle()"
+    formControlName="itemValue">
+</form> 

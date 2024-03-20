@@ -8,6 +8,7 @@ import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { MustMatchValidator } from 'src/app/models/validators/must-match-validator.directive';
 import { PasswordStrengthValidator } from 'src/app/models/validators/password-strength-validator.directive';
 import { AuthenticationResponse, EmployeeResponse, Message } from 'src/app/models/web/employeeWeb';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
 import { EmployeeService } from 'src/app/services/employee.service';
@@ -48,6 +49,7 @@ export class EmployeeProfileFormComponent {
     protected empService: EmployeeService,
     protected siteService: SiteService,
     protected dialogService: DialogService,
+    protected stateService: AppStateService,
     private httpClient: HttpClient,
     private fb: FormBuilder,
     private dialog: MatDialog
@@ -79,6 +81,42 @@ export class EmployeeProfileFormComponent {
     this.profileForm.controls["last"].setValue(this.employee.name.last);
     this.profileForm.controls["password"].setValue('');
     this.profileForm.controls["password2"].setValue('');
+  }
+
+  viewClass(): string {
+    let answer = "flexlayout center chart flexgap ";
+    if (this.stateService.isMobile() || this.stateService.isTablet()) {
+      if (this.stateService.viewWidth < 800) {
+        answer += "column";
+      } else {
+        answer += "row";
+      }
+    } else {
+      if (this.stateService.viewWidth < 1170) {
+        answer += "column";
+      } else {
+        answer += "row";
+      }
+    }
+    return answer;
+  }
+
+  itemClass(): string {
+    let answer = "flexlayout center ";
+    if (this.stateService.isMobile() || this.stateService.isTablet()) {
+      if (this.stateService.viewWidth < 620) {
+        answer += "column";
+      } else {
+        answer += "row";
+      }
+    } else {
+      if (this.stateService.viewWidth < 870) {
+        answer += "column";
+      } else {
+        answer += "row";
+      }
+    }
+    return answer;
   }
 
   getPasswordError(): string {

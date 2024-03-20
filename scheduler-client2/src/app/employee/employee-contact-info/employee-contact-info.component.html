@@ -1,5 +1,5 @@
-<div class="fxLayout fxLayout-column-center">
-  <mat-card style="background-color: #3f51b5; color: white;">
+<div [class]="viewClass()">
+  <mat-card [style]="cardClass()">
       <mat-card-header style="text-align: center;">
           <mat-card-title>
             <div class="mat-headline">Employee's Contact Information</div>
@@ -7,12 +7,12 @@
       </mat-card-header>
       <mat-card-content class="fxLayout-column-center">
         <div class="flexlayout column center" >
-          <div class="flexlayout row center" style="margin-bottom: 5px;">
-            <div class="typeText">Contact Info Type</div>
-            <div class="typeInput">Value</div>
+          <div class="flexlayout row center">
+            <div class="typeText" [style]="contactStyle()">Contact Info Type</div>
+            <div class="typeInput" [style]="contactStyle()">Value</div>
           </div>
           <app-employee-contact-info-item *ngFor="let ct of contactTypes"
-            style="margin-bottom: 5px;"
+            [width]="width"
             [contacttype]="ct" [employee]="employee"
             (changed)="updatedEmployee($event)">
           </app-employee-contact-info-item>

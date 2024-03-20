@@ -15,6 +15,7 @@ import { SiteReportEditorComponent } from './site-report-editor/site-report-edit
 import { SiteCofsReportEditorComponent } from './site-cofs-report-editor/site-cofs-report-editor.component';
 import { SiteModReportViewComponent } from './site-mod-report-view/site-mod-report-view.component';
 import { SiteModReportViewEmployeeComponent } from './site-mod-report-view/site-mod-report-view-employee/site-mod-report-view-employee.component';
+import { SiteScheduleModule } from './site-schedule/site-schedule.module';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { SiteModReportViewEmployeeComponent } from './site-mod-report-view/site-
     CommonModule,
     MaterialModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SiteScheduleModule
   ],
   exports: [
     SiteComponent,

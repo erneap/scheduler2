@@ -16,6 +16,7 @@ import { LeaveUnapproveDialogComponent } from './leave-unapprove-dialog/leave-un
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { LeaveRequestMidDenialDialogComponent } from '../leave-request-mid-denial-dialog/leave-request-mid-denial-dialog.component';
+import { AppStateService } from 'src/app/services/app-state.service';
 
 @Component({
   selector: 'app-leave-request-editor',
@@ -76,6 +77,7 @@ export class LeaveRequestEditorComponent {
     protected teamService: TeamService,
     protected dialogService: DialogService,
     protected msgService: MessageService,
+    protected appState: AppStateService,
     private fb: FormBuilder,
     protected dialog: MatDialog
   ) { 
@@ -541,5 +543,11 @@ export class LeaveRequestEditorComponent {
       });
     }
 
+  }
+
+  commentsWidth(): string {
+    const width = (this.appState.viewWidth < 500) 
+      ? (this.appState.viewWidth - 44) : 500;
+    return `width: ${width}px;`;
   }
 }

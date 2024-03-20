@@ -1,29 +1,25 @@
-.day-form-field {
-  font-size: 1.2em;
-  width: 99% !important;
-  background-color: transparent;
-  text-align: center;
-  border: none;
-}
-
 .dayOfMonth {
   position: absolute;
   top: 0px;
   right: 0px;
-  font-size: 1.2em;
-  font-weight: bold;
-  text-align: center;
-  vertical-align: middle;
-  height: 25px;
-  width: 25px;
   padding: 0px;
   margin: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
-.disabled {
-  background-color: darkgray;
+.weekend {
+  background-color: aqua;
   color: black;
-  border: solid 1px black;
+  border: solid 1px aqua;
+}
+
+.today {
+  background-color: darkred;
+  color: white;
+  border: solid 1px darkred;
 }
 
 .weekday {
@@ -35,28 +31,45 @@
 .cell {
   margin: 0px;
   padding: 0px;
-  height: 100px;
-  width: 100px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
   border: solid 1px black;
 }
 
 .code {
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 99%;
+}
+
+.form {
   position: absolute;
-  top: 26px;
-  width: 99px;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: transparent;
+}
+
+select {
+  background-color: transparent;
+  color: black;
+  border: none;
 }
 
 .hours {
-  position: absolute;
-  top: 63px;
-  width: 99px;
-}
-
-.mat-input-wrapper {
-  width: 75px !important;
-}
-
-.options {
-  color: black !important;
+  background-color: transparent;
+  border: none;
 }

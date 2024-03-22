@@ -15,6 +15,7 @@ export class SiteScheduleMonthOfficeComponent {
   @Input()
   public set site(isite: ISite) {
     this._site = new Site(isite);
+    this.setEmployees();
   }
   get site(): Site {
     return this._site;
@@ -41,7 +42,7 @@ export class SiteScheduleMonthOfficeComponent {
   
   monthDays: Date[] = [];
   count: number = -2;
-  dayCount: number = -2;
+  width: number = 25;
 
   constructor(
     protected appState: AppStateService
@@ -49,8 +50,10 @@ export class SiteScheduleMonthOfficeComponent {
 
   setMonth() {
     this.monthDays = [];
-    let start = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
-    const end = new Date(this.month.getFullYear(), this.month.getMonth() + 1, 1);
+    let start = new Date(Date.UTC(this.month.getFullYear(), 
+      this.month.getMonth(), 1));
+    const end = new Date(Date.UTC(this.month.getFullYear(), 
+      this.month.getMonth() + 1, 1));
     while (start.getTime() < end.getTime()) {
       this.monthDays.push(new Date(start));
       start = new Date(start.getTime() + (24 * 3600000));
@@ -58,73 +61,108 @@ export class SiteScheduleMonthOfficeComponent {
   }
 
   setEmployees() {
+    const wkctrMap = new Map<string, number>();
+    this.workcenter.clearEmployees();
     if (this.site.employees) {
       this.site.employees.forEach(iEmp => {
         const emp = new Employee(iEmp);
-        if (emp.isAssigned(this.site.id, this.workcenter.id, this.monthDays[0],
-          this.monthDays[this.monthDays.length - 1])) {
-            this.workcenter.addEmployee(emp, false, this.month);
+        // figure workcenter to include this employee, based on workcenter
+          // individual works the most
+          wkctrMap.clear();
+          let start = new Date(Date.UTC(this.month.getUTCFullYear(), 
+            this.month.getUTCMonth(), 1));
+          this.monthDays.forEach(dt => {
+            const wd = emp.getWorkdayWOLeaves(this.site.id, dt);
+            if (wd.workcenter !== '') {
+              let cnt = wkctrMap.get(wd.workcenter);
+              if (cnt) {
+                cnt++;
+                wkctrMap.set(wd.workcenter, cnt);
+              } else {
+                cnt = 1;
+                wkctrMap.set(wd.workcenter, cnt);
+              }
+            }
+          }); 
+          let wkctr = '';
+          let count = 0;
+          for (let key of wkctrMap.keys()) {
+            let cnt = wkctrMap.get(key);
+            if (cnt) {
+              if (cnt > count) {
+                count = cnt;
+                wkctr = key;
+              }
+            }
+          }
+          if (wkctr.toLowerCase() === this.workcenter.id.toLowerCase()) {
+            this.workcenter.addEmployee(emp, this.site.showMids, this.month);
           }
       });
     }
-    this.count = -2;
-    this.dayCount = -2;
+    let count = -1;
+    if (this.workcenter.positions && this.workcenter.positions.length > 0) {
+      this.workcenter.positions.forEach(pos => {
+        if (pos.employees && pos.employees.length > 0) {
+          pos.employees.forEach(emp => {
+            count++;
+            emp.even = (count % 2 === 0);
+          });
+        }
+      });
+    }
+    if (this.workcenter.shifts && this.workcenter.shifts.length > 0) {
+      this.workcenter.shifts.forEach(shft => {
+        if (shft.employees && shft.employees.length > 0) {
+          shft.employees.forEach(emp => {
+            count++;
+            emp.even = (count % 2 === 0);
+          });
+        }
+      });
+    }
   }
 
   nameWidth(): number {
-    let width = (this.appState.viewWidth > 975) ? 975 
+    let width = (this.appState.viewWidth > 1089) ? 1089 
       : this.appState.viewWidth - 44; 
-    const ratio = width / 975;
+    const ratio = width / 1089;
     width = Math.floor(250 * ratio)
     if (width < 150) {
       width = 150;
     }
-    return width;
-  }
-
-  stdHeight(): number {
-    let height = (this.appState.viewWidth > 975) ? 975 
-      : this.appState.viewWidth - 44; 
-    const ratio = height / 975;
-    height = Math.floor(25 * ratio)
-    if (height < 15) {
-      height = 15;
+    this.width = Math.floor(25 * ratio);
+    if (this.width < 15) {
+      this.width = 15;
     }
-    return height;
+    return width;
   }
 
   nameStyle(): string {
     return `width: ${this.nameWidth()}px;`
   }
 
-  nameCellStyle(): string {
-    let width = (this.appState.viewWidth > 975) ? 975 
+  nameCellStyle(emp?: Employee): string {
+    let width = (this.appState.viewWidth > 1089) ? 1089 
       : this.appState.viewWidth - 44; 
-    const ratio = width / 975;
+    const ratio = width / 1089;
     let fontSize = Math.floor(12 * ratio);
     if (fontSize < 9) fontSize = 9;
-    if (this.count < 0) {
-      this.count++;
+    if (!emp) {
       return `background-color: black;color: white;font-size: ${fontSize}pt;`
-        + `width: ${this.nameWidth()}px;height: ${this.stdHeight()}px;`;
-    } else if (this.count % 2 === 0) {
-      this.count++;
+        + `width: ${this.nameWidth()}px;height: ${this.width}px;`;
+    } else if (emp.even) {
       return `background-color: #c0c0c0;color: black;font-size: ${fontSize}pt;`
-        + `width: ${this.nameWidth()}px;height: ${this.stdHeight()}px;`;
+        + `width: ${this.nameWidth()}px;height: ${this.width}px;`;
     } else {
-      this.count++;
       return `background-color: white;color: black;font-size: ${fontSize}pt;`
-        + `width: ${this.nameWidth()}px;height: ${this.stdHeight()}px;`;
+        + `width: ${this.nameWidth()}px;height: ${this.width}px;`;
     }
   }
 
-  increment(): number {
-    return this.dayCount++;
-  }
-
   daysStyle(): string {
-    let width = (this.appState.viewWidth > 975) ? 975 
-      : this.appState.viewWidth - 44; 
+    let width = (this.appState.viewWidth > 1089) ? 1089 
+      : this.appState.viewWidth; 
     width -= (this.nameWidth() + 2);
     return `width: ${width}px;`;
   }

@@ -237,14 +237,16 @@ export class Employee implements IEmployee {
 
   isAssigned(site: string, wkctr: string, start: Date, end: Date): boolean {
     let answer = false;
-    this.assignments.forEach(asgmt => {
-      if (site.toLowerCase() === asgmt.site.toLowerCase()
-        && wkctr.toLowerCase() === asgmt.workcenter.toLowerCase()
-        && asgmt.startDate.getTime() <= end.getTime()
-        && asgmt.endDate.getTime() >= start.getTime()) {
-        answer = true;
-      }
-    });
+    if (start && end) {
+      this.assignments.forEach(asgmt => {
+        if (site.toLowerCase() === asgmt.site.toLowerCase()
+          && wkctr.toLowerCase() === asgmt.workcenter.toLowerCase()
+          && asgmt.startDate.getTime() <= end.getTime()
+          && asgmt.endDate.getTime() >= start.getTime()) {
+          answer = true;
+        }
+      });
+    }
     return answer;
   }
 

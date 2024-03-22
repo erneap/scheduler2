@@ -7,6 +7,8 @@ import { SiteScheduleMonthComponent } from './site-schedule/site-schedule-month/
 import { SiteScheduleMonthDayComponent } from './site-schedule/site-schedule-month/site-schedule-month-day/site-schedule-month-day.component';
 import { SiteScheduleMonthOfficeComponent } from './site-schedule/site-schedule-month/site-schedule-month-office/site-schedule-month-office.component';
 import { SiteScheduleMonthDaysComponent } from './site-schedule/site-schedule-month/site-schedule-month-days/site-schedule-month-days.component';
+import { SiteScheduleLegendComponent } from './site-schedule/site-schedule-legend/site-schedule-legend.component';
+import { SiteScheduleLegendCodeComponent } from './site-schedule/site-schedule-legend/site-schedule-legend-code/site-schedule-legend-code.component';
 
 
 @NgModule({
@@ -15,13 +17,18 @@ import { SiteScheduleMonthDaysComponent } from './site-schedule/site-schedule-mo
     SiteScheduleMonthComponent,
     SiteScheduleMonthDayComponent,
     SiteScheduleMonthOfficeComponent,
-    SiteScheduleMonthDaysComponent
+    SiteScheduleMonthDaysComponent,
+    SiteScheduleLegendComponent,
+    SiteScheduleLegendCodeComponent
   ],
   imports: [
     CommonModule,
     MaterialModule,
     FormsModule,
     ReactiveFormsModule
+  ],
+  exports: [
+    SiteScheduleComponent
   ]
 })
 export class SiteScheduleModule { }

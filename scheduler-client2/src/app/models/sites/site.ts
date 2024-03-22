@@ -93,4 +93,25 @@ export class Site implements ISite {
     }
     return found;
   }
+
+  clearScheduleEmployees() {
+    if (this.workcenters) {
+      this.workcenters.forEach(wc => {
+        if (wc.positions) {
+          wc.positions.forEach(pos => {
+            if (pos.employees) {
+              pos.employees = [];
+            }
+          });
+        }
+        if (wc.shifts) {
+          wc.shifts.forEach(shft => {
+            if (shft.employees) {
+              shft.employees = [];
+            }
+          });
+        }
+      });
+    }
+  }
 }

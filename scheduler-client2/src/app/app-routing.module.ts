@@ -19,6 +19,7 @@ import { ForgotPasswordResetComponent } from './home/forgot-password-reset/forgo
 import { LogViewerComponent } from './log-viewer/log-viewer.component';
 import { QueryComponent } from './query/query.component';
 import { SiteModReportViewComponent } from './site/site-mod-report-view/site-mod-report-view.component';
+import { SiteScheduleComponent } from './site/site-schedule/site-schedule/site-schedule.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -33,6 +34,7 @@ const routes: Routes = [
     loadChildren: () => import('./site-scheduler/site-scheduler.module')
       .then(m => m.SiteSchedulerModule)
   },
+  { path: 'schedule', component: SiteScheduleComponent },
   { path: 'sitemodview', component: SiteModReportViewComponent },
   { path: 'newemployee', component: NewEmployeeComponent },
   { path: 'siteemployees', component: SiteEmployeeComponent },

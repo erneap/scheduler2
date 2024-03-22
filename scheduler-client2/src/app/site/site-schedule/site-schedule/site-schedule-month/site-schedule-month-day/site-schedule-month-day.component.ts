@@ -26,8 +26,8 @@ export class SiteScheduleMonthDayComponent {
   get date(): Date {
     return this._date;
   }
-  @Input() valueType: string = '';
-  @Input() counter: number = 0;
+  @Input() width: number = 25;
+  @Input() viewtype: string = 'label';
 
   constructor(
     protected appState: AppStateService
@@ -36,12 +36,8 @@ export class SiteScheduleMonthDayComponent {
   }
 
   dayStyle(): string {
-    let width = (this.appState.viewWidth > 975) ? 975 
-      : this.appState.viewWidth - 44; 
-    const ratio = width / 975;
-    width = Math.floor(width * ratio)
-    width = (width < 15) ? 15 : width;
-    const fontSize = (width <= 15) ? 9 : Math.floor(12 * ratio);
+    const ratio = this.width / 25;
+    const fontSize = (this.width <= 15) ? 9 : Math.floor(12 * ratio);
     let bkColor: string = "ffffff";
     let txColor: string = "000000";
     if (this.employee.id === '') {
@@ -63,13 +59,13 @@ export class SiteScheduleMonthDayComponent {
       });
       if (bkColor === 'ffffff') {
         if (this.date.getDay() === 0 || this.date.getDay() === 6) {
-          if (this.counter % 2 === 0) {
+          if (this.viewtype === 'even') {
             bkColor = '3399ff';
           } else {
             bkColor = '99ccff';
           }
         } else {
-          if (this.counter % 2 === 0) {
+          if (this.viewtype === 'even') {
             bkColor = 'c0c0c0';
           } else {
             bkColor = 'ffffff';
@@ -77,14 +73,14 @@ export class SiteScheduleMonthDayComponent {
         }
       }
     }
-    return `width: ${width}px;height: ${width}px;font-size: ${fontSize}pt;`
+    return `width: ${this.width}px;height: ${this.width}px;font-size: ${fontSize}pt;`
       + `background-color: #${bkColor};color: #${txColor}`;
   }
 
   dayValue(): string {
     const weekdays = new Array("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa");
-    if (this.counter < 0 ) {
-      if (this.counter < -1) {
+    if (this.viewtype === 'label' || this.viewtype === 'day' ) {
+      if (this.viewtype === 'label') {
         return `${this.date.getDate()}`;
       } 
       return weekdays[this.date.getDay()];

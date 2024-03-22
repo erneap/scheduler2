@@ -133,6 +133,23 @@ export class Workcenter implements IWorkcenter {
     return -1;
   }
 
+  clearEmployees() {
+    if (this.positions) {
+      this.positions.forEach(pos => {
+        if (pos.employees) {
+          pos.employees = [];
+        }
+      });
+    }
+    if (this.shifts) {
+      this.shifts.forEach(pos => {
+        if (pos.employees) {
+          pos.employees = [];
+        }
+      });
+    }
+  }
+
   addEmployee(iEmp: IEmployee, bMids?: boolean, month?: Date) {
     const emp = new Employee(iEmp);
     let found = false;

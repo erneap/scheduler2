@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Site } from 'src/app/models/sites/site';
 import { Workcenter } from 'src/app/models/sites/workcenter';
+import { Team } from 'src/app/models/teams/team';
+import { Workcode } from 'src/app/models/teams/workcode';
 import { ReportRequest } from 'src/app/models/web/teamWeb';
 import { AppStateService } from 'src/app/services/app-state.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -24,6 +26,7 @@ export class SiteScheduleMonthComponent {
   daysInMonth: number = 30;
   wkctrStyle: string = "width: 1700px;";
   monthStyle: string = "width: 1300px;";
+  moveStyle: string = 'width: 100px;';
   workcenters: Workcenter[] = [];
   startDate: Date = new Date();
   endDate: Date = new Date();
@@ -32,7 +35,8 @@ export class SiteScheduleMonthComponent {
   lastWorked: Date = new Date(0);
   monthForm: FormGroup;
   wkCount: number = 0;
-  site: Site = new Site()
+  site: Site = new Site();
+  workCodes: Workcode[];
 
   constructor(
     protected siteService: SiteService,
@@ -54,6 +58,44 @@ export class SiteScheduleMonthComponent {
     if (iSite) {
       this.site = new Site(iSite);
     }
+    this.workCodes = [];
+    const iTeam = this.teamService.getTeam();
+    if (iTeam) {
+      const team = new Team(iTeam);
+      if (team.workcodes) {
+        team.workcodes.forEach(wc => {
+          this.workCodes.push(new Workcode(wc))
+        });
+      }
+    }
+    this.setWorkcenter();
+    this.setStyles();
+  }
+
+  setStyles(): void {
+    let end = new Date(this.month.getFullYear(), this.month.getMonth() + 1, 1);
+    end = new Date(end.getTime() - (24 * 3600000));
+    let maxWidth = (end.getDate() * 27) + 252 + 40;
+    let width = (this.appState.viewWidth < maxWidth) 
+      ? this.appState.viewWidth - 20 : maxWidth;
+    const ratio = width / (maxWidth - 40);
+    const moveWidth = Math.floor(100 * ratio);
+    let moveFontSize = Math.floor(14 * ratio);
+    if (moveFontSize < 10) { moveFontSize = 10;}
+    const monthWidth = (width - (4 * (moveWidth + 2)));
+    this.monthStyle = `width: ${monthWidth}px;font-size: ${moveFontSize}pt;`;
+    this.moveStyle = `width: ${moveWidth}px;font-size: ${moveFontSize}pt;`;
+    this.wkctrStyle = `width: ${width}px;`;
+  }
+
+  setWorkcenter() {
+    this.workcenters = [];
+    if (this.site && this.site.workcenters) {
+      this.site.workcenters.forEach(wc => {
+        this.workcenters.push(new Workcenter(wc));
+      });
+    }
+    this.workcenters.sort((a,b) => a.compareTo(b));
   }
 
   openPanel(id: string) {
@@ -128,6 +170,7 @@ export class SiteScheduleMonthComponent {
     }
     this.monthForm.controls["month"].setValue(this.month.getMonth());
     this.monthForm.controls["year"].setValue(this.month.getFullYear());
+    this.setStyles();
   }
 
   onSubmit() {
@@ -181,5 +224,6 @@ export class SiteScheduleMonthComponent {
     let iMonth = Number(this.monthForm.value.month);
     let iYear = Number(this.monthForm.value.year);
     this.month = new Date(iYear, iMonth, 1);
+    this.setStyles();
   }
 }

@@ -28,5 +28,6 @@ export class SiteScheduleMonthDaysComponent {
   get dates(): Date[] {
     return this._dates
   }
-  @Input() counter: number = 0;
+  @Input() viewtype: string = 'label';
+  @Input() width: number = 25;
 }

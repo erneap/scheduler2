@@ -218,4 +218,36 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     }
 }
 
+.workcenter-container {
+    width: 99%;
+}
+
+.workcenter-container .mat-expansion-indicator::after {
+    height: 5px;
+    width: 5px;
+    color: white;
+}
+
+
+.workcenter-container .mat-expansion-panel,
+.workcenter-container .mat-expansion-panel-header,
+mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
+.workcenter-container .mat-expansion-panel-header {
+    background-color: black !important;
+    border-bottom: solid 1px white !important;
+}
+
+.workcenter-container .mat-expansion-panel-header {
+  padding-right: 5px !important;
+  color: white !important;
+}
+
+.workcenter-container .mat-expansion-panel, 
+.workcenter-container .mat-expansion-panel.mat-extended {
+  background-color: gray;
+  border-bottom: solid 1px black;
+}
 

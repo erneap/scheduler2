@@ -444,4 +444,19 @@ export class Employee implements IEmployee {
     }
     return answer;
   }
+
+  isLocked(): boolean {
+    if (this.user) {
+      return this.user.isLocked();
+    }
+    return false;
+  }
+
+  isExpired(): boolean {
+    if (this.user) {
+      const now = new Date();
+      return (now.getTime() > this.user.passwordExpires.getTime());
+    }
+    return false;
+  }
 }

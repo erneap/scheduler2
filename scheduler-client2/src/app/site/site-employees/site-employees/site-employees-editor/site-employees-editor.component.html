@@ -1,0 +1,55 @@
+<div class="overall">
+  <div class="flexlayout row center" [style]="formWidth()">
+    <div class="headline">New Employee Form</div>
+    <span class="flex-spacer"></span>
+    <button mat-icon-button color="warn"
+      matTooltip="Delete Employee"
+      (click)="deleteEmployee()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  <div class="flexlayout row left" [style]="formWidth()">
+    <div class="subheadline">
+      {{employee.name.getFullName()}}
+    </div>
+  </div>
+  <mat-tab-group preserveContent="true" [backgroundColor]="'primary'"
+  style="margin-top: 10px;width: 100%;">
+  <mat-tab label="Leave Information">
+    <mat-tab-group preserveContent="true" [backgroundColor]="'primary'">
+      <mat-tab label="PTO/Holidays List">
+        <app-pto-holiday-chart [employee]="employee"></app-pto-holiday-chart>
+      </mat-tab>
+      <mat-tab label="Leaves">
+        <app-site-employees-leave [employee]="employee"
+        (changed)="changeEmployee($event)"></app-site-employees-leave>
+      </mat-tab>
+      <mat-tab label="Leave Balances">
+      </mat-tab>
+      <mat-tab label="Leave Requests">
+      </mat-tab>
+    </mat-tab-group>
+  </mat-tab>
+  <mat-tab label="Personal/Company">
+    <mat-tab-group preserveContent="true" [backgroundColor]="'primary'">
+      <mat-tab label="Personal Information">
+      </mat-tab>
+      <mat-tab label="Company Information">
+      </mat-tab>
+      <mat-tab label="Contact Information">
+      </mat-tab>
+      <mat-tab label="Specialties">
+      </mat-tab>
+    </mat-tab-group>
+  </mat-tab>
+  <mat-tab label="Work Related">
+    <mat-tab-group preserveContent="true" [backgroundColor]="'primary'">
+      <mat-tab label="Assignments">
+      </mat-tab>
+      <mat-tab label="Variations">
+      </mat-tab>
+    </mat-tab-group>
+  </mat-tab>
+</mat-tab-group>
+
+</div>

@@ -72,7 +72,9 @@ import { LeaveRequestMidDenialDialogComponent } from './leave-request/leave-requ
     EmployeeProfileFormComponent,
     LeaveRequestFormComponent,
     LeaveRequestEditorComponent,
-    EmployeeContactInfoItemComponent
+    EmployeeContactInfoComponent,
+    EmployeeContactInfoItemComponent,
+    EmployeeSpecialtiesComponent
   ]
 })
 export class EmployeeModule { }

@@ -1,5 +1,5 @@
 .lrList {
-  width: 298px;
+  width: 250px;
   border: solid 1px white;
   text-align: center;
   overflow-y: auto;
@@ -45,7 +45,7 @@
   min-height: 30px !important;
   justify-content: center;
   align-items: center;
-  font-size: 1em;
+  font-size: 1rem;
   font-weight: bold;
   background-color: white;
   color: black;
@@ -61,4 +61,15 @@
 .active {
   background-color: #3f51b5;
   color: white;
+}
+
+.legend {
+  width: 200px;
+  height: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }

@@ -1,6 +1,6 @@
 <div class="overall">
   <div class="flexlayout row center" [style]="formWidth()">
-    <div class="headline">New Employee Form</div>
+    <div class="headline">Current Site Employee Editor</div>
     <span class="flex-spacer"></span>
     <button mat-icon-button color="warn"
       matTooltip="Delete Employee"
@@ -25,26 +25,41 @@
         (changed)="changeEmployee($event)"></app-site-employees-leave>
       </mat-tab>
       <mat-tab label="Leave Balances">
+        <app-site-employees-leave-balance [employee]="employee"
+          (changed)="changeEmployee($event)">
+        </app-site-employees-leave-balance>
       </mat-tab>
       <mat-tab label="Leave Requests">
+        <app-leave-request-form [employee]="employee" 
+          (changed)="changeEmployee($event)"></app-leave-request-form>
       </mat-tab>
     </mat-tab-group>
   </mat-tab>
   <mat-tab label="Personal/Company">
     <mat-tab-group preserveContent="true" [backgroundColor]="'primary'">
-      <mat-tab label="Personal Information">
+      <mat-tab label="Personal Information" >
+        <app-employee-profile-form [employee]="employee"
+          (changed)="changeEmployee($event)"></app-employee-profile-form>
       </mat-tab>
       <mat-tab label="Company Information">
+        <app-site-employees-company-info [employee]="employee" [width]="width"
+          (changed)="changeEmployee($event)"></app-site-employees-company-info>
       </mat-tab>
       <mat-tab label="Contact Information">
+        <app-employee-contact-info [employee]="employee"
+          (changed)="changeEmployee($event)"></app-employee-contact-info>
       </mat-tab>
       <mat-tab label="Specialties">
+        <app-employee-specialties [employee]="employee" [height]="height"
+          (changed)="changeEmployee($event)"></app-employee-specialties>
       </mat-tab>
     </mat-tab-group>
   </mat-tab>
   <mat-tab label="Work Related">
     <mat-tab-group preserveContent="true" [backgroundColor]="'primary'">
       <mat-tab label="Assignments">
+        <app-site-employees-assignment [employee]="employee" [site]="site"
+          (changed)="changeEmployee($event)" [height]="height"></app-site-employees-assignment>
       </mat-tab>
       <mat-tab label="Variations">
       </mat-tab>

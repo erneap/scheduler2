@@ -30,6 +30,7 @@ export class LeaveRequestFormComponent {
   get employee(): Employee {
     return this._employee;
   }
+  @Input() width: number;
   @Output() changed = new EventEmitter<Employee>();
 
   currentLeaveRequests: LeaveRequest[] = [];
@@ -47,6 +48,7 @@ export class LeaveRequestFormComponent {
     private fb: FormBuilder,
     protected dialog: MatDialog
   ) { 
+    this.width = this.appState.viewWidth - 250;
     this.leaveList = [];
     const team = this.teamService.getTeam();
     if (team) {
@@ -76,10 +78,10 @@ export class LeaveRequestFormComponent {
   }
 
   listStyle(): string {
-    if (this.appState.isMobile() || this.appState.viewWidth < 450) {
+    if (this.appState.isMobile() || this.width < 450) {
       return "width: 98%;";
     }
-    return "width: 250px;";
+    return "width: 200px;";
   }
 
   setCurrent() {
@@ -171,5 +173,9 @@ export class LeaveRequestFormComponent {
       answer += " active";
     }
     return answer;
+  }
+
+  legendStyle(wc: Workcode): string {
+    return `background-color: #${wc.backcolor};color: #${wc.textcolor};`;
   }
 }

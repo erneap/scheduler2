@@ -39,6 +39,8 @@ export class SiteEmployeesAssignmentComponent {
   get site(): Site {
     return this._site;
   }
+  @Input() height: number = 700;
+  @Input() width: number = 1048;
   @Output() changed = new EventEmitter<Employee>();
   siteID: string = '';
   assignment: Assignment = new Assignment();
@@ -511,5 +513,9 @@ export class SiteEmployeesAssignmentComponent {
         }
       });
     }
+  }
+
+  listStyle(): string {
+    return `height: ${this.height - 300}px;`;
   }
 }

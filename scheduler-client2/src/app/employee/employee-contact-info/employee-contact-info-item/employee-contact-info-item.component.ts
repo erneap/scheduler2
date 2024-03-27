@@ -70,16 +70,18 @@ export class EmployeeContactInfoItemComponent {
   updateContactType() {
     let value = this.form.value.itemValue;
     this.dialogService.showSpinner();
-    this.authService.statusMessage = "Updating contact info";
     console.log(value);
     
     this.empService.updateEmployeeContact(this.employee.id, 
     this.contacttype.id, this.contactid, value).subscribe({
       next: (resp: EmployeeResponse) => {
         this.dialogService.closeSpinner();
-        this.authService.statusMessage = "Updated Employee Contact Info";
         if (resp.employee) {
           this.employee = resp.employee;
+          const iEmp = this.empService.getEmployee();
+          if (iEmp && iEmp.id === this.employee.id) {
+            this.empService.setEmployee(resp.employee);
+          }
           this.changed.emit(new Employee(resp.employee));
         }
       },

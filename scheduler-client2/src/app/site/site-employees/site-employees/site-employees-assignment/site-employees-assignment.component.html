@@ -1,4 +1,4 @@
-<div class="fxLayout fxLayout-column-center">
+<div class="flexlayout column topleft">
   <mat-card style="background-color: #3f51b5; color: white;">
     <mat-card-header>
       <div class="fxLayout-row-center">
@@ -129,11 +129,13 @@
           <div style="background-color: red;color: white;">
             Assignment Labor Codes
           </div>
-          <div *ngFor="let lc of laborcodes">
-            <mat-checkbox [checked]="lc.checked"
-              (change)="onSelect(lc.chargenumber, lc.extension, $event)">
-              {{lc.chargenumber}} - {{lc.extension}}
-            </mat-checkbox>
+          <div class="list" [style]="listStyle()">
+            <div *ngFor="let lc of laborcodes">
+              <mat-checkbox [checked]="lc.checked"
+                (change)="onSelect(lc.chargenumber, lc.extension, $event)">
+                {{lc.chargenumber}} - {{lc.extension}}
+              </mat-checkbox>
+            </div>
           </div>
         </div>
       </div>

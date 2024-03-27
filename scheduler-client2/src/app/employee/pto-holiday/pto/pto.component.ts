@@ -189,7 +189,7 @@ export class PtoComponent {
     const width = Math.floor(65 * ratio);
     const height = Math.floor(30 * ratio);
     const fontSize = 1.2 * ratio;
-    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}rem;`;
   }
 
   getDatesStyle(): string {
@@ -198,7 +198,7 @@ export class PtoComponent {
     const width = Math.floor(260 * ratio);
     const height = Math.floor(30 * ratio);
     const fontSize = 1.2 * ratio;
-    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}rem;`;
   }
 
   getTotalsStyle(): string {
@@ -206,8 +206,8 @@ export class PtoComponent {
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(91 * ratio);
     const height = Math.floor(30 * ratio);
-    const fontSize = 1.2 * ratio;
-    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+    const fontSize = 1.0 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}rem;`;
   }
 
   getLabelStyle(): string {
@@ -215,7 +215,7 @@ export class PtoComponent {
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(460 * ratio);
     const height = Math.floor(30 * ratio);
-    const fontSize = 1.5 * ratio;
-    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+    const fontSize = 1.2 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}rem;`;
   }
 }

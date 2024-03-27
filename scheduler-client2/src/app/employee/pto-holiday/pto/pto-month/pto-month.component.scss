@@ -1,7 +1,7 @@
 .month {
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   border-left: solid 2px black;
   border-top: solid 1px black;
   border-bottom: solid 1px black;
@@ -13,7 +13,7 @@
 .dates {
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   border-left: solid 1px black;
   border-top: solid 1px black;
   border-bottom: solid 1px black;
@@ -24,7 +24,7 @@
 .actual {
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   border-left: solid 1px black;
   border-top: solid 1px black;
   border-bottom: solid 1px black;
@@ -37,7 +37,7 @@
 .requested {
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   border-left: solid 1px black;
   border-top: solid 1px black;
   border-bottom: solid 1px black;

@@ -3,7 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { DeletionConfirmationComponent } from 'src/app/generic/deletion-confirmation/deletion-confirmation.component';
 import { NoticeDialogComponent } from 'src/app/generic/notice-dialog/notice-dialog.component';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
+import { Site } from 'src/app/models/sites/site';
+import { AppStateService } from 'src/app/services/app-state.service';
 import { EmployeeService } from 'src/app/services/employee.service';
+import { SiteService } from 'src/app/services/site.service';
 
 @Component({
   selector: 'app-site-employees-editor',
@@ -19,16 +22,24 @@ export class SiteEmployeesEditorComponent {
   get employee(): Employee {
     return this._employee;
   }
+  @Input() site: Site = new Site();
   @Input() width: number = 1048;
+  @Input() height: number = 850;
 
   @Output() employeeChanged = new EventEmitter<Employee>();
   @Output() employeeDelete = new EventEmitter<string>();
 
   constructor(
     protected empService: EmployeeService,
+    protected siteService: SiteService,
+    protected appState: AppStateService,
     protected dialog: MatDialog
   ) {
-
+    this.height = this.appState.viewHeight - 300;
+    const iSite = this.siteService.getSite();
+    if (iSite) {
+      this.site = new Site(iSite);
+    }
   }
 
   formWidth(): string {

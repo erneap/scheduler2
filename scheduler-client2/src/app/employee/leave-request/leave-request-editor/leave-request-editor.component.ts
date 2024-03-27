@@ -62,6 +62,7 @@ export class LeaveRequestEditorComponent {
   get approver(): boolean {
     return this._approver;
   }
+  @Input() width: number = 740;
   @Output() changed = new EventEmitter<Employee>();
   editorForm: FormGroup;
   leaveList: Workcode[];
@@ -548,6 +549,6 @@ export class LeaveRequestEditorComponent {
   commentsWidth(): string {
     const width = (this.appState.viewWidth < 500) 
       ? (this.appState.viewWidth - 44) : 500;
-    return `width: ${width}px;`;
+    return `width: ${width}px;padding-bottom: 10px;`;
   }
 }

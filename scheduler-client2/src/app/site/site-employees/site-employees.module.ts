@@ -14,6 +14,9 @@ import { SiteEmployeesLeaveRowComponent } from './site-employees/site-employees-
 import { SiteEmployeesLeaveBalanceComponent } from './site-employees/site-employees-leave-balance/site-employees-leave-balance.component';
 import { SiteEmployeesLeaveBalanceDialogComponent } from './site-employees/site-employees-leave-balance/site-employees-leave-balance-dialog/site-employees-leave-balance-dialog.component';
 import { SiteEmployeesLeaveBalanceYearComponent } from './site-employees/site-employees-leave-balance/site-employees-leave-balance-year/site-employees-leave-balance-year.component';
+import { SiteEmployeesCompanyInfoComponent } from './site-employees/site-employees-company-info/site-employees-company-info.component';
+import { SiteEmployeesVariationComponent } from './site-employees/site-employees-variation/site-employees-variation.component';
+import { SiteEmployeesLeaveRequestApproverComponent } from './site-employees/site-employees-leave-request-approver/site-employees-leave-request-approver.component';
 
 
 
@@ -29,7 +32,10 @@ import { SiteEmployeesLeaveBalanceYearComponent } from './site-employees/site-em
     SiteEmployeesLeaveRowComponent,
     SiteEmployeesLeaveBalanceComponent,
     SiteEmployeesLeaveBalanceDialogComponent,
-    SiteEmployeesLeaveBalanceYearComponent
+    SiteEmployeesLeaveBalanceYearComponent,
+    SiteEmployeesCompanyInfoComponent,
+    SiteEmployeesVariationComponent,
+    SiteEmployeesLeaveRequestApproverComponent
   ],
   imports: [
     CommonModule,

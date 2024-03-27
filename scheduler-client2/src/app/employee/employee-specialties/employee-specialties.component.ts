@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ListItem } from 'src/app/generic/button-list/listitem';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { SpecialtyType } from 'src/app/models/teams/contacttype';
@@ -34,6 +34,8 @@ export class EmployeeSpecialtiesComponent {
   get employee(): Employee {
     return this._employee;
   }
+  @Input() height: number = 700;
+  @Output() changed = new EventEmitter<Employee>();
   available: ListItem[] = [];
   specialties: ListItem[] = [];
   availableSelected: string[] = [];
@@ -69,7 +71,7 @@ export class EmployeeSpecialtiesComponent {
   }
 
   viewClass(): string {
-    if (this.appState.isMobile() || this.appState.isTablet()) {
+    if (this.appState.isMobile() || this.appState.isTablet() || this.height < 600) {
       return "flexlayout column topleft";
     }
     return "fxLayout flexlayout column topleft";
@@ -92,7 +94,7 @@ export class EmployeeSpecialtiesComponent {
   listStyle(): string {
     const ratio = this.width / 650;
     let lWidth = Math.floor(300 * ratio);
-    return `width: ${lWidth}px;`;
+    return `width: ${lWidth}px;height: ${this.height - 70}px;`;
   }
 
   itemStyle(): string {
@@ -108,7 +110,8 @@ export class EmployeeSpecialtiesComponent {
     const ratio = this.width / 650;
     let lWidth = Math.floor(50 * ratio);
     let gap = Math.floor(20 * ratio);
-    return `width: ${lWidth}px;gap: ${gap}px;`;
+    return `width: ${lWidth}px;gap: ${gap}px;`
+      + `height: ${this.height - 70}px;`;
   }
 
   iconStyle(): string {
@@ -210,8 +213,12 @@ export class EmployeeSpecialtiesComponent {
         next: (resp: EmployeeResponse) => {
           this.dialogService.closeSpinner();
           if (resp.employee) {
-            this.empService.setEmployee(resp.employee);
             this.employee = resp.employee;
+            const iEmp = this.empService.getEmployee();
+            if (iEmp && iEmp.id === resp.employee.id) {
+              this.empService.setEmployee(resp.employee);
+            }
+            this.changed.emit(new Employee(resp.employee));
           }
         },
         error: (err: EmployeeResponse) => {

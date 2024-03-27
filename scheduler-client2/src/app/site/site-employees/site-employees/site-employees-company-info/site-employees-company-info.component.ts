@@ -10,11 +10,11 @@ import { SiteService } from 'src/app/services/site.service';
 import { TeamService } from 'src/app/services/team.service';
 
 @Component({
-  selector: 'app-site-employee-company-info',
-  templateUrl: './site-employee-company-info.component.html',
-  styleUrls: ['./site-employee-company-info.component.scss']
+  selector: 'app-site-employees-company-info',
+  templateUrl: './site-employees-company-info.component.html',
+  styleUrls: ['./site-employees-company-info.component.scss']
 })
-export class SiteEmployeeCompanyInfoComponent {
+export class SiteEmployeesCompanyInfoComponent {
   private _employee: Employee = new Employee();
   @Input()
   public set employee(iEmp: IEmployee) {
@@ -26,7 +26,7 @@ export class SiteEmployeeCompanyInfoComponent {
   }
   @Input() width: number = 1048;
   @Output() changed = new EventEmitter<Employee>();
-  compInfoForm: FormGroup
+  compInfoForm: FormGroup;
   companies: Company[];
 
   constructor(
@@ -101,39 +101,18 @@ export class SiteEmployeeCompanyInfoComponent {
     }
     
     this.dialogService.showSpinner();
-    this.authService.statusMessage = `Updating User's ${field.toUpperCase()}`;
     this.empService.updateEmployee(this.employee.id, field, value)
       .subscribe({
         next: (data: EmployeeResponse) => {
           this.dialogService.closeSpinner();
-          if (data && data !== null) {
-            if (data.employee) {
-              this.employee = new Employee(data.employee);
-              this.setEmployee();
-            }
-            const emp = this.empService.getEmployee();
-            if (data.employee && emp && emp.id === data.employee.id) {
+          if (data && data !== null && data.employee) {
+            this.employee = new Employee(data.employee);
+            const iEmp = this.empService.getEmployee();
+            if (iEmp && iEmp.id === data.employee.id) {
               this.empService.setEmployee(data.employee);
             }
-            const site = this.siteService.getSite();
-            if (site && site.employees && site.employees.length && data.employee) {
-              let found = false;
-              for (let i=0; i < site.employees.length && !found; i++) {
-                if (site.employees[i].id === data.employee.id) {
-                  site.employees[i] = new Employee(data.employee);
-                  found = true;
-                }
-              }
-              if (!found) {
-                site.employees.push(new Employee(data.employee));
-              }
-              site.employees.sort((a,b) => a.compareTo(b));
-              this.siteService.setSite(site);
-              this.siteService.setSelectedEmployee(data.employee);
-            }
+            this.changed.emit(new Employee(data.employee));
           }
-          this.changed.emit(new Employee(this.employee));
-          this.authService.statusMessage = "Update complete";
         },
         error: (err: EmployeeResponse) => {
           this.dialogService.closeSpinner();

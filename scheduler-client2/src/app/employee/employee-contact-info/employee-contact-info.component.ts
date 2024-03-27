@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Employee, IEmployee } from 'src/app/models/employees/employee';
 import { ContactType } from 'src/app/models/teams/contacttype';
 import { ITeam, Team } from 'src/app/models/teams/team';
@@ -29,6 +29,7 @@ export class EmployeeContactInfoComponent {
   get employee(): Employee {
     return this._employee;
   }
+  @Output() changed = new EventEmitter<Employee>();
   contactTypes: ContactType[] = []
   width: number = 650;
 
@@ -88,7 +89,7 @@ export class EmployeeContactInfoComponent {
   }
 
   updatedEmployee(emp: Employee) {
-    this.empService.setEmployee(emp);
     this.employee = emp;
+    this.changed.emit(emp);
   }
 }

@@ -1,8 +1,10 @@
 .label {
   margin: 0;
   padding: 0;
-  text-align: center;
-  vertical-align: middle;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   border-left: solid 2px black;
   border-top: solid 2px black;
   border-bottom: solid 1px black;

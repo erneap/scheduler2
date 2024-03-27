@@ -62,8 +62,8 @@ export class PtoMonthComponent {
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(65 * ratio);
     const height = Math.floor(30 * ratio);
-    const fontSize = 1.4 * ratio;
-    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+    const fontSize = 1.0 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}rem;`;
   }
 
   getDatesStyle(): string {
@@ -71,8 +71,8 @@ export class PtoMonthComponent {
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(260 * ratio);
     const height = Math.floor(30 * ratio);
-    const fontSize = 1.4 * ratio;
-    return `width: ${width}px;height: ${height}px;font-size:${fontSize}em;`;
+    const fontSize = 1.0 * ratio;
+    return `width: ${width}px;height: ${height}px;font-size:${fontSize}rem;`;
   }
 
 }

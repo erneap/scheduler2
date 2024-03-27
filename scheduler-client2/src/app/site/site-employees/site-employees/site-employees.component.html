@@ -16,7 +16,7 @@
   <app-site-new-employee-editor [site]="site" [width]="width - 225" 
     *ngIf="selected.id === 'new'" (employeeChanged)="employeeChanged($event)">
   </app-site-new-employee-editor>
-  <app-site-employees-editor *ngIf="selected.id !== 'new'" 
+  <app-site-employees-editor *ngIf="selected.id !== 'new'" [site]="site"
     (employeeChanged)="employeeChanged($event)" [width]="width - 225"
     [employee]="selected"></app-site-employees-editor>
 </div>

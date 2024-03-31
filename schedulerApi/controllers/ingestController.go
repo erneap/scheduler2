@@ -169,7 +169,8 @@ func IngestFiles(c *gin.Context) {
 		for _, id := range employeeIDs {
 			for i, emp := range empls {
 				if emp.CompanyInfo.Company == companyid &&
-					emp.CompanyInfo.EmployeeID == id {
+					(emp.CompanyInfo.EmployeeID == id ||
+						emp.CompanyInfo.AlternateID == id) {
 					emp.RemoveLeaves(start, end)
 					services.UpdateEmployee(&emp)
 					empls[i] = emp
@@ -194,7 +195,8 @@ func IngestFiles(c *gin.Context) {
 			// find the employee in the employees list
 			for i, emp := range empls {
 				if emp.CompanyInfo.Company == companyid &&
-					emp.CompanyInfo.EmployeeID == rec.CompanyID {
+					(emp.CompanyInfo.EmployeeID == rec.CompanyID ||
+						emp.CompanyInfo.AlternateID == rec.CompanyID) {
 					if rec.Code != "" {
 						// leave, so add to employee and update
 						lvid := -1

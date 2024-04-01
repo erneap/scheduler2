@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/erneap/go-models/employees"
+	"github.com/erneap/go-models/labor"
 	"github.com/erneap/go-models/sites"
 	"github.com/erneap/go-models/teams"
 	"github.com/erneap/scheduler2/schedulerApi/services"
@@ -56,6 +57,7 @@ func (lr *LaborReport) Create() error {
 				lr.Date.Equal(fr.EndDate) ||
 				(lr.Date.After(fr.StartDate) &&
 					lr.Date.Before(fr.EndDate))) {
+			sort.Sort(labor.ByLaborCode(fr.LaborCodes))
 			lr.ForecastReports = append(lr.ForecastReports, fr)
 			if fr.StartDate.Before(minDate) {
 				minDate = time.Date(fr.StartDate.Year(),

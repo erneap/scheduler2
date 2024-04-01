@@ -20,7 +20,7 @@ func main() {
 	roles := []string{"ADMIN", "SCHEDULER", "siteleader", "company", "teamleader"}
 	api := router.Group("/scheduler/api/v2")
 	{
-		api.GET("/:userid", svcs.CheckJWT("scheduler"), controllers.GetInitial)
+		api.GET("/initial/:userid", svcs.CheckJWT("scheduler"), controllers.GetInitial)
 		emp := api.Group("/employee")
 		{
 			emp.GET("/:empid", svcs.CheckJWT("scheduler"), controllers.GetEmployee)
@@ -73,6 +73,6 @@ func main() {
 		}
 	}
 
-	// listen on port 6002
+	// listen on port 7001
 	router.Run(":7001")
 }

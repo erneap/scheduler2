@@ -99,7 +99,11 @@ func (cr *ReportCofS) Create() error {
 	for _, cofs := range site.CofSReports {
 		if !(cr.EndDate.Before(cofs.StartDate) || cr.StartDate.After(cofs.EndDate)) {
 			// create this CofS Report as it is in the date range
-			err = cr.CreateCofSXML(&cofs)
+			if len(cofs.Companies) > 0 && len(cofs.Sections) <= 0 {
+				err = cr.CreateCofSXML(&cofs)
+			} else if len(cofs.Sections) > 0 {
+				err = cr.CreateCofSXMLSections(&cofs)
+			}
 			if err != nil {
 				return err
 			}
@@ -188,6 +192,94 @@ func (cr *ReportCofS) CreateCofSXML(rpt *sites.CofSReport) error {
 							cr.ExerciseCodes, "", true)
 						sb.WriteString(empString)
 					}
+				}
+			}
+		}
+	}
+
+	if len(cr.Remarks) > 0 {
+		sb.WriteString("<REMARKS>")
+		for r, rmk := range cr.Remarks {
+			if r > 0 {
+				sb.WriteString("\n")
+			}
+			sb.WriteString(rmk)
+		}
+		sb.WriteString("</REMARKS>")
+	}
+
+	sb.WriteString("</fields>")
+
+	content := []byte(sb.String())
+	zipFile, err := cr.Writer.Create(filename)
+	if err != nil {
+		return err
+	}
+	_, err = zipFile.Write(content)
+
+	return err
+}
+
+func (cr *ReportCofS) CreateCofSXMLSections(rpt *sites.CofSReport) error {
+	// this xml file will have the filename of the report's
+	// shortname + date create + .xml
+	filename := rpt.ShortName + "-" +
+		cr.Date.Format("20060102") + ".xml"
+	var sb strings.Builder
+	cr.Remarks = cr.Remarks[:0]
+
+	// xml header information added first
+	sb.WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"" +
+		" standalone=\"yes\" ?>")
+	sb.WriteString("<fields xmlns:xsi=\"http://www.w3.org/2001/" +
+		"XMLSchema-instance\">")
+	sb.WriteString("<Month-Year>" + cr.Date.Format("Jan-2006") +
+		"</Month-Year>")
+	sb.WriteString("<Month-Year1>" + cr.Date.Format("Jan-2006") +
+		"</Month-Year1>")
+	sb.WriteString("<Unit>" + rpt.AssociatedUnit + "</Unit>")
+	sb.WriteString("<Unit1>" + rpt.AssociatedUnit + "</Unit1>")
+
+	sort.Sort(sites.ByCofSSection(rpt.Sections))
+
+	for c, sect := range rpt.Sections {
+		sb.WriteString(fmt.Sprintf("<Company%d>%s</Company%d>",
+			c+1, sect.Label, c+1))
+		sb.WriteString(fmt.Sprintf("<Section%d_Lead>%s</Section%d_Lead>",
+			c+1, sect.SignatureBlock, c+1))
+		if sect.ShowUnit {
+			sb.WriteString(fmt.Sprintf("<Unit%d>%s</Unit%d>", c+1,
+				rpt.AssociatedUnit, c+1))
+		}
+		count := 0
+		for _, emp := range cr.Site.Employees {
+			if emp.IsActive(cr.StartDate) ||
+				emp.IsActive(cr.EndDate.AddDate(0, 0, -1)) {
+				hours := 0.0
+				bPrimary := false
+				for _, lc := range sect.LaborCodes {
+					hours += emp.GetWorkedHoursForLabor(
+						lc.ChargeNumber, lc.Extension, cr.StartDate,
+						cr.EndDate)
+					if emp.IsPrimaryCode(cr.StartDate, lc.ChargeNumber, lc.Extension) ||
+						emp.IsPrimaryCode(cr.EndDate, lc.ChargeNumber, lc.Extension) {
+						bPrimary = true
+					}
+				}
+
+				if hours > 0.0 || bPrimary {
+					var laborCodes []employees.EmployeeLaborCode
+					for _, lc := range sect.LaborCodes {
+						elc := &employees.EmployeeLaborCode{
+							ChargeNumber: lc.ChargeNumber,
+							Extension:    lc.Extension,
+						}
+						laborCodes = append(laborCodes, *elc)
+					}
+					count++
+					empString := cr.CreateEmployeeData(count, c+1, emp,
+						laborCodes, sect.CompanyID, false)
+					sb.WriteString(empString)
 				}
 			}
 		}

@@ -110,6 +110,8 @@ func IngestFiles(c *gin.Context) {
 
 	ingestType := "manual"
 	startDay := 0
+	period := 7
+	startWeekday := time.Sunday
 	var records []ingest.ExcelRow
 	start := time.Now()
 	end := time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
@@ -118,6 +120,23 @@ func IngestFiles(c *gin.Context) {
 		if co.ID == companyid {
 			ingestType = co.IngestType
 			startDay = co.IngestStartDay
+			period = co.IngestPeriod
+			switch startDay {
+			case 0:
+				startWeekday = time.Sunday
+			case 1:
+				startWeekday = time.Monday
+			case 2:
+				startWeekday = time.Tuesday
+			case 3:
+				startWeekday = time.Wednesday
+			case 4:
+				startWeekday = time.Thursday
+			case 5:
+				startWeekday = time.Friday
+			case 6:
+				startWeekday = time.Saturday
+			}
 		}
 	}
 
@@ -131,122 +150,157 @@ func IngestFiles(c *gin.Context) {
 	}
 	switch strings.ToLower(ingestType) {
 	case "sap":
-		sapIngest := ingest.SAPIngest{
-			Files:  files,
-			TeamID: teamid,
-		}
-		records, start, end = sapIngest.Process()
+		for _, file := range files {
+			sapIngest := ingest.SAPIngest{
+				TeamID: teamid,
+			}
+			records, start, end = sapIngest.ProcessFile(file)
 
-		/////////////////////////////////////////////////////////////////////////////
-		// Algorithm for updating the employee records for leave and work
-		// 1) Get a list of all employees at the site
-		// 2) Sort the records by employee id, date, then hours.
-		// 3) Create a list of all employees covered by the records.
-		// 4) Step through the list of employees and remove leaves and work for the
-		//    period.
-		// 5) Step through the record and add leaves/work objects to either the
-		//    employee or employee's work record.  Update the employee after adding
-		//    a leave or create a new employee work record if the employee doesn't
-		//    have one create it, if already present, update it.
-		/////////////////////////////////////////////////////////////////////////////
+			sort.Sort(ingest.ByExcelRow(records))
 
-		sort.Sort(ingest.ByExcelRow(records))
-		// step througn records to get list of employee ids, then step through this
-		// list and remove leaves and work associated with these employees
-		var employeeIDs []string
-		for _, rec := range records {
-			found := false
-			for _, id := range employeeIDs {
-				if rec.CompanyID == id {
-					found = true
+			// determine if CofS ingest by checking if any employee has less than 40
+			// hours per week
+			periods := period / 7
+			checkHours := float64(periods) * 40.0
+			bCofS := false
+
+			empHours := 0.0
+			empID := ""
+			for _, rec := range records {
+				if empID != rec.CompanyID {
+					if empID != "" && checkHours > empHours {
+						bCofS = true
+					}
+					empHours = 0.0
+					empID = rec.CompanyID
+				}
+				if !rec.Modified {
+					empHours += rec.Hours
 				}
 			}
-			if !found {
-				employeeIDs = append(employeeIDs, rec.CompanyID)
+			if empID != "" && checkHours > empHours {
+				bCofS = true
 			}
-		}
 
-		for _, id := range employeeIDs {
-			for i, emp := range empls {
-				if emp.CompanyInfo.Company == companyid &&
-					(emp.CompanyInfo.EmployeeID == id ||
-						emp.CompanyInfo.AlternateID == id) {
-					emp.RemoveLeaves(start, end)
-					services.UpdateEmployee(&emp)
-					empls[i] = emp
+			if period < 15 {
+				for start.Weekday() != startWeekday {
+					start = start.AddDate(0, 0, -1)
+				}
+			}
+			if bCofS {
+				end = start.AddDate(0, 0, period)
+			}
 
-					work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(start.Year()))
-					if err == nil {
-						work.RemoveWork(start, end)
-						services.UpdateEmployeeWork(work)
+			/////////////////////////////////////////////////////////////////////////////
+			// Algorithm for updating the employee records for leave and work
+			// 1) Get a list of all employees at the site
+			// 2) Sort the records by employee id, date, then hours.
+			// 3) Create a list of all employees covered by the records.
+			// 4) Step through the list of employees and remove leaves and work for the
+			//    period.
+			// 5) Step through the record and add leaves/work objects to either the
+			//    employee or employee's work record.  Update the employee after adding
+			//    a leave or create a new employee work record if the employee doesn't
+			//    have one create it, if already present, update it.
+			/////////////////////////////////////////////////////////////////////////////
+
+			// step througn records to get list of employee ids, then step through this
+			// list and remove leaves and work associated with these employees
+			var employeeIDs []string
+			for _, rec := range records {
+				found := false
+				for _, id := range employeeIDs {
+					if rec.CompanyID == id {
+						found = true
 					}
-					if start.Year() != end.Year() {
-						work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(end.Year()))
+				}
+				if !found {
+					employeeIDs = append(employeeIDs, rec.CompanyID)
+				}
+			}
+
+			for _, id := range employeeIDs {
+				for i, emp := range empls {
+					if emp.CompanyInfo.Company == companyid &&
+						(emp.CompanyInfo.EmployeeID == id ||
+							emp.CompanyInfo.AlternateID == id) {
+						emp.RemoveLeaves(start, end)
+						services.UpdateEmployee(&emp)
+						empls[i] = emp
+
+						work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(start.Year()))
 						if err == nil {
 							work.RemoveWork(start, end)
 							services.UpdateEmployeeWork(work)
 						}
+						if start.Year() != end.Year() {
+							work, err := services.GetEmployeeWork(emp.ID.Hex(), uint(end.Year()))
+							if err == nil {
+								work.RemoveWork(start, end)
+								services.UpdateEmployeeWork(work)
+							}
+						}
 					}
 				}
 			}
-		}
 
-		for _, rec := range records {
-			// find the employee in the employees list
-			for i, emp := range empls {
-				if emp.CompanyInfo.Company == companyid &&
-					(emp.CompanyInfo.EmployeeID == rec.CompanyID ||
-						emp.CompanyInfo.AlternateID == rec.CompanyID) {
-					if rec.Code != "" {
-						// leave, so add to employee and update
-						lvid := -1
-						for _, lv := range emp.Leaves {
-							if lvid < lv.ID {
-								lvid = lv.ID
+			for _, rec := range records {
+				// find the employee in the employees list
+				for i, emp := range empls {
+					if emp.CompanyInfo.Company == companyid &&
+						(emp.CompanyInfo.EmployeeID == rec.CompanyID ||
+							emp.CompanyInfo.AlternateID == rec.CompanyID) {
+						if rec.Code != "" {
+							// leave, so add to employee and update
+							lvid := -1
+							for _, lv := range emp.Leaves {
+								if lvid < lv.ID {
+									lvid = lv.ID
+								}
 							}
-						}
-						lv := employees.LeaveDay{
-							ID:        lvid + 1,
-							LeaveDate: rec.Date,
-							Code:      rec.Code,
-							Hours:     rec.Hours,
-							Status:    "ACTUAL",
-							RequestID: "",
-						}
-						emp.Leaves = append(emp.Leaves, lv)
-						empls[i] = emp
-						err := services.UpdateEmployee(&emp)
-						if err != nil {
-							services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
-								fmt.Sprintf("%s UpdateEmployee (SAP): %s", logmsg, err.Error()))
-						}
-					} else {
-						// work object, so get work record object for employee and year, then
-						// add it to the work record, update it in the database.
-						wr := employees.Work{
-							DateWorked:   rec.Date,
-							ChargeNumber: rec.ChargeNumber,
-							Extension:    rec.Extension,
-							PayCode:      converters.ParseInt(rec.Preminum),
-							ModifiedTime: rec.Modified,
-							Hours:        rec.Hours,
-						}
-						if rec.Modified {
-							wr.Hours = wr.Hours * -1.0
-						}
-						workrec, err := services.GetEmployeeWork(emp.ID.Hex(),
-							uint(rec.Date.Year()))
-						if err != nil {
-							workrec = &employees.EmployeeWorkRecord{
-								ID:         primitive.NewObjectID(),
-								EmployeeID: emp.ID,
-								Year:       uint(rec.Date.Year()),
+							lv := employees.LeaveDay{
+								ID:        lvid + 1,
+								LeaveDate: rec.Date,
+								Code:      rec.Code,
+								Hours:     rec.Hours,
+								Status:    "ACTUAL",
+								RequestID: "",
 							}
-							workrec.Work = append(workrec.Work, wr)
-							services.CreateEmployeeWork(workrec)
+							emp.Leaves = append(emp.Leaves, lv)
+							empls[i] = emp
+							err := services.UpdateEmployee(&emp)
+							if err != nil {
+								services.AddLogEntry(c, "scheduler", "Error", "PROBLEM",
+									fmt.Sprintf("%s UpdateEmployee (SAP): %s", logmsg, err.Error()))
+							}
 						} else {
-							workrec.Work = append(workrec.Work, wr)
-							services.UpdateEmployeeWork(workrec)
+							// work object, so get work record object for employee and year, then
+							// add it to the work record, update it in the database.
+							wr := employees.Work{
+								DateWorked:   rec.Date,
+								ChargeNumber: rec.ChargeNumber,
+								Extension:    rec.Extension,
+								PayCode:      converters.ParseInt(rec.Preminum),
+								ModifiedTime: rec.Modified,
+								Hours:        rec.Hours,
+							}
+							if rec.Modified {
+								wr.Hours = wr.Hours * -1.0
+							}
+							workrec, err := services.GetEmployeeWork(emp.ID.Hex(),
+								uint(rec.Date.Year()))
+							if err != nil {
+								workrec = &employees.EmployeeWorkRecord{
+									ID:         primitive.NewObjectID(),
+									EmployeeID: emp.ID,
+									Year:       uint(rec.Date.Year()),
+								}
+								workrec.Work = append(workrec.Work, wr)
+								services.CreateEmployeeWork(workrec)
+							} else {
+								workrec.Work = append(workrec.Work, wr)
+								services.UpdateEmployeeWork(workrec)
+							}
 						}
 					}
 				}

@@ -101,21 +101,12 @@ export class EmployeeScheduleMonthComponent {
       }
     }
 
-    const iSite = this.siteService.getSite();
-    if (iSite) {
-      const site = new Site(iSite);
-      if (site.employees) {
-        site.employees.forEach(e => {
-          if (e.work) {
-            e.work.forEach(wk => {
-              if (e.companyinfo.company === emp?.companyinfo.company 
-                && wk.dateWorked.getTime() > this.lastWork.getTime()) {
-                this.lastWork = new Date(wk.dateWorked);
-              }
-            });
-          }
-        });
-      }
+    if (emp && emp.work) {
+      emp.work.forEach(wk => {
+        if (wk.dateWorked.getTime() > this.lastWork.getTime()) {
+          this.lastWork = new Date(wk.dateWorked);
+        }
+      });
     }
   }
 

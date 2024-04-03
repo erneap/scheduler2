@@ -60,6 +60,7 @@ export class PtoComponent {
     }
     return '';
   }
+  @Input() width: number = 455;
   leaveMonths: LeaveMonth[];
   actual: number = 0.0
   requested: number = 0.0;
@@ -184,7 +185,7 @@ export class PtoComponent {
   }
 
   getMonthStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(65 * ratio);
     const height = Math.floor(30 * ratio);
@@ -193,7 +194,7 @@ export class PtoComponent {
   }
 
   getDatesStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(260 * ratio);
     const height = Math.floor(30 * ratio);
@@ -202,7 +203,7 @@ export class PtoComponent {
   }
 
   getTotalsStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(91 * ratio);
     const height = Math.floor(30 * ratio);
@@ -211,7 +212,7 @@ export class PtoComponent {
   }
 
   getLabelStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(460 * ratio);
     const height = Math.floor(30 * ratio);

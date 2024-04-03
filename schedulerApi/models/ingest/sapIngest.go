@@ -34,7 +34,8 @@ func (s *SAPIngest) Process() ([]ExcelRow, time.Time,
 	return records, start, end
 }
 
-func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ExcelRow, time.Time, time.Time) {
+func (s *SAPIngest) ProcessFile(file *multipart.FileHeader) ([]ExcelRow,
+	time.Time, time.Time) {
 	readerFile, _ := file.Open()
 	f, err := excelize.OpenReader(readerFile)
 	if err != nil {

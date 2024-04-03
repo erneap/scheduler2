@@ -48,6 +48,7 @@ export class HolidayCellComponent {
   get year(): number {
     return this._year;
   }
+  @Input() width: number = 455;
   cellBackground: string = "background-color: #FFFFFF;"
   referenceDate: string = '';
 
@@ -90,7 +91,7 @@ export class HolidayCellComponent {
   }
 
   getCodeStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(41 * ratio);
     const height = Math.floor(30 * ratio);
@@ -99,7 +100,7 @@ export class HolidayCellComponent {
   }
 
   getReferenceStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(100 * ratio);
     const height = Math.floor(30 * ratio);
@@ -108,7 +109,7 @@ export class HolidayCellComponent {
   }
 
   getDatesStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(249 * ratio);
     const height = Math.floor(30 * ratio);
@@ -117,7 +118,7 @@ export class HolidayCellComponent {
   }
 
   getHoursStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(65 * ratio);
     const height = Math.floor(30 * ratio);

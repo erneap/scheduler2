@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { NotificationResponse } from './models/web/internalWeb';
 import { Team } from './models/teams/team';
 import { Location } from '@angular/common';
 import { AppStateService } from './services/app-state.service';
+import { MatSidenav } from '@angular/material/sidenav';
 const { version: appVersion } = require('../../package.json');
 
 @Component({
@@ -57,7 +58,11 @@ export class AppComponent {
     } else {
       this.getInitialData(user.id);
     }
-    this.width = window.innerWidth;
+    this.stateService.showMenu = !this.stateService.isMobile();
+    this.width = this.stateService.viewWidth;
+    if (this.stateService.showMenu) {
+      this.width = this.width - 250;
+    }
     this.isMobile = this.stateService.isMobile() || this.stateService.isTablet();
   }
 

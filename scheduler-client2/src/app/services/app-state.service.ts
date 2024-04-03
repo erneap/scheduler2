@@ -8,6 +8,7 @@ export class AppStateService {
   public viewState: ViewState;
   public viewHeight: number;
   public viewWidth: number;
+  public showMenu: boolean
 
   constructor() { 
     this.viewHeight = window.innerHeight - 82;
@@ -19,6 +20,7 @@ export class AppStateService {
     } else {
       this.viewState = ViewState.Desktop;
     }
+    this.showMenu = !this.isMobile();
   }
 
   isMobile(): boolean {

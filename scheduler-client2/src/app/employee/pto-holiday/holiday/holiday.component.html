@@ -9,12 +9,12 @@
     <div class="actual" [style]="getHoursStyle()">Hours</div>
   </div>
   <app-pto-holiday-cell *ngFor="let hol of holidays" [year]="year" [holiday]="hol"
-   [activecell]="isActive(hol)"></app-pto-holiday-cell>
+   [activecell]="isActive(hol)" [width]="width"></app-pto-holiday-cell>
   <div class="flexlayout row center">
-    <div class="code" [style]="getCodeStyle()">&nbsp;</div>
-    <div class="daysleft" [style]="getTotalsStyle()">Days Left</div>
-    <div class="hoursleft" [style]="getTotalsStyle()">Hours Left</div>
-    <div class="hourstaken" [style]="getTotalsStyle()">Hours Taken</div>
+    <div class="code bottomlabel" [style]="getCodeStyle()">&nbsp;</div>
+    <div class="daysleft bottomlabel" [style]="getTotalsStyle()">Days Left</div>
+    <div class="hoursleft bottomlabel" [style]="getTotalsStyle()">Hours Left</div>
+    <div class="hourstaken bottomlabel" [style]="getTotalsStyle()">Hours Taken</div>
   </div>
   <div class="flexlayout row center">
     <div class="code" [style]="getCodeStyle()">&nbsp;</div>

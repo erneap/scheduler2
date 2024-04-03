@@ -1,5 +1,5 @@
 <div class="flexlayout column center">
-  <div class="flexlayout row center year">
+  <div class="flexlayout row center year" [style]="yearStyle()">
     <button mat-button color="warning" (click)="updateYear('down')">
       &lt;&lt;
     </button>
@@ -12,7 +12,8 @@
   </div>
   <div [class]="getDisplayClass()">
     <app-pto-holiday-holiday *ngIf="showHolidays" [employee]="employee"
-      [year]="year"></app-pto-holiday-holiday>
-    <app-pto-overall [year]="year" [employee]="employee"></app-pto-overall>
+      [year]="year" [width]="getPortionWidth()"></app-pto-holiday-holiday>
+    <app-pto-overall [year]="year" [employee]="employee" 
+      [width]="getPortionWidth()"></app-pto-overall>
   </div>
 </div>

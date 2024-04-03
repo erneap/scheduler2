@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Employee } from 'src/app/models/employees/employee';
 import { Team } from 'src/app/models/teams/team';
 import { AppStateService } from 'src/app/services/app-state.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { TeamService } from 'src/app/services/team.service';
 
@@ -11,14 +12,23 @@ import { TeamService } from 'src/app/services/team.service';
   styleUrls: ['./pto-holiday.component.scss']
 })
 export class PtoHolidayComponent {
+  @Input() width: number = 920;
   year: number;
   showHolidays: boolean;
 
   constructor(
     protected empService: EmployeeService,
     protected teamService: TeamService,
-    protected appState: AppStateService
+    protected appState: AppStateService,
+    protected authService: AuthService
   ) {
+    this.width = this.appState.viewWidth;
+    if (this.appState.showMenu) {
+      this.width -= 300;
+    }
+    if (this.width > 920) {
+      this.width = 920;
+    }
     this.showHolidays = false;
     this.year = (new Date()).getFullYear();
     const iEmp = this.empService.getEmployee();
@@ -43,7 +53,7 @@ export class PtoHolidayComponent {
   }
 
   viewClass(): string {
-    if (this.appState.isMobile() || this.appState.isTablet()) {
+    if (this.width < 778) {
       return "flexlayout column topleft";
     }
     return "fxLayout flexlayout column topleft";

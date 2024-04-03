@@ -18,7 +18,8 @@
   <mat-tab label="Leave Information">
     <mat-tab-group preserveContent="true" [backgroundColor]="'primary'">
       <mat-tab label="PTO/Holidays List">
-        <app-pto-holiday-chart [employee]="employee"></app-pto-holiday-chart>
+        <app-pto-holiday-chart [employee]="employee" [width]="width">
+        </app-pto-holiday-chart>
       </mat-tab>
       <mat-tab label="Leaves">
         <app-site-employees-leave [employee]="employee"

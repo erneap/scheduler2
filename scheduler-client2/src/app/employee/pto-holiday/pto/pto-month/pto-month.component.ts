@@ -16,6 +16,7 @@ export class PtoMonthComponent {
   get leaveMonth(): LeaveMonth {
     return this._month;
   }
+  @Input() width: number = 455;
   months: string[] = new Array("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL",
     "AUG", "SEP", "OCT", "NOV", "DEC");
 
@@ -58,7 +59,7 @@ export class PtoMonthComponent {
   }
 
   getMonthStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(65 * ratio);
     const height = Math.floor(30 * ratio);
@@ -67,7 +68,7 @@ export class PtoMonthComponent {
   }
 
   getDatesStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(260 * ratio);
     const height = Math.floor(30 * ratio);

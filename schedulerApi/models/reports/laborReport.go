@@ -1014,6 +1014,12 @@ func (lr *LaborReport) CreateContractReport(
 		}
 	}
 
+	if fr.SortByFirst {
+		sort.Sort(employees.ByEmployeesFirst(lr.Employees))
+	} else {
+		sort.Sort(employees.ByEmployees(lr.Employees))
+	}
+
 	row := 4
 	var compareCodes []employees.EmployeeCompareCode
 	for _, wc := range maps.Values(lr.Workcodes) {

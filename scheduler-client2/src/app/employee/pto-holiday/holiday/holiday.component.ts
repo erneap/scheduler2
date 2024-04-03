@@ -63,6 +63,14 @@ export class HolidayComponent {
     }
     return '';
   }
+  private _width: number = 455;
+  @Input()
+  public set width(w: number) {
+    this._width = w;
+  }
+  get width(): number {
+    return this._width;
+  }
   holidays: CompanyHoliday[] = [];
 
   constructor(
@@ -195,7 +203,7 @@ export class HolidayComponent {
   }
 
   getCodeStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(41 * ratio);
     const height = Math.floor(30 * ratio);
@@ -204,7 +212,7 @@ export class HolidayComponent {
   }
 
   getReferenceStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(100 * ratio);
     const height = Math.floor(30 * ratio);
@@ -213,7 +221,7 @@ export class HolidayComponent {
   }
 
   getDatesStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(249 * ratio);
     const height = Math.floor(30 * ratio);
@@ -222,7 +230,7 @@ export class HolidayComponent {
   }
 
   getHoursStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(65 * ratio);
     const height = Math.floor(30 * ratio);
@@ -231,7 +239,7 @@ export class HolidayComponent {
   }
 
   getLabelStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(458 * ratio);
     const height = Math.floor(30 * ratio);
@@ -240,7 +248,7 @@ export class HolidayComponent {
   }
 
   getTotalsStyle(): string {
-    let ratio = (this.stateService.viewWidth / 778);
+    let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(138 * ratio);
     const height = Math.floor(30 * ratio);

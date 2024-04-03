@@ -26,7 +26,13 @@ export class NavigationMenuComponent {
   goToLink(url: string) {
     this.router.navigateByUrl(url);
     if (!this.appState.isDesktop()) {
+      this.appState.showMenu = !this.appState.showMenu;
       this.sidenav.emit();
     }
+  }
+
+  toggle() {
+    this.appState.showMenu = !this.appState.showMenu;
+    this.sidenav.emit();
   }
 }

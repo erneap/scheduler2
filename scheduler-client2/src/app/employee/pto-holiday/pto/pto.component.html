@@ -8,7 +8,9 @@
     <div class="actual" [style]="getMonthStyle()">Taken</div>
     <div class="requested" [style]="getMonthStyle()">Project</div>
   </div>
-  <app-pto-month *ngFor="let lm of leaveMonths" [leaveMonth]="lm"></app-pto-month>
+  <app-pto-month *ngFor="let lm of leaveMonths" [leaveMonth]="lm"
+    [width]="width">
+  </app-pto-month>
   <ng-container *ngIf="annual > 0.0">
     <div class="flexlayout row center">
       <div class="bottomlabel" [style]="getTotalsStyle()">Annual</div>

@@ -27,6 +27,7 @@ export class PtoHolidayChartComponent {
     }
     return this._employee;
   }
+  @Input() width: number = 920;
   year: number = (new Date()).getFullYear();
   showHolidays: boolean = false;
 
@@ -68,5 +69,42 @@ export class PtoHolidayChartComponent {
       answer += "row";
     }
     return answer;
+  }
+
+  getPortionWidth(): number {
+    if (this.showHolidays) {
+      if (this.width <= 455) {
+        return this.width;
+      } else if (this.width > 455 && this.width < 700) {
+        return 455;
+      } else {
+        return Math.floor(this.width/2);
+      }
+    } else {
+      if (this.width <= 455) {
+        return this.width;
+      } else {
+        return 455;
+      }
+    }
+  }
+
+  yearStyle(): string {
+
+    if (this.showHolidays) {
+      if (this.width <= 455) {
+        return `width: ${this.width}px;`;
+      } else if (this.width > 455 && this.width < 700) {
+        return 'width: 455px;';
+      } else {
+        return `width: ${this.width}px;`;
+      }
+    } else {
+      if (this.width <= 455) {
+        return `width: ${this.width}px;`;
+      } else {
+        return 'width: 455px;';
+      }
+    }
   }
 }

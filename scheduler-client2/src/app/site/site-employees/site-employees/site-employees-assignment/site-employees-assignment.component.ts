@@ -514,8 +514,4 @@ export class SiteEmployeesAssignmentComponent {
       });
     }
   }
-
-  listStyle(): string {
-    return `height: ${this.height - 300}px;`;
-  }
 }

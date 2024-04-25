@@ -16,7 +16,7 @@ func main() {
 
 	// add routes
 	router := gin.Default()
-	api := router.Group("/query/api/v2")
+	api := router.Group("/api/v2/query")
 	{
 
 		api.GET("/:teamid", controllers.BasicQuery)

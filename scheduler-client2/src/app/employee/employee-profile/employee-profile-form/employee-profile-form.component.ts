@@ -36,6 +36,7 @@ export class EmployeeProfileFormComponent {
     }
     return this._employee;
   }
+  @Input() width: number = 800;
   @Output() changed = new EventEmitter<Employee>();
 
   profileForm: FormGroup;
@@ -65,6 +66,11 @@ export class EmployeeProfileFormComponent {
     this.emailForm = fb.group({
       editor: ['', [Validators.email]],
     })
+
+    this.width = this.stateService.viewWidth;
+    if (this.width > 800) {
+      this.width = 800;
+    }
     this.setForm();
   }
 
@@ -85,32 +91,24 @@ export class EmployeeProfileFormComponent {
 
   viewClass(): string {
     let answer = "flexlayout center chart flexgap ";
-    if (this.stateService.isMobile() || this.stateService.isTablet()) {
-      if (this.stateService.viewWidth < 800) {
-        answer += "column";
-      } else {
-        answer += "row";
-      }
+    if (this.width < 450) {
+      answer += "column";
     } else {
-      if (this.stateService.viewWidth < 1170) {
-        answer += "column";
-      } else {
-        answer += "row";
-      }
+      answer += "row";
     }
     return answer;
   }
 
   itemClass(): string {
-    let answer = "flexlayout center ";
+    let answer = "flexlayout center row";
     if (this.stateService.isMobile() || this.stateService.isTablet()) {
-      if (this.stateService.viewWidth < 620) {
+      if (this.width < 450) {
         answer += "column";
       } else {
         answer += "row";
       }
     } else {
-      if (this.stateService.viewWidth < 870) {
+      if (this.width < 870) {
         answer += "column";
       } else {
         answer += "row";
@@ -119,16 +117,44 @@ export class EmployeeProfileFormComponent {
     return answer;
   }
 
+  nameStyle(): string {
+    if (this.width >= 460) {
+      return 'width: 150px;font-size: 12pt;';
+    } 
+    const ratio = this.width / 460;
+    let cWidth = Math.floor(150 * ratio);
+    let cFont = Math.floor(12 * ratio);
+    if (cWidth <= 100) {
+      cWidth = 100;
+      cFont = 9;
+    }
+    return `width: ${cWidth}px;font-size: ${cFont}pt;`;
+  }
+
+  passwdStyle(): string {
+    if (this.width >= 460) {
+      return 'width: 175px;font-size: 12pt;';
+    } 
+    const ratio = this.width / 460;
+    let cWidth = Math.floor(175 * ratio);
+    let cFont = Math.floor(12 * ratio);
+    if (cWidth <= 150) {
+      cWidth = 150;
+      cFont = 9;
+    }
+    return `width: ${cWidth}px;font-size: ${cFont}pt;`;
+  }
+
   getPasswordError(): string {
     let answer: string = ''
     if (this.profileForm.get('password')?.hasError('required')) {
-      answer = "Password is Required";
+      answer = "Required";
     }
     if (this.profileForm.get('password')?.hasError('passwordStrength')) {
       if (answer !== '') {
         answer += ', ';
       }
-      answer += "Password doesn't meet minimum requirements";
+      answer += "Minimum(s)";
     }
     return answer;
   }
@@ -136,13 +162,13 @@ export class EmployeeProfileFormComponent {
   getVerifyError(): string {
     let answer: string = ''
     if (this.profileForm.get('password2')?.hasError('required')) {
-      answer = "Password is Required";
+      answer = "Required";
     }
     if (this.profileForm.get('password2')?.hasError('matching')) {
       if (answer !== '') {
         answer += ', ';
       }
-      answer += "Password doesn't match";
+      answer += "Doesn't match";
     }
     return answer;
   }

@@ -61,10 +61,11 @@ export class SiteEmployeesComponent {
     this.selected = new Employee();
     this.selected.id = 'new';
     this.height = this.appState.viewHeight - 73;
-    this.width = this.appState.viewWidth - 312;
+    this.width = this.appState.viewWidth;
     if (this.appState.showMenu) {
       this.width -= 250;
     }
+    console.log(this.width);
   }
 
   setEmployees(): void {

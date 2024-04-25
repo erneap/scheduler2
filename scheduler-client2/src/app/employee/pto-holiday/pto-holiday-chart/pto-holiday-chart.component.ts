@@ -63,7 +63,7 @@ export class PtoHolidayChartComponent {
 
   getDisplayClass(): string {
     let answer = 'flexlayout topcenter ';
-    if (this.stateService.viewWidth < 900) {
+    if (this.width < 475) {
       answer += "column";
     } else {
       answer += "row";
@@ -73,9 +73,9 @@ export class PtoHolidayChartComponent {
 
   getPortionWidth(): number {
     if (this.showHolidays) {
-      if (this.width <= 455) {
+      if (this.width <= 237) {
         return this.width;
-      } else if (this.width > 455 && this.width < 700) {
+      } else if (this.width > 237 && this.width < 475) {
         return 455;
       } else {
         return Math.floor(this.width/2);
@@ -92,9 +92,9 @@ export class PtoHolidayChartComponent {
   yearStyle(): string {
 
     if (this.showHolidays) {
-      if (this.width <= 455) {
+      if (this.width <= 237) {
         return `width: ${this.width}px;`;
-      } else if (this.width > 455 && this.width < 700) {
+      } else if (this.width > 237 && this.width < 475) {
         return 'width: 455px;';
       } else {
         return `width: ${this.width}px;`;

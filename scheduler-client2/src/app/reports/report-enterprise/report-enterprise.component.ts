@@ -28,7 +28,7 @@ export class ReportEnterpriseComponent {
   }
 
   onSubmit() {
-    const url = '/scheduler/api/v2/reports';
+    const url = '/api/v2/scheduler/reports';
     const iTeam = this.teamService.getTeam();
     const iSite = this.siteService.getSite();
     if (iTeam && iSite) {

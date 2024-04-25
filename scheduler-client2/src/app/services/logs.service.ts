@@ -13,7 +13,7 @@ export class LogsService {
   ) { }
 
   getLogEntries(portion: string, year: number): Observable<ILogResponse> {
-    const url = `/scheduler/api/v2/logs/${portion}/${year}`;
+    const url = `/api/v2/scheduler/logs/${portion}/${year}`;
     return this.httpClient.get<ILogResponse>(url);
   }
 
@@ -25,7 +25,7 @@ export class LogsService {
       title: title,
       message: message,
     }
-    const url = '/scheduler/api/v2/logs';
+    const url = '/api/v2/scheduler/logs';
     return this.httpClient.post<ILogResponse>(url, data);
   }
 }

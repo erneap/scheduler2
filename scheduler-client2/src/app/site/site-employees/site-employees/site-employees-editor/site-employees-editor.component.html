@@ -1,5 +1,5 @@
 <div class="overall">
-  <div class="flexlayout row center" [style]="formWidth()">
+  <div class="flexlayout row topleft" style="width: 100%;">
     <div class="headline">Current Site Employee Editor</div>
     <span class="flex-spacer"></span>
     <button mat-icon-button color="warn"
@@ -39,7 +39,7 @@
   <mat-tab label="Personal/Company">
     <mat-tab-group preserveContent="true" [backgroundColor]="'primary'">
       <mat-tab label="Personal Information" >
-        <app-employee-profile-form [employee]="employee"
+        <app-employee-profile-form [employee]="employee" [width]="width"
           (changed)="changeEmployee($event)"></app-employee-profile-form>
       </mat-tab>
       <mat-tab label="Company Information">
@@ -63,6 +63,8 @@
           (changed)="changeEmployee($event)" [height]="height"></app-site-employees-assignment>
       </mat-tab>
       <mat-tab label="Variations">
+        <app-site-employees-variation [employee]="employee" [site]="site"
+          (changed)="changeEmployee($event)"></app-site-employees-variation>
       </mat-tab>
     </mat-tab-group>
   </mat-tab>

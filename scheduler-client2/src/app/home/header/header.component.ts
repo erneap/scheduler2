@@ -48,7 +48,7 @@ export class HeaderComponent {
   }
 
   toggle() {
-    this.sidenav.emit();
+    this.appState.toggle();
   }
 
   getHelp() {

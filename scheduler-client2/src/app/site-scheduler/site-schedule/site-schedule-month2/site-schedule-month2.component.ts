@@ -184,7 +184,7 @@ export class SiteScheduleMonth2Component {
           }
           this.workcenters.forEach(wk => {
             if (wk.id.toLowerCase() === wkctr.toLowerCase()) {
-              wk.addEmployee(emp, site.showMids, this.month);
+              wk.addEmployee(emp, this.month);
               wk.setWorkcenterStyles();
             }
           });
@@ -232,7 +232,9 @@ export class SiteScheduleMonth2Component {
 
   showShift(shiftID: string): boolean {
     const site = this.siteService.getSite();
+    console.log(site);
     if (site) {
+      console.log(`ShiftID: ${shiftID} - Show Mids: ${site.showMids}`);
       return ((shiftID.toLowerCase() === 'mids' && site.showMids) 
         || shiftID.toLowerCase() !== 'mids');
     }
@@ -270,7 +272,7 @@ export class SiteScheduleMonth2Component {
   }
 
   onSubmit() {
-    const url = '/scheduler/api/v2/reports';
+    const url = '/api/v2/scheduler/reports';
     const iTeam = this.teamService.getTeam();
     const iSite = this.siteService.getSite();
     if (iTeam && iSite) {

@@ -184,7 +184,7 @@ export class SiteScheduleMonthComponent {
           }
           this.workcenters.forEach(wk => {
             if (wk.id.toLowerCase() === wkctr.toLowerCase()) {
-              wk.addEmployee(emp, site.showMids, this.month);
+              wk.addEmployee(emp, this.month);
               wk.setWorkcenterStyles();
             }
           });

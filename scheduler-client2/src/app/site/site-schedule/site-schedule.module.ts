@@ -9,6 +9,10 @@ import { SiteScheduleMonthOfficeComponent } from './site-schedule/site-schedule-
 import { SiteScheduleMonthDaysComponent } from './site-schedule/site-schedule-month/site-schedule-month-days/site-schedule-month-days.component';
 import { SiteScheduleLegendComponent } from './site-schedule/site-schedule-legend/site-schedule-legend.component';
 import { SiteScheduleLegendCodeComponent } from './site-schedule/site-schedule-legend/site-schedule-legend-code/site-schedule-legend-code.component';
+import { SiteScheduleCoverageComponent } from './site-schedule-coverage/site-schedule-coverage.component';
+import { SiteScheduleCoverageDayComponent } from './site-schedule-coverage/site-schedule-coverage-day/site-schedule-coverage-day.component';
+import { SiteScheduleCoverageShiftComponent } from './site-schedule-coverage/site-schedule-coverage-shift/site-schedule-coverage-shift.component';
+import { SiteScheduleCoverageWorkcenterComponent } from './site-schedule-coverage/site-schedule-coverage-workcenter/site-schedule-coverage-workcenter.component';
 
 
 @NgModule({
@@ -19,7 +23,11 @@ import { SiteScheduleLegendCodeComponent } from './site-schedule/site-schedule-l
     SiteScheduleMonthOfficeComponent,
     SiteScheduleMonthDaysComponent,
     SiteScheduleLegendComponent,
-    SiteScheduleLegendCodeComponent
+    SiteScheduleLegendCodeComponent,
+    SiteScheduleCoverageComponent,
+    SiteScheduleCoverageDayComponent,
+    SiteScheduleCoverageShiftComponent,
+    SiteScheduleCoverageWorkcenterComponent
   ],
   imports: [
     CommonModule,

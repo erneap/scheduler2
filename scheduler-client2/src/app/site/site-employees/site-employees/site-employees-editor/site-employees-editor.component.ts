@@ -23,7 +23,15 @@ export class SiteEmployeesEditorComponent {
     return this._employee;
   }
   @Input() site: Site = new Site();
-  @Input() width: number = 1048;
+  private _width: number = 1048;
+  @Input()
+  public set width(w: number) {
+    console.log(w);
+    this._width = w - 70;
+  }
+  get width(): number {
+    return this._width;
+  }
   @Input() height: number = 850;
 
   @Output() employeeChanged = new EventEmitter<Employee>();

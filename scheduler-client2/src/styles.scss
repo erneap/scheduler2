@@ -201,6 +201,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .checkbox {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 247px;

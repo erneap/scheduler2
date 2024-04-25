@@ -150,7 +150,7 @@ export class Workcenter implements IWorkcenter {
     }
   }
 
-  addEmployee(iEmp: IEmployee, bMids?: boolean, month?: Date) {
+  addEmployee(iEmp: IEmployee, month?: Date) {
     const emp = new Employee(iEmp);
     let found = false;
     if (this.positions  && this.positions.length > 0) {
@@ -197,10 +197,8 @@ export class Workcenter implements IWorkcenter {
         let cnt = shiftMap.get(key);
         if (cnt) {
           if (cnt > count) {
-            if (!bMids && key.toLowerCase() !== 'mids') {
-              count = cnt;
-              shftID = key;
-            }
+            count = cnt;
+            shftID = key;
           }
         }
       }

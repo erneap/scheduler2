@@ -13,6 +13,7 @@ export class AppStateService {
   constructor() { 
     this.viewHeight = window.innerHeight - 82;
     this.viewWidth = window.innerWidth;
+    console.log(this.viewWidth);
     if (window.innerWidth < 450 || window.innerHeight < 450) {
       this.viewState = ViewState.Mobile;
     } else if (window.innerWidth < 1040) {
@@ -50,5 +51,13 @@ export class AppStateService {
         : `${site.toUpperCase()}`;
     }
     return 'Scheduler';
+  }
+
+  toggle() {
+    this.showMenu = !this.showMenu;
+    this.viewWidth = window.innerWidth;
+    if (this.showMenu && !this.isMobile()) {
+      this.viewWidth -= 250;
+    }
   }
 }

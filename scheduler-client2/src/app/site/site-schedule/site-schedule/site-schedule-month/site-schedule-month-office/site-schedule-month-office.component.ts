@@ -61,6 +61,7 @@ export class SiteScheduleMonthOfficeComponent {
   }
 
   setEmployees() {
+    console.log(this.site.showMids);
     const wkctrMap = new Map<string, number>();
     this.workcenter.clearEmployees();
     if (this.site.employees) {
@@ -96,7 +97,7 @@ export class SiteScheduleMonthOfficeComponent {
             }
           }
           if (wkctr.toLowerCase() === this.workcenter.id.toLowerCase()) {
-            this.workcenter.addEmployee(emp, this.site.showMids, this.month);
+            this.workcenter.addEmployee(emp, this.month);
           }
       });
     }

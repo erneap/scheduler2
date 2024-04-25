@@ -138,7 +138,7 @@ export class SiteService extends CacheService {
 
   AddSite(teamID: string, siteID: string, siteName: string, mids: boolean, offset: number,
     sitelead: IUser, scheduler?: IUser): Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/site';
+    const url = '/api/v2/scheduler/site';
     const data: NewSiteRequest = {
       team: teamID,
       siteid: siteID,
@@ -155,7 +155,7 @@ export class SiteService extends CacheService {
 
   UpdateSite(teamID: string, siteID: string, siteName: string, mids: boolean, 
   offset: number): Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/site';
+    const url = '/api/v2/scheduler/site';
     const data: NewSiteRequest = {
       team: teamID,
       siteid: siteID,
@@ -169,18 +169,18 @@ export class SiteService extends CacheService {
 
   retrieveSite(teamID: string, siteID: string, allemployees: boolean): 
     Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/site/${teamID}/${siteID}/${allemployees}`;
+    const url = `/api/v2/scheduler/site/${teamID}/${siteID}/${allemployees}`;
     return this.httpClient.get<SiteResponse>(url);
   }
 
   retrieveSiteWork(teamID: string, siteID: string, year: number):
     Observable<SiteWorkResponse> {
-      const url = `/scheduler/api/v2/site/work/${teamID}/${siteID}/${year}`;
+      const url = `/api/v2/scheduler/site/work/${teamID}/${siteID}/${year}`;
       return this.httpClient.get<SiteWorkResponse>(url);
     }
 
   deleteSite(teamID: string, siteID: string): Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/site/${teamID}/${siteID}`;
+    const url = `/api/v2/scheduler/site/${teamID}/${siteID}`;
     return this.httpClient.delete<SiteResponse>(url);
   }
 
@@ -194,7 +194,7 @@ export class SiteService extends CacheService {
   //////////////////////////////////////////////////////////////////////////////
   addWorkcenter(teamID: string, siteID: string, wkCtrID: string, name: string):
     Observable<SiteResponse> {
-    const url = "/scheduler/api/v2/site/workcenter";
+    const url = "/api/v2/scheduler/site/workcenter";
     const data: NewSiteWorkcenter = {
       team: teamID,
       siteid: siteID,
@@ -206,7 +206,7 @@ export class SiteService extends CacheService {
 
   updateWorkcenter(teamID: string, siteID: string, wkCtrID: string, 
     field: string, value: string): Observable<SiteResponse> {
-    const url = "/scheduler/api/v2/site/workcenter";
+    const url = "/api/v2/scheduler/site/workcenter";
     const data: SiteWorkcenterUpdate = {
       team: teamID,
       siteid: siteID,
@@ -219,7 +219,7 @@ export class SiteService extends CacheService {
 
   deleteWorkcenter(teamID: string, siteID: string, wkCtrID: string): 
     Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/site/workcenter/${teamID}/${siteID}/${wkCtrID}`;
+    const url = `/api/v2/scheduler/site/workcenter/${teamID}/${siteID}/${wkCtrID}`;
     return this.httpClient.delete<SiteResponse>(url);
   }
 
@@ -232,14 +232,14 @@ export class SiteService extends CacheService {
       positionid: shiftID,
       name: shiftName,
     }
-    const url = '/scheduler/api/v2/site/workcenter/shift';
+    const url = '/api/v2/scheduler/site/workcenter/shift';
     return this.httpClient.post<SiteResponse>(url, data);
   }
 
   updateWorkcenterShift(teamID: string, siteID: string, wkctrID: string, 
     shiftID: string, field: string, value: string): 
     Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/site/workcenter/shift';
+    const url = '/api/v2/scheduler/site/workcenter/shift';
     const data: WorkcenterPositionUpdate = {
       team: teamID,
       siteid: siteID,
@@ -253,7 +253,7 @@ export class SiteService extends CacheService {
 
   deleteWorkcenterShift(teamID: string, siteID: string, wkctrID: string, 
   shiftID: string): Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/site/workcenter/shift/${teamID}/${siteID}/`
+    const url = `/api/v2/scheduler/site/workcenter/shift/${teamID}/${siteID}/`
       + `${wkctrID}/${shiftID}`;
     return this.httpClient.delete<SiteResponse>(url);
   }
@@ -267,14 +267,14 @@ export class SiteService extends CacheService {
       positionid: posID,
       name: posName,
     }
-    const url = '/scheduler/api/v2/site/workcenter/position';
+    const url = '/api/v2/scheduler/site/workcenter/position';
     return this.httpClient.post<SiteResponse>(url, data);
   }
 
   updateWorkcenterPosition(teamID: string, siteID: string, wkctrID: string, 
     posID: string, field: string, value: string): 
     Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/site/workcenter/position';
+    const url = '/api/v2/scheduler/site/workcenter/position';
     const data: WorkcenterPositionUpdate = {
       team: teamID,
       siteid: siteID,
@@ -288,7 +288,7 @@ export class SiteService extends CacheService {
 
   deleteWorkcenterPosition(teamID: string, siteID: string, wkctrID: string, 
   posID: string): Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/site/workcenter/position/${teamID}/${siteID}/`
+    const url = `/api/v2/scheduler/site/workcenter/position/${teamID}/${siteID}/`
       + `${wkctrID}/${posID}`;
     return this.httpClient.delete<SiteResponse>(url);
   }
@@ -296,7 +296,7 @@ export class SiteService extends CacheService {
   addForecastReport(teamid: string, siteid: string, company: string, 
     name: string, start: Date, 
     end: Date, period: number): Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/site/forecast';
+    const url = '/api/v2/scheduler/site/forecast';
     const data: CreateSiteForecast = {
       team: teamid,
       siteid: siteid,
@@ -311,7 +311,7 @@ export class SiteService extends CacheService {
 
   updateForecastReport(teamid: string, siteid: string, reportid: number, 
     field: string, value: string): Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/site/forecast';
+    const url = '/api/v2/scheduler/site/forecast';
     const data: UpdateSiteForecast = {
       team: teamid,
       siteid: siteid,
@@ -324,7 +324,7 @@ export class SiteService extends CacheService {
 
   deleteForecastReport(teamid: string, siteid: string, reportid: number):
     Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/site/forecast/${teamid}/${siteid}/${reportid}`;
+    const url = `/api/v2/scheduler/site/forecast/${teamid}/${siteid}/${reportid}`;
     return this.httpClient.delete<SiteResponse>(url);
   }
 
@@ -333,7 +333,7 @@ export class SiteService extends CacheService {
     wbs: string, location: string, mins: number, hours: number, noname: string,
     exercise: boolean, start: string, end: string):
     Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/site/forecast/laborcode';
+    const url = '/api/v2/scheduler/site/forecast/laborcode';
     const data: NewSiteLaborCode = {
       team: teamid,
       siteid: siteid,
@@ -357,7 +357,7 @@ export class SiteService extends CacheService {
   updateReportLaborCode(teamid: string, siteid: string, reportid: number,
     chargeNumber: string, extension: string, field: string, value: string):
     Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/site/forecast/laborcode';
+    const url = '/api/v2/scheduler/site/forecast/laborcode';
     const data: UpdateSiteLaborCode = {
       team: teamid,
       siteid: siteid,
@@ -373,7 +373,7 @@ export class SiteService extends CacheService {
   createCofSReport(teamid: string, siteid: string, 
     name: string, shortname: string, unit: string, startdate: Date, 
     enddate: Date): Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/site/cofs';
+    const url = '/api/v2/scheduler/site/cofs';
     const data: NewCofSReport = {
       teamid: teamid,
       siteid: siteid,
@@ -389,7 +389,7 @@ export class SiteService extends CacheService {
   updateCofSReport(teamid: string, siteid: string, 
     rptid: number, field: string, value: string, 
     companyid?: string, ): Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/site/cofs';
+    const url = '/api/v2/scheduler/site/cofs';
     const data: UpdateCofSReport = {
       teamid: teamid,
       siteid: siteid,
@@ -405,7 +405,7 @@ export class SiteService extends CacheService {
 
   deleteCofSReport(teamid: string, siteid: string, 
     rptid: number): Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/site/cofs/${teamid}/`
+    const url = `/api/v2/scheduler/site/cofs/${teamid}/`
       + `${siteid}/${rptid}`;
     return this.httpClient.delete<SiteResponse>(url);
   }

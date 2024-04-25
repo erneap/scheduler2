@@ -7,9 +7,12 @@ import { AppStateService } from 'src/app/services/app-state.service';
   styleUrls: ['./employee-profile.component.scss']
 })
 export class EmployeeProfileComponent {
+  width: number = 800;
   constructor(
     protected appState: AppStateService
-  ) {}
+  ) {
+    this.width = this.appState.viewWidth;
+  }
 
   viewClass(): string {
     if (this.appState.isMobile() || this.appState.isTablet()) {

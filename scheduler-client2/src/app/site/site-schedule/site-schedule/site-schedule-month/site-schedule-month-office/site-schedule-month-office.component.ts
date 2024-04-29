@@ -61,7 +61,6 @@ export class SiteScheduleMonthOfficeComponent {
   }
 
   setEmployees() {
-    console.log(this.site.showMids);
     const wkctrMap = new Map<string, number>();
     this.workcenter.clearEmployees();
     if (this.site.employees) {

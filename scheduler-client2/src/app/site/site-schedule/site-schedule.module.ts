@@ -11,8 +11,9 @@ import { SiteScheduleLegendComponent } from './site-schedule/site-schedule-legen
 import { SiteScheduleLegendCodeComponent } from './site-schedule/site-schedule-legend/site-schedule-legend-code/site-schedule-legend-code.component';
 import { SiteScheduleCoverageComponent } from './site-schedule-coverage/site-schedule-coverage.component';
 import { SiteScheduleCoverageDayComponent } from './site-schedule-coverage/site-schedule-coverage-day/site-schedule-coverage-day.component';
-import { SiteScheduleCoverageShiftComponent } from './site-schedule-coverage/site-schedule-coverage-shift/site-schedule-coverage-shift.component';
 import { SiteScheduleCoverageWorkcenterComponent } from './site-schedule-coverage/site-schedule-coverage-workcenter/site-schedule-coverage-workcenter.component';
+import { SiteScheduleCoverageDaysComponent } from './site-schedule-coverage/site-schedule-coverage-days/site-schedule-coverage-days.component';
+import { SiteScheduleCoverageMonthComponent } from './site-schedule-coverage/site-schedule-coverage-month/site-schedule-coverage-month.component';
 
 
 @NgModule({
@@ -26,8 +27,9 @@ import { SiteScheduleCoverageWorkcenterComponent } from './site-schedule-coverag
     SiteScheduleLegendCodeComponent,
     SiteScheduleCoverageComponent,
     SiteScheduleCoverageDayComponent,
-    SiteScheduleCoverageShiftComponent,
-    SiteScheduleCoverageWorkcenterComponent
+    SiteScheduleCoverageWorkcenterComponent,
+    SiteScheduleCoverageDaysComponent,
+    SiteScheduleCoverageMonthComponent
   ],
   imports: [
     CommonModule,
@@ -36,7 +38,8 @@ import { SiteScheduleCoverageWorkcenterComponent } from './site-schedule-coverag
     ReactiveFormsModule
   ],
   exports: [
-    SiteScheduleComponent
+    SiteScheduleComponent,
+    SiteScheduleCoverageComponent
   ]
 })
 export class SiteScheduleModule { }

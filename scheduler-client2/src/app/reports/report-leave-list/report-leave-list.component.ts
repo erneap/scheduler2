@@ -31,7 +31,7 @@ export class ReportLeaveListComponent {
   }
 
   onSubmit() {
-    const url = '/api/v2/scheduler/reports';
+    const url = '/scheduler/api/v2/reports';
     const iTeam = this.teamService.getTeam();
     const iSite = this.siteService.getSite();
     const iEmp = this.empService.getEmployee();

@@ -1,13 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { ISite, Site } from 'src/app/models/sites/site';
-import { Shift } from 'src/app/models/sites/workcenter';
 
 @Component({
-  selector: 'app-site-schedule-coverage-shift',
-  templateUrl: './site-schedule-coverage-shift.component.html',
-  styleUrls: ['./site-schedule-coverage-shift.component.scss']
+  selector: 'app-site-schedule-coverage-days',
+  templateUrl: './site-schedule-coverage-days.component.html',
+  styleUrls: ['./site-schedule-coverage-days.component.scss']
 })
-export class SiteScheduleCoverageShiftComponent {
+export class SiteScheduleCoverageDaysComponent {
   private _site: Site = new Site();
   @Input()
   public set site(s: ISite) {
@@ -28,7 +27,7 @@ export class SiteScheduleCoverageShiftComponent {
     return this._dates
   }
   @Input() wkctrID: string = '';
-  @Input() shift: Shift = new Shift();
+  @Input() shiftID: string = '';
   @Input() viewtype: string = 'label';
   @Input() width: number = 25;
 }

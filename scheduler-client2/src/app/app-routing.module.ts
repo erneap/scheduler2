@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './home/not-found/not-found.component';
@@ -21,6 +21,7 @@ import { QueryComponent } from './query/query.component';
 import { SiteModReportViewComponent } from './site/site-mod-report-view/site-mod-report-view.component';
 import { SiteScheduleComponent } from './site/site-schedule/site-schedule/site-schedule.component';
 import { SiteEmployeesComponent } from './site/site-employees/site-employees/site-employees.component';
+import { SiteScheduleCoverageComponent } from './site/site-schedule/site-schedule-coverage/site-schedule-coverage.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -35,8 +36,13 @@ const routes: Routes = [
     loadChildren: () => import('./site-scheduler/site-scheduler.module')
       .then(m => m.SiteSchedulerModule)
   },
-  { path: 'schedule', component: SiteScheduleComponent },
-  { path: 'sitemodview', component: SiteModReportViewComponent },
+  { path: 'site', 
+    children: [
+      { path: 'schedule', component: SiteScheduleComponent },
+      { path: 'coverage', component: SiteScheduleCoverageComponent },
+      { path: 'modview', component: SiteModReportViewComponent }
+    ]
+  },
   { path: 'newemployee', component: NewEmployeeComponent },
   { path: 'siteemployees', component: SiteEmployeesComponent },
   { path: 'siteleaveapprover', component: SiteEmployeeLeaveRequestApproverComponent },

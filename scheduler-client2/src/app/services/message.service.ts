@@ -81,7 +81,7 @@ export class MessageService  extends CacheService {
 
   createMessage(to: string, from: string, message: string): 
     Observable<NotificationResponse> {
-    const url = '/api/v2/scheduler/messages';
+    const url = '/scheduler/api/v2/messages';
     const data: MessageRequest = {
       to: to,
       from: from,
@@ -101,12 +101,12 @@ export class MessageService  extends CacheService {
   }
 
   getMessage(id: string): Observable<NotificationResponse> {
-    const url = `/api/v2/scheduler/messages/message/${id}`;
+    const url = `/scheduler/api/v2/messages/message/${id}`;
     return this.httpClient.get<NotificationResponse>(url);
   }
 
   getEmployeeMessages(id: string): Observable<NotificationResponse> {
-    const url = `/api/v2/scheduler/messages/employee/${id}`;
+    const url = `/scheduler/api/v2/messages/employee/${id}`;
     return this.httpClient.get<NotificationResponse>(url).pipe(
       map((data: NotificationResponse) => {
         if (data && data.exception === '' && data.messages) {
@@ -121,7 +121,7 @@ export class MessageService  extends CacheService {
   }
 
   acknowledgeMessages(ids: string[]): Observable<NotificationResponse> {
-    const url = `/api/v2/scheduler/messages/acknowledge`;
+    const url = `/scheduler/api/v2/messages/acknowledge`;
     const data: NotificationAck = {
       messages: ids,
     }

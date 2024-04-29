@@ -20,7 +20,7 @@ func main() {
 	roles := []string{"ADMIN", "SCHEDULER", "siteleader", "company", "teamleader"}
 	siteRoles := []string{"SCHEDULER", "siteleader", "company", "teamleader", "ADMIN"}
 	teamRoles := []string{"teamleader", "ADMIN"}
-	api := router.Group("/api/v2/scheduler")
+	api := router.Group("/scheduler/api/v2")
 	{
 		api.GET("/:userid", svcs.CheckJWT("scheduler"), controllers.GetInitial)
 		emp := api.Group("/employee")

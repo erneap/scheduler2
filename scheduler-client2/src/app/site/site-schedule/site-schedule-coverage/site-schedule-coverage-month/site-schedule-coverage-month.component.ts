@@ -1,9 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Site } from 'src/app/models/sites/site';
 import { Workcenter } from 'src/app/models/sites/workcenter';
-import { ReportRequest } from 'src/app/models/web/teamWeb';
 import { AppStateService } from 'src/app/services/app-state.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog-service.service';
@@ -11,11 +9,11 @@ import { SiteService } from 'src/app/services/site.service';
 import { TeamService } from 'src/app/services/team.service';
 
 @Component({
-  selector: 'app-site-schedule-coverage',
-  templateUrl: './site-schedule-coverage.component.html',
-  styleUrls: ['./site-schedule-coverage.component.scss']
+  selector: 'app-site-schedule-coverage-month',
+  templateUrl: './site-schedule-coverage-month.component.html',
+  styleUrls: ['./site-schedule-coverage-month.component.scss']
 })
-export class SiteScheduleCoverageComponent {
+export class SiteScheduleCoverageMonthComponent {
   months: string[] = new Array("January", "February", "March", "April", "May",
   "June", "July", "August", "September", "October", "November", "December");
 
@@ -40,7 +38,6 @@ export class SiteScheduleCoverageComponent {
     protected dialogService: DialogService,
     protected authService: AuthService,
     protected appState: AppStateService,
-    protected httpClient: HttpClient,
     private fb: FormBuilder
   ) {
     this.month = new Date();
@@ -48,7 +45,7 @@ export class SiteScheduleCoverageComponent {
     this.monthForm = this.fb.group({
       month: this.month.getMonth(),
       year: this.month.getFullYear(),
-    })
+    });
     const iSite = this.siteService.getSite();
     if (iSite) {
       this.site = new Site(iSite);

@@ -14,13 +14,13 @@ export class QueryService {
   ) { }
 
   getBasic(teamid: string): Observable<IngestResponse> {
-    const url = `/api/v2/query/${teamid}`;
+    const url = `/query/api/v2/${teamid}`;
     return this.http.get<IngestResponse>(url);
   }
 
   getQuery(teamid: string, hours: number, 
     specialties: number[]): Observable<IngestResponse> {
-      const url = `/api/v2/query`;
+      const url = `/query/api/v2`;
     const data: QueryRequest = {
       teamid: teamid,
       hours: hours,

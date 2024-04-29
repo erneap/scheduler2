@@ -84,12 +84,12 @@ export class AuthService extends CacheService {
   private apiAuthProvider(email: string, password: string)
     : Observable<AuthenticationResponse> {
     return this.httpClient.post<AuthenticationResponse>(
-      '/api/v2/scheduler/user/logon', 
+      '/scheduler/api/v2/user/logon', 
       { email: email, password: password });
   }
 
   login(email: string, password: string): Observable<AuthenticationResponse> {
-    const url = "/api/v2/authentication/authenticate";
+    const url = "/authentication/api/v2/authenticate";
     const data: AuthenticationRequest = {
       emailAddress: email,
       password: password,
@@ -101,7 +101,7 @@ export class AuthService extends CacheService {
     const user = this.getUser()
     if (user) {
       this.dialogService.showSpinner();
-      const url = `/api/v2/authentication/authenticate/${user.id}/scheduler`;
+      const url = `/authentication/api/v2/authenticate/${user.id}/scheduler`;
       this.httpClient.delete(url).subscribe({
         next: () => {
           this.dialogService.closeSpinner();
@@ -238,7 +238,7 @@ export class AuthService extends CacheService {
 
   changeUser(id: string, field: string, value: string): 
     Observable<AuthenticationResponse> {
-    const url = '/api/v2/authentication/user/changes';
+    const url = '/authentication/api/v2/user/changes';
     const data: UpdateRequest = {
       id: id,
       field: field,
@@ -249,7 +249,7 @@ export class AuthService extends CacheService {
 
   changePassword(id: string, passwd: string): 
     Observable<EmployeeResponse> {
-    const url = '/api/v2/authentication/user';
+    const url = '/authentication/api/v2/user';
     const data: UpdateRequest = {
       id: id,
       field: "password",
@@ -259,7 +259,7 @@ export class AuthService extends CacheService {
   }
 
   startPasswordReset(email: string): Observable<HttpResponse<void>> {
-    const url = '/api/v2/authentication/reset';
+    const url = '/authentication/api/v2/reset';
     const data: AuthenticationRequest = {
       emailAddress: email,
       password: '',
@@ -269,7 +269,7 @@ export class AuthService extends CacheService {
 
   sendPasswordReset(email: string, passwd: string, token: string)
     : Observable<AuthenticationResponse> {
-    const url = '/api/v2/authentication/reset';
+    const url = '/authentication/api/v2/reset';
     const data: PasswordResetRequest = {
       emailAddress: email,
       password: passwd,
@@ -280,17 +280,17 @@ export class AuthService extends CacheService {
   }
 
   getAllUsers(): Observable<HttpResponse<UsersResponse>> {
-    const url = '/api/v2/authentication/user';
+    const url = '/authentication/api/v2/user';
     return this.httpClient.get<UsersResponse>(url, {observe: 'response'});
   }
 
   addUser(user: User): Observable<HttpResponse<UsersResponse>> {
-    const url = '/api/v2/authentication/user/'
+    const url = '/authentication/api/v2/user/'
     return this.httpClient.post<UsersResponse>(url, user, {observe: 'response'});
   }
 
   initialData(id: string): Observable<InitialResponse> {
-    const url = `/api/v2/scheduler/${id}`;
+    const url = `/scheduler/api/v2/${id}`;
     return this.httpClient.get<InitialResponse>(url);
   }
 }

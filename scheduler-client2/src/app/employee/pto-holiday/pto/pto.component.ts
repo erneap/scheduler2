@@ -12,7 +12,7 @@ import { SiteService } from 'src/app/services/site.service';
   styleUrls: ['./pto.component.scss']
 })
 export class PtoComponent {
-  private _year: number = (new Date()).getFullYear();
+  private _year: number = (new Date()).getUTCFullYear();
   private _employee: Employee | undefined;
   @Input()
   public set year(yr: number) {
@@ -107,17 +107,17 @@ export class PtoComponent {
         emp.leaves.sort((a,b) => a.compareTo(b));
         emp.leaves.forEach(lv => {
           if (lv.code.toLowerCase() !== 'h' 
-          && lv.leavedate.getFullYear() === this.year) {
+          && lv.leavedate.getUTCFullYear() === this.year) {
             // first get the leave month for to display in:
             this.leaveMonths.forEach(lm => {
-              if (lm.month.getMonth() === lv.leavedate.getMonth()) {
+              if (lm.month.getUTCMonth() === lv.leavedate.getUTCMonth()) {
                 if (lm.leaveGroups.length > 0) {
                   const lg = lm.leaveGroups[lm.leaveGroups.length - 1];
                   lg.leaves.sort((a,b) => a.compareTo(b));
                   const ld = lg.leaves[lg.leaves.length - 1];
                   if (ld.code.toLowerCase() === lv.code.toLowerCase() 
                     && ld.status.toLowerCase() === lv.status.toLowerCase() 
-                    && lv.leavedate.getDate() === ld.leavedate.getDate() + 1 
+                    && lv.leavedate.getUTCDate() === ld.leavedate.getUTCDate() + 1 
                     && lv.hours >= 8.0 && ld.hours >= 8.0) {
                     lg.addLeave(lv);
                     lm.leaveGroups[lm.leaveGroups.length - 1] = lg;
@@ -169,7 +169,7 @@ export class PtoComponent {
           let total = lastBalance + lastCarry;
           emp.leaves.forEach(lv => {
             if (lv.code.toLowerCase() === 'v' 
-              && lv.leavedate.getFullYear() === lastYear) {
+              && lv.leavedate.getUTCFullYear() === lastYear) {
               total -= lv.hours;
             }
           });
@@ -185,7 +185,7 @@ export class PtoComponent {
     }
   }
 
-  getMonthStyle(): string {
+  getUTCMonthStyle(): string {
     let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(65 * ratio);
@@ -194,7 +194,7 @@ export class PtoComponent {
     return `width: ${width}px;height: ${height}px;font-size:${fontSize}rem;`;
   }
 
-  getDatesStyle(): string {
+  getUTCDatesStyle(): string {
     let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(260 * ratio);

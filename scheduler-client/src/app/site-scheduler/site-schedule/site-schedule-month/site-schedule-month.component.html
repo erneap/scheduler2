@@ -20,13 +20,13 @@
   </div>
   <div class="fxLayout-row-center">
     <div class="name">&nbsp;</div>
-    <div *ngFor="let dt of dates" class="day" [style]="getDateSyyle(dt)">
+    <div *ngFor="let dt of dates" class="day" [style]="getUTCDateSyyle(dt)">
       {{dt.getUTCDate()}}
     </div> 
   </div>
   <div class="fxLayout-row-center">
     <div class="name">Name</div>
-    <div *ngFor="let dt of dates" class="day" [style]="getDateSyyle(dt)">
+    <div *ngFor="let dt of dates" class="day" [style]="getUTCDateSyyle(dt)">
       {{weekdays[dt.getUTCDay()]}}
     </div> 
   </div>

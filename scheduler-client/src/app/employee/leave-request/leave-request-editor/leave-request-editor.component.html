@@ -102,7 +102,7 @@
   </div>
   <div class="comments" *ngIf="request && request.comments.length > 0">
     <div *ngFor="let cmt of request.comments">
-      <div>{{cmt.getDate()}} - {{cmt.comment}}</div>
+      <div>{{cmt.getUTCDate()}} - {{cmt.comment}}</div>
     </div>
   </div>
   <div class="fxLayout-row-center" *ngIf="request && request.id !== ''">

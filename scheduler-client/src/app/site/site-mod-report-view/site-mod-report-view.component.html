@@ -19,13 +19,13 @@
         <div class="flexlayout column center">
           <div class="month bkg pointer" [style]="monthWidth(month.month.getTime())" 
             (click)="expand(month.month.getTime())">
-            {{getMonth(month.month)}}
+            {{getUTCMonth(month.month)}}
           </div>
           <div class="flexlayout row topleft">
             <div class="cell bkg pointer">Total</div>
             <ng-container *ngIf="month.expand">
               <div *ngFor="let prd of month.weeks" class="cell prdbkg">
-                {{prd.end.getMonth() + 1}}/{{prd.end.getDate()}}
+                {{prd.end.getUTCMonth() + 1}}/{{prd.end.getUTCDate()}}
               </div>
             </ng-container>
           </div>

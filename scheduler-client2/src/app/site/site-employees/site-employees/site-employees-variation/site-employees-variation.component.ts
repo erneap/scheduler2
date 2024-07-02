@@ -96,7 +96,7 @@ export class SiteEmployeesVariationComponent {
   dateString(date: Date): string {
     const months: string[] = new Array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-    return `${date.getDate()}-${months[date.getMonth()]}-${date.getFullYear()}`;
+    return `${date.getUTCDate()}-${months[date.getUTCMonth()]}-${date.getUTCFullYear()}`;
   }
 
   getLabel(vari: Variation) {
@@ -281,15 +281,15 @@ export class SiteEmployeesVariationComponent {
 
   getYearFirstDate(date: Date): string {
     date = new Date(date);
-    let answer =  `${date.getFullYear()}-`;
-    if (date.getMonth() + 1 < 10) {
+    let answer =  `${date.getUTCFullYear()}-`;
+    if (date.getUTCMonth() + 1 < 10) {
       answer += '0';
     }
-    answer += `${date.getMonth() + 1}-`;
-    if (date.getDate() < 10) {
+    answer += `${date.getUTCMonth() + 1}-`;
+    if (date.getUTCDate() < 10) {
       answer += '0';
     }
-    answer += `${date.getDate()}`;
+    answer += `${date.getUTCDate()}`;
     return answer;
   }
 
@@ -360,11 +360,11 @@ export class SiteEmployeesVariationComponent {
     } else if (field.toLowerCase() === 'dates') {
       if (this.variationForm.value.dates) {
         let start = new Date(this.variationForm.value.start);
-        while (start.getDay() !== 0) {
+        while (start.getUTCDay() !== 0) {
           start = new Date(start.getTime() - (24 * 3600000));
         }
         let end = new Date(this.variationForm.value.end);
-        while (end.getDay() !== 6) {
+        while (end.getUTCDay() !== 6) {
           end = new Date(end.getTime() + (24 * 3600000));
         }
         const days = Math.floor((end.getTime() - start.getTime()) / (24 * 3600000)) + 1;

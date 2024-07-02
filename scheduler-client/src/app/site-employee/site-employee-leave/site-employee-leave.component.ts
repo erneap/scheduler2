@@ -53,7 +53,7 @@ export class SiteEmployeeLeaveComponent {
     protected dialogService: DialogService,
     private fb: FormBuilder
   ) { 
-    this.year = (new Date()).getFullYear();
+    this.year = (new Date()).getUTCFullYear();
     this.leaveDays = [];
     this.leaveCodes = [];
     const team = this.teamService.getTeam();
@@ -106,7 +106,7 @@ export class SiteEmployeeLeaveComponent {
 
   showLeaveEditor(): boolean {
     const now = new Date();
-    return (this.year >= now.getFullYear());
+    return (this.year >= now.getUTCFullYear());
   }
 
   setLeaves() {
@@ -130,14 +130,14 @@ export class SiteEmployeeLeaveComponent {
   
   dateString(date: Date): string {
     let answer = '';
-    if (date.getMonth() < 9) {
+    if (date.getUTCMonth() < 9) {
       answer += '0';
     }
-    answer += `${date.getMonth() + 1}/`;
-    if (date.getDate() < 10) {
+    answer += `${date.getUTCMonth() + 1}/`;
+    if (date.getUTCDate() < 10) {
       answer += '0';
     }
-    answer += `${date.getDate()}/${date.getFullYear()}`;
+    answer += `${date.getUTCDate()}/${date.getUTCFullYear()}`;
     return answer;
   }
 
@@ -166,8 +166,8 @@ export class SiteEmployeeLeaveComponent {
     let leave: LeaveDay = new LeaveDay();
     leave.id = 0;
     if (sDate instanceof Date) {
-      leave.leavedate = new Date(Date.UTC(sDate.getFullYear(), 
-      sDate.getMonth(), sDate.getDate()));
+      leave.leavedate = new Date(Date.UTC(sDate.getUTCFullYear(), 
+      sDate.getUTCMonth(), sDate.getUTCDate()));
     } else {
       error += 'Leave Date incorrect format (MM/DD/YYYY)';
     }

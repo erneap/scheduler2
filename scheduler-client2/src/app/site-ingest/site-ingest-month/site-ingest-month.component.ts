@@ -82,7 +82,7 @@ export class SiteIngestMonthComponent {
           }
           this.monthChanged.emit(this.month);
     
-          this.dateLabel = `${months[this.month.getMonth()]} ${this.month.getFullYear()}`;
+          this.dateLabel = `${months[this.month.getUTCMonth()]} ${this.month.getUTCFullYear()}`;
           this.showList = [];
           this.employees.forEach(emp => {
             if (emp.activeOnDate(this.month)) {
@@ -250,7 +250,7 @@ export class SiteIngestMonthComponent {
     }
   }
 
-  getMonthWidthStyle(): string {
+  getUTCMonthWidthStyle(): string {
     let totalwidth = (this.dates.length * 37) + 202 + 102;
     let monthWidth = totalwidth - 204;
     return `width: ${monthWidth}px;`;

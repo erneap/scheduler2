@@ -18,7 +18,7 @@ export class PtoHolidayComponent {
     protected teamService: TeamService
   ) {
     this.showHolidays = false;
-    this.year = (new Date()).getFullYear();
+    this.year = (new Date()).getUTCFullYear();
     const iEmp = this.empService.getEmployee();
     const iTeam = this.teamService.getTeam();
     if (iEmp && iTeam) {

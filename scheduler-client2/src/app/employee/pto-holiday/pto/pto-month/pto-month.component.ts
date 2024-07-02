@@ -58,7 +58,7 @@ export class PtoMonthComponent {
     return total.toFixed(1);
   }
 
-  getMonthStyle(): string {
+  getUTCMonthStyle(): string {
     let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(65 * ratio);
@@ -67,7 +67,7 @@ export class PtoMonthComponent {
     return `width: ${width}px;height: ${height}px;font-size:${fontSize}rem;`;
   }
 
-  getDatesStyle(): string {
+  getUTCDatesStyle(): string {
     let ratio = this.width / 455;
     if (ratio > 1.0) { ratio = 1.0; }
     const width = Math.floor(260 * ratio);

@@ -1,5 +1,5 @@
 <div class="cell" [style]="getWorkdayStyle()">
-  <div [class]="getDateClass()" [style]="getDateStyles()">{{leave.leavedate.getUTCDate()}}</div>
+  <div [class]="getUTCDateClass()" [style]="getUTCDateStyles()">{{leave.leavedate.getUTCDate()}}</div>
   <form [formGroup]="dayForm" class="form" [style]="getFormFont()">
     <select formControlName="code" [style]="getCodeStyle()"
       (change)="changeCode()">

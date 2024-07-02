@@ -36,7 +36,7 @@ export class SiteEmployeeAssignmentScheduleComponent {
   public set startdate(sDate: Date | undefined) {
     if (sDate) {
       this._startDate = new Date(sDate);
-      this.startid = this._startDate.getDay();
+      this.startid = this._startDate.getUTCDay();
       this.endid = 6;
     } else {
       this._startDate = undefined;
@@ -54,7 +54,7 @@ export class SiteEmployeeAssignmentScheduleComponent {
         const time = this._endDate.getTime() - this._startDate.getTime();
         const days = Math.floor(time / (24 * 3600000)) + 1;
         this.endid = this.startid + days;
-        while ((this.endid % 7) > this._endDate.getDay()) {
+        while ((this.endid % 7) > this._endDate.getUTCDay()) {
           this.endid--;
         }
       }
@@ -148,7 +148,7 @@ export class SiteEmployeeAssignmentScheduleComponent {
   getScheduleDate(id: number): Date | undefined {
     if (this._startDate) {
       let tDate = new Date(this._startDate);
-      while (tDate.getDay() !== 0) {
+      while (tDate.getUTCDay() !== 0) {
         tDate = new Date(tDate.getTime() - (24 * 3600000));
       }
       tDate.setTime(tDate.getTime() + (id * 24 * 3600000));

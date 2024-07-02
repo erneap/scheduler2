@@ -16,7 +16,7 @@ export class SiteEmployeeLeaveBalanceDialogComponent {
   ) {
     const now = new Date();
     this.balanceForm = this.fb.group({
-      year: [now.getFullYear(), [Validators.required]],
+      year: [now.getUTCFullYear(), [Validators.required]],
     });
   }
 

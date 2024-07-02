@@ -37,13 +37,13 @@
         <div class="flexlayout column center">
           <div class="flexlayout row center">
             <div class="name">&nbsp;</div>
-            <div *ngFor="let dt of dates" class="day" [style]="getDateStyle(dt)">
+            <div *ngFor="let dt of dates" class="day" [style]="getUTCDateStyle(dt)">
               {{dt.getUTCDate()}}
             </div> 
           </div>
           <div class="flexlayout row center">
             <div class="name">Name</div>
-            <div *ngFor="let dt of dates" class="day" [style]="getDateStyle(dt)">
+            <div *ngFor="let dt of dates" class="day" [style]="getUTCDateStyle(dt)">
               {{weekdays[dt.getUTCDay()]}}
             </div> 
           </div>

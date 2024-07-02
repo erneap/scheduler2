@@ -9,7 +9,7 @@ import { CompanyHoliday, ICompanyHoliday } from 'src/app/models/teams/company';
 })
 export class HolidayCellComponent {
   private _holiday: CompanyHoliday = new CompanyHoliday(); 
-  private _year: number = (new Date()).getFullYear();
+  private _year: number = (new Date()).getUTCFullYear();
   @Input()
   public set holiday(hol: CompanyHoliday ) {
     this._holiday = hol;
@@ -76,8 +76,8 @@ export class HolidayCellComponent {
     const months: string[] = new Array("Jan", "Feb", "Mar", "Apr", "May", "Jun",
       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
     this.holiday.actualdates.forEach(dt => {
-      if (dt.getFullYear() === this.year) {
-        this.referenceDate = `${dt.getDate()} ${months[dt.getMonth()]}`;
+      if (dt.getUTCFullYear() === this.year) {
+        this.referenceDate = `${dt.getUTCDate()} ${months[dt.getUTCMonth()]}`;
       }
     })
   }

@@ -72,13 +72,13 @@ export class LeaveRequestCalendarDayComponent {
     }
   }
 
-  getDateClass() : string {
+  getUTCDateClass() : string {
     const today = new Date();
     let classes = 'dayOfMonth ';
     if (this.leave && this.leave.leavedate) {
-      if (today.getFullYear() === this.leave.leavedate.getUTCFullYear() 
-        && today.getMonth() === this.leave.leavedate.getUTCMonth()
-        && today.getDate() === this.leave.leavedate.getUTCDate()) {
+      if (today.getUTCFullYear() === this.leave.leavedate.getUTCFullYear() 
+        && today.getUTCMonth() === this.leave.leavedate.getUTCMonth()
+        && today.getUTCDate() === this.leave.leavedate.getUTCDate()) {
         classes += "today";
       } else if (this.leave.leavedate.getUTCDay() === 0 
         || this.leave.leavedate.getUTCDay() === 6) {
@@ -92,7 +92,7 @@ export class LeaveRequestCalendarDayComponent {
     return classes;
   }
 
-  getDateStyles(): string {
+  getUTCDateStyles(): string {
     if (this.width > 100) {
       this.width = 100;
     }
@@ -210,11 +210,11 @@ export class LeaveRequestCalendarDayComponent {
   changeCode() {
     this.leave.code = this.dayForm.value.code;
     this.leave.hours = Number(this.dayForm.value.hours);
-    let data: string = `${this.leave.leavedate.getFullYear()}-`
-      + ((this.leave.leavedate.getMonth() < 9) ? '0' : '') 
-      + `${this.leave.leavedate.getMonth() + 1}-`
-      + ((this.leave.leavedate.getDate() < 10) ? '0' : '') 
-      + `${this.leave.leavedate.getDate()}`
+    let data: string = `${this.leave.leavedate.getUTCFullYear()}-`
+      + ((this.leave.leavedate.getUTCMonth() < 9) ? '0' : '') 
+      + `${this.leave.leavedate.getUTCMonth() + 1}-`
+      + ((this.leave.leavedate.getUTCDate() < 10) ? '0' : '') 
+      + `${this.leave.leavedate.getUTCDate()}`
       + `|${this.leave.code}|${this.leave.hours}`;
     this.changed.emit(data);
     this.setLeave();

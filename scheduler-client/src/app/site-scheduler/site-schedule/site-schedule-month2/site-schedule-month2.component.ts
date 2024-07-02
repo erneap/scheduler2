@@ -46,10 +46,11 @@ export class SiteScheduleMonth2Component {
     private fb: FormBuilder
   ) {
     this.month = new Date();
-    this.month = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
+    this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth(), 1));
     this.monthForm = this.fb.group({
-      month: this.month.getMonth(),
-      year: this.month.getFullYear(),
+      month: this.month.getUTCMonth(),
+      year: this.month.getUTCFullYear(),
     })
     this.expanded = this.siteService.getExpanded();
     this.setMonth();
@@ -57,16 +58,16 @@ export class SiteScheduleMonth2Component {
 
   setMonth() {
 
-    this.monthLabel = `${this.months[this.month.getMonth()]} `
-      + `${this.month.getFullYear()}`;
+    this.monthLabel = `${this.months[this.month.getUTCMonth()]} `
+      + `${this.month.getUTCFullYear()}`;
     
     // calculate the display's start and end date, where start date is always
     // the sunday before the 1st of the month and end date is the saturday after
     // the end of the month.
-    this.startDate = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth(), 1, 0, 0, 0));
-    this.endDate = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth() + 1, 1, 0, 0, 0));
+    this.startDate = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth(), 1, 0, 0, 0));
+    this.endDate = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth() + 1, 1, 0, 0, 0));
     
     let start = new Date(this.startDate);
 
@@ -83,12 +84,12 @@ export class SiteScheduleMonth2Component {
     this.monthStyle = `width: ${monthWidth}px;`;
     const site = this.siteService.getSite();
     if (site) {
-      if (!site.hasEmployeeWork(this.startDate.getFullYear())) {
+      if (!site.hasEmployeeWork(this.startDate.getUTCFullYear())) {
         const team = this.teamService.getTeam();
         let teamid = '';
         if (team) { teamid = team.id; }
         this.dialogService.showSpinner();
-        this.siteService.retrieveSiteWork(teamid, site.id, start.getFullYear())
+        this.siteService.retrieveSiteWork(teamid, site.id, start.getUTCFullYear())
         .subscribe({
           next: resp => {
             this.dialogService.closeSpinner();
@@ -100,8 +101,11 @@ export class SiteScheduleMonth2Component {
                       remp.work.forEach(wk => {
                         if (emp.work) {
                           const oWk = new Work(wk);
+                          const dw = new Date(oWk.dateWorked);
                           if (oWk.dateWorked.getTime() > this.lastWorked.getTime()) {
-                            this.lastWorked = new Date(oWk.dateWorked);
+                            this.lastWorked = new Date(Date.UTC(
+                              dw.getUTCFullYear(), dw.getUTCMonth(), 
+                              dw.getUTCDate()));
                           }
                           emp.work.push(oWk);
                         }
@@ -125,7 +129,9 @@ export class SiteScheduleMonth2Component {
             if (emp.work) {
               emp.work.forEach(wk => {
                 if (wk.dateWorked.getTime() > this.lastWorked.getTime()) {
-                  this.lastWorked = new Date(wk.dateWorked);
+                  const dw = new Date(wk.dateWorked);
+                  this.lastWorked = new Date(Date.UTC(dw.getUTCFullYear(),
+                    dw.getUTCMonth(), dw.getUTCDate()));
                 }
               })
             }
@@ -239,7 +245,7 @@ export class SiteScheduleMonth2Component {
     return true;
   }
 
-  getDateStyle(dt: Date): string {
+  getUTCDateStyle(dt: Date): string {
     if (dt.getUTCDay() === 0 || dt.getUTCDay() === 6) {
       return 'background-color: cyan;color: black;';
     }
@@ -249,23 +255,23 @@ export class SiteScheduleMonth2Component {
   changeMonth(direction: string, period: string) {
     if (direction.toLowerCase() === 'up') {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getFullYear(), 
-          this.month.getMonth() + 1, 1);
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() + 1, 1));
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getFullYear() + 1, 
-        this.month.getMonth(), 1);
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear() + 1, 
+        this.month.getUTCMonth(), 1));
       }
     } else {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getFullYear(), 
-          this.month.getMonth() - 1, 1);
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() - 1, 1));
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getFullYear() - 1, 
-        this.month.getMonth(), 1);
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear() - 1, 
+        this.month.getUTCMonth(), 1));
       }
     }
-    this.monthForm.controls["month"].setValue(this.month.getMonth());
-    this.monthForm.controls["year"].setValue(this.month.getFullYear());
+    this.monthForm.controls["month"].setValue(this.month.getUTCMonth());
+    this.monthForm.controls["year"].setValue(this.month.getUTCFullYear());
     this.setMonth();
   }
 
@@ -328,7 +334,9 @@ export class SiteScheduleMonth2Component {
             if (e.work) {
               e.work.forEach(wk => {
                 if (wk.dateWorked.getTime() > lastWorked.getTime()) {
-                  lastWorked = new Date(wk.dateWorked);
+                  const dw = new Date(wk.dateWorked);
+                  lastWorked = new Date(Date.UTC(dw.getUTCFullYear(),
+                    dw.getUTCMonth(), dw.getUTCDate()));
                 }
               });
             }

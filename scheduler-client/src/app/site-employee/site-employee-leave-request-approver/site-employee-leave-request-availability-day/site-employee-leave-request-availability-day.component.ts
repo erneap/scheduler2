@@ -110,9 +110,9 @@ export class SiteEmployeeLeaveRequestAvailabilityDayComponent {
     }
     let bUse = false;
     this.request.requesteddays.forEach(day => {
-      if (this.date.getFullYear() === day.leavedate.getFullYear()
-        && this.date.getMonth() === day.leavedate.getMonth()
-        && this.date.getDate() === day.leavedate.getDate() 
+      if (this.date.getUTCFullYear() === day.leavedate.getUTCFullYear()
+        && this.date.getUTCMonth() === day.leavedate.getUTCMonth()
+        && this.date.getUTCDate() === day.leavedate.getUTCDate() 
         && day.code !== '') {
           bUse = true;
         }
@@ -136,7 +136,7 @@ export class SiteEmployeeLeaveRequestAvailabilityDayComponent {
     this.coverage = answer;
   }
 
-  getDayStyle(): string {
+  getUTCDayStyle(): string {
     let answer = "background-color: #ffffff;";
     if (this.site.workcenters) {
       this.site.workcenters.forEach(wc => {

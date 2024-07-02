@@ -1,7 +1,7 @@
 <div class="flexlayout column center">
   <div class="flexlayout row center">
     <div class="movement" (click)="changeMonth('down')">&lt;</div>
-    <div class="month" [style]="getMonthWidthStyle()">{{dateLabel}}</div>
+    <div class="month" [style]="getUTCMonthWidthStyle()">{{dateLabel}}</div>
     <div class="movement" (click)="changeMonth('up')">&gt;</div>
   </div>
   <div class="flexlayout row center">

@@ -9,7 +9,7 @@
         <div *ngFor="let item of currentLeaveRequests" 
           [class]="getButtonClass(item.id)"
           (click)="setSelected(item.id)">
-          {{getDateString(item.startdate)}} - {{getDateString(item.enddate)}}
+          {{getUTCDateString(item.startdate)}} - {{getUTCDateString(item.enddate)}}
         </div>
       </div>
     </div>

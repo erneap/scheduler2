@@ -55,10 +55,10 @@ export class TeamCompanyModtimeComponent {
     private fb: FormBuilder
   ) {
     const now = new Date();
-    this.minYear = now.getFullYear();
+    this.minYear = now.getUTCFullYear();
     this.modForm = this.fb.group({
-      year: [now.getFullYear(), [Validators.required, 
-        Validators.min(now.getFullYear())]],
+      year: [now.getUTCFullYear(), [Validators.required, 
+        Validators.min(now.getUTCFullYear())]],
       start: [now, [Validators.required]],
       end: [now, [Validators.required]],
     });
@@ -102,7 +102,7 @@ export class TeamCompanyModtimeComponent {
   setModPeriod() {
     const now = new Date();
     if (this.selected.year === 0) {
-      this.modForm.controls['year'].setValue(now.getFullYear());
+      this.modForm.controls['year'].setValue(now.getUTCFullYear());
       this.modForm.controls['start'].setValue(now);
       this.modForm.controls['end'].setValue(now);
       this.modForm.controls['year'].enable()
@@ -117,15 +117,15 @@ export class TeamCompanyModtimeComponent {
   }
 
   dateString(value: Date): string {
-      let chg = `${value.getFullYear()}-`
-      if (value.getMonth() < 9) {
+      let chg = `${value.getUTCFullYear()}-`
+      if (value.getUTCMonth() < 9) {
         chg += "0";
       }
-      chg += `${value.getMonth() + 1}-`;
-      if (value.getDate() < 10) {
+      chg += `${value.getUTCMonth() + 1}-`;
+      if (value.getUTCDate() < 10) {
         chg += "0";
       }
-      chg += `${value.getDate()}`;
+      chg += `${value.getUTCDate()}`;
       return chg;
   }
 
@@ -135,7 +135,7 @@ export class TeamCompanyModtimeComponent {
       const year = this.modForm.value.year;
       const start = new Date(this.modForm.value.start);
       const end = new Date(this.modForm.value.end);
-      let found = (now.getFullYear() > year);
+      let found = (now.getUTCFullYear() > year);
       this.company.modperiods.forEach(mod => {
         if (mod.year === year) {
           found = true;

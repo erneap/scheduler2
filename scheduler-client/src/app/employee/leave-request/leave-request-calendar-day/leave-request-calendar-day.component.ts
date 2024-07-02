@@ -101,11 +101,11 @@ export class LeaveRequestCalendarDayComponent {
   changeCode() {
     this.leave.code = this.dayForm.value.code;
     this.leave.hours = Number(this.dayForm.value.hours);
-    let data: string = `${this.leave.leavedate.getFullYear()}-`
-      + ((this.leave.leavedate.getMonth() < 9) ? '0' : '') 
-      + `${this.leave.leavedate.getMonth() + 1}-`
-      + ((this.leave.leavedate.getDate() < 10) ? '0' : '') 
-      + `${this.leave.leavedate.getDate()}`
+    let data: string = `${this.leave.leavedate.getUTCFullYear()}-`
+      + ((this.leave.leavedate.getUTCMonth() < 9) ? '0' : '') 
+      + `${this.leave.leavedate.getUTCMonth() + 1}-`
+      + ((this.leave.leavedate.getUTCDate() < 10) ? '0' : '') 
+      + `${this.leave.leavedate.getUTCDate()}`
       + `|${this.leave.code}|${this.leave.hours}`;
     this.changed.emit(data);
     this.setLeave();

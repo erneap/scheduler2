@@ -40,34 +40,35 @@ export class EmployeeScheduleMonthComponent {
     protected authService: AuthService
   ) {
     this.month = new Date();
-    this.month = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
+    this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth(), 1));
     this.setMonth();
   }
 
   setMonth() {
-    this.monthLabel = `${this.months[this.month.getMonth()]} `
-      + `${this.month.getFullYear()}`;
+    this.monthLabel = `${this.months[this.month.getUTCMonth()]} `
+      + `${this.month.getUTCFullYear()}`;
     
     // calculate the display's start and end date, where start date is always
     // the sunday before the 1st of the month and end date is the saturday after
     // the end of the month.
-    this.startDate = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth(), 1, 0, 0, 0));
+    this.startDate = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth(), 1, 0, 0, 0));
     while (this.startDate.getUTCDay() !== 0) {
       this.startDate = new Date(this.startDate.getTime() - (24 * 3600000));
     }
-    this.endDate = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth() + 1, 1, 0, 0, 0));
+    this.endDate = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth() + 1, 1, 0, 0, 0));
     while (this.endDate.getUTCDay() !== 0) {
       this.endDate = new Date(this.endDate.getTime() + (24 * 3600000));
     }
     
     const emp = this.employeeService.getEmployee();
     if (emp) {
-      if (!emp.hasWorkForYear(this.month.getFullYear())) {
+      if (!emp.hasWorkForYear(this.month.getUTCFullYear())) {
         this.dialogService.showSpinner();
         this.employeeService.retrieveEmployeeWork(emp.id, 
-          this.month.getFullYear()).subscribe({
+          this.month.getUTCFullYear()).subscribe({
           next: resp => {
             this.dialogService.closeSpinner();
             if (resp && resp.id !== '') {
@@ -111,7 +112,8 @@ export class EmployeeScheduleMonthComponent {
   setWorkweeks(emp: Employee) {
     this.workweeks = [];
     let count = -1;
-    let start = new Date(this.startDate);
+    let start = new Date(Date.UTC(this.startDate.getUTCFullYear(), 
+      this.startDate.getUTCMonth(), this.startDate.getUTCDate()));
     var workweek: WorkWeek | undefined;
     while (start.getTime() < this.endDate.getTime()) {
       if (!workweek || start.getUTCDay() === 0) {
@@ -141,19 +143,19 @@ export class EmployeeScheduleMonthComponent {
   changeMonth(direction: string, period: string) {
     if (direction.toLowerCase() === 'up') {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getFullYear(), 
-          this.month.getMonth() + 1, 1);
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() + 1, 1));
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getFullYear() + 1, 
-        this.month.getMonth(), 1);
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear() + 1, 
+        this.month.getUTCMonth(), 1));
       }
     } else {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getFullYear(), 
-          this.month.getMonth() - 1, 1);
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() - 1, 1));
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getFullYear() - 1, 
-        this.month.getMonth(), 1);
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear() - 1, 
+        this.month.getUTCMonth(), 1));
       }
     }
     this.setMonth();

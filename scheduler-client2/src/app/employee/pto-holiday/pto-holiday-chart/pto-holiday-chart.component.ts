@@ -28,7 +28,7 @@ export class PtoHolidayChartComponent {
     return this._employee;
   }
   @Input() width: number = 920;
-  year: number = (new Date()).getFullYear();
+  year: number = (new Date()).getUTCFullYear();
   showHolidays: boolean = false;
 
   constructor(
@@ -49,7 +49,7 @@ export class PtoHolidayChartComponent {
 
   setShowHolidays() {
     this.showHolidays = false;
-    this.year = (new Date()).getFullYear();
+    this.year = (new Date()).getUTCFullYear();
     const iTeam = this.teamService.getTeam();
     if (iTeam) {
       const team = new Team(iTeam);

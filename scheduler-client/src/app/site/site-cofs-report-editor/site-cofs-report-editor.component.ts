@@ -132,11 +132,11 @@ export class SiteCofsReportEditorComponent {
           break;
         case "startdate":
           let dt = new Date(this.reportForm.value.startdate);
-          value = this.getDateString(dt);
+          value = this.getUTCDateString(dt);
           break;
         case "enddate":
           let dte = new Date(this.reportForm.value.enddate);
-          value = this.getDateString(dte);
+          value = this.getUTCDateString(dte);
           break;
         case "addcompany":
           value = this.unassignedCompany;
@@ -192,16 +192,16 @@ export class SiteCofsReportEditorComponent {
     }
   }
 
-  getDateString(dt: Date) : string {
+  getUTCDateString(dt: Date) : string {
     let answer = '';
-    if (dt.getMonth() < 9) {
+    if (dt.getUTCMonth() < 9) {
       answer += "0"
     }
-    answer += `${dt.getMonth() + 1}/`;
-    if (dt.getDate() < 10) {
+    answer += `${dt.getUTCMonth() + 1}/`;
+    if (dt.getUTCDate() < 10) {
       answer += '0';
     }
-    answer += `${dt.getDate()}/${dt.getFullYear()}`;
+    answer += `${dt.getUTCDate()}/${dt.getUTCFullYear()}`;
     return answer;
   }
 

@@ -86,7 +86,7 @@ export class LeaveRequestFormComponent {
 
   setCurrent() {
     let now = new Date();
-    now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    now = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
     this.currentLeaveRequests = [];
     if (this.employee && this.employee.requests) {
       this.employee.requests.forEach(lr => {
@@ -99,15 +99,15 @@ export class LeaveRequestFormComponent {
     this.currentLeaveRequests = this.currentLeaveRequests.sort((a,b) => b.compareTo(a));
   }
 
-  getDateString(date: Date): string {
+  getUTCDateString(date: Date): string {
     return `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear()}`;
   }
 
   getCurrentLeaveRequestDate(): string {
     if (this.currentLeaveRequest) {
-      return `${this.currentLeaveRequest.requestDate.getMonth() + 1}/`
-        + `${this.currentLeaveRequest.requestDate.getDate()}/`
-        + `${this.currentLeaveRequest.requestDate.getFullYear()}`;
+      return `${this.currentLeaveRequest.requestDate.getUTCMonth() + 1}/`
+        + `${this.currentLeaveRequest.requestDate.getUTCDate()}/`
+        + `${this.currentLeaveRequest.requestDate.getUTCFullYear()}`;
     }
     return 'NEW';
   }
@@ -115,7 +115,7 @@ export class LeaveRequestFormComponent {
   setSelected(id: string) {
     if (id === 'new') {
       let now = new Date();
-      now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 
+      now = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 
         0, 0, 0, 0))
       this.dialogService.showSpinner();
       this.authService.statusMessage = "Processing leave request";
@@ -128,9 +128,9 @@ export class LeaveRequestFormComponent {
                 this.employee = data.employee;
                 if (this.employee.requests) {
                   this.employee.requests.forEach(req => {
-                    if (req.startdate.getFullYear() === now.getFullYear() 
-                      && req.startdate.getMonth() === now.getMonth()
-                      && req.startdate.getDate() === now.getDate()
+                    if (req.startdate.getUTCFullYear() === now.getUTCFullYear() 
+                      && req.startdate.getUTCMonth() === now.getUTCMonth()
+                      && req.startdate.getUTCDate() === now.getUTCDate()
                       && req.primarycode === 'V') {
                       this.currentLeaveRequest = new LeaveRequest(req);
                     }

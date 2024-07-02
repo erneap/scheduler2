@@ -82,12 +82,12 @@ export class SiteForecastReportEditorComponent {
     this.reports = [];
     this.reports.push(new ListItem('new', 'Create New Report'));
     let now = new Date();
-    now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() - 1));
+    now = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 1));
     if (this.site.forecasts) {
       this.site.forecasts.forEach(rpt => {
         if (rpt.endDate.getTime() > now.getTime()) {
           const label = `(${rpt.companyid?.toUpperCase()}) ${rpt.name} `
-            + `(${this.getDate(rpt.startDate)}-${this.getDate(rpt.endDate)})`;
+            + `(${this.getUTCDate(rpt.startDate)}-${this.getUTCDate(rpt.endDate)})`;
           this.reports.push(new ListItem(`${rpt.id}`, label));
         }
       });
@@ -104,7 +104,7 @@ export class SiteForecastReportEditorComponent {
             if (rpt.periods && rpt.periods.length > 0) {
               const prd = rpt.periods[0];
               if (prd.periods && prd.periods.length > 0) {
-                weekday = prd.periods[0].getDay();
+                weekday = prd.periods[0].getUTCDay();
               }
             }
             this.reportForm.controls['name'].setValue(rpt.name);
@@ -132,10 +132,10 @@ export class SiteForecastReportEditorComponent {
     return "employee";
   }
 
-  getDate(date: Date): string {
+  getUTCDate(date: Date): string {
     const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
       'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    return `${date.getUTCDate()} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
   }
 
   onSelectReport(wid: string) {
@@ -149,7 +149,7 @@ export class SiteForecastReportEditorComponent {
       if (value !== null) {
         let outputValue = '';
         if (field === 'start' || field === 'end') {
-          outputValue = this.getDateString(value);
+          outputValue = this.getUTCDateString(value);
         } else {
           outputValue = value;
         }
@@ -183,16 +183,16 @@ export class SiteForecastReportEditorComponent {
     }
   }
 
-  getDateString(date: Date): string {
-    let answer = `${date.getFullYear()}-`;
-    if (date.getMonth() < 9) {
+  getUTCDateString(date: Date): string {
+    let answer = `${date.getUTCFullYear()}-`;
+    if (date.getUTCMonth() < 9) {
       answer += '0';
     }
-    answer += `${date.getMonth() + 1}-`;
-    if (date.getDate() < 10) {
+    answer += `${date.getUTCMonth() + 1}-`;
+    if (date.getUTCDate() < 10) {
       answer += '0';
     }
-    answer += `${date.getDate()}`;
+    answer += `${date.getUTCDate()}`;
     return answer;
   }
 
@@ -228,9 +228,9 @@ export class SiteForecastReportEditorComponent {
               this.site.forecasts.sort((a,b) => a.compareTo(b));
               this.site.forecasts.forEach(rpt => {
                 if (rpt.name === name 
-                  && rpt.startDate.getFullYear() === start.getFullYear()
-                  && rpt.startDate.getMonth() === start.getMonth()
-                  && rpt.startDate.getDate() === start.getDate()) {
+                  && rpt.startDate.getUTCFullYear() === start.getUTCFullYear()
+                  && rpt.startDate.getUTCMonth() === start.getUTCMonth()
+                  && rpt.startDate.getUTCDate() === start.getUTCDate()) {
                   this.selected = `${rpt.id}`;
                   this.report = new ForecastReport(rpt);
                 }

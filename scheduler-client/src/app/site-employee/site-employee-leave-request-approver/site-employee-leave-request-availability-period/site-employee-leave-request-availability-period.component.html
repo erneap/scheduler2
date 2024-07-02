@@ -4,7 +4,7 @@
   <div class="flexlayout row center">
     <div class="title">Shift</div>
     <div *ngFor="let day of dates" class="day">
-      {{day.getDate()}}
+      {{day.getUTCDate()}}
     </div>
   </div>
   <app-site-employee-leave-request-availability-shift

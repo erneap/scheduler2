@@ -83,8 +83,8 @@ export class SiteEmployeeLeaveRequestAvailabilityShiftComponent {
       });
     }
     this.dates = [];
-    let sDate = new Date(Date.UTC(this.request.startdate.getFullYear(),
-      this.request.startdate.getMonth(), this.request.startdate.getDate()));
+    let sDate = new Date(Date.UTC(this.request.startdate.getUTCFullYear(),
+      this.request.startdate.getUTCMonth(), this.request.startdate.getUTCDate()));
     while (sDate.getTime() <= this.request.enddate.getTime()) {
       this.dates.push(new Date(sDate));
       sDate = new Date(sDate.getTime() + (24 * 3600000));

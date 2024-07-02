@@ -107,14 +107,14 @@ export class SiteEmployeeLeaveRowComponent {
   
   dateString(date: Date): string {
     let answer = '';
-    if (date.getMonth() < 9) {
+    if (date.getUTCMonth() < 9) {
       answer += '0';
     }
-    answer += `${date.getMonth() + 1}/`;
-    if (date.getDate() < 10) {
+    answer += `${date.getUTCMonth() + 1}/`;
+    if (date.getUTCDate() < 10) {
       answer += '0';
     }
-    answer += `${date.getDate()}/${date.getFullYear()}`;
+    answer += `${date.getUTCDate()}/${date.getUTCFullYear()}`;
     return answer;
   }
 

@@ -114,7 +114,7 @@ export class FileIngestComponent {
       this.authService.statusMessage = "Retrieving site's employees and ingest type";
       this.dialogService.showSpinner();
       this.ingestService.getIngestEmployees(teamid, siteid, 
-        this.company, now.getFullYear()).subscribe({
+        this.company, now.getUTCFullYear()).subscribe({
         next: (data: IngestResponse) => {
           this.dialogService.closeSpinner();
           if (data && data !== null) {
@@ -179,11 +179,11 @@ export class FileIngestComponent {
       formData.append("team", emp.team);
       formData.append("site", emp.site);
       formData.append("company", this.company);
-      let month = `${this.monthShown.getFullYear()}-`;
-      if (this.monthShown.getMonth() < 9) {
+      let month = `${this.monthShown.getUTCFullYear()}-`;
+      if (this.monthShown.getUTCMonth() < 9) {
         month += "0";
       }
-      month += `${this.monthShown.getMonth() + 1}-01`;
+      month += `${this.monthShown.getUTCMonth() + 1}-01`;
       formData.append("start", month);
       this.myFiles.forEach(file => {
         formData.append("file", file);
@@ -251,9 +251,9 @@ export class FileIngestComponent {
             // check for work on date.
             if (emp.work && emp.work.length > 0) {
               for (let i=emp.work.length -1; i >= 0; i--) {
-                if (emp.work[i].dateWorked.getFullYear() === change.changedate.getFullYear()
-                  && emp.work[i].dateWorked.getMonth() === change.changedate.getMonth()
-                  && emp.work[i].dateWorked.getDate() === change.changedate.getDate()) {
+                if (emp.work[i].dateWorked.getUTCFullYear() === change.changedate.getUTCFullYear()
+                  && emp.work[i].dateWorked.getUTCMonth() === change.changedate.getUTCMonth()
+                  && emp.work[i].dateWorked.getUTCDate() === change.changedate.getUTCDate()) {
                   const wk = new Work(emp.work[i]);
                   this.manualUpdateList.push(new IngestChange(emp.id, "delete-work",
                     wk, undefined));
@@ -264,9 +264,9 @@ export class FileIngestComponent {
             // check for leave on date.
             if (emp.leaves && emp.leaves.length > 0) {
               for (let i=emp.leaves.length - 1; i >= 0; i--) {
-                if (emp.leaves[i].leavedate.getFullYear() === change.changedate.getFullYear()
-                && emp.leaves[i].leavedate.getMonth() === change.changedate.getMonth()
-                && emp.leaves[i].leavedate.getDate() === change.changedate.getDate()) {
+                if (emp.leaves[i].leavedate.getUTCFullYear() === change.changedate.getUTCFullYear()
+                && emp.leaves[i].leavedate.getUTCMonth() === change.changedate.getUTCMonth()
+                && emp.leaves[i].leavedate.getUTCDate() === change.changedate.getUTCDate()) {
                   const lv = new LeaveDay(emp.leaves[i]);
                   this.manualUpdateList.push(new IngestChange(emp.id, "delete-leave", 
                     undefined, lv));
@@ -279,9 +279,9 @@ export class FileIngestComponent {
             let found = false;
             if (emp.work && emp.work.length > 0) {
               emp.work.forEach(wk => {
-                if (wk.dateWorked.getFullYear() === change.changedate.getFullYear()
-                  && wk.dateWorked.getMonth() === change.changedate.getMonth()
-                  && wk.dateWorked.getDate() === change.changedate.getDate()
+                if (wk.dateWorked.getUTCFullYear() === change.changedate.getUTCFullYear()
+                  && wk.dateWorked.getUTCMonth() === change.changedate.getUTCMonth()
+                  && wk.dateWorked.getUTCDate() === change.changedate.getUTCDate()
                   && !found) {
                   wk.hours = Number(change.changevalue);
                   this.manualUpdateList.push(
@@ -325,7 +325,7 @@ export class FileIngestComponent {
               if (chgNo === '' || ext === '') {
                 const wd = emp.getWorkdayWOLeaves(emp.site, change.changedate);
                 chgNo = wd.workcenter;
-                ext = `${change.changedate.getFullYear()}`;
+                ext = `${change.changedate.getUTCFullYear()}`;
               }
               if (!emp.work) {
                 emp.work = [];
@@ -344,9 +344,9 @@ export class FileIngestComponent {
             let found = false;
             if (emp.leaves && emp.leaves.length > 0) {
               emp.leaves.forEach(lv => {
-                if (lv.leavedate.getFullYear() === change.changedate.getFullYear()
-                && lv.leavedate.getMonth() === change.changedate.getMonth()
-                && lv.leavedate.getDate() === change.changedate.getDate()
+                if (lv.leavedate.getUTCFullYear() === change.changedate.getUTCFullYear()
+                && lv.leavedate.getUTCMonth() === change.changedate.getUTCMonth()
+                && lv.leavedate.getUTCDate() === change.changedate.getUTCDate()
                 && !found) {
                   found = true
                   lv.code = change.changevalue;

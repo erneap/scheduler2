@@ -39,8 +39,8 @@ export class NotificationsMessageComponent {
   msgDate(): string {
     let answer = "";
     if (this._msg) {
-      answer = `${this._msg.date.getMonth() + 1}/${this._msg.date.getDate()}/`
-        + `${this._msg.date.getFullYear()} `
+      answer = `${this._msg.date.getUTCMonth() + 1}/${this._msg.date.getUTCDate()}/`
+        + `${this._msg.date.getUTCFullYear()} `
       if (this._msg.date.getHours() < 10) {
         answer += `0${this._msg.date.getHours()}:`
       } else {

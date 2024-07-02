@@ -67,7 +67,7 @@ export class TeamCompanyHolidaysComponent {
       actual: '',
     });
     const now = new Date();
-    this.dateSelected = `${now.getFullYear()}`;
+    this.dateSelected = `${now.getUTCFullYear()}`;
   }
 
   setHolidays() {
@@ -120,10 +120,10 @@ export class TeamCompanyHolidaysComponent {
     this.setHoliday();
   }
 
-  getDateString(date: Date): string {
+  getUTCDateString(date: Date): string {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
       'Sep', 'Oct', 'Nov', 'Dec'];
-    return`${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    return`${date.getUTCDate()} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
   }
 
   setHoliday() {
@@ -135,8 +135,8 @@ export class TeamCompanyHolidaysComponent {
         this.actualSelected = `${actuals[0].getTime()}`;
       }
       actuals.forEach(act => {
-        this.actualDates.push(new ListItem(`${act.getFullYear()}`, 
-          this.getDateString(act)));
+        this.actualDates.push(new ListItem(`${act.getUTCFullYear()}`, 
+          this.getUTCDateString(act)));
       });
       this.holidayForm.controls['holtype'].setValue(this.holiday.id);
       this.holidayForm.controls['holtype'].disable();
@@ -198,7 +198,7 @@ export class TeamCompanyHolidaysComponent {
       let sValue = '';
       const value = this.holidayForm.controls[field].value;
       if (field.toLowerCase() === 'actual') {
-        sValue = this.getDate(new Date(value));
+        sValue = this.getUTCDate(new Date(value));
       } else {
         sValue = value;
       }
@@ -233,16 +233,16 @@ export class TeamCompanyHolidaysComponent {
     }
   }
 
-  getDate(dt: Date): string {
-    let answer = `${dt.getFullYear()}-`;
-    if (dt.getMonth() < 9) {
+  getUTCDate(dt: Date): string {
+    let answer = `${dt.getUTCFullYear()}-`;
+    if (dt.getUTCMonth() < 9) {
       answer += '0';
     }
-    answer += `${dt.getMonth() + 1}-`;
-    if (dt.getDate() < 10) {
+    answer += `${dt.getUTCMonth() + 1}-`;
+    if (dt.getUTCDate() < 10) {
       answer += '0';
     }
-    answer += `${dt.getDate()}`;
+    answer += `${dt.getUTCDate()}`;
     return answer;
   }
 
@@ -253,7 +253,7 @@ export class TeamCompanyHolidaysComponent {
       const actual = this.holidayForm.value.actual;
       let sActual = '';
       if (actual !== null) {
-        sActual = this.getDate(new Date(actual));
+        sActual = this.getUTCDate(new Date(actual));
       }
       const holType = this.holidayForm.value.holtype;
       this.teamService.addTeamCompanyHoliday(this.team.id, this.company.id, 

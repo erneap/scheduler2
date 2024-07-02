@@ -44,7 +44,7 @@ export class CompanyHoliday implements ICompanyHoliday {
     let answer: Date | undefined;
     if (this.actualdates) {
       this.actualdates.forEach(dt => {
-        if (dt.getFullYear() === year) {
+        if (dt.getUTCFullYear() === year) {
           answer = dt;
         }
       });
@@ -83,7 +83,7 @@ export class ModPeriod implements IModPeriod {
   end: Date;
 
   constructor(mod?: IModPeriod) {
-    this.year = (mod) ? mod.year : (new Date()).getFullYear();
+    this.year = (mod) ? mod.year : (new Date()).getUTCFullYear();
     this.start = (mod) ? new Date(mod.start) : new Date(0);
     this.end = (mod) ? new Date(mod.end) : new Date(0);
   }

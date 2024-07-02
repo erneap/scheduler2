@@ -78,9 +78,9 @@ export class LeaveRequestCalendarComponent {
       const day = new LeaveDay();
       day.leavedate = start;
       this._leaveDays.forEach(lv => {
-        if (day.leavedate.getFullYear() === lv.leavedate.getFullYear()
-          && day.leavedate.getMonth() === lv.leavedate.getMonth()
-          && day.leavedate.getDate() === lv.leavedate.getDate()) {
+        if (day.leavedate.getUTCFullYear() === lv.leavedate.getUTCFullYear()
+          && day.leavedate.getUTCMonth() === lv.leavedate.getUTCMonth()
+          && day.leavedate.getUTCDate() === lv.leavedate.getUTCDate()) {
           day.code = lv.code;
           day.hours = lv.hours;
         }
@@ -98,7 +98,7 @@ export class LeaveRequestCalendarComponent {
     return ((this.width - 14) / 7);
   }
 
-  getDateStyles(): string {
+  getUTCDateStyles(): string {
     let ratio = 1.0;
     if (this.width < 714) {
       ratio = (this.width / 714)

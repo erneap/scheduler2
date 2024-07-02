@@ -31,25 +31,25 @@ export class SiteAvailabilityMonthComponent {
     private fb: FormBuilder
   ) {
     this.month = new Date();
-    this.month = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
+    this.month = new Date(this.month.getUTCFullYear(), this.month.getUTCMonth(), 1);
     this.monthForm = this.fb.group({
-      month: this.month.getMonth(),
-      year: this.month.getFullYear(),
+      month: this.month.getUTCMonth(),
+      year: this.month.getUTCFullYear(),
     })
     this.setMonth();
   }
   
   setMonth() {
-    this.monthLabel = `${this.months[this.month.getMonth()]} `
-      + `${this.month.getFullYear()}`;
+    this.monthLabel = `${this.months[this.month.getUTCMonth()]} `
+      + `${this.month.getUTCFullYear()}`;
     
     // calculate the display's start and end date, where start date is always
     // the sunday before the 1st of the month and end date is the saturday after
     // the end of the month.
-    this.startDate = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth(), 1, 0, 0, 0));
-    this.endDate = new Date(Date.UTC(this.month.getFullYear(), 
-      this.month.getMonth() + 1, 1, 0, 0, 0));
+    this.startDate = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth(), 1, 0, 0, 0));
+    this.endDate = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth() + 1, 1, 0, 0, 0));
     
     let start = new Date(this.startDate);
 
@@ -78,7 +78,7 @@ export class SiteAvailabilityMonthComponent {
     }
   }
 
-  getDateSyyle(dt: Date): string {
+  getUTCDateSyyle(dt: Date): string {
     if (dt.getUTCDay() === 0 || dt.getUTCDay() === 6) {
       return 'background-color: cyan;color: black;';
     }
@@ -88,23 +88,23 @@ export class SiteAvailabilityMonthComponent {
   changeMonth(direction: string, period: string) {
     if (direction.toLowerCase() === 'up') {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getFullYear(), 
-          this.month.getMonth() + 1, 1);
+        this.month = new Date(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() + 1, 1);
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getFullYear() + 1, 
-        this.month.getMonth(), 1);
+        this.month = new Date(this.month.getUTCFullYear() + 1, 
+        this.month.getUTCMonth(), 1);
       }
     } else {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getFullYear(), 
-          this.month.getMonth() - 1, 1);
+        this.month = new Date(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() - 1, 1);
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getFullYear() - 1, 
-        this.month.getMonth(), 1);
+        this.month = new Date(this.month.getUTCFullYear() - 1, 
+        this.month.getUTCMonth(), 1);
       }
     }
-    this.monthForm.controls["month"].setValue(this.month.getMonth());
-    this.monthForm.controls["year"].setValue(this.month.getFullYear());
+    this.monthForm.controls["month"].setValue(this.month.getUTCMonth());
+    this.monthForm.controls["year"].setValue(this.month.getUTCFullYear());
     this.setMonth();
   }
 

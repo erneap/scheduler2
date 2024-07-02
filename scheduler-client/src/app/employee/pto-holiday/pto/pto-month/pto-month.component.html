@@ -1,5 +1,5 @@
 <div class="fxLayout-row-center">
-  <div class="month">{{months[leaveMonth.month.getMonth()]}}</div>
+  <div class="month">{{months[leaveMonth.month.getUTCMonth()]}}</div>
   <div [class]="getStyle('dates')">
     <ng-container *ngFor="let lvs of leaveMonth.leaveGroups; index as i">
       <app-pto-month-dates-display [leaves]="lvs.leaves">

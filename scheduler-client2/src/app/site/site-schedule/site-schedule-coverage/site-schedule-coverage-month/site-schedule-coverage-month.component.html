@@ -27,6 +27,9 @@
   <div class="workcenter-container" [style]="wkctrStyle">
     <ng-container *ngFor="let wkctr of workcenters">
       <ng-container *ngIf="wkctr.shifts && wkctr.shifts.length > 0">
+        <div class="workcenter" [style]="wkctrStyle">
+          {{wkctr.name.toUpperCase()}}
+        </div>
         <app-site-schedule-coverage-workcenter [month]="month" 
           [workcenter]="wkctr" [site]="site">
         </app-site-schedule-coverage-workcenter>

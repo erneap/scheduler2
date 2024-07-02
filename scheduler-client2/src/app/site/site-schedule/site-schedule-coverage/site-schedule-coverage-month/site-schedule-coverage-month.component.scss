@@ -81,3 +81,13 @@ mat-panel-description {
   border: none;
   width: 80px;
 }
+
+.workcenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  background-color: black;
+  color: white;
+  height: 35px;
+}

@@ -76,12 +76,14 @@ export class SiteScheduleCoverageDayComponent {
             work = emp.work[emp.work.length - 1];
           }
           const wd = emp.getWorkday(this.site.id, this.date, work.dateWorked);
-          if (shift.associatedCodes && shift.associatedCodes.length > 0) {
-            shift.associatedCodes.forEach(ac => {
-              if (ac.toLowerCase() === wd.code.toLowerCase()) {
-                count++;
-              }
-            });
+          if (wd.workcenter.toLowerCase() === this.wkctrID.toLowerCase()) {
+            if (shift.associatedCodes && shift.associatedCodes.length > 0) {
+              shift.associatedCodes.forEach(ac => {
+                if (ac.toLowerCase() === wd.code.toLowerCase()) {
+                  count++;
+                }
+              });
+            }
           }
         });
       }

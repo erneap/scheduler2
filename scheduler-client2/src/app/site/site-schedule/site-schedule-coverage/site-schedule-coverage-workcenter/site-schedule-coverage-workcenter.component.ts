@@ -80,7 +80,7 @@ export class SiteScheduleCoverageWorkcenterComponent {
     const ratio = width / 1089;
     let fontSize = Math.floor(12 * ratio);
     if (fontSize < 9) fontSize = 9;
-    if (even === 0) {
+    if (even < 0) {
       return `background-color: black;color: white;font-size: ${fontSize}pt;`
         + `width: ${this.nameWidth()}px;height: ${this.width}px;`;
     } else if (even % 2 === 0) {

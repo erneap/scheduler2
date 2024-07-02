@@ -68,7 +68,7 @@ export class SiteScheduleCoverageMonthComponent {
     const monthWidth = (width - (4 * (moveWidth + 2)));
     this.monthStyle = `width: ${monthWidth}px;font-size: ${moveFontSize}pt;`;
     this.moveStyle = `width: ${moveWidth}px;font-size: ${moveFontSize}pt;`;
-    this.wkctrStyle = `width: ${width}px;`;
+    this.wkctrStyle = `width: ${width - 40}px;`;
   }
 
   setWorkcenter() {
@@ -114,7 +114,7 @@ export class SiteScheduleCoverageMonthComponent {
   selectMonth() {
     let iMonth = Number(this.monthForm.value.month);
     let iYear = Number(this.monthForm.value.year);
-    this.month = new Date(iYear, iMonth, 1);
+    this.month = new Date(Date.UTC(iYear, iMonth, 1));
     this.setStyles();
   }
 }

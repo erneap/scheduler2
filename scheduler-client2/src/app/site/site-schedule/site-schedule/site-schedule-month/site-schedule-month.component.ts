@@ -48,7 +48,8 @@ export class SiteScheduleMonthComponent {
     private fb: FormBuilder
   ) {
     this.month = new Date();
-    this.month = new Date(this.month.getUTCFullYear(), this.month.getUTCMonth(), 1);
+    this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+      this.month.getUTCMonth(), 1));
     this.monthForm = this.fb.group({
       month: this.month.getUTCMonth(),
       year: this.month.getUTCFullYear(),
@@ -153,19 +154,19 @@ export class SiteScheduleMonthComponent {
   changeMonth(direction: string, period: string) {
     if (direction.toLowerCase() === 'up') {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getUTCFullYear(), 
-          this.month.getUTCMonth() + 1, 1);
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() + 1, 1));
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getUTCFullYear() + 1, 
-        this.month.getUTCMonth(), 1);
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear() + 1, 
+        this.month.getUTCMonth(), 1));
       }
     } else {
       if (period.toLowerCase() === 'month') {
-        this.month = new Date(this.month.getUTCFullYear(), 
-          this.month.getUTCMonth() - 1, 1);
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear(), 
+          this.month.getUTCMonth() - 1, 1));
       } else if (period.toLowerCase() === 'year') {
-        this.month = new Date(this.month.getUTCFullYear() - 1, 
-        this.month.getUTCMonth(), 1);
+        this.month = new Date(Date.UTC(this.month.getUTCFullYear() - 1, 
+        this.month.getUTCMonth(), 1));
       }
     }
     this.monthForm.controls["month"].setValue(this.month.getUTCMonth());
@@ -223,7 +224,7 @@ export class SiteScheduleMonthComponent {
   selectMonth() {
     let iMonth = Number(this.monthForm.value.month);
     let iYear = Number(this.monthForm.value.year);
-    this.month = new Date(iYear, iMonth, 1);
+    this.month = new Date(Date.UTC(iYear, iMonth, 1));
     this.setStyles();
   }
 }

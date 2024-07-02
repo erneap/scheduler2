@@ -1,7 +1,7 @@
 <div class="overall">
   <div class="columns">
-    <div class="name" [style]="nameCellStyle(0)">&nbsp;</div>
-    <div class="name" [style]="nameCellStyle(0)">Shift</div>
+    <div class="name" [style]="nameCellStyle(-1)">&nbsp;</div>
+    <div class="name" [style]="nameCellStyle(-1)">Shift</div>
     <ng-container *ngIf="workcenter.shifts && workcenter.shifts.length > 0">
       <ng-container *ngFor="let pos of workcenter.shifts;let s = index">
         <div class="name" [style]="nameCellStyle(s)">

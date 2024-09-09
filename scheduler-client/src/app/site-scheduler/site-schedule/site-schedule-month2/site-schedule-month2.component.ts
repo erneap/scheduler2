@@ -276,7 +276,7 @@ export class SiteScheduleMonth2Component {
   }
 
   onSubmit() {
-    const url = '/scheduler/api/v2/reports';
+    const url = '/scheduler2/api/v2/reports';
     const iTeam = this.teamService.getTeam();
     const iSite = this.siteService.getSite();
     if (iTeam && iSite) {

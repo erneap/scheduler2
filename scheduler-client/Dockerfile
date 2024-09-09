@@ -1,14 +1,17 @@
 ### Stage 1: Build ###
-FROM node:20.10.0-bookworm as build
+FROM node:22-alpine3.19 AS build
 WORKDIR /app
 COPY ./ /app/
 RUN npm install
 RUN npm run build
 
 ### Stage 2: Run ###
-FROM nginx:1.25.3-alpine3.18
-RUN mkdir -p /usr/share/nginx/html/scheduler
+FROM nginx:1.27.0-alpine-slim
+RUN mkdir -p /usr/share/nginx/html/scheduler2
 ADD . /data/reports
-COPY --from=build /app/dist/scheduler-client /usr/share/nginx/html/scheduler/
+COPY --from=build /app/dist/scheduler-client /usr/share/nginx/html/scheduler2/
 COPY --from=build /app/scheduler.conf /etc/nginx/conf.d/scheduler.conf
-EXPOSE 8083
+
+RUN chown -R nginx:nginx /usr/share/nginx/html/scheduler2
+
+EXPOSE 8087

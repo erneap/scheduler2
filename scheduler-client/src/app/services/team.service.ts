@@ -53,13 +53,13 @@ export class TeamService extends CacheService {
   }
 
   retrieveSelectedSite(teamid: string, siteid: string): Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/site/${teamid}/${siteid}/true`;
+    const url = `/scheduler2/api/v2/site/${teamid}/${siteid}/true`;
     return this.httpClient.get<SiteResponse>(url);
   }
 
   addTeam(title: string, workcodes: boolean, leader: IUser): 
     Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/team';
+    const url = '/scheduler2/api/v2/team';
     const data: CreateTeamRequest = {
       name: title,
       useStdWorkcodes: workcodes,
@@ -69,7 +69,7 @@ export class TeamService extends CacheService {
   }
 
   updateTeam(teamid: string, name: string): Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/team'
+    const url = '/scheduler2/api/v2/team'
     const data: UpdateTeamRequest = {
       teamid: teamid,
       value: name,
@@ -78,7 +78,7 @@ export class TeamService extends CacheService {
   }
 
   deleteTeam(teamid: string): Observable<TeamsResponse> {
-    const url = `/scheduler/api/v2/admin/teams/${teamid}`;
+    const url = `/scheduler2/api/v2/admin/teams/${teamid}`;
     return this.httpClient.delete<TeamsResponse>(url);
   }
 
@@ -88,7 +88,7 @@ export class TeamService extends CacheService {
     if (!search) {
       search = '';
     }
-    const url = '/scheduler/api/v2/team/workcode';
+    const url = '/scheduler2/api/v2/team/workcode';
     const data: CreateTeamWorkcodeRequest = {
       teamid: team,
       id: workcode,
@@ -106,7 +106,7 @@ export class TeamService extends CacheService {
 
   updateTeamWorkcode(team: string, workcode: string, field: string, 
   value: string): Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/team/workcode/';
+    const url = '/scheduler2/api/v2/team/workcode/';
     const data: UpdateTeamRequest = {
       teamid: team,
       additionalid: workcode,
@@ -118,13 +118,13 @@ export class TeamService extends CacheService {
   
   deleteTeamWorkcode(team: string, workcode: string): 
     Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/team/workcode/${team}/${workcode}`;
+    const url = `/scheduler2/api/v2/team/workcode/${team}/${workcode}`;
     return this.httpClient.delete<SiteResponse>(url);
   }
 
   addTeamCompany(team: string, companyid: string, name: string, ingest: string):
   Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/team/company';
+    const url = '/scheduler2/api/v2/team/company';
     const data: CreateTeamCompany = {
       teamid: team,
       id: companyid,
@@ -136,7 +136,7 @@ export class TeamService extends CacheService {
 
   updateTeamCompany(team: string, companyid: string, field: string, value: string):
     Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/team/company';
+    const url = '/scheduler2/api/v2/team/company';
     const data: UpdateTeamRequest = {
       teamid: team,
       additionalid: companyid,
@@ -148,13 +148,13 @@ export class TeamService extends CacheService {
   
   deleteTeamCompany(team: string, company: string): 
     Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/team/company/${team}/${company}`;
+    const url = `/scheduler2/api/v2/team/company/${team}/${company}`;
     return this.httpClient.delete<SiteResponse>(url);
   }
 
   addTeamCompanyHoliday(team: string, company: string, holtype: string, 
     name: string, actual: string): Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/team/company/holiday';
+    const url = '/scheduler2/api/v2/team/company/holiday';
     const data: CreateCompanyHoliday = {
       teamid: team,
       companyid: company,
@@ -167,7 +167,7 @@ export class TeamService extends CacheService {
 
   updateTeamCompanyHoliday(team: string, companyid: string, holiday: string, 
     field: string, value: string): Observable<SiteResponse> {
-    const url = '/scheduler/api/v2/team/company/holiday';
+    const url = '/scheduler2/api/v2/team/company/holiday';
     const data: UpdateTeamRequest = {
       teamid: team,
       additionalid: companyid,
@@ -180,19 +180,19 @@ export class TeamService extends CacheService {
 
   deleteTeamCompanyHoliday(team: string, company: string, holiday: string): 
     Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/team/company/holiday/${team}/${company}`
+    const url = `/scheduler2/api/v2/team/company/holiday/${team}/${company}`
       + `/${holiday}`;
     return this.httpClient.delete<SiteResponse>(url);
   }
 
   getTeams(): Observable<TeamsResponse> {
-    const url = '/scheduler/api/v2/admin/teams';
+    const url = '/scheduler2/api/v2/admin/teams';
     return this.httpClient.get<TeamsResponse>(url);
   }
 
   addContactType(team: string, id: number, name: string): 
     Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/team/contact`;
+    const url = `/scheduler2/api/v2/team/contact`;
     const data: AddTypeRequest = {
       teamid: team,
       id: id,
@@ -203,7 +203,7 @@ export class TeamService extends CacheService {
 
   updateContactType(team: string, id: number, field: string, 
     value: string): Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/team/contact`;
+    const url = `/scheduler2/api/v2/team/contact`;
     const data: UpdateTypeRequest = {
       teamid: team,
       id: id,
@@ -214,13 +214,13 @@ export class TeamService extends CacheService {
   }
 
   deleteContactType(team: string, id: number): Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/team/contact/${team}/${id}`;
+    const url = `/scheduler2/api/v2/team/contact/${team}/${id}`;
     return this.httpClient.delete<SiteResponse>(url);
   }
 
   addSpecialtyType(team: string, id: number, name: string): 
     Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/team/specialty`;
+    const url = `/scheduler2/api/v2/team/specialty`;
     const data: AddTypeRequest = {
       teamid: team,
       id: id,
@@ -231,7 +231,7 @@ export class TeamService extends CacheService {
 
   updateSpecialtyType(team: string, id: number, field: string, 
     value: string): Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/team/specialty`;
+    const url = `/scheduler2/api/v2/team/specialty`;
     const data: UpdateTypeRequest = {
       teamid: team,
       id: id,
@@ -242,7 +242,7 @@ export class TeamService extends CacheService {
   }
 
   deleteSpecialtyType(team: string, id: number): Observable<SiteResponse> {
-    const url = `/scheduler/api/v2/team/specialty/${team}/${id}`;
+    const url = `/scheduler2/api/v2/team/specialty/${team}/${id}`;
     return this.httpClient.delete<SiteResponse>(url);
   }
 }

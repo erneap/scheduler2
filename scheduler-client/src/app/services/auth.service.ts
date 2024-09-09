@@ -83,7 +83,7 @@ export class AuthService extends CacheService {
   private apiAuthProvider(email: string, password: string)
     : Observable<AuthenticationResponse> {
     return this.httpClient.post<AuthenticationResponse>(
-      '/scheduler/api/v2/user/logon', 
+      '/scheduler2/api/v2/user/logon', 
       { email: email, password: password });
   }
 
@@ -279,7 +279,7 @@ export class AuthService extends CacheService {
   }
 
   initialData(id: string): Observable<InitialResponse> {
-    const url = `/scheduler/api/v2/${id}`;
+    const url = `/scheduler2/api/v2/${id}`;
     return this.httpClient.get<InitialResponse>(url);
   }
 }

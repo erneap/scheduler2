@@ -14,18 +14,18 @@ export class SiteIngestService {
 
   getIngestEmployees(team: string, site: string, company: string, year: number): 
     Observable<IngestResponse> {
-    const url = `/scheduler/api/v2/ingest/${team}/${site}/${company}/${year}`;
+    const url = `/scheduler2/api/v2/ingest/${team}/${site}/${company}/${year}`;
     return this.httpClient.get<IngestResponse>(url);
   }
 
   fileIngest(formdata: FormData): Observable<IngestResponse> {
-    const url = '/scheduler/api/v2/ingest/';
+    const url = '/scheduler2/api/v2/ingest/';
     return this.httpClient.post<IngestResponse>(url, formdata);
   }
 
   manualIngest(team: string, site: string, company: string, changes: IngestChange[]): 
     Observable<IngestResponse> {
-    const url = '/scheduler/api/v2/ingest/';
+    const url = '/scheduler2/api/v2/ingest/';
     const data: ManualIngestChanges = {
       teamid: team,
       siteid: site,

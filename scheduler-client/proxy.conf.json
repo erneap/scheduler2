@@ -1,5 +1,5 @@
 {
-    "/scheduler/api/v2/*": {
+    "/scheduler2/api/v2/*": {
         "target": "http://localhost:6002/",
         "secure": false,
         "logLevel": "debug"
